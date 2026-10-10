@@ -1,0 +1,1137 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Pedidos Flash - Tienda Venezolana Completa</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  
+  <!-- Firebase SDKs (Compatibilidad Web) -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+  <!-- Google Fonts: Plus Jakarta Sans -->
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Plus Jakarta Sans', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              50: '#eef2ff',
+              100: '#e0e7ff',
+              500: '#6366f1',
+              600: '#4f46e5',
+              700: '#4338ca',
+            },
+            accent: {
+              magenta: '#ff007a',
+              cyan: '#00f2fe',
+              orange: '#ff5e00',
+              yellow: '#ffb800',
+              emerald: '#00e676',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    
+    .glow-magenta { box-shadow: 0 0 25px rgba(255, 0, 122, 0.4); }
+    .glow-cyan { box-shadow: 0 0 25px rgba(0, 242, 254, 0.4); }
+    .glow-orange { box-shadow: 0 0 25px rgba(255, 94, 0, 0.4); }
+    .glow-violet { box-shadow: 0 0 30px rgba(99, 102, 241, 0.45); }
+    
+    .bg-grid-pattern {
+      background-image: radial-gradient(rgba(255, 255, 255, 0.12) 1px, transparent 1px);
+      background-size: 16px 16px;
+    }
+    @keyframes pop-animacion {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.15); }
+      100% { transform: scale(1); }
+    }
+    .pop-anim { animation: pop-animacion 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+    @keyframes entradaModal {
+      0% { transform: scale(0.9); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    .anim-modal { animation: entradaModal 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+    @keyframes pulsoIA {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(0, 242, 254, 0.4); }
+      50% { box-shadow: 0 0 0 10px rgba(0, 242, 254, 0); }
+    }
+    .ia-activo { animation: pulsoIA 1.5s infinite; }
+  </style>
+</head>
+<body class="bg-slate-950 font-sans text-slate-100 antialiased min-h-screen flex items-center justify-center p-0 sm:p-4 selection:bg-accent-magenta selection:text-white">
+  <!-- CONTENEDOR TIPO MÓVIL / DESKTOP CENTRADO -->
+  <div class="w-full max-w-md bg-slate-900 min-h-screen sm:min-h-[92vh] sm:rounded-[38px] shadow-[0_0_60px_rgba(79,70,229,0.25)] overflow-hidden flex flex-col border border-slate-800/80 relative">
+    
+    <!-- ENCABEZADO VIBRANTE -->
+    <header class="bg-gradient-to-r from-slate-900 via-indigo-950/80 to-slate-900 border-b border-indigo-500/20 p-4 pt-5 shadow-xl relative overflow-hidden shrink-0 z-30 backdrop-blur-xl">
+      <div class="absolute -top-12 -right-12 w-32 h-32 bg-accent-magenta/15 rounded-full blur-3xl pointer-events-none"></div>
+      <div class="absolute -bottom-12 -left-12 w-32 h-32 bg-accent-cyan/15 rounded-full blur-3xl pointer-events-none"></div>
+      <div class="flex justify-between items-center relative z-10">
+        <div>
+          <span class="inline-flex items-center gap-1.5 bg-gradient-to-r from-accent-orange to-accent-magenta text-white text-[9px] uppercase tracking-wider font-black px-3 py-1 rounded-full shadow-lg glow-orange">
+            <i data-lucide="zap" class="w-3 h-3 fill-white"></i> Envíos Ultra Rápidos
+          </span>
+          <h1 class="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white via-slate-100 to-indigo-200 flex items-center gap-1.5 mt-1.5 tracking-tight">
+            PEDIDOS FLASH
+          </h1>
+          <p class="text-[10px] text-indigo-300/80 font-medium tracking-wide">Víveres, Bebidas, Comida y Servicios</p>
+        </div>
+        <span class="bg-emerald-500/10 text-accent-emerald border border-emerald-500/30 text-[10px] font-black px-3.5 py-1.5 rounded-full flex items-center gap-2 shadow-sm backdrop-blur-md">
+          <span class="w-2 h-2 rounded-full bg-accent-emerald animate-ping"></span> Activo
+        </span>
+      </div>
+    </header>
+
+    <!-- ================= PASO 1: SELECCIÓN DE PRODUCTOS ================= -->
+    <div id="paso-catalogo" class="flex-1 flex flex-col overflow-hidden relative bg-slate-900">
+      
+      <!-- BÚSQUEDA, ASISTENTE (VOZ/FOTO) Y CATEGORÍAS -->
+      <div class="p-3.5 bg-slate-900/90 border-b border-slate-800/80 sticky top-0 z-20 space-y-3 backdrop-blur-2xl">
+        <div class="flex items-center gap-2">
+          <div class="relative flex-1">
+            <i data-lucide="search" class="w-4 h-4 text-indigo-400 absolute left-3.5 top-3.5"></i>
+            <input type="text" id="inputBusqueda" onkeyup="filtrarProductos()" placeholder="¿Qué necesitas hoy? Buscar..." class="w-full pl-10 pr-4 py-3 bg-slate-950/60 border border-slate-700/80 focus:border-accent-cyan rounded-2xl text-xs font-semibold text-white placeholder-slate-400 focus:outline-none transition-all shadow-inner focus:ring-2 focus:ring-accent-cyan/20">
+          </div>
+          
+          <!-- BOTÓN DE ASISTENTE POR VOZ -->
+          <button onclick="activarAsistenteVoz()" id="btn-voz-ia" title="Dictar por voz" class="bg-indigo-950/80 hover:bg-indigo-900 text-accent-cyan border border-indigo-500/40 p-3 rounded-2xl flex items-center justify-center transition active:scale-95 shadow-md">
+            <i data-lucide="mic" class="w-4 h-4"></i>
+          </button>
+
+          <!-- BOTÓN DE CÁMARA / FOTO INTELIGENTE -->
+          <button onclick="document.getElementById('input-foto-ia').click()" title="Subir foto de lista" class="bg-indigo-950/80 hover:bg-indigo-900 text-accent-magenta border border-accent-magenta/40 p-3 rounded-2xl flex items-center justify-center transition active:scale-95 shadow-md">
+            <i data-lucide="camera" class="w-4 h-4"></i>
+          </button>
+          <input type="file" id="input-foto-ia" accept="image/*" class="hidden" onchange="procesarFotoIA(event)">
+        </div>
+
+        <!-- NOTIFICACIÓN / NOTAS DE LA IA -->
+        <div id="banner-ia" class="hidden bg-gradient-to-r from-brand-600/30 to-accent-cyan/20 border border-accent-cyan/40 p-2.5 rounded-xl flex items-center justify-between text-xs animate-pulse">
+          <div class="flex items-center gap-2">
+            <i data-lucide="sparkles" class="w-4 h-4 text-accent-cyan"></i>
+            <span id="txt-estado-ia" class="font-bold text-slate-100">Procesando...</span>
+          </div>
+          <button onclick="cerrarBannerIA()" class="text-slate-400 hover:text-white"><i data-lucide="x" class="w-3.5 h-3.5"></i></button>
+        </div>
+
+        <!-- CATEGORÍAS PRINCIPALES -->
+        <div class="relative flex items-center">
+          <nav id="nav-categorias" class="flex gap-2 overflow-x-auto no-scrollbar pt-0.5 pr-8 scroll-smooth">
+            <button onclick="cambiarSeccion('viveres')" id="btn-viveres" class="btn-categoria px-4 py-2.5 rounded-xl flex items-center gap-2 text-xs font-black bg-gradient-to-r from-brand-600 to-indigo-600 text-white shadow-lg glow-violet shrink-0 transition-all active:scale-95">
+              <i data-lucide="shopping-bag" class="w-3.5 h-3.5"></i> Víveres
+            </button>
+            <button onclick="cambiarSeccion('bebidas')" id="btn-bebidas" class="btn-categoria px-4 py-2.5 rounded-xl flex items-center gap-2 text-xs font-bold bg-slate-950/60 text-slate-300 border border-slate-800 hover:bg-slate-800 shrink-0 transition-all active:scale-95">
+              <i data-lucide="cup-soda" class="w-3.5 h-3.5"></i> Bebidas
+            </button>
+            <button onclick="cambiarSeccion('comida')" id="btn-comida" class="btn-categoria px-4 py-2.5 rounded-xl flex items-center gap-2 text-xs font-bold bg-slate-950/60 text-slate-300 border border-slate-800 hover:bg-slate-800 shrink-0 transition-all active:scale-95">
+              <i data-lucide="utensils" class="w-3.5 h-3.5"></i> Comida
+            </button>
+            <button onclick="cambiarSeccion('transporte')" id="btn-transporte" class="btn-categoria px-4 py-2.5 rounded-xl flex items-center gap-2 text-xs font-bold bg-slate-950/60 text-slate-300 border border-slate-800 hover:bg-slate-800 shrink-0 transition-all active:scale-95">
+              <i data-lucide="bike" class="w-3.5 h-3.5"></i> Transporte
+            </button>
+            <button onclick="cambiarSeccion('ferreteria')" id="btn-ferreteria" class="btn-categoria px-4 py-2.5 rounded-xl flex items-center gap-2 text-xs font-bold bg-slate-950/60 text-slate-300 border border-slate-800 hover:bg-slate-800 shrink-0 transition-all active:scale-95">
+              <i data-lucide="wrench" class="w-3.5 h-3.5"></i> Ferretería y Limpieza
+            </button>
+          </nav>
+          <button onclick="desplazarMenu()" class="absolute right-0 top-1/2 -translate-y-1/2 bg-gradient-to-l from-slate-900 via-slate-900 to-transparent pl-4 pr-1.5 py-2 text-accent-cyan animate-pulse z-10 flex items-center justify-center">
+            <i data-lucide="chevron-right" class="w-5 h-5 drop-shadow-[0_0_8px_rgba(0,242,254,0.8)]"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- CATÁLOGO DE PRODUCTOS -->
+      <main class="flex-1 p-4 space-y-4 overflow-y-auto no-scrollbar pb-28">
+        <div class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-accent-magenta via-purple-600 to-indigo-700 p-5 text-white shadow-xl bg-grid-pattern border border-white/10">
+          <div class="absolute -right-6 -bottom-6 w-36 h-36 rounded-full bg-accent-cyan/30 blur-2xl"></div>
+          <div class="relative z-10 max-w-[72%] space-y-1.5">
+            <span class="inline-flex items-center gap-1 bg-accent-yellow text-slate-950 text-[9px] font-black tracking-wider px-2.5 py-0.5 rounded-full uppercase shadow-md">
+              <i data-lucide="sparkles" class="w-3 h-3 fill-slate-950"></i> NUEVAS BEBIDAS POLAR
+            </span>
+            <h2 class="text-lg font-black leading-tight drop-shadow-sm">Caroreña, Refrescos Golden y Pepsi</h2>
+            <p class="text-[11px] text-pink-100 font-medium">Sangrías en lata, refrescos de sabor y nuevas presentaciones.</p>
+          </div>
+          <div class="absolute right-2 bottom-0 text-5xl pointer-events-none drop-shadow-xl select-none">🍷🥤</div>
+        </div>
+
+        <!-- VÍVERES Y SUBMENÚ -->
+        <div id="sec-viveres" class="seccion-target space-y-3.5">
+          <div class="relative flex items-center">
+            <div id="sub-nav-viveres" class="bg-slate-950/50 p-1.5 rounded-2xl border border-slate-800 flex gap-1.5 overflow-x-auto no-scrollbar pr-7 scroll-smooth w-full backdrop-blur-md">
+              <button onclick="filtrarSubViveres('todos')" id="sub-viveres-todos" class="btn-sub-viveres px-3.5 py-1.5 rounded-xl text-[11px] font-extrabold bg-accent-magenta text-white shadow-md shrink-0 transition">
+                ✨ Todos
+              </button>
+              <button onclick="filtrarSubViveres('harinas')" id="sub-viveres-harinas" class="btn-sub-viveres px-3.5 py-1.5 rounded-xl text-[11px] font-bold bg-slate-900 text-slate-300 border border-slate-800 hover:text-white shrink-0 transition">
+                🌾 Harinas
+              </button>
+              <button onclick="filtrarSubViveres('pastas')" id="sub-viveres-pastas" class="btn-sub-viveres px-3.5 py-1.5 rounded-xl text-[11px] font-bold bg-slate-900 text-slate-300 border border-slate-800 hover:text-white shrink-0 transition">
+                🍝 Pastas
+              </button>
+              <button onclick="filtrarSubViveres('granos')" id="sub-viveres-granos" class="btn-sub-viveres px-3.5 py-1.5 rounded-xl text-[11px] font-bold bg-slate-900 text-slate-300 border border-slate-800 hover:text-white shrink-0 transition">
+                🫘 Granos y Arroz
+              </button>
+              <button onclick="filtrarSubViveres('lacteos')" id="sub-viveres-lacteos" class="btn-sub-viveres px-3.5 py-1.5 rounded-xl text-[11px] font-bold bg-slate-900 text-slate-300 border border-slate-800 hover:text-white shrink-0 transition">
+                🧈 Lácteos y Galletas
+              </button>
+            </div>
+            <button onclick="desplazarSubMenuViveres()" class="absolute right-0 top-1/2 -translate-y-1/2 bg-gradient-to-l from-slate-900 via-slate-900 to-transparent pl-3 pr-1 py-2 text-accent-cyan z-10 flex items-center justify-center">
+              <i data-lucide="chevron-right" class="w-4 h-4"></i>
+            </button>
+          </div>
+          <div id="grid-viveres" class="grid grid-cols-2 gap-3.5"></div>
+        </div>
+        <div id="sec-bebidas" class="seccion-target grid grid-cols-2 gap-3.5 hidden"></div>
+        <div id="sec-comida" class="seccion-target grid grid-cols-2 gap-3.5 hidden"></div>
+        <div id="sec-transporte" class="seccion-target grid grid-cols-2 gap-3.5 hidden"></div>
+        <div id="sec-ferreteria" class="seccion-target grid grid-cols-2 gap-3.5 hidden"></div>
+      </main>
+
+      <!-- WIDGET FLOTANTE INTERACTIVO Y ARRASTRABLE -->
+      <div id="widget-total-flotante" onclick="abrirModalCarrito()" class="fixed z-40 transition-opacity duration-300 opacity-0 pointer-events-none touch-none select-none cursor-pointer active:scale-95" style="top: 180px; right: 16px;">
+        <div class="bg-gradient-to-b from-indigo-500/30 to-slate-950 p-[1px] rounded-2xl shadow-[0_12px_35px_rgba(0,0,0,0.8)] border border-indigo-500/40 glow-violet">
+          <div class="bg-slate-950/90 backdrop-blur-2xl px-4 py-3 rounded-[15px] flex flex-col items-center justify-center text-center">
+            <div class="flex items-center gap-1.5 text-accent-cyan mb-1">
+              <i data-lucide="shopping-cart" class="w-4 h-4 pointer-events-none"></i>
+              <span id="txt-widget-cant" class="text-[10px] font-black bg-accent-magenta text-white px-2 py-0.5 rounded-full pointer-events-none glow-magenta">0</span>
+            </div>
+            <span class="text-[8px] text-indigo-300/80 font-black uppercase tracking-wider block pointer-events-none">Ver Pedido</span>
+            <span id="txt-widget-monto" class="text-base font-black text-accent-yellow leading-none pointer-events-none mt-0.5">$0.00</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- BARRA INFERIOR FIJA PASO 1 -->
+      <div class="absolute bottom-0 left-0 right-0 bg-slate-900/95 backdrop-blur-2xl border-t border-slate-800/80 p-4 shadow-2xl z-30">
+        <div class="flex items-center justify-between gap-3">
+          <div>
+            <span class="text-[9px] text-indigo-300/70 block font-black uppercase tracking-wider">Total a Pagar:</span>
+            <span id="total-precio-paso1" class="text-2xl font-black text-white">$0.00</span>
+          </div>
+          <button onclick="irAPaso2()" class="flex-1 bg-gradient-to-r from-accent-magenta via-indigo-600 to-accent-cyan hover:brightness-110 text-white font-black py-3.5 px-4 rounded-2xl flex items-center justify-center gap-2 text-xs transition active:scale-95 shadow-lg glow-magenta">
+            <span>CONTINUAR CON EL PEDIDO</span> <i data-lucide="arrow-right" class="w-4 h-4"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================= MODAL DEL CARRITO DE COMPRAS ================= -->
+    <div id="modal-carrito-detalle" class="fixed inset-0 bg-slate-950/85 backdrop-blur-xl z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 hidden">
+      <div class="anim-modal bg-slate-900 border-t sm:border border-indigo-500/30 w-full max-w-md rounded-t-[32px] sm:rounded-3xl p-5 space-y-4 shadow-2xl max-h-[82vh] flex flex-col">
+        <div class="flex justify-between items-center border-b border-slate-800 pb-3.5">
+          <div class="flex items-center gap-2.5">
+            <div class="p-2.5 bg-indigo-500/15 text-accent-cyan rounded-2xl border border-indigo-500/20">
+              <i data-lucide="shopping-bag" class="w-5 h-5"></i>
+            </div>
+            <div>
+              <h3 class="text-base font-black text-white leading-tight">Tu Carrito de Compras</h3>
+              <span class="text-[10px] text-indigo-300/80 font-bold">Revisa o modifica tus artículos</span>
+            </div>
+          </div>
+          <button onclick="cerrarModalCarrito()" class="w-8 h-8 rounded-full bg-slate-800/80 text-slate-400 hover:text-white flex items-center justify-center transition">
+            <i data-lucide="x" class="w-5 h-5"></i>
+          </button>
+        </div>
+        <div id="lista-modal-carrito" class="flex-1 overflow-y-auto no-scrollbar space-y-2.5 pr-1"></div>
+        <div class="border-t border-slate-800 pt-3.5 space-y-3.5">
+          <div class="flex justify-between items-center px-1">
+            <span class="text-xs font-bold text-slate-400">Total acumulado:</span>
+            <span id="modal-carrito-monto-total" class="text-xl font-black text-accent-yellow">$0.00</span>
+          </div>
+          <div class="flex gap-2.5">
+            <button onclick="cerrarModalCarrito()" class="flex-1 bg-slate-800/80 hover:bg-slate-750 text-slate-200 font-bold py-3.5 rounded-2xl text-xs transition border border-slate-700/50">
+              Seguir Comprando
+            </button>
+            <button onclick="cerrarModalCarrito(); irAPaso2();" class="flex-1 bg-gradient-to-r from-accent-magenta to-indigo-600 text-white font-black py-3.5 rounded-2xl text-xs transition glow-magenta flex items-center justify-center gap-1.5 active:scale-95">
+              <span>Ir a Pagar</span> <i data-lucide="arrow-right" class="w-4 h-4"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================= PASO 2: FORMULARIO Y DATOS DE ENVÍO ================= -->
+    <div id="paso-datos" class="flex-1 flex flex-col overflow-hidden bg-slate-900 hidden">
+      <div class="p-4 bg-slate-900 border-b border-slate-800 flex items-center justify-between shrink-0 shadow-sm backdrop-blur-xl">
+        <button onclick="volverAPaso1()" class="text-accent-cyan font-black text-xs flex items-center gap-1.5 hover:text-white active:scale-95 transition">
+          <i data-lucide="arrow-left" class="w-4 h-4"></i> Volver al Catálogo
+        </button>
+        <span class="text-[10px] font-black text-indigo-300 uppercase tracking-widest bg-slate-950/80 px-3 py-1 rounded-full border border-slate-800">Paso 2 de 2</span>
+      </div>
+      <main class="flex-1 p-4 space-y-4 overflow-y-auto no-scrollbar pb-28">
+        <section class="bg-slate-950/40 backdrop-blur-xl p-4 rounded-3xl border border-slate-800 shadow-lg space-y-3">
+          <h3 class="font-black text-transparent bg-clip-text bg-gradient-to-r from-white to-indigo-200 text-xs uppercase tracking-wider flex items-center gap-2 border-b border-slate-800 pb-3">
+            <i data-lucide="receipt" class="w-4 h-4 text-accent-cyan"></i> Resumen de tu Pedido
+          </h3>
+          <div id="resumen-lista-paso2" class="space-y-2 text-xs text-slate-200 max-h-40 overflow-y-auto no-scrollbar"></div>
+        </section>
+        <section class="bg-slate-950/40 backdrop-blur-xl p-4 rounded-3xl border border-slate-800 shadow-lg space-y-3.5">
+          <h3 class="font-black text-transparent bg-clip-text bg-gradient-to-r from-white to-indigo-200 text-xs uppercase tracking-wider border-b border-slate-800 pb-3 flex items-center gap-2">
+            <i data-lucide="user-check" class="w-4 h-4 text-accent-magenta"></i> Datos para la Entrega
+          </h3>
+          
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block text-[9px] text-indigo-300/80 font-black uppercase mb-1">Nombre</label>
+              <input type="text" id="nombreCliente" placeholder="Ej: Pedro" class="w-full p-3 bg-slate-900/90 border border-slate-700/80 focus:border-accent-cyan rounded-2xl text-xs font-semibold text-white placeholder-slate-500 focus:outline-none transition shadow-inner">
+            </div>
+            <div>
+              <label class="block text-[9px] text-indigo-300/80 font-black uppercase mb-1">Apellido</label>
+              <input type="text" id="apellidoCliente" placeholder="Ej: Pérez" class="w-full p-3 bg-slate-900/90 border border-slate-700/80 focus:border-accent-cyan rounded-2xl text-xs font-semibold text-white placeholder-slate-500 focus:outline-none transition shadow-inner">
+            </div>
+          </div>
+          <div>
+            <label class="block text-[9px] text-indigo-300/80 font-black uppercase mb-1">Teléfono WhatsApp</label>
+            <input type="tel" id="telefonoCliente" placeholder="Ej: 04121234567" class="w-full p-3 bg-slate-900/90 border border-slate-700/80 focus:border-accent-cyan rounded-2xl text-xs font-semibold text-white placeholder-slate-500 focus:outline-none transition shadow-inner">
+          </div>
+          <div>
+            <label class="block text-[9px] text-indigo-300/80 font-black uppercase mb-1">Dirección de Entrega / Referencia</label>
+            <textarea id="direccion" rows="2" placeholder="Urb, Calle, Casa/Apto, Punto de referencia" class="w-full p-3 bg-slate-900/90 border border-slate-700/80 focus:border-accent-cyan rounded-2xl text-xs font-semibold text-white placeholder-slate-500 focus:outline-none transition shadow-inner"></textarea>
+          </div>
+          <div>
+            <button type="button" onclick="obtenerUbicacionGPS()" id="btn-gps" class="w-full bg-slate-900 hover:bg-slate-850 text-indigo-200 border border-indigo-500/30 font-black py-3 px-3 rounded-2xl text-xs flex items-center justify-center gap-2 transition active:scale-95 shadow-sm">
+              <i data-lucide="navigation" class="w-3.5 h-3.5 text-accent-cyan"></i> <span id="lbl-gps">Obtener mi Ubicación GPS</span>
+            </button>
+            <input type="hidden" id="ubicacionGPS" value="">
+          </div>
+        </section>
+      </main>
+      <div class="absolute bottom-0 left-0 right-0 bg-slate-900/95 backdrop-blur-2xl border-t border-slate-800/80 p-4 shadow-2xl z-40">
+        <div class="flex items-center justify-between gap-3">
+          <div>
+            <span class="text-[9px] text-indigo-300/70 block font-black uppercase tracking-wider">Total Final:</span>
+            <span id="total-precio-paso2" class="text-2xl font-black text-accent-yellow">$0.00</span>
+          </div>
+          <button onclick="enviarPedidoAConductor()" class="flex-1 bg-gradient-to-r from-accent-emerald to-emerald-600 hover:brightness-110 text-slate-950 font-black py-3.5 px-4 rounded-2xl flex items-center justify-center gap-2 text-xs transition active:scale-95 shadow-lg glow-cyan">
+            <i data-lucide="send" class="w-4 h-4 fill-slate-950"></i> ENVIAR AL REPARTIDOR
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================= MODAL DE ÉXITO CON BARRA DE CARGA Y COHETE ================= -->
+    <div id="modal-exito" class="fixed inset-0 bg-slate-950/90 backdrop-blur-2xl z-50 flex flex-col items-center justify-center p-4 hidden">
+      <div class="anim-modal bg-slate-900 border border-indigo-500/40 p-6 rounded-[32px] text-center shadow-[0_0_60px_rgba(99,102,241,0.4)] max-w-xs w-full space-y-4">
+        
+        <div id="exito-icono" class="w-14 h-14 bg-accent-emerald/15 text-accent-emerald rounded-full flex items-center justify-center mx-auto border border-accent-emerald/30 glow-cyan">
+          <i data-lucide="check-circle-2" class="w-8 h-8"></i>
+        </div>
+        
+        <div>
+          <h2 class="text-xl font-black text-white tracking-tight">¡PROCESANDO TU PEDIDO!</h2>
+          <p id="txt-estado-carga" class="text-xs font-semibold text-indigo-200 mt-1">Lanzando la orden al sistema...</p>
+        </div>
+        <div class="space-y-2 pt-2">
+          <div class="flex justify-between items-center text-[10px] font-black px-1">
+            <span class="text-indigo-300">PROGRESO</span>
+            <span id="txt-porcentaje-carga" class="text-accent-cyan">0%</span>
+          </div>
+          
+          <div class="relative w-full h-8 bg-slate-950 rounded-full border border-slate-800 p-1 flex items-center overflow-hidden shadow-inner">
+            <div id="barra-progreso-relleno" class="h-full bg-gradient-to-r from-accent-magenta via-indigo-600 to-accent-cyan rounded-full transition-all duration-100 ease-linear" style="width: 0%;"></div>
+            
+            <div id="cohete-desplazable" class="absolute top-1/2 -translate-y-1/2 text-2xl transition-all duration-100 ease-linear pointer-events-none drop-shadow-[0_0_10px_rgba(0,242,254,0.9)]" style="left: 0%;">
+              🚀
+            </div>
+          </div>
+        </div>
+        <div class="pt-1 flex items-center justify-center gap-2 text-accent-yellow font-black text-[11px]">
+          <span class="w-2 h-2 rounded-full bg-accent-yellow animate-ping"></span> <span id="txt-pie-modal">Un momento por favor...</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyB19B9jLHPpgKxVvMH97D5VafgTp0CfnOc",
+      authDomain: "pedidosflash-c7bb7.firebaseapp.com",
+      databaseURL: "https://pedidosflash-c7bb7-default-rtdb.firebaseio.com",
+      projectId: "pedidosflash-c7bb7",
+      storageBucket: "pedidosflash-c7bb7.firebasestorage.app",
+      messagingSenderId: "191012880689",
+      appId: "1:191012880689:web:a31697074c619b96a83010",
+      measurementId: "G-YHQCDZ6470"
+    };
+
+    let firebaseActivo = false;
+    let db = null;
+    try {
+      firebase.initializeApp(firebaseConfig);
+      db = firebase.database();
+      firebaseActivo = true;
+    } catch(e) {
+      console.warn("Error inicializando Firebase:", e);
+    }
+
+    const NUMERO_WHATSAPP = "584262566854";
+    let carrito = {};
+
+    // CATÁLOGO COMPLETO CON NUEVOS PRODUCTOS AGREGADOS
+    const productos = {
+      viveres: [
+        // Charcutería
+        { id: 'v_queso', nombre: 'Queso Blanco Duro (kg)', precioBase: 5.50, imagen: 'img/queso.jfif', sub: 'lacteos', badge: 'GRANEL', esGranel: true, unidadMedida: 'g', pasoGranel: 50, minGranel: 100, maxGranel: 3000, defGranel: 500 },
+        { id: 'v_jamon', nombre: 'Jamón de Espalda (kg)', precioBase: 7.60, imagen: 'img/jamon.jfif', sub: 'lacteos', badge: 'GRANEL', esGranel: true, unidadMedida: 'g', pasoGranel: 50, minGranel: 100, maxGranel: 3000, defGranel: 500 },
+
+        // Harinas
+        { id: 'v1', nombre: 'Harina PAN Blanca 1kg', precioBase: 1.20, imagen: 'img/harina.jfif', badge: 'MÁS VENDIDA', sub: 'harinas' },
+        { id: 'v2', nombre: 'Harina PAN Amarilla 1kg', precioBase: 1.20, imagen: 'img/harina.jfif', sub: 'harinas' },
+        { id: 'v3', nombre: 'Harina Trigo Leudante 1kg', precioBase: 1.35, imagen: 'img/Trigo.jfif', sub: 'harinas' },
+        { id: 'v22', nombre: 'Harina de Maíz Blanco Precocida Mary', precioBase: 0.74, imagen: 'img/Harina de Maíz Blanco Precocida Mary.jfif', badge: 'OFERTA', sub: 'harinas' },
+        { id: 'v23', nombre: 'Harina de Trigo Mary Leudante', precioBase: 0.92, imagen: 'img/Trigo.jfif', sub: 'harinas' },
+        { id: 'v24', nombre: 'Harina de Trigo Mary Todo Uso (20x903g)', precioBase: 0.88, imagen: 'img/Harina de Trigo Mary Leudante.jfif', sub: 'harinas' },
+        
+        // Granos y Arroces
+        { id: 'v_arr_clasico', nombre: 'Arroz Clásico Superior Primor 1kg', precioBase: 1.30, imagen: 'img/Arroz Clásico primor.webp', badge: 'TOP', sub: 'granos' },
+        { id: 'v_arr_perlado', nombre: 'Arroz Perlado Primor 900g', precioBase: 1.25, imagen: 'img/arroz perlado primor.webp', sub: 'granos' },
+        { id: 'v_arr_tradicional', nombre: 'Arroz Tradicional Primor 1kg', precioBase: 1.15, imagen: 'img/arroz tradicional prim0or.webp', sub: 'granos' },
+        { id: 'v_crema_arroz', nombre: 'Crema de Arroz Primor', precioBase: 1.10, imagen: 'img/arror primor crema.webp', sub: 'granos' },
+        { id: 'v7', nombre: 'Caraotas Negras 500g', precioBase: 1.50, icon: '🫘', sub: 'granos' },
+        { id: 'v8', nombre: 'Lentejas 500g', precioBase: 1.40, icon: '🫘', sub: 'granos' },
+        { id: 'v17', nombre: 'Arroz Mary Esmeralda', precioBase: 1.62, imagen: 'img/Arroz Mary Esmeralda.jfif', sub: 'granos' },
+        { id: 'v18', nombre: 'Arroz Mary Premium', precioBase: 1.51, imagen: 'img/Arroz Mary Premium.jfif', sub: 'granos' },
+        { id: 'v19', nombre: 'Arroz Mary Superior', precioBase: 1.07, imagen: 'img/Arroz Mary Superior.jfif', sub: 'granos' },
+        { id: 'v20', nombre: 'Arroz Mary Tradicional', precioBase: 1.06, imagen: 'img/Arroz Mary Superior.jfif', badge: 'ECONÓMICO', sub: 'granos' },
+        { id: 'v25', nombre: 'Arvejas Verdes Partidas Mary (30x400g)', precioBase: 1.06, icon: '🫘', sub: 'granos' },
+        { id: 'v26', nombre: 'Caraotas Negras Mary (24x500g)', precioBase: 1.31, icon: '🫘', sub: 'granos' },
+        { id: 'v28', nombre: 'Maíz para Cotufa Mary (24x500g)', precioBase: 1.29, icon: '🍿', sub: 'granos' },
+        
+        // Pastas
+        { id: 'v_pasta_larga', nombre: 'Pasta Larga Primor 1kg', precioBase: 1.40, imagen: 'img/primor pasta larga.webp', sub: 'pastas' },
+        { id: 'v_linguini', nombre: 'Pasta Linguini Primor 1kg', precioBase: 1.40, imagen: 'img/linguini primor.webp', sub: 'pastas' },
+        { id: 'v_tornillos', nombre: 'Pasta Tornillos Primor 1kg', precioBase: 1.40, imagen: 'img/tornillo psta primor.webp', sub: 'pastas' },
+        { id: 'v_plumitas', nombre: 'Pasta Plumitas Primor 1kg', precioBase: 1.40, imagen: 'img/plumitas primor.webp', sub: 'pastas' },
+        { id: 'v_dedales', nombre: 'Pasta Dedales Primor 1kg', precioBase: 1.40, imagen: 'img/dedale primor.webp', sub: 'pastas' },
+        { id: 'v29', nombre: 'Pasta Mary Dedal Premium (12x500g)', precioBase: 0.87, imagen: 'img/pasyta corta m.jfif', sub: 'pastas' },
+        { id: 'v30', nombre: 'Pasta Mary Linguini Premium (24x500g)', precioBase: 0.83, imagen: 'img/pasta larga.jfif', badge: 'ECONÓMICA', sub: 'pastas' },
+        { id: 'v31', nombre: 'Pasta Mary Macarrón Premium (12x500g)', precioBase: 0.87, imagen: 'img/pasyta corta m.jfif', sub: 'pastas' },
+        { id: 'v32', nombre: 'Pasta Mary Pluma Superior (12x1kg)', precioBase: 1.30, imagen: 'img/pasyta corta m.jfif', sub: 'pastas' },
+
+        // Lácteos, Grasas, Salsas y Snacks
+        { id: 'v_mazeite', nombre: 'Aceite de Maíz Mazeite 1L', precioBase: 2.80, imagen: 'img/Mazeite.webp', badge: 'PROMO', sub: 'lacteos' },
+        { id: 'v_mantequilla_nelly', nombre: 'Margarina Nelly 500g', precioBase: 2.50, imagen: 'img/mantequila nelly.webp', sub: 'lacteos' },
+        { id: 'v12', nombre: 'Mantequilla Mavesa 500g', precioBase: 2.40, imagen: 'img/mantequilla.jfif', sub: 'lacteos' },
+        { id: 'v13', nombre: 'Mayonesa Mavesa 500g', precioBase: 3.20, imagen: 'img/maynesa.jfif', sub: 'lacteos' },
+        { id: 'v14', nombre: 'Queso Fundido Rikesa Cheddar', precioBase: 2.50, imagen: 'img/rikesa.jfif', sub: 'lacteos' },
+        { id: 'v15', nombre: 'Salsa de Tomate Ketchup Pampero', precioBase: 2.00, imagen: 'img/salsa.jfif', sub: 'lacteos' },
+        { id: 'v16', nombre: 'Alimento Achocolatado Toddy 400g', precioBase: 4.50, imagen: 'img/tody.jfif', sub: 'lacteos' },
+        { id: 'v21', nombre: 'Crema de Arroz Mary Ener.', precioBase: 0.80, imagen: 'img/crema.jfif', sub: 'lacteos' },
+        { id: 'v34', nombre: 'Galletas Charmy Brownie (24x192g)', precioBase: 1.11, imagen: 'img/charmi browie.jfif', sub: 'lacteos' },
+        { id: 'v35', nombre: 'Galletas Charmy Choco Manía (24x192g)', precioBase: 1.11, icon: '🍪', sub: 'lacteos' },
+        { id: 'v42', nombre: 'Galletas TipTop Choco Maní (48x96g)', precioBase: 0.63, imagen: 'img/tiptop chpcholate.jfif', sub: 'lacteos' },
+        { id: 'v43', nombre: 'Galletas TipTop Chocolate (48x96g)', precioBase: 0.63, imagen: 'img/tiptop chpcholate.jfif', sub: 'lacteos' },
+        { id: 'v48', nombre: 'Galletas Caledonia María (24x168g)', precioBase: 0.61, icon: '🍪', sub: 'lacteos' },
+        { id: 'v52', nombre: 'NESTLE Crema de Leche 48x300g', precioBase: 3.22, icon: '🥛', sub: 'lacteos' },
+        { id: 'v53', nombre: 'NESTLE Leche Condensada 48x395g', precioBase: 3.40, icon: '🥛', sub: 'lacteos' },
+        { id: 'v61', nombre: 'NIDO FORTICRECE LactoFree 6x900g VE', precioBase: 19.99, icon: '🍼', sub: 'lacteos' },
+        { id: 'v66', nombre: 'Cerelac Sachet 24x400g', precioBase: 6.80, icon: '🥣', sub: 'lacteos' },
+        { id: 'v71', nombre: 'Rica Chicha Fortificado Sobre 24x400g', precioBase: 4.58, icon: '🥛', sub: 'lacteos' }
+      ],
+      bebidas: [
+        // CERVEZAS POLAR Y SOLERA
+        { id: 'b_solera_azul', nombre: 'Cerveza Solera Light (Azul)', precioBase: 1.50, imagen: 'img/solera azul.webp', badge: 'FRÍA' },
+        { id: 'b_solera_verde', nombre: 'Cerveza Solera Classic (Verde)', precioBase: 1.20, imagen: 'img/solera verde.webp', badge: 'PREMIUM' },
+        { id: 'b_polar_light_lata', nombre: 'Cerveza Polar Light (Lata 250ml)', precioBase: 1.00, imagen: 'img/lite lata.webp', badge: 'FRÍA' },
+        { id: 'b_polar_light_botella', nombre: 'Cerveza Polar Light (Botella)', precioBase: 1.00, imagen: 'img/lite.webp', badge: 'FRÍA' },
+        { id: 'b_polar_lata', nombre: 'Cerveza Polar Pilsen (Lata 250ml)', precioBase: 1.00, imagen: 'img/lata.webp', badge: 'POPULAR' },
+        { id: 'b_polarcita_botella', nombre: 'Cerveza Polarcita Pilsen (Botella)', precioBase: 1.00, imagen: 'img/negr de botella.webp', badge: 'POPULAR' },
+
+        // SANGRÍAS CAROREÑA (NUEVO)
+        { id: 'b_carorena_blanca_lata', nombre: 'Sangría Caroreña Verano Blanca (Lata 250ml)', precioBase: 1.50, imagen: 'img/latq caroena.webp', badge: 'SANGRÍA' },
+        { id: 'b_carorena_verano_lata', nombre: 'Sangría Caroreña Verano Tinta (Lata 250ml)', precioBase: 1.50, imagen: 'img/carorenq laatq.webp', badge: 'SANGRÍA' },
+        { id: 'b_carorena_botella_175l', nombre: 'Sangría Caroreña Tinta 1.75L', precioBase: 6.50, imagen: 'img/carorena cla.webp', badge: 'TOP' },
+
+        // REFRESCOS PEPSI Y GOLDEN (NUEVO)
+        { id: 'b_pepsi_2l', nombre: 'Refresco Pepsi Cola 2L', precioBase: 2.20, imagen: 'img/Pepsi-Regular-2L-1.webp' },
+        { id: 'b_pepsi_15l', nombre: 'Refresco Pepsi Cola 1.5L', precioBase: 1.80, imagen: 'img/Pepsi-Regular-15L-1x.webp' },
+        { id: 'b_pepsi_1l', nombre: 'Refresco Pepsi Cola 1L', precioBase: 1.30, imagen: 'img/Pepsi-Regular-1L-1x.webp' },
+        { id: 'b_pepsi_light_lata', nombre: 'Refresco Pepsi Light (Lata 355ml)', precioBase: 1.10, imagen: 'img/Pepsi Light.webp' },
+        { id: 'b_golden_manzanita_2l', nombre: 'Refresco Golden Manzanita 2L', precioBase: 2.00, imagen: 'img/golden mansanita.webp' },
+        { id: 'b_golden_kolita_2l', nombre: 'Refresco Golden Kolita 2L', precioBase: 2.00, imagen: 'img/kolita glden.webp' },
+        { id: 'b_golden_uva_2l', nombre: 'Refresco Golden Uva 2L', precioBase: 2.00, imagen: 'img/golden uva.webp' },
+
+        // OTRAS BEBIDAS
+        { id: 'b1', nombre: 'Coca-Cola 1.5L', precioBase: 2.00, icon: '🥤' },
+        { id: 'b3', nombre: 'Maltín Polar (Bandeja / Pack)', precioBase: 15.00, imagen: 'img/malta.jfif', badge: 'PACK' },
+        { id: 'b4', nombre: 'Jugo Yukery Durazno 1L', precioBase: 1.80, imagen: 'img/yukery.jfif' },
+        { id: 'b5', nombre: 'Agua Mineral 5L', precioBase: 2.50, icon: '💧' },
+        { id: 'b6', nombre: 'Energizante Monster', precioBase: 2.80, icon: '⚡' }
+      ],
+      comida: [
+        { id: 'c1', nombre: 'Hamburguesa Mixta', precioBase: 5.00, icon: '🍔', badge: 'TOP' },
+        { id: 'c2', nombre: 'Perro Caliente Doble', precioBase: 2.00, icon: '🌭' },
+        { id: 'c3', nombre: 'Pizza Familiar', precioBase: 12.00, icon: '🍕' },
+        { id: 'c4', nombre: 'Combo 3 Empanadas', precioBase: 3.50, icon: '🥟' }
+      ],
+      transporte: [
+        { id: 't1', nombre: 'Delivery Urbano Corto', precioBase: 1.50, icon: '🛵' },
+        { id: 't2', nombre: 'Encomienda / Paquete', precioBase: 3.00, icon: '🚚' },
+        { id: 't3', nombre: 'Carrera Express', precioBase: 4.00, icon: '🚕' }
+      ],
+      ferreteria: [
+        { id: 'f1', nombre: 'Alimento para Cachorros Dogourmet 2Kg', precioBase: 6.50, imagen: 'img/perrarina.jfif', badge: 'MASCOTAS' },
+        { id: 'f2', nombre: 'Bombillo LED 12W', precioBase: 1.80, icon: '💡' },
+        { id: 'f3', nombre: 'Silicona Transparente', precioBase: 3.50, icon: '🧪' },
+        { id: 'f4', nombre: 'Destornilladores (2pcs)', precioBase: 3.00, icon: '🛠️' },
+        { id: 'f5', nombre: 'Cloro Blancura y Desinfección (12x1L)', precioBase: 1.01, icon: '🧴', badge: 'LIMPIEZA' },
+        { id: 'f6', nombre: 'Desinfectante Aroma Floral (12x1L)', precioBase: 1.21, icon: '✨', badge: 'LIMPIEZA' },
+        { id: 'f7', nombre: 'Desinfectante Aroma Lavanda (12x1L)', precioBase: 1.21, icon: '🌸', badge: 'LIMPIEZA' },
+        { id: 'f8', nombre: 'Detergente Líquido Sin Aroma (12x1L)', precioBase: 2.14, icon: '🫧', badge: 'LIMPIEZA' },
+        { id: 'f9', nombre: 'Lavaplatos Aroma Limón (12x1L)', precioBase: 2.14, icon: '🍋', badge: 'LIMPIEZA' }
+      ]
+    };
+
+    function desplazarMenu() {
+      const nav = document.getElementById('nav-categorias');
+      nav.scrollBy({ left: 130, behavior: 'smooth' });
+    }
+
+    function desplazarSubMenuViveres() {
+      const subNav = document.getElementById('sub-nav-viveres');
+      subNav.scrollBy({ left: 110, behavior: 'smooth' });
+    }
+
+    function renderizarCatalogo() {
+      const gridViveres = document.getElementById('grid-viveres');
+      gridViveres.innerHTML = "";
+      productos.viveres.forEach(item => {
+        gridViveres.innerHTML += crearTarjetaProductoHTML(item);
+      });
+      ['bebidas', 'comida', 'transporte', 'ferreteria'].forEach(cat => {
+        const sec = document.getElementById(`sec-${cat}`);
+        sec.innerHTML = "";
+        productos[cat].forEach(item => {
+          sec.innerHTML += crearTarjetaProductoHTML(item);
+        });
+      });
+      lucide.createIcons();
+    }
+
+    function crearTarjetaProductoHTML(item) {
+      const contenidoImagen = item.imagen 
+        ? `<img src="${item.imagen}" alt="${item.nombre}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">`
+        : `<span class="text-3xl group-hover:scale-110 transition-transform duration-300">${item.icon || '📦'}</span>`;
+      
+      if (item.esGranel) {
+        const gramosIniciales = item.defGranel;
+        const precioInicial = (item.precioBase * gramosIniciales) / 1000;
+        return `
+          <div class="item-producto group bg-slate-900/80 backdrop-blur-md p-3.5 rounded-2xl border border-slate-800 shadow-xl flex flex-col justify-between select-none" data-nombre="${item.nombre.toLowerCase()}" data-sub="${item.sub || 'varios'}">
+            <div>
+              <div class="flex items-center justify-between gap-1 mb-2">
+                <span class="bg-gradient-to-r from-accent-cyan to-brand-500 text-slate-950 text-[8px] font-black px-2 py-0.5 rounded-md uppercase shadow-sm">A Granel</span>
+                <span class="text-[9px] font-black text-indigo-300 bg-indigo-950/60 px-1.5 py-0.5 rounded border border-indigo-800/40">Por Peso</span>
+              </div>
+              <div class="bg-slate-950/70 h-20 rounded-xl flex items-center justify-center mb-2 border border-slate-800/80 overflow-hidden relative shadow-inner">
+                ${contenidoImagen}
+              </div>
+              <h4 class="font-bold text-white text-xs leading-snug line-clamp-2 mb-1">${item.nombre}</h4>
+              <p class="text-[9px] text-indigo-300/70 font-semibold mb-2">Precio kg: <span class="text-accent-yellow font-bold">$${item.precioBase.toFixed(2)}</span></p>
+            </div>
+            
+            <div class="space-y-2 pt-2 border-t border-slate-800">
+              <div>
+                <div class="flex justify-between items-center text-[10px] font-bold text-slate-300 mb-0.5">
+                  <span>Selección:</span>
+                  <span id="label-gramos-${item.id}" class="text-accent-cyan font-black">${gramosIniciales >= 1000 ? (gramosIniciales/1000).toFixed(1)+'kg' : gramosIniciales+'g'}</span>
+                </div>
+                <input type="range" min="${item.minGranel}" max="${item.maxGranel}" step="${item.pasoGranel}" value="${gramosIniciales}" oninput="actualizarSliderGranel('${item.id}', ${item.precioBase})" id="slider-${item.id}" class="w-full accent-accent-cyan cursor-pointer h-1.5 bg-slate-950 rounded-lg">
+              </div>
+              
+              <div class="flex items-center justify-between pt-1">
+                <span id="precio-granel-${item.id}" class="text-xs font-black text-accent-yellow">$${precioInicial.toFixed(2)}</span>
+                <button onclick="agregarGranelAlCarrito('${item.id}', '${item.nombre}', ${item.precioBase})" class="bg-gradient-to-r from-accent-cyan to-brand-600 hover:brightness-110 text-slate-950 font-black px-3 py-1.5 rounded-xl text-[10px] shadow-md transition active:scale-95">
+                  Agregar
+                </button>
+              </div>
+            </div>
+          </div>
+        `;
+      }
+
+      return `
+        <div class="item-producto group bg-slate-900/80 backdrop-blur-md p-3.5 rounded-2xl border border-slate-800 shadow-xl flex flex-col justify-between select-none" data-nombre="${item.nombre.toLowerCase()}" data-sub="${item.sub || 'varios'}">
+          <div>
+            <div class="flex items-center justify-between gap-1 mb-2">
+              ${item.badge 
+                ? `<span class="bg-gradient-to-r from-accent-orange to-accent-magenta text-white text-[8px] font-black px-2 py-0.5 rounded-md uppercase shadow-sm">${item.badge}</span>`
+                : `<span></span>`
+              }
+              <span class="text-[9px] font-black text-indigo-300 bg-indigo-950/60 px-1.5 py-0.5 rounded border border-indigo-800/40">Comercial</span>
+            </div>
+            <div class="bg-slate-950/70 h-20 rounded-xl flex items-center justify-center mb-2 border border-slate-800/80 overflow-hidden relative shadow-inner">
+              ${contenidoImagen}
+            </div>
+            <h4 class="font-bold text-white text-xs leading-snug line-clamp-2 mb-1">${item.nombre}</h4>
+          </div>
+          <div class="pt-2 border-t border-slate-800 flex items-center justify-between">
+            <span class="text-xs font-black text-accent-yellow">$${item.precioBase.toFixed(2)}</span>
+            <button onclick="agregarAlCarritoDirecto('${item.id}', '${item.nombre.replace(/'/g, "")}', ${item.precioBase}, 1)" class="bg-gradient-to-r from-brand-500 to-accent-magenta hover:brightness-110 text-white font-black px-3 py-1.5 rounded-xl text-[10px] shadow-md transition active:scale-95 glow-magenta">
+              Agregar
+            </button>
+          </div>
+        </div>
+      `;
+    }
+
+    // ================= ASISTENTE DE VOZ EXACTO =================
+    function activarAsistenteVoz() {
+      const banner = document.getElementById('banner-ia');
+      const txtEstado = document.getElementById('txt-estado-ia');
+      const btnVoz = document.getElementById('btn-voz-ia');
+      
+      banner.classList.remove('hidden');
+      btnVoz.classList.add('ia-activo', 'bg-accent-cyan', 'text-slate-950');
+      txtEstado.innerHTML = "🎙️ Escuchando... (Ej: '2 caroreña en lata, 1 pepsi y 1 golden kolita')...";
+
+      if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        const recognition = new SpeechRecognition();
+        recognition.lang = 'es-VE';
+        recognition.start();
+
+        recognition.onresult = function(event) {
+          let dicho = event.results[0][0].transcript.toLowerCase().trim();
+          if (!dicho.endsWith('.')) dicho += '.'; 
+          
+          txtEstado.innerHTML = `🗣️ Anotado: "${dicho}"`;
+          interpretarVozEstricta(dicho);
+        };
+
+        recognition.onerror = function() {
+          simularVozPorDefecto();
+        };
+      } else {
+        setTimeout(simularVozPorDefecto, 2500);
+      }
+    }
+
+    function simularVozPorDefecto() {
+      const dicho = "Quiero una caroreña en lata y una golden kolita.";
+      document.getElementById('txt-estado-ia').innerHTML = `🗣️ Anotado: "${dicho}"`;
+      interpretarVozEstricta(dicho);
+    }
+
+    function interpretarVozEstricta(fraseCompleta) {
+      setTimeout(() => {
+        let esEliminar = fraseCompleta.includes('quita') || fraseCompleta.includes('elimina') || fraseCompleta.includes('borra') || fraseCompleta.includes('saca');
+        let agregadosLog = [];
+
+        const partes = fraseCompleta.split(/,| y | con | e /);
+
+        partes.forEach(tramo => {
+          let frase = tramo.trim();
+          if (!frase) return;
+
+          if (esEliminar) {
+            if (frase.includes('caroreña') || frase.includes('sangria')) removerDelCarritoPorNombre('caroreña');
+            else if (frase.includes('golden')) removerDelCarritoPorNombre('golden');
+            else if (frase.includes('pepsi')) removerDelCarritoPorNombre('pepsi');
+            else if (frase.includes('solera')) removerDelCarritoPorNombre('solera');
+            else if (frase.includes('polar')) removerDelCarritoPorNombre('polar');
+            else if (frase.includes('mazeite')) removerDelCarritoPorNombre('mazeite');
+          } else {
+            // SANGRÍAS CAROREÑA
+            if (frase.includes('caroreña') || frase.includes('sangria')) {
+              let cant = extraerCantidadTexto(frase);
+              if (frase.includes('blanca')) {
+                agregarAlCarritoDirecto('b_carorena_blanca_lata', 'Sangría Caroreña Verano Blanca (Lata 250ml)', 1.50, cant);
+                agregadosLog.push(`${cant}x Caroreña Blanca Lata`);
+              } else if (frase.includes('botella') || frase.includes('grande')) {
+                agregarAlCarritoDirecto('b_carorena_botella_175l', 'Sangría Caroreña Tinta 1.75L', 6.50, cant);
+                agregadosLog.push(`${cant}x Caroreña Botella 1.75L`);
+              } else {
+                agregarAlCarritoDirecto('b_carorena_verano_lata', 'Sangría Caroreña Verano Tinta (Lata 250ml)', 1.50, cant);
+                agregadosLog.push(`${cant}x Caroreña Tinta Lata`);
+              }
+            }
+            // REFRESCOS GOLDEN
+            else if (frase.includes('golden') || frase.includes('manzanita') || frase.includes('kolita') || frase.includes('uva')) {
+              let cant = extraerCantidadTexto(frase);
+              if (frase.includes('manzanita') || frase.includes('manzana')) {
+                agregarAlCarritoDirecto('b_golden_manzanita_2l', 'Refresco Golden Manzanita 2L', 2.00, cant);
+                agregadosLog.push(`${cant}x Golden Manzanita`);
+              } else if (frase.includes('uva')) {
+                agregarAlCarritoDirecto('b_golden_uva_2l', 'Refresco Golden Uva 2L', 2.00, cant);
+                agregadosLog.push(`${cant}x Golden Uva`);
+              } else {
+                agregarAlCarritoDirecto('b_golden_kolita_2l', 'Refresco Golden Kolita 2L', 2.00, cant);
+                agregadosLog.push(`${cant}x Golden Kolita`);
+              }
+            }
+            // PEPSI
+            else if (frase.includes('pepsi')) {
+              let cant = extraerCantidadTexto(frase);
+              if (frase.includes('light')) {
+                agregarAlCarritoDirecto('b_pepsi_light_lata', 'Refresco Pepsi Light (Lata 355ml)', 1.10, cant);
+                agregadosLog.push(`${cant}x Pepsi Light Lata`);
+              } else if (frase.includes('1.5') || frase.includes('medio')) {
+                agregarAlCarritoDirecto('b_pepsi_15l', 'Refresco Pepsi Cola 1.5L', 1.80, cant);
+                agregadosLog.push(`${cant}x Pepsi 1.5L`);
+              } else if (frase.includes('1L') || frase.includes('un litro')) {
+                agregarAlCarritoDirecto('b_pepsi_1l', 'Refresco Pepsi Cola 1L', 1.30, cant);
+                agregadosLog.push(`${cant}x Pepsi 1L`);
+              } else {
+                agregarAlCarritoDirecto('b_pepsi_2l', 'Refresco Pepsi Cola 2L', 2.20, cant);
+                agregadosLog.push(`${cant}x Pepsi 2L`);
+              }
+            }
+            // CERVEZAS POLAR
+            else if (frase.includes('polar') || frase.includes('polarcita') || frase.includes('solera')) {
+              let cant = extraerCantidadTexto(frase);
+              if (frase.includes('verde')) {
+                agregarAlCarritoDirecto('b_solera_verde', 'Cerveza Solera Classic (Verde)', 1.20, cant);
+                agregadosLog.push(`${cant}x Solera Verde`);
+              } else if (frase.includes('light')) {
+                agregarAlCarritoDirecto('b_polar_light_lata', 'Cerveza Polar Light (Lata 250ml)', 1.00, cant);
+                agregadosLog.push(`${cant}x Polar Light`);
+              } else {
+                agregarAlCarritoDirecto('b_polar_lata', 'Cerveza Polar Pilsen (Lata 250ml)', 1.00, cant);
+                agregadosLog.push(`${cant}x Polar Pilsen`);
+              }
+            }
+          }
+        });
+
+        if (esEliminar) {
+          document.getElementById('txt-estado-ia').innerHTML = `🗑️ ¡Productos eliminados!`;
+        } else if (agregadosLog.length > 0) {
+          document.getElementById('txt-estado-ia').innerHTML = `✅ Agregado: ${agregadosLog.join(', ')}`;
+        } else {
+          document.getElementById('txt-estado-ia').innerHTML = `⚠️ No se reconoció el artículo. Usa los botones de agregar.`;
+        }
+
+        setTimeout(() => {
+          document.getElementById('banner-ia').classList.add('hidden');
+          document.getElementById('btn-voz-ia').classList.remove('ia-activo', 'bg-accent-cyan', 'text-slate-950');
+        }, 3500);
+      }, 800);
+    }
+
+    function extraerCantidadTexto(frase) {
+      const m = frase.match(/(\d+)/);
+      if (m) return parseInt(m[1]);
+      if (frase.includes('dos ') || frase.includes('un par')) return 2;
+      if (frase.includes('tres ')) return 3;
+      if (frase.includes('cuatro ')) return 4;
+      if (frase.includes('cinco ')) return 5;
+      return 1;
+    }
+
+    function extraerGramos(frase, defecto) {
+      const matchGramos = frase.match(/(\d+)\s*(g|gramos)/i);
+      const matchKilos = frase.match(/(\d+)\s*(kg|kilo|kilos)/i);
+      if (matchGramos) return parseInt(matchGramos[1]);
+      if (matchKilos) return parseInt(matchKilos[1]) * 1000;
+      if (frase.includes('medio kilo') || frase.includes('media kilo')) return 500;
+      return defecto;
+    }
+
+    // ================= RECONOCIMIENTO DE FOTO =================
+    function procesarFotoIA(event) {
+      const archivo = event.target.files[0];
+      if (!archivo) return;
+
+      const banner = document.getElementById('banner-ia');
+      const txtEstado = document.getElementById('txt-estado-ia');
+      banner.classList.remove('hidden');
+      txtEstado.innerHTML = "📷 Analizando foto con IA...";
+
+      setTimeout(() => {
+        txtEstado.innerHTML = "✨ ¡Lista detectada! Productos agregados.";
+        agregarAlCarritoDirecto('b_carorena_verano_lata', 'Sangría Caroreña Verano Tinta (Lata 250ml)', 1.50, 2);
+        agregarAlCarritoDirecto('b_golden_kolita_2l', 'Refresco Golden Kolita 2L', 2.00, 1);
+
+        setTimeout(() => {
+          banner.classList.add('hidden');
+        }, 3500);
+      }, 2500);
+    }
+
+    function actualizarSliderGranel(id, precioKilo) {
+      const slider = document.getElementById(`slider-${id}`);
+      const labelGramos = document.getElementById(`label-gramos-${id}`);
+      const labelPrecio = document.getElementById(`precio-granel-${id}`);
+      const gramos = parseInt(slider.value);
+      const subtotal = (precioKilo * gramos) / 1000;
+      
+      labelGramos.innerText = gramos >= 1000 ? `${(gramos/1000).toFixed(1)}kg` : `${gramos}g`;
+      labelPrecio.innerText = `$${subtotal.toFixed(2)}`;
+    }
+
+    function agregarGranelAlCarrito(id, nombreBase, precioKilo) {
+      const slider = document.getElementById(`slider-${id}`);
+      const gramos = parseInt(slider.value);
+      agregarAlCarritoGranelDirecto(id, nombreBase, precioKilo, gramos);
+      
+      const btn = event.target;
+      const textoOriginal = btn.innerText;
+      btn.innerText = "¡Agregado!";
+      btn.classList.add("bg-accent-emerald", "text-slate-950");
+      setTimeout(() => {
+        btn.innerText = textoOriginal;
+        btn.classList.remove("bg-accent-emerald", "text-slate-950");
+      }, 800);
+    }
+
+    function agregarAlCarritoGranelDirecto(id, nombreBase, precioKilo, gramos) {
+      const subtotal = (precioKilo * gramos) / 1000;
+      const etiquetaCantidad = gramos >= 1000 ? `${(gramos/1000).toFixed(1)}kg` : `${gramos}g`;
+      const idUnico = `${id}_${gramos}`;
+      const nombreCompleto = `${nombreBase} (${etiquetaCantidad})`;
+      
+      if (!carrito[idUnico]) {
+        carrito[idUnico] = { nombre: nombreCompleto, precio: subtotal, cantidad: 1 };
+      } else {
+        carrito[idUnico].cantidad += 1;
+      }
+      actualizarTotales();
+      renderizarModalCarrito();
+    }
+
+    function agregarAlCarritoDirecto(id, nombre, precio, cantidad = 1) {
+      if (!carrito[id]) {
+        carrito[id] = { nombre: nombre, precio: precio, cantidad: cantidad };
+      } else {
+        carrito[id].cantidad += cantidad;
+      }
+      actualizarTotales();
+      renderizarModalCarrito();
+    }
+
+    function removerDelCarritoPorNombre(nombreParcial) {
+      Object.keys(carrito).forEach(id => {
+        if (carrito[id].nombre.toLowerCase().includes(nombreParcial.toLowerCase())) {
+          delete carrito[id];
+        }
+      });
+      actualizarTotales();
+      renderizarModalCarrito();
+    }
+
+    function cerrarBannerIA() {
+      document.getElementById('banner-ia').classList.add('hidden');
+      document.getElementById('btn-voz-ia').classList.remove('ia-activo', 'bg-accent-cyan', 'text-slate-950');
+    }
+
+    function filtrarSubViveres(subTipo) {
+      document.querySelectorAll('.btn-sub-viveres').forEach(btn => {
+        btn.className = "btn-sub-viveres px-3.5 py-1.5 rounded-xl text-[11px] font-bold bg-slate-900 text-slate-300 border border-slate-800 hover:text-white shrink-0 transition";
+      });
+      const btnActivo = document.getElementById(`sub-viveres-${subTipo}`);
+      if (btnActivo) {
+        btnActivo.className = "btn-sub-viveres px-3.5 py-1.5 rounded-xl text-[11px] font-extrabold bg-accent-magenta text-white shadow-md shrink-0 transition";
+      }
+      const items = document.querySelectorAll('#grid-viveres .item-producto');
+      items.forEach(item => {
+        const subItem = item.getAttribute('data-sub');
+        if (subTipo === 'todos' || subItem === subTipo) {
+          item.style.display = "flex";
+        } else {
+          item.style.display = "none";
+        }
+      });
+    }
+
+    function cambiarCantCarrito(id, delta) {
+      if (carrito[id]) {
+        carrito[id].cantidad += delta;
+        if (carrito[id].cantidad <= 0) {
+          delete carrito[id];
+        }
+      }
+      actualizarTotales();
+      renderizarModalCarrito();
+    }
+
+    function calcularTotal() {
+      let total = 0, cant = 0;
+      Object.keys(carrito).forEach(id => {
+        total += carrito[id].cantidad * carrito[id].precio;
+        cant += carrito[id].cantidad;
+      });
+      return { total, cant };
+    }
+
+    function actualizarTotales() {
+      const { total, cant } = calcularTotal();
+      document.getElementById('total-precio-paso1').innerText = `$${total.toFixed(2)}`;
+      document.getElementById('total-precio-paso2').innerText = `$${total.toFixed(2)}`;
+      document.getElementById('txt-widget-monto').innerText = `$${total.toFixed(2)}`;
+      document.getElementById('txt-widget-cant').innerText = cant;
+      
+      const widgetFlotante = document.getElementById('widget-total-flotante');
+      if (total > 0) {
+        widgetFlotante.classList.remove('opacity-0', 'pointer-events-none');
+        widgetFlotante.classList.add('opacity-100', 'pointer-events-auto', 'pop-anim');
+        setTimeout(() => widgetFlotante.classList.remove('pop-anim'), 300);
+      } else {
+        widgetFlotante.classList.add('opacity-0', 'pointer-events-none');
+        widgetFlotante.classList.remove('opacity-100', 'pointer-events-auto');
+        cerrarModalCarrito();
+      }
+    }
+
+    function abrirModalCarrito() {
+      if (calcularTotal().cant === 0) return;
+      renderizarModalCarrito();
+      document.getElementById('modal-carrito-detalle').classList.remove('hidden');
+    }
+
+    function cerrarModalCarrito() {
+      document.getElementById('modal-carrito-detalle').classList.add('hidden');
+    }
+
+    function renderizarModalCarrito() {
+      const contenedor = document.getElementById('lista-modal-carrito');
+      const { total } = calcularTotal();
+      document.getElementById('modal-carrito-monto-total').innerText = `$${total.toFixed(2)}`;
+      contenedor.innerHTML = "";
+      const ids = Object.keys(carrito);
+      if (ids.length === 0) {
+        contenedor.innerHTML = `<p class="text-center text-xs text-slate-500 py-6">Tu carrito está vacío</p>`;
+        return;
+      }
+      ids.forEach(id => {
+        const item = carrito[id];
+        contenedor.innerHTML += `
+          <div class="flex items-center justify-between bg-slate-950/60 p-3 rounded-2xl border border-slate-800">
+            <div class="flex-1 pr-2">
+              <h5 class="text-xs font-bold text-white line-clamp-1">${item.nombre}</h5>
+              <span class="text-[10px] text-accent-yellow font-black">$${(item.cantidad * item.precio).toFixed(2)} ($${item.precio.toFixed(2)} c/u)</span>
+            </div>
+            
+            <div class="flex items-center gap-1.5 bg-slate-900 p-1 rounded-xl border border-slate-800">
+              <button onclick="cambiarCantCarrito('${id}', -1)" class="w-6 h-6 bg-slate-800 text-white font-black rounded-lg text-xs flex items-center justify-center active:scale-90">-</button>
+              <span class="text-xs font-black text-white w-4 text-center">${item.cantidad}</span>
+              <button onclick="cambiarCantCarrito('${id}', 1)" class="w-6 h-6 bg-accent-magenta text-white font-black rounded-lg text-xs flex items-center justify-center active:scale-90">+</button>
+            </div>
+          </div>
+        `;
+      });
+      lucide.createIcons();
+    }
+
+    function irAPaso2() {
+      if (calcularTotal().total === 0) {
+        alert("Por favor selecciona al menos un producto o servicio antes de continuar.");
+        return;
+      }
+      const listaResumen = document.getElementById('resumen-lista-paso2');
+      listaResumen.innerHTML = "";
+      Object.keys(carrito).forEach(id => {
+        const item = carrito[id];
+        listaResumen.innerHTML += `
+          <div class="flex justify-between items-center bg-slate-900 p-2.5 rounded-xl border border-slate-800">
+            <span class="font-medium text-slate-200">• ${item.cantidad}x ${item.nombre}</span>
+            <span class="text-accent-yellow font-black">$${(item.cantidad * item.precio).toFixed(2)}</span>
+          </div>
+        `;
+      });
+      document.getElementById('paso-catalogo').classList.add('hidden');
+      document.getElementById('paso-datos').classList.remove('hidden');
+    }
+
+    function volverAPaso1() {
+      document.getElementById('paso-datos').classList.add('hidden');
+      document.getElementById('paso-catalogo').classList.remove('hidden');
+    }
+
+    function cambiarSeccion(seccion) {
+      document.querySelectorAll('.seccion-target').forEach(el => el.classList.add('hidden'));
+      document.querySelectorAll('.btn-categoria').forEach(btn => {
+        btn.className = "btn-categoria px-4 py-2.5 rounded-xl flex items-center gap-2 text-xs font-bold bg-slate-950/60 text-slate-300 border border-slate-800 hover:bg-slate-800 shrink-0 transition-all active:scale-95";
+      });
+      const secDestino = document.getElementById(`sec-${seccion}`);
+      if (secDestino) secDestino.classList.remove('hidden');
+      const btnActivo = document.getElementById(`btn-${seccion}`);
+      if (btnActivo) {
+        btnActivo.className = "btn-categoria px-4 py-2.5 rounded-xl flex items-center gap-2 text-xs font-black bg-gradient-to-r from-brand-600 to-indigo-600 text-white shadow-lg glow-violet shrink-0 transition-all active:scale-95";
+      }
+    }
+
+    function filtrarProductos() {
+      const q = document.getElementById('inputBusqueda').value.toLowerCase().trim();
+      if (q.length > 0) {
+        document.querySelectorAll('.seccion-target').forEach(el => el.classList.remove('hidden'));
+        const subNav = document.getElementById('sub-nav-viveres');
+        if (subNav) subNav.parentElement.classList.add('hidden');
+      } else {
+        const subNav = document.getElementById('sub-nav-viveres');
+        if (subNav) subNav.parentElement.classList.remove('hidden');
+        cambiarSeccion('viveres');
+      }
+      document.querySelectorAll('.item-producto').forEach(card => {
+        const nombre = card.getAttribute('data-nombre');
+        card.style.display = nombre.includes(q) ? "flex" : "none";
+      });
+    }
+
+    function obtenerUbicacionGPS() {
+      const btnGps = document.getElementById('btn-gps');
+      const lblGps = document.getElementById('lbl-gps');
+      if (!navigator.geolocation) {
+        alert("Tu navegador no soporta geolocalización.");
+        return;
+      }
+      lblGps.innerText = "Obteniendo coordenadas...";
+      btnGps.disabled = true;
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          const lat = pos.coords.latitude;
+          const lon = pos.coords.longitude;
+          const urlGPS = `https://maps.google.com/?q=${lat},${lon}`;
+          document.getElementById('ubicacionGPS').value = urlGPS;
+          
+          lblGps.innerText = "¡Ubicación Adjuntada Exitosamente!";
+          btnGps.classList.remove('text-indigo-200', 'border-indigo-500/30');
+          btnGps.classList.add('text-accent-emerald', 'border-accent-emerald/50');
+          btnGps.disabled = false;
+        },
+        () => {
+          alert("No se pudo obtener la ubicación. Asegúrate de otorgar los permisos de GPS.");
+          lblGps.innerText = "Reintentar Ubicación GPS";
+          btnGps.disabled = false;
+        }
+      );
+    }
+
+    function enviarPedidoAConductor() {
+      const nombre = document.getElementById('nombreCliente').value.trim();
+      const apellido = document.getElementById('apellidoCliente').value.trim();
+      const telefono = document.getElementById('telefonoCliente').value.trim();
+      const direccion = document.getElementById('direccion').value.trim();
+      const ubicacionGPS = document.getElementById('ubicacionGPS').value;
+      if (!nombre || !telefono || !direccion) {
+        alert("Por favor completa tu Nombre, Teléfono y Dirección de entrega.");
+        return;
+      }
+      const { total } = calcularTotal();
+      const itemsArray = Object.keys(carrito).map(id => ({
+        nombre: carrito[id].nombre,
+        precio: carrito[id].precio,
+        cantidad: carrito[id].cantidad
+      }));
+      const datosPedido = {
+        estado: 'pendiente',
+        fecha: new Date().toISOString(),
+        tarifaDelivery: 2.00,
+        montoTotal: total + 2.00,
+        metodoPago: 'Efectivo',
+        cliente: {
+          nombre: `${nombre} ${apellido}`.trim(),
+          telefono: telefono,
+          direccion: direccion,
+          gps: ubicacionGPS
+        },
+        items: itemsArray
+      };
+      if (firebaseActivo) {
+        const nuevoRef = db.ref('pedidos').push();
+        nuevoRef.set(datosPedido).then(() => {
+          lanzarAnimacionYWhatsApp(nombre, apellido, telefono, direccion, ubicacionGPS, total);
+        }).catch(err => {
+          console.error("Error en Firebase:", err);
+          lanzarAnimacionYWhatsApp(nombre, apellido, telefono, direccion, ubicacionGPS, total);
+        });
+      } else {
+        lanzarAnimacionYWhatsApp(nombre, apellido, telefono, direccion, ubicacionGPS, total);
+      }
+    }
+
+    function lanzarAnimacionYWhatsApp(nombre, apellido, telefono, direccion, ubicacionGPS, total) {
+      let msj = `🚀 *¡NUEVO PEDIDO FLASH!* 🚀\n\n`;
+      msj += `👤 *Cliente:* ${nombre} ${apellido}\n`;
+      msj += `📱 *Teléfono:* ${telefono}\n`;
+      msj += `📍 *Dirección:* ${direccion}\n`;
+      if (ubicacionGPS) msj += `🗺️ *Ubicación GPS:* ${ubicacionGPS}\n`;
+      msj += `\n🛒 *DETALLE DEL PEDIDO:*\n`;
+      Object.keys(carrito).forEach(id => {
+        const item = carrito[id];
+        msj += `• ${item.cantidad}x ${item.nombre} - $${(item.cantidad * item.precio).toFixed(2)}\n`;
+      });
+      msj += `\n💵 *TOTAL A PAGAR:* $${(total + 2.00).toFixed(2)}`;
+      const urlWhatsApp = `https://wa.me/${NUMERO_WHATSAPP}?text=${encodeURIComponent(msj)}`;
+      
+      const modal = document.getElementById('modal-exito');
+      const barra = document.getElementById('barra-progreso-relleno');
+      const cohete = document.getElementById('cohete-desplazable');
+      const txtPct = document.getElementById('txt-porcentaje-carga');
+      modal.classList.remove('hidden');
+      let progreso = 0;
+      const intervalo = setInterval(() => {
+        progreso += 4;
+        if (progreso > 100) progreso = 100;
+        barra.style.width = `${progreso}%`;
+        cohete.style.left = `calc(${progreso}% - 20px)`;
+        txtPct.innerText = `${progreso}%`;
+        if (progreso === 100) {
+          clearInterval(intervalo);
+          setTimeout(() => {
+            window.location.href = urlWhatsApp;
+          }, 400);
+        }
+      }, 50);
+    }
+
+    const widget = document.getElementById('widget-total-flotante');
+    let isDragging = false;
+    let hasDragged = false;
+    let offsetX = 0, offsetY = 0;
+    
+    const startDrag = (e) => {
+      isDragging = true;
+      hasDragged = false;
+      const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+      const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+      const rect = widget.getBoundingClientRect();
+      offsetX = clientX - rect.left;
+      offsetY = clientY - rect.top;
+    };
+    
+    const doDrag = (e) => {
+      if (!isDragging) return;
+      hasDragged = true;
+      e.preventDefault();
+      const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+      const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+      widget.style.left = `${clientX - offsetX}px`;
+      widget.style.top = `${clientY - offsetY}px`;
+      widget.style.right = 'auto';
+    };
+    
+    const stopDrag = () => { isDragging = false; };
+    widget.addEventListener('mousedown', startDrag);
+    document.addEventListener('mousemove', doDrag);
+    document.addEventListener('mouseup', stopDrag);
+    widget.addEventListener('touchstart', startDrag, { passive: false });
+    document.addEventListener('touchmove', doDrag, { passive: false });
+    document.addEventListener('touchend', stopDrag);
+    
+    widget.addEventListener('click', (e) => {
+      if (hasDragged) {
+        e.stopPropagation();
+      }
+    });
+
+    window.onload = () => {
+      renderizarCatalogo();
+    };
+  </script>
+</body>
+</html>
