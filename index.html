@@ -10,6 +10,11 @@
   <!-- Lucide Icons -->
   <script src="https://unpkg.com/lucide@latest"></script>
   
+  <!-- Leaflet CSS (Mapas Libres) -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <!-- Leaflet JS (Mapas Libres) -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
   <!-- Firebase SDKs (Compatibilidad Web) -->
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
@@ -143,7 +148,7 @@
               <i data-lucide="utensils" class="w-3.5 h-3.5"></i> Comida
             </button>
             <button onclick="cambiarSeccion('transporte')" id="btn-transporte" class="btn-categoria px-4 py-2.5 rounded-xl flex items-center gap-2 text-xs font-bold bg-slate-950/60 text-slate-300 border border-slate-800 hover:bg-slate-800 shrink-0 transition-all active:scale-95">
-              <i data-lucide="bike" class="w-3.5 h-3.5"></i> Transporte
+              <i data-lucide="navigation" class="w-3.5 h-3.5"></i> Transporte (Nirgua)
             </button>
             <button onclick="cambiarSeccion('ferreteria')" id="btn-ferreteria" class="btn-categoria px-4 py-2.5 rounded-xl flex items-center gap-2 text-xs font-bold bg-slate-950/60 text-slate-300 border border-slate-800 hover:bg-slate-800 shrink-0 transition-all active:scale-95">
               <i data-lucide="wrench" class="w-3.5 h-3.5"></i> Ferretería y Limpieza
@@ -197,7 +202,53 @@
         </div>
         <div id="sec-bebidas" class="seccion-target grid grid-cols-2 gap-3.5 hidden"></div>
         <div id="sec-comida" class="seccion-target grid grid-cols-2 gap-3.5 hidden"></div>
-        <div id="sec-transporte" class="seccion-target grid grid-cols-2 gap-3.5 hidden"></div>
+        
+        <!-- ================= SECCIÓN DE TRANSPORTE EN NIRGUA (MAPA LEAFLET LIBRE 100%) ================= -->
+        <div id="sec-transporte" class="seccion-target space-y-4 hidden">
+          <div class="bg-slate-950/90 border border-indigo-500/40 rounded-3xl p-4 shadow-xl space-y-3 backdrop-blur-xl">
+            <div class="flex items-center justify-between border-b border-slate-800 pb-2.5">
+              <div class="flex items-center gap-2">
+                <div class="p-2 bg-accent-cyan/15 text-accent-cyan rounded-xl">
+                  <i data-lucide="navigation" class="w-4 h-4"></i>
+                </div>
+                <div>
+                  <h3 class="font-black text-white text-xs uppercase tracking-wider">Transporte en Nirgua</h3>
+                  <p id="instruccion-mapa" class="text-[9px] text-accent-yellow font-bold">Tarifa única: $1.00 | Haz clic 1: Origen (o GPS) | Clic 2: Destino</p>
+                </div>
+              </div>
+              <button onclick="reiniciarPuntosRuta()" class="text-[9px] bg-slate-800 hover:bg-slate-700 text-slate-300 px-2.5 py-1 rounded-lg border border-slate-700">Reiniciar</button>
+            </div>
+
+            <!-- SELECTOR DE TIPO DE TRANSPORTE -->
+            <div class="grid grid-cols-2 gap-2">
+              <button onclick="seleccionarTransporte('moto', 1.00)" id="btn-trans-moto" class="p-2.5 rounded-xl border border-accent-cyan bg-accent-cyan/20 text-white text-xs font-bold flex items-center justify-center gap-2 transition">
+                <span>🛵 Moto ($1.00)</span>
+              </button>
+              <button onclick="seleccionarTransporte('carro', 1.00)" id="btn-trans-carro" class="p-2.5 rounded-xl border border-slate-700 bg-slate-900 text-slate-300 text-xs font-bold flex items-center justify-center gap-2 transition">
+                <span>🚗 Carro / Taxi ($1.00)</span>
+              </button>
+            </div>
+
+            <div class="grid grid-cols-2 gap-2 text-[10px]">
+              <div class="bg-slate-900 p-2 rounded-xl border border-emerald-500/35">
+                <span class="text-slate-400 block">🟢 Origen (Tu ubicación / 3ero):</span>
+                <span id="txt-origen-elegido" class="text-emerald-400 font-bold truncate block">Detectando ubicación...</span>
+              </div>
+              <div class="bg-slate-900 p-2 rounded-xl border border-accent-magenta/35">
+                <span class="text-slate-400 block">🔴 Destino:</span>
+                <span id="txt-destino-elegido" class="text-accent-magenta font-bold truncate block">Haz clic en el mapa</span>
+              </div>
+            </div>
+
+            <!-- MAPA LEAFLET EN NIRGUA (LIBRE SIN API KEY NI RESTRICCIONES) -->
+            <div id="mapa-interactivo-ruta" style="height: 270px; width: 100%; position: relative;" class="rounded-2xl border border-slate-800 overflow-hidden shadow-inner z-0"></div>
+
+            <button onclick="agregarServicioTransporteAlCarrito()" class="w-full bg-gradient-to-r from-accent-emerald to-emerald-600 hover:brightness-110 text-slate-950 font-black py-3 rounded-xl text-xs shadow-md transition flex items-center justify-center gap-1.5 mt-1">
+              <i data-lucide="plus-circle" class="w-4 h-4 fill-slate-950"></i> Agregar Servicio ($1.00) al Pedido
+            </button>
+          </div>
+        </div>
+
         <div id="sec-ferreteria" class="seccion-target grid grid-cols-2 gap-3.5 hidden"></div>
       </main>
 
@@ -381,22 +432,26 @@
     const NUMERO_WHATSAPP = "584262566854";
     let carrito = {};
 
-    // CATÁLOGO COMPLETO CON NUEVOS PRODUCTOS AGREGADOS
+    // VARIABLES DE TRANSPORTE Y MAPA EN NIRGUA
+    let mapaRuta = null;
+    let puntoOrigen = [10.1500, -68.5667]; // Nirgua Centro por defecto
+    let puntoDestino = null;
+    let lineaTrayecto = null;
+    let marcadorVehiculoVivo = null;
+    let tipoTransporteSeleccionado = 'moto';
+    let precioTransporte = 1.00;
+
+    // CATÁLOGO COMPLETO
     const productos = {
       viveres: [
-        // Charcutería
         { id: 'v_queso', nombre: 'Queso Blanco Duro (kg)', precioBase: 5.50, imagen: 'img/queso.jfif', sub: 'lacteos', badge: 'GRANEL', esGranel: true, unidadMedida: 'g', pasoGranel: 50, minGranel: 100, maxGranel: 3000, defGranel: 500 },
         { id: 'v_jamon', nombre: 'Jamón de Espalda (kg)', precioBase: 7.60, imagen: 'img/jamon.jfif', sub: 'lacteos', badge: 'GRANEL', esGranel: true, unidadMedida: 'g', pasoGranel: 50, minGranel: 100, maxGranel: 3000, defGranel: 500 },
-
-        // Harinas
         { id: 'v1', nombre: 'Harina PAN Blanca 1kg', precioBase: 1.20, imagen: 'img/harina.jfif', badge: 'MÁS VENDIDA', sub: 'harinas' },
         { id: 'v2', nombre: 'Harina PAN Amarilla 1kg', precioBase: 1.20, imagen: 'img/harina.jfif', sub: 'harinas' },
         { id: 'v3', nombre: 'Harina Trigo Leudante 1kg', precioBase: 1.35, imagen: 'img/Trigo.jfif', sub: 'harinas' },
         { id: 'v22', nombre: 'Harina de Maíz Blanco Precocida Mary', precioBase: 0.74, imagen: 'img/Harina de Maíz Blanco Precocida Mary.jfif', badge: 'OFERTA', sub: 'harinas' },
         { id: 'v23', nombre: 'Harina de Trigo Mary Leudante', precioBase: 0.92, imagen: 'img/Trigo.jfif', sub: 'harinas' },
         { id: 'v24', nombre: 'Harina de Trigo Mary Todo Uso (20x903g)', precioBase: 0.88, imagen: 'img/Harina de Trigo Mary Leudante.jfif', sub: 'harinas' },
-        
-        // Granos y Arroces
         { id: 'v_arr_clasico', nombre: 'Arroz Clásico Superior Primor 1kg', precioBase: 1.30, imagen: 'img/Arroz Clásico primor.webp', badge: 'TOP', sub: 'granos' },
         { id: 'v_arr_perlado', nombre: 'Arroz Perlado Primor 900g', precioBase: 1.25, imagen: 'img/arroz perlado primor.webp', sub: 'granos' },
         { id: 'v_arr_tradicional', nombre: 'Arroz Tradicional Primor 1kg', precioBase: 1.15, imagen: 'img/arroz tradicional prim0or.webp', sub: 'granos' },
@@ -410,8 +465,6 @@
         { id: 'v25', nombre: 'Arvejas Verdes Partidas Mary (30x400g)', precioBase: 1.06, icon: '🫘', sub: 'granos' },
         { id: 'v26', nombre: 'Caraotas Negras Mary (24x500g)', precioBase: 1.31, icon: '🫘', sub: 'granos' },
         { id: 'v28', nombre: 'Maíz para Cotufa Mary (24x500g)', precioBase: 1.29, icon: '🍿', sub: 'granos' },
-        
-        // Pastas
         { id: 'v_pasta_larga', nombre: 'Pasta Larga Primor 1kg', precioBase: 1.40, imagen: 'img/primor pasta larga.webp', sub: 'pastas' },
         { id: 'v_linguini', nombre: 'Pasta Linguini Primor 1kg', precioBase: 1.40, imagen: 'img/linguini primor.webp', sub: 'pastas' },
         { id: 'v_tornillos', nombre: 'Pasta Tornillos Primor 1kg', precioBase: 1.40, imagen: 'img/tornillo psta primor.webp', sub: 'pastas' },
@@ -421,8 +474,6 @@
         { id: 'v30', nombre: 'Pasta Mary Linguini Premium (24x500g)', precioBase: 0.83, imagen: 'img/pasta larga.jfif', badge: 'ECONÓMICA', sub: 'pastas' },
         { id: 'v31', nombre: 'Pasta Mary Macarrón Premium (12x500g)', precioBase: 0.87, imagen: 'img/pasyta corta m.jfif', sub: 'pastas' },
         { id: 'v32', nombre: 'Pasta Mary Pluma Superior (12x1kg)', precioBase: 1.30, imagen: 'img/pasyta corta m.jfif', sub: 'pastas' },
-
-        // Lácteos, Grasas, Salsas y Snacks
         { id: 'v_mazeite', nombre: 'Aceite de Maíz Mazeite 1L', precioBase: 2.80, imagen: 'img/Mazeite.webp', badge: 'PROMO', sub: 'lacteos' },
         { id: 'v_mantequilla_nelly', nombre: 'Margarina Nelly 500g', precioBase: 2.50, imagen: 'img/mantequila nelly.webp', sub: 'lacteos' },
         { id: 'v12', nombre: 'Mantequilla Mavesa 500g', precioBase: 2.40, imagen: 'img/mantequilla.jfif', sub: 'lacteos' },
@@ -443,20 +494,15 @@
         { id: 'v71', nombre: 'Rica Chicha Fortificado Sobre 24x400g', precioBase: 4.58, icon: '🥛', sub: 'lacteos' }
       ],
       bebidas: [
-        // CERVEZAS POLAR Y SOLERA
         { id: 'b_solera_azul', nombre: 'Cerveza Solera Light (Azul)', precioBase: 1.50, imagen: 'img/solera azul.webp', badge: 'FRÍA' },
         { id: 'b_solera_verde', nombre: 'Cerveza Solera Classic (Verde)', precioBase: 1.20, imagen: 'img/solera verde.webp', badge: 'PREMIUM' },
         { id: 'b_polar_light_lata', nombre: 'Cerveza Polar Light (Lata 250ml)', precioBase: 1.00, imagen: 'img/lite lata.webp', badge: 'FRÍA' },
         { id: 'b_polar_light_botella', nombre: 'Cerveza Polar Light (Botella)', precioBase: 1.00, imagen: 'img/lite.webp', badge: 'FRÍA' },
         { id: 'b_polar_lata', nombre: 'Cerveza Polar Pilsen (Lata 250ml)', precioBase: 1.00, imagen: 'img/lata.webp', badge: 'POPULAR' },
         { id: 'b_polarcita_botella', nombre: 'Cerveza Polarcita Pilsen (Botella)', precioBase: 1.00, imagen: 'img/negr de botella.webp', badge: 'POPULAR' },
-
-        // SANGRÍAS CAROREÑA (NUEVO)
         { id: 'b_carorena_blanca_lata', nombre: 'Sangría Caroreña Verano Blanca (Lata 250ml)', precioBase: 1.50, imagen: 'img/latq caroena.webp', badge: 'SANGRÍA' },
         { id: 'b_carorena_verano_lata', nombre: 'Sangría Caroreña Verano Tinta (Lata 250ml)', precioBase: 1.50, imagen: 'img/carorenq laatq.webp', badge: 'SANGRÍA' },
         { id: 'b_carorena_botella_175l', nombre: 'Sangría Caroreña Tinta 1.75L', precioBase: 6.50, imagen: 'img/carorena cla.webp', badge: 'TOP' },
-
-        // REFRESCOS PEPSI Y GOLDEN (NUEVO)
         { id: 'b_pepsi_2l', nombre: 'Refresco Pepsi Cola 2L', precioBase: 2.20, imagen: 'img/Pepsi-Regular-2L-1.webp' },
         { id: 'b_pepsi_15l', nombre: 'Refresco Pepsi Cola 1.5L', precioBase: 1.80, imagen: 'img/Pepsi-Regular-15L-1x.webp' },
         { id: 'b_pepsi_1l', nombre: 'Refresco Pepsi Cola 1L', precioBase: 1.30, imagen: 'img/Pepsi-Regular-1L-1x.webp' },
@@ -464,8 +510,6 @@
         { id: 'b_golden_manzanita_2l', nombre: 'Refresco Golden Manzanita 2L', precioBase: 2.00, imagen: 'img/golden mansanita.webp' },
         { id: 'b_golden_kolita_2l', nombre: 'Refresco Golden Kolita 2L', precioBase: 2.00, imagen: 'img/kolita glden.webp' },
         { id: 'b_golden_uva_2l', nombre: 'Refresco Golden Uva 2L', precioBase: 2.00, imagen: 'img/golden uva.webp' },
-
-        // OTRAS BEBIDAS
         { id: 'b1', nombre: 'Coca-Cola 1.5L', precioBase: 2.00, icon: '🥤' },
         { id: 'b3', nombre: 'Maltín Polar (Bandeja / Pack)', precioBase: 15.00, imagen: 'img/malta.jfif', badge: 'PACK' },
         { id: 'b4', nombre: 'Jugo Yukery Durazno 1L', precioBase: 1.80, imagen: 'img/yukery.jfif' },
@@ -477,11 +521,6 @@
         { id: 'c2', nombre: 'Perro Caliente Doble', precioBase: 2.00, icon: '🌭' },
         { id: 'c3', nombre: 'Pizza Familiar', precioBase: 12.00, icon: '🍕' },
         { id: 'c4', nombre: 'Combo 3 Empanadas', precioBase: 3.50, icon: '🥟' }
-      ],
-      transporte: [
-        { id: 't1', nombre: 'Delivery Urbano Corto', precioBase: 1.50, icon: '🛵' },
-        { id: 't2', nombre: 'Encomienda / Paquete', precioBase: 3.00, icon: '🚚' },
-        { id: 't3', nombre: 'Carrera Express', precioBase: 4.00, icon: '🚕' }
       ],
       ferreteria: [
         { id: 'f1', nombre: 'Alimento para Cachorros Dogourmet 2Kg', precioBase: 6.50, imagen: 'img/perrarina.jfif', badge: 'MASCOTAS' },
@@ -512,7 +551,7 @@
       productos.viveres.forEach(item => {
         gridViveres.innerHTML += crearTarjetaProductoHTML(item);
       });
-      ['bebidas', 'comida', 'transporte', 'ferreteria'].forEach(cat => {
+      ['bebidas', 'comida', 'ferreteria'].forEach(cat => {
         const sec = document.getElementById(`sec-${cat}`);
         sec.innerHTML = "";
         productos[cat].forEach(item => {
@@ -589,7 +628,7 @@
       `;
     }
 
-    // ================= ASISTENTE DE VOZ EXACTO =================
+    // ================= ASISTENTE DE VOZ =================
     function activarAsistenteVoz() {
       const banner = document.getElementById('banner-ia');
       const txtEstado = document.getElementById('txt-estado-ia');
@@ -597,7 +636,7 @@
       
       banner.classList.remove('hidden');
       btnVoz.classList.add('ia-activo', 'bg-accent-cyan', 'text-slate-950');
-      txtEstado.innerHTML = "🎙️ Escuchando... (Ej: '2 caroreña en lata, 1 pepsi y 1 golden kolita')...";
+      txtEstado.innerHTML = "🎙️ Escuchando... (Ej: '2 caroreña en lata, 1 pepsi')...";
 
       if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
         const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -607,8 +646,6 @@
 
         recognition.onresult = function(event) {
           let dicho = event.results[0][0].transcript.toLowerCase().trim();
-          if (!dicho.endsWith('.')) dicho += '.'; 
-          
           txtEstado.innerHTML = `🗣️ Anotado: "${dicho}"`;
           interpretarVozEstricta(dicho);
         };
@@ -629,91 +666,30 @@
 
     function interpretarVozEstricta(fraseCompleta) {
       setTimeout(() => {
-        let esEliminar = fraseCompleta.includes('quita') || fraseCompleta.includes('elimina') || fraseCompleta.includes('borra') || fraseCompleta.includes('saca');
         let agregadosLog = [];
-
         const partes = fraseCompleta.split(/,| y | con | e /);
 
         partes.forEach(tramo => {
           let frase = tramo.trim();
           if (!frase) return;
+          let cant = extraerCantidadTexto(frase);
 
-          if (esEliminar) {
-            if (frase.includes('caroreña') || frase.includes('sangria')) removerDelCarritoPorNombre('caroreña');
-            else if (frase.includes('golden')) removerDelCarritoPorNombre('golden');
-            else if (frase.includes('pepsi')) removerDelCarritoPorNombre('pepsi');
-            else if (frase.includes('solera')) removerDelCarritoPorNombre('solera');
-            else if (frase.includes('polar')) removerDelCarritoPorNombre('polar');
-            else if (frase.includes('mazeite')) removerDelCarritoPorNombre('mazeite');
-          } else {
-            // SANGRÍAS CAROREÑA
-            if (frase.includes('caroreña') || frase.includes('sangria')) {
-              let cant = extraerCantidadTexto(frase);
-              if (frase.includes('blanca')) {
-                agregarAlCarritoDirecto('b_carorena_blanca_lata', 'Sangría Caroreña Verano Blanca (Lata 250ml)', 1.50, cant);
-                agregadosLog.push(`${cant}x Caroreña Blanca Lata`);
-              } else if (frase.includes('botella') || frase.includes('grande')) {
-                agregarAlCarritoDirecto('b_carorena_botella_175l', 'Sangría Caroreña Tinta 1.75L', 6.50, cant);
-                agregadosLog.push(`${cant}x Caroreña Botella 1.75L`);
-              } else {
-                agregarAlCarritoDirecto('b_carorena_verano_lata', 'Sangría Caroreña Verano Tinta (Lata 250ml)', 1.50, cant);
-                agregadosLog.push(`${cant}x Caroreña Tinta Lata`);
-              }
-            }
-            // REFRESCOS GOLDEN
-            else if (frase.includes('golden') || frase.includes('manzanita') || frase.includes('kolita') || frase.includes('uva')) {
-              let cant = extraerCantidadTexto(frase);
-              if (frase.includes('manzanita') || frase.includes('manzana')) {
-                agregarAlCarritoDirecto('b_golden_manzanita_2l', 'Refresco Golden Manzanita 2L', 2.00, cant);
-                agregadosLog.push(`${cant}x Golden Manzanita`);
-              } else if (frase.includes('uva')) {
-                agregarAlCarritoDirecto('b_golden_uva_2l', 'Refresco Golden Uva 2L', 2.00, cant);
-                agregadosLog.push(`${cant}x Golden Uva`);
-              } else {
-                agregarAlCarritoDirecto('b_golden_kolita_2l', 'Refresco Golden Kolita 2L', 2.00, cant);
-                agregadosLog.push(`${cant}x Golden Kolita`);
-              }
-            }
-            // PEPSI
-            else if (frase.includes('pepsi')) {
-              let cant = extraerCantidadTexto(frase);
-              if (frase.includes('light')) {
-                agregarAlCarritoDirecto('b_pepsi_light_lata', 'Refresco Pepsi Light (Lata 355ml)', 1.10, cant);
-                agregadosLog.push(`${cant}x Pepsi Light Lata`);
-              } else if (frase.includes('1.5') || frase.includes('medio')) {
-                agregarAlCarritoDirecto('b_pepsi_15l', 'Refresco Pepsi Cola 1.5L', 1.80, cant);
-                agregadosLog.push(`${cant}x Pepsi 1.5L`);
-              } else if (frase.includes('1L') || frase.includes('un litro')) {
-                agregarAlCarritoDirecto('b_pepsi_1l', 'Refresco Pepsi Cola 1L', 1.30, cant);
-                agregadosLog.push(`${cant}x Pepsi 1L`);
-              } else {
-                agregarAlCarritoDirecto('b_pepsi_2l', 'Refresco Pepsi Cola 2L', 2.20, cant);
-                agregadosLog.push(`${cant}x Pepsi 2L`);
-              }
-            }
-            // CERVEZAS POLAR
-            else if (frase.includes('polar') || frase.includes('polarcita') || frase.includes('solera')) {
-              let cant = extraerCantidadTexto(frase);
-              if (frase.includes('verde')) {
-                agregarAlCarritoDirecto('b_solera_verde', 'Cerveza Solera Classic (Verde)', 1.20, cant);
-                agregadosLog.push(`${cant}x Solera Verde`);
-              } else if (frase.includes('light')) {
-                agregarAlCarritoDirecto('b_polar_light_lata', 'Cerveza Polar Light (Lata 250ml)', 1.00, cant);
-                agregadosLog.push(`${cant}x Polar Light`);
-              } else {
-                agregarAlCarritoDirecto('b_polar_lata', 'Cerveza Polar Pilsen (Lata 250ml)', 1.00, cant);
-                agregadosLog.push(`${cant}x Polar Pilsen`);
-              }
-            }
+          if (frase.includes('caroreña') || frase.includes('sangria')) {
+            agregarAlCarritoDirecto('b_carorena_verano_lata', 'Sangría Caroreña Verano Tinta (Lata 250ml)', 1.50, cant);
+            agregadosLog.push(`${cant}x Caroreña Tinta Lata`);
+          } else if (frase.includes('golden') || frase.includes('kolita')) {
+            agregarAlCarritoDirecto('b_golden_kolita_2l', 'Refresco Golden Kolita 2L', 2.00, cant);
+            agregadosLog.push(`${cant}x Golden Kolita`);
+          } else if (frase.includes('pepsi')) {
+            agregarAlCarritoDirecto('b_pepsi_2l', 'Refresco Pepsi Cola 2L', 2.20, cant);
+            agregadosLog.push(`${cant}x Pepsi 2L`);
           }
         });
 
-        if (esEliminar) {
-          document.getElementById('txt-estado-ia').innerHTML = `🗑️ ¡Productos eliminados!`;
-        } else if (agregadosLog.length > 0) {
+        if (agregadosLog.length > 0) {
           document.getElementById('txt-estado-ia').innerHTML = `✅ Agregado: ${agregadosLog.join(', ')}`;
         } else {
-          document.getElementById('txt-estado-ia').innerHTML = `⚠️ No se reconoció el artículo. Usa los botones de agregar.`;
+          document.getElementById('txt-estado-ia').innerHTML = `⚠️ No se reconoció el artículo. Usa los botones.`;
         }
 
         setTimeout(() => {
@@ -728,75 +704,39 @@
       if (m) return parseInt(m[1]);
       if (frase.includes('dos ') || frase.includes('un par')) return 2;
       if (frase.includes('tres ')) return 3;
-      if (frase.includes('cuatro ')) return 4;
-      if (frase.includes('cinco ')) return 5;
       return 1;
     }
 
-    function extraerGramos(frase, defecto) {
-      const matchGramos = frase.match(/(\d+)\s*(g|gramos)/i);
-      const matchKilos = frase.match(/(\d+)\s*(kg|kilo|kilos)/i);
-      if (matchGramos) return parseInt(matchGramos[1]);
-      if (matchKilos) return parseInt(matchKilos[1]) * 1000;
-      if (frase.includes('medio kilo') || frase.includes('media kilo')) return 500;
-      return defecto;
-    }
-
-    // ================= RECONOCIMIENTO DE FOTO =================
     function procesarFotoIA(event) {
       const archivo = event.target.files[0];
       if (!archivo) return;
-
       const banner = document.getElementById('banner-ia');
-      const txtEstado = document.getElementById('txt-estado-ia');
       banner.classList.remove('hidden');
-      txtEstado.innerHTML = "📷 Analizando foto con IA...";
-
+      document.getElementById('txt-estado-ia').innerHTML = "📷 Analizando foto con IA...";
       setTimeout(() => {
-        txtEstado.innerHTML = "✨ ¡Lista detectada! Productos agregados.";
+        document.getElementById('txt-estado-ia').innerHTML = "✨ ¡Lista detectada! Productos agregados.";
         agregarAlCarritoDirecto('b_carorena_verano_lata', 'Sangría Caroreña Verano Tinta (Lata 250ml)', 1.50, 2);
-        agregarAlCarritoDirecto('b_golden_kolita_2l', 'Refresco Golden Kolita 2L', 2.00, 1);
-
-        setTimeout(() => {
-          banner.classList.add('hidden');
-        }, 3500);
+        setTimeout(() => banner.classList.add('hidden'), 3500);
       }, 2500);
     }
 
     function actualizarSliderGranel(id, precioKilo) {
       const slider = document.getElementById(`slider-${id}`);
-      const labelGramos = document.getElementById(`label-gramos-${id}`);
-      const labelPrecio = document.getElementById(`precio-granel-${id}`);
       const gramos = parseInt(slider.value);
       const subtotal = (precioKilo * gramos) / 1000;
-      
-      labelGramos.innerText = gramos >= 1000 ? `${(gramos/1000).toFixed(1)}kg` : `${gramos}g`;
-      labelPrecio.innerText = `$${subtotal.toFixed(2)}`;
+      document.getElementById(`label-gramos-${id}`).innerText = gramos >= 1000 ? `${(gramos/1000).toFixed(1)}kg` : `${gramos}g`;
+      document.getElementById(`precio-granel-${id}`).innerText = `$${subtotal.toFixed(2)}`;
     }
 
     function agregarGranelAlCarrito(id, nombreBase, precioKilo) {
       const slider = document.getElementById(`slider-${id}`);
       const gramos = parseInt(slider.value);
-      agregarAlCarritoGranelDirecto(id, nombreBase, precioKilo, gramos);
-      
-      const btn = event.target;
-      const textoOriginal = btn.innerText;
-      btn.innerText = "¡Agregado!";
-      btn.classList.add("bg-accent-emerald", "text-slate-950");
-      setTimeout(() => {
-        btn.innerText = textoOriginal;
-        btn.classList.remove("bg-accent-emerald", "text-slate-950");
-      }, 800);
-    }
-
-    function agregarAlCarritoGranelDirecto(id, nombreBase, precioKilo, gramos) {
       const subtotal = (precioKilo * gramos) / 1000;
       const etiquetaCantidad = gramos >= 1000 ? `${(gramos/1000).toFixed(1)}kg` : `${gramos}g`;
       const idUnico = `${id}_${gramos}`;
-      const nombreCompleto = `${nombreBase} (${etiquetaCantidad})`;
       
       if (!carrito[idUnico]) {
-        carrito[idUnico] = { nombre: nombreCompleto, precio: subtotal, cantidad: 1 };
+        carrito[idUnico] = { nombre: `${nombreBase} (${etiquetaCantidad})`, precio: subtotal, cantidad: 1 };
       } else {
         carrito[idUnico].cantidad += 1;
       }
@@ -814,46 +754,22 @@
       renderizarModalCarrito();
     }
 
-    function removerDelCarritoPorNombre(nombreParcial) {
-      Object.keys(carrito).forEach(id => {
-        if (carrito[id].nombre.toLowerCase().includes(nombreParcial.toLowerCase())) {
-          delete carrito[id];
-        }
-      });
-      actualizarTotales();
-      renderizarModalCarrito();
-    }
-
     function cerrarBannerIA() {
       document.getElementById('banner-ia').classList.add('hidden');
       document.getElementById('btn-voz-ia').classList.remove('ia-activo', 'bg-accent-cyan', 'text-slate-950');
     }
 
     function filtrarSubViveres(subTipo) {
-      document.querySelectorAll('.btn-sub-viveres').forEach(btn => {
-        btn.className = "btn-sub-viveres px-3.5 py-1.5 rounded-xl text-[11px] font-bold bg-slate-900 text-slate-300 border border-slate-800 hover:text-white shrink-0 transition";
-      });
-      const btnActivo = document.getElementById(`sub-viveres-${subTipo}`);
-      if (btnActivo) {
-        btnActivo.className = "btn-sub-viveres px-3.5 py-1.5 rounded-xl text-[11px] font-extrabold bg-accent-magenta text-white shadow-md shrink-0 transition";
-      }
-      const items = document.querySelectorAll('#grid-viveres .item-producto');
-      items.forEach(item => {
+      document.querySelectorAll('.item-producto').forEach(item => {
         const subItem = item.getAttribute('data-sub');
-        if (subTipo === 'todos' || subItem === subTipo) {
-          item.style.display = "flex";
-        } else {
-          item.style.display = "none";
-        }
+        item.style.display = (subTipo === 'todos' || subItem === subTipo) ? "flex" : "none";
       });
     }
 
     function cambiarCantCarrito(id, delta) {
       if (carrito[id]) {
         carrito[id].cantidad += delta;
-        if (carrito[id].cantidad <= 0) {
-          delete carrito[id];
-        }
+        if (carrito[id].cantidad <= 0) delete carrito[id];
       }
       actualizarTotales();
       renderizarModalCarrito();
@@ -878,11 +794,9 @@
       const widgetFlotante = document.getElementById('widget-total-flotante');
       if (total > 0) {
         widgetFlotante.classList.remove('opacity-0', 'pointer-events-none');
-        widgetFlotante.classList.add('opacity-100', 'pointer-events-auto', 'pop-anim');
-        setTimeout(() => widgetFlotante.classList.remove('pop-anim'), 300);
+        widgetFlotante.classList.add('opacity-100', 'pointer-events-auto');
       } else {
         widgetFlotante.classList.add('opacity-0', 'pointer-events-none');
-        widgetFlotante.classList.remove('opacity-100', 'pointer-events-auto');
         cerrarModalCarrito();
       }
     }
@@ -902,24 +816,18 @@
       const { total } = calcularTotal();
       document.getElementById('modal-carrito-monto-total').innerText = `$${total.toFixed(2)}`;
       contenedor.innerHTML = "";
-      const ids = Object.keys(carrito);
-      if (ids.length === 0) {
-        contenedor.innerHTML = `<p class="text-center text-xs text-slate-500 py-6">Tu carrito está vacío</p>`;
-        return;
-      }
-      ids.forEach(id => {
+      Object.keys(carrito).forEach(id => {
         const item = carrito[id];
         contenedor.innerHTML += `
           <div class="flex items-center justify-between bg-slate-950/60 p-3 rounded-2xl border border-slate-800">
             <div class="flex-1 pr-2">
               <h5 class="text-xs font-bold text-white line-clamp-1">${item.nombre}</h5>
-              <span class="text-[10px] text-accent-yellow font-black">$${(item.cantidad * item.precio).toFixed(2)} ($${item.precio.toFixed(2)} c/u)</span>
+              <span class="text-[10px] text-accent-yellow font-black">$${(item.cantidad * item.precio).toFixed(2)}</span>
             </div>
-            
             <div class="flex items-center gap-1.5 bg-slate-900 p-1 rounded-xl border border-slate-800">
-              <button onclick="cambiarCantCarrito('${id}', -1)" class="w-6 h-6 bg-slate-800 text-white font-black rounded-lg text-xs flex items-center justify-center active:scale-90">-</button>
+              <button onclick="cambiarCantCarrito('${id}', -1)" class="w-6 h-6 bg-slate-800 text-white font-black rounded-lg text-xs">-</button>
               <span class="text-xs font-black text-white w-4 text-center">${item.cantidad}</span>
-              <button onclick="cambiarCantCarrito('${id}', 1)" class="w-6 h-6 bg-accent-magenta text-white font-black rounded-lg text-xs flex items-center justify-center active:scale-90">+</button>
+              <button onclick="cambiarCantCarrito('${id}', 1)" class="w-6 h-6 bg-accent-magenta text-white font-black rounded-lg text-xs">+</button>
             </div>
           </div>
         `;
@@ -929,19 +837,14 @@
 
     function irAPaso2() {
       if (calcularTotal().total === 0) {
-        alert("Por favor selecciona al menos un producto o servicio antes de continuar.");
+        alert("Selecciona al menos un artículo o servicio.");
         return;
       }
       const listaResumen = document.getElementById('resumen-lista-paso2');
       listaResumen.innerHTML = "";
       Object.keys(carrito).forEach(id => {
         const item = carrito[id];
-        listaResumen.innerHTML += `
-          <div class="flex justify-between items-center bg-slate-900 p-2.5 rounded-xl border border-slate-800">
-            <span class="font-medium text-slate-200">• ${item.cantidad}x ${item.nombre}</span>
-            <span class="text-accent-yellow font-black">$${(item.cantidad * item.precio).toFixed(2)}</span>
-          </div>
-        `;
+        listaResumen.innerHTML += `<div class="flex justify-between items-center bg-slate-900 p-2.5 rounded-xl border border-slate-800"><span class="text-slate-200">• ${item.cantidad}x ${item.nombre}</span><span class="text-accent-yellow font-black">$${(item.cantidad * item.precio).toFixed(2)}</span></div>`;
       });
       document.getElementById('paso-catalogo').classList.add('hidden');
       document.getElementById('paso-datos').classList.remove('hidden');
@@ -952,6 +855,32 @@
       document.getElementById('paso-catalogo').classList.remove('hidden');
     }
 
+    // ================= FUNCIONES DE TRANSPORTE Y MAPA 100% LIBRE =================
+    function seleccionarTransporte(tipo, costo) {
+      tipoTransporteSeleccionado = tipo;
+      precioTransporte = costo;
+      const btnMoto = document.getElementById('btn-trans-moto');
+      const btnCarro = document.getElementById('btn-trans-carro');
+      
+      if (tipo === 'moto') {
+        btnMoto.className = "p-2.5 rounded-xl border border-accent-cyan bg-accent-cyan/20 text-white text-xs font-bold flex items-center justify-center gap-2 transition";
+        btnCarro.className = "p-2.5 rounded-xl border border-slate-700 bg-slate-900 text-slate-300 text-xs font-bold flex items-center justify-center gap-2 transition";
+      } else {
+        btnCarro.className = "p-2.5 rounded-xl border border-accent-cyan bg-accent-cyan/20 text-white text-xs font-bold flex items-center justify-center gap-2 transition";
+        btnMoto.className = "p-2.5 rounded-xl border border-slate-700 bg-slate-900 text-slate-300 text-xs font-bold flex items-center justify-center gap-2 transition";
+      }
+    }
+
+    function agregarServicioTransporteAlCarrito() {
+      if (!puntoDestino) {
+        alert("Por favor selecciona primero tu punto de partida y tu destino en el mapa.");
+        return;
+      }
+      const nombreServicio = `Servicio de ${tipoTransporteSeleccionado.toUpperCase()} en Nirgua`;
+      agregarAlCarritoDirecto(`trans_${tipoTransporteSeleccionado}`, nombreServicio, precioTransporte, 1);
+      alert(`¡${nombreServicio} agregado por $${precioTransporte.toFixed(2)}! Revisa tu carrito.`);
+    }
+
     function cambiarSeccion(seccion) {
       document.querySelectorAll('.seccion-target').forEach(el => el.classList.add('hidden'));
       document.querySelectorAll('.btn-categoria').forEach(btn => {
@@ -960,25 +889,132 @@
       const secDestino = document.getElementById(`sec-${seccion}`);
       if (secDestino) secDestino.classList.remove('hidden');
       const btnActivo = document.getElementById(`btn-${seccion}`);
-      if (btnActivo) {
-        btnActivo.className = "btn-categoria px-4 py-2.5 rounded-xl flex items-center gap-2 text-xs font-black bg-gradient-to-r from-brand-600 to-indigo-600 text-white shadow-lg glow-violet shrink-0 transition-all active:scale-95";
+      if (btnActivo) btnActivo.className = "btn-categoria px-4 py-2.5 rounded-xl flex items-center gap-2 text-xs font-black bg-gradient-to-r from-brand-600 to-indigo-600 text-white shadow-lg glow-violet shrink-0 transition-all active:scale-95";
+
+      if (seccion === 'transporte') {
+        setTimeout(() => {
+          if (!mapaRuta) {
+            mapaRuta = L.map('mapa-interactivo-ruta', { zoomControl: true, attributionControl: false }).setView(puntoOrigen, 14);
+
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(mapaRuta);
+
+            // Intentar cargar GPS inicial, si no, usa el centro por defecto
+            if (navigator.geolocation) {
+              navigator.geolocation.getCurrentPosition((pos) => {
+                puntoOrigen = [pos.coords.latitude, pos.coords.longitude];
+                mapaRuta.setView(puntoOrigen, 15);
+                document.getElementById('txt-origen-elegido').innerText = `GPS Activo (${pos.coords.latitude.toFixed(3)}, ${pos.coords.longitude.toFixed(3)})`;
+                
+                if (window.marcadorOrigRef) mapaRuta.removeLayer(window.marcadorOrigRef);
+                window.marcadorOrigRef = L.marker(puntoOrigen, {
+                  icon: L.divIcon({ html: '<div style="background:#00e676; width:18px; height:18px; border-radius:50%; border:2px solid white; box-shadow:0 0 10px #00e676;"></div>', iconSize: [18, 18] })
+                }).addTo(mapaRuta).bindPopup('🟢 Tu Origen (GPS)').openPopup();
+              }, () => {
+                document.getElementById('txt-origen-elegido').innerText = "Nirgua Centro (O haz clic para cambiarlo)";
+                if (window.marcadorOrigRef) mapaRuta.removeLayer(window.marcadorOrigRef);
+                window.marcadorOrigRef = L.marker(puntoOrigen, {
+                  icon: L.divIcon({ html: '<div style="background:#00e676; width:18px; height:18px; border-radius:50%; border:2px solid white; box-shadow:0 0 10px #00e676;"></div>', iconSize: [18, 18] })
+                }).addTo(mapaRuta).bindPopup('🟢 Origen (Haz clic para cambiar)').openPopup();
+              });
+            }
+
+            // GESTIÓN DE CLICS EN EL MAPA: 
+            // - Si no hay origen personalizado o se reinició: El primer clic fija el Origen (carrera de tercero).
+            // - Si ya hay origen: El siguiente clic fija el Destino y calcula la ruta por carretera.
+            mapaRuta.on('click', (e) => {
+              const clickLatLon = [e.latlng.lat, e.latlng.lng];
+
+              // Si ya tenemos destino o aún no fijamos origen manual/personalizado activo:
+              if (!window.origenFijadoManual && !puntoDestino) {
+                // Primer clic: Definir punto de partida personalizado (Carrera de tercero u otro lugar)
+                puntoOrigen = clickLatLon;
+                window.origenFijadoManual = true;
+                document.getElementById('txt-origen-elegido').innerText = `Personalizado (${e.latlng.lat.toFixed(3)}, ${e.latlng.lng.toFixed(3)})`;
+                document.getElementById('instruccion-mapa').innerText = "🟢 Origen fijado. Ahora haz clic en el mapa para marcar el 🔴 Destino.";
+
+                if (window.marcadorOrigRef) mapaRuta.removeLayer(window.marcadorOrigRef);
+                window.marcadorOrigRef = L.marker(puntoOrigen, {
+                  icon: L.divIcon({ html: '<div style="background:#00e676; width:18px; height:18px; border-radius:50%; border:2px solid white; box-shadow:0 0 10px #00e676;"></div>', iconSize: [18, 18] })
+                }).addTo(mapaRuta).bindPopup('🟢 Nuevo Origen (Inicio)').openPopup();
+              } else {
+                // Siguiente clic: Definir Destino y trazar ruta real por carretera
+                puntoDestino = clickLatLon;
+                document.getElementById('txt-destino-elegido').innerText = `Lat: ${e.latlng.lat.toFixed(3)}, Lng: ${e.latlng.lng.toFixed(3)}`;
+                document.getElementById('instruccion-mapa').innerText = "¡Ruta calculada por carretera! Listo para agregar.";
+
+                if (window.marcadorDestRef) mapaRuta.removeLayer(window.marcadorDestRef);
+                window.marcadorDestRef = L.marker(puntoDestino, {
+                  icon: L.divIcon({ html: '<div style="background:#ff007a; width:18px; height:18px; border-radius:50%; border:2px solid white; box-shadow:0 0 10px #ff007a;"></div>', iconSize: [18, 18] })
+                }).addTo(mapaRuta).bindPopup('🔴 Destino Seleccionado').openPopup();
+
+                if (lineaTrayecto) mapaRuta.removeLayer(lineaTrayecto);
+
+                // Petición a OSRM para ajustar la ruta a los parámetros de la carretera real desde el origen actual
+                const urlOSRM = `https://router.project-osrm.org/route/v1/driving/${puntoOrigen[1]},${puntoOrigen[0]};${puntoDestino[1]},${puntoDestino[0]}?overview=full&geometries=geojson`;
+
+                fetch(urlOSRM)
+                  .then(res => res.json())
+                  .then(data => {
+                    if (data.routes && data.routes.length > 0) {
+                      const coordsGeoJSON = data.routes[0].geometry.coordinates;
+                      const latLngs = coordsGeoJSON.map(coord => [coord[1], coord[0]]);
+                      
+                      lineaTrayecto = L.polyline(latLngs, { color: '#00f2fe', weight: 5, opacity: 0.85 }).addTo(mapaRuta);
+                      mapaRuta.fitBounds(lineaTrayecto.getBounds(), { padding: [40, 40] });
+                    } else {
+                      lineaTrayecto = L.polyline([puntoOrigen, puntoDestino], { color: '#00f2fe', weight: 4, dashArray: '5, 5' }).addTo(mapaRuta);
+                      mapaRuta.fitBounds(lineaTrayecto.getBounds(), { padding: [40, 40] });
+                    }
+                  })
+                  .catch(() => {
+                    lineaTrayecto = L.polyline([puntoOrigen, puntoDestino], { color: '#00f2fe', weight: 4, dashArray: '5, 5' }).addTo(mapaRuta);
+                    mapaRuta.fitBounds(lineaTrayecto.getBounds(), { padding: [40, 40] });
+                  });
+              }
+            });
+
+            if (firebaseActivo && db) {
+              db.ref('repartidores/ubicacionActual').on('value', (snapshot) => {
+                const data = snapshot.val();
+                if (data && data.lat && data.lng) {
+                  const posVehiculo = [data.lat, data.lng];
+                  const iconoEmoji = tipoTransporteSeleccionado === 'moto' ? '🛵' : '🚗';
+                  const colorGlow = tipoTransporteSeleccionado === 'moto' ? '#00f2fe' : '#ffb800';
+
+                  if (!marcadorVehiculoVivo) {
+                    marcadorVehiculoVivo = L.marker(posVehiculo, {
+                      icon: L.divIcon({
+                        html: `<div style="background:${colorGlow}; width:28px; height:28px; border-radius:50%; border:2px solid #fff; box-shadow:0 0 12px ${colorGlow}; display:flex; align-items:center; justify-content:center; font-size:13px;">${iconoEmoji}</div>`,
+                        iconSize: [28, 28]
+                      })
+                    }).addTo(mapaRuta).bindPopup('Conductor en Vivo');
+                  } else {
+                    marcadorVehiculoVivo.setLatLng(posVehiculo);
+                  }
+                }
+              });
+            }
+          } else {
+            mapaRuta.invalidateSize();
+          }
+        }, 200);
       }
+    }
+
+    function reiniciarPuntosRuta() {
+      puntoDestino = null;
+      window.origenFijadoManual = false;
+      document.getElementById('txt-destino-elegido').innerText = "Haz clic en el mapa";
+      document.getElementById('txt-origen-elegido').innerText = "Nirgua Centro (O haz clic para cambiarlo)";
+      document.getElementById('instruccion-mapa').innerText = "Tarifa única: $1.00 | Haz clic 1: Origen | Clic 2: Destino";
+      if (window.marcadorDestRef) mapaRuta.removeLayer(window.marcadorDestRef);
+      if (lineaTrayecto) mapaRuta.removeLayer(lineaTrayecto);
     }
 
     function filtrarProductos() {
       const q = document.getElementById('inputBusqueda').value.toLowerCase().trim();
-      if (q.length > 0) {
-        document.querySelectorAll('.seccion-target').forEach(el => el.classList.remove('hidden'));
-        const subNav = document.getElementById('sub-nav-viveres');
-        if (subNav) subNav.parentElement.classList.add('hidden');
-      } else {
-        const subNav = document.getElementById('sub-nav-viveres');
-        if (subNav) subNav.parentElement.classList.remove('hidden');
-        cambiarSeccion('viveres');
-      }
       document.querySelectorAll('.item-producto').forEach(card => {
-        const nombre = card.getAttribute('data-nombre');
-        card.style.display = nombre.includes(q) ? "flex" : "none";
+        card.style.display = card.getAttribute('data-nombre').includes(q) ? "flex" : "none";
       });
     }
 
@@ -995,16 +1031,12 @@
         (pos) => {
           const lat = pos.coords.latitude;
           const lon = pos.coords.longitude;
-          const urlGPS = `https://maps.google.com/?q=${lat},${lon}`;
-          document.getElementById('ubicacionGPS').value = urlGPS;
-          
+          document.getElementById('ubicacionGPS').value = `https://maps.google.com/?q=${lat},${lon}`;
           lblGps.innerText = "¡Ubicación Adjuntada Exitosamente!";
-          btnGps.classList.remove('text-indigo-200', 'border-indigo-500/30');
-          btnGps.classList.add('text-accent-emerald', 'border-accent-emerald/50');
           btnGps.disabled = false;
         },
         () => {
-          alert("No se pudo obtener la ubicación. Asegúrate de otorgar los permisos de GPS.");
+          alert("No se pudo obtener la ubicación GPS.");
           lblGps.innerText = "Reintentar Ubicación GPS";
           btnGps.disabled = false;
         }
@@ -1022,36 +1054,7 @@
         return;
       }
       const { total } = calcularTotal();
-      const itemsArray = Object.keys(carrito).map(id => ({
-        nombre: carrito[id].nombre,
-        precio: carrito[id].precio,
-        cantidad: carrito[id].cantidad
-      }));
-      const datosPedido = {
-        estado: 'pendiente',
-        fecha: new Date().toISOString(),
-        tarifaDelivery: 2.00,
-        montoTotal: total + 2.00,
-        metodoPago: 'Efectivo',
-        cliente: {
-          nombre: `${nombre} ${apellido}`.trim(),
-          telefono: telefono,
-          direccion: direccion,
-          gps: ubicacionGPS
-        },
-        items: itemsArray
-      };
-      if (firebaseActivo) {
-        const nuevoRef = db.ref('pedidos').push();
-        nuevoRef.set(datosPedido).then(() => {
-          lanzarAnimacionYWhatsApp(nombre, apellido, telefono, direccion, ubicacionGPS, total);
-        }).catch(err => {
-          console.error("Error en Firebase:", err);
-          lanzarAnimacionYWhatsApp(nombre, apellido, telefono, direccion, ubicacionGPS, total);
-        });
-      } else {
-        lanzarAnimacionYWhatsApp(nombre, apellido, telefono, direccion, ubicacionGPS, total);
-      }
+      lanzarAnimacionYWhatsApp(nombre, apellido, telefono, direccion, ubicacionGPS, total);
     }
 
     function lanzarAnimacionYWhatsApp(nombre, apellido, telefono, direccion, ubicacionGPS, total) {
@@ -1065,7 +1068,7 @@
         const item = carrito[id];
         msj += `• ${item.cantidad}x ${item.nombre} - $${(item.cantidad * item.precio).toFixed(2)}\n`;
       });
-      msj += `\n💵 *TOTAL A PAGAR:* $${(total + 2.00).toFixed(2)}`;
+      msj += `\n💵 *TOTAL A PAGAR:* $${total.toFixed(2)}`;
       const urlWhatsApp = `https://wa.me/${NUMERO_WHATSAPP}?text=${encodeURIComponent(msj)}`;
       
       const modal = document.getElementById('modal-exito');
@@ -1082,39 +1085,31 @@
         txtPct.innerText = `${progreso}%`;
         if (progreso === 100) {
           clearInterval(intervalo);
-          setTimeout(() => {
-            window.location.href = urlWhatsApp;
-          }, 400);
+          setTimeout(() => { window.location.href = urlWhatsApp; }, 400);
         }
       }, 50);
     }
 
+    // WIDGET FLOTANTE ARRASTRABLE
     const widget = document.getElementById('widget-total-flotante');
-    let isDragging = false;
-    let hasDragged = false;
-    let offsetX = 0, offsetY = 0;
+    let isDragging = false, hasDragged = false, offsetX = 0, offsetY = 0;
     
     const startDrag = (e) => {
-      isDragging = true;
-      hasDragged = false;
+      isDragging = true; hasDragged = false;
       const clientX = e.touches ? e.touches[0].clientX : e.clientX;
       const clientY = e.touches ? e.touches[0].clientY : e.clientY;
       const rect = widget.getBoundingClientRect();
-      offsetX = clientX - rect.left;
-      offsetY = clientY - rect.top;
+      offsetX = clientX - rect.left; offsetY = clientY - rect.top;
     };
-    
     const doDrag = (e) => {
       if (!isDragging) return;
-      hasDragged = true;
-      e.preventDefault();
+      hasDragged = true; e.preventDefault();
       const clientX = e.touches ? e.touches[0].clientX : e.clientX;
       const clientY = e.touches ? e.touches[0].clientY : e.clientY;
       widget.style.left = `${clientX - offsetX}px`;
       widget.style.top = `${clientY - offsetY}px`;
       widget.style.right = 'auto';
     };
-    
     const stopDrag = () => { isDragging = false; };
     widget.addEventListener('mousedown', startDrag);
     document.addEventListener('mousemove', doDrag);
@@ -1122,16 +1117,9 @@
     widget.addEventListener('touchstart', startDrag, { passive: false });
     document.addEventListener('touchmove', doDrag, { passive: false });
     document.addEventListener('touchend', stopDrag);
-    
-    widget.addEventListener('click', (e) => {
-      if (hasDragged) {
-        e.stopPropagation();
-      }
-    });
+    widget.addEventListener('click', (e) => { if (hasDragged) e.stopPropagation(); });
 
-    window.onload = () => {
-      renderizarCatalogo();
-    };
+    window.onload = () => { renderizarCatalogo(); };
   </script>
 </body>
 </html>
