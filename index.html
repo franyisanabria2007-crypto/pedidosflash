@@ -1,9 +1,10 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Pedidos Flash - Tienda Venezolana Completa</title>
+  <title>Pedidos Flash - App Móvil Nirgua</title>
   
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -15,7 +16,7 @@
   <!-- Leaflet JS (Mapas Libres) -->
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
-  <!-- Firebase SDKs (Compatibilidad Web) -->
+  <!-- Firebase SDKs -->
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
   <!-- Google Fonts: Plus Jakarta Sans -->
@@ -56,7 +57,42 @@
     .glow-cyan { box-shadow: 0 0 25px rgba(0, 242, 254, 0.4); }
     .glow-orange { box-shadow: 0 0 25px rgba(255, 94, 0, 0.4); }
     .glow-violet { box-shadow: 0 0 30px rgba(99, 102, 241, 0.45); }
+    .glow-yellow { box-shadow: 0 0 25px rgba(255, 184, 0, 0.5); }
     
+    /* Logotipo Ultra Moderno con la P en forma de Rayo Estilizado */
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .letra-rayo-p {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 34px;
+      height: 34px;
+      background: linear-gradient(135deg, #ffb800 0%, #ff007a 50%, #00f2fe 100%);
+      color: #020617;
+      font-weight: 900;
+      font-size: 22px;
+      border-radius: 10px;
+      clip-path: polygon(50% 0%, 100% 0%, 65% 45%, 100% 45%, 25% 100%, 40% 55%, 0% 55%);
+      box-shadow: 0 0 22px rgba(255, 184, 0, 0.9), inset 0 0 8px rgba(255, 255, 255, 0.9);
+      transform: skewX(-6deg);
+      text-shadow: 0 1px 2px rgba(0,0,0,0.4);
+    }
+
+    .texto-logo-principal {
+      font-size: 1.25rem;
+      font-weight: 900;
+      letter-spacing: -0.03em;
+      background: linear-gradient(to right, #ffffff, #ffb800, #00f2fe);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      filter: drop-shadow(0 2px 6px rgba(0,0,0,0.6));
+    }
+
     @keyframes entradaModal {
       0% { transform: scale(0.9); opacity: 0; }
       100% { transform: scale(1); opacity: 1; }
@@ -70,281 +106,326 @@
   </style>
 </head>
 <body class="bg-slate-950 font-sans text-slate-100 antialiased min-h-screen flex items-center justify-center p-0 sm:p-4 selection:bg-accent-magenta selection:text-white">
-  <!-- CONTENEDOR TIPO MÓVIL / DESKTOP CENTRADO CON FONDO DE NIRGUA -->
-  <div class="w-full max-w-md bg-slate-900 min-h-screen sm:min-h-[92vh] sm:rounded-[38px] shadow-[0_0_60px_rgba(79,70,229,0.25)] overflow-hidden flex flex-col border border-slate-800/80 relative bg-[url('img/nirgua.webp')] bg-cover bg-center">
-    
-    <!-- CAPA LIGERA DE SOBREPOSICIÓN -->
-    <div class="absolute inset-0 bg-slate-950/45 backdrop-blur-[1px] z-0 pointer-events-none"></div>
+  
+  <!-- CONTENEDOR TIPO MÓVIL / CELULAR -->
+  <div class="w-full max-w-sm sm:max-w-md bg-slate-900 min-h-screen sm:min-h-[92vh] sm:max-h-[94vh] sm:rounded-[42px] shadow-[0_0_80px_rgba(79,70,229,0.35)] overflow-hidden flex flex-col border-4 border-slate-800 relative bg-[url('img/nirgua.webp')] bg-cover bg-center">
 
-    <!-- ENCABEZADO VIBRANTE -->
-    <header class="bg-gradient-to-r from-slate-900/80 via-indigo-950/75 to-slate-900/80 border-b border-indigo-500/20 p-4 pt-5 shadow-xl relative overflow-hidden shrink-0 z-30 backdrop-blur-md">
+    <!-- CAPA LIGERA DE SOBREPOSICIÓN -->
+    <div class="absolute inset-0 bg-slate-950/50 backdrop-blur-[2px] z-0 pointer-events-none"></div>
+
+    <!-- ENCABEZADO DE LA APP CON EL NUEVO LOGOTIPO -->
+    <header class="bg-gradient-to-r from-slate-900/90 via-indigo-950/85 to-slate-900/90 border-b border-indigo-500/20 p-3.5 shadow-xl relative overflow-hidden shrink-0 z-30 backdrop-blur-md">
       <div class="absolute -top-12 -right-12 w-32 h-32 bg-accent-magenta/15 rounded-full blur-3xl pointer-events-none"></div>
       <div class="absolute -bottom-12 -left-12 w-32 h-32 bg-accent-cyan/15 rounded-full blur-3xl pointer-events-none"></div>
       <div class="flex justify-between items-center relative z-10">
         <div>
-          <span class="inline-flex items-center gap-1.5 bg-gradient-to-r from-accent-orange to-accent-magenta text-white text-[9px] uppercase tracking-wider font-black px-3 py-1 rounded-full shadow-lg glow-orange">
-            <i data-lucide="zap" class="w-3 h-3 fill-white"></i> Envíos Ultra Rápidos
+          <span class="inline-flex items-center gap-1 bg-gradient-to-r from-accent-orange to-accent-magenta text-white text-[8px] uppercase tracking-wider font-black px-2.5 py-0.5 rounded-full shadow-lg glow-orange mb-1">
+            <i data-lucide="zap" class="w-2.5 h-2.5 fill-white"></i> Envíos Ultra Rápidos
           </span>
-          <h1 class="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white via-slate-100 to-indigo-200 flex items-center gap-1.5 mt-1.5 tracking-tight">
-            PEDIDOS FLASH
-          </h1>
-          <p class="text-[10px] text-indigo-200 font-medium tracking-wide">Víveres, Panadería, Dulces y Servicios</p>
+          <div class="logo-container">
+            <span class="letra-rayo-p">P</span>
+            <h1 class="texto-logo-principal">EDIDOS FLASH</h1>
+          </div>
         </div>
-        <span class="bg-emerald-500/20 text-accent-emerald border border-emerald-500/40 text-[10px] font-black px-3.5 py-1.5 rounded-full flex items-center gap-2 shadow-sm backdrop-blur-md">
-          <span class="w-2 h-2 rounded-full bg-accent-emerald animate-ping"></span> Activo
+        <span class="bg-emerald-500/20 text-accent-emerald border border-emerald-500/40 text-[9px] font-black px-2.5 py-1 rounded-full flex items-center gap-1.5 shadow-sm backdrop-blur-md">
+          <span class="w-1.5 h-1.5 rounded-full bg-accent-emerald animate-ping"></span> Activo
         </span>
       </div>
     </header>
 
-    <!-- ================= PASO 1: SELECCIÓN DE PRODUCTOS ================= -->
+    <!-- ================= PASO 1: SELECCIÓN DE PRODUCTOS Y SERVICIOS ================= -->
     <div id="paso-catalogo" class="flex-1 flex flex-col overflow-hidden relative z-10">
       
-      <!-- BÚSQUEDA Y ASISTENTE (VOZ/FOTO) -->
-      <div class="p-3.5 bg-slate-900/75 border-b border-slate-800/80 sticky top-0 z-20 space-y-3 backdrop-blur-md">
+      <!-- BÚSQUEDA Y ASISTENTE -->
+      <div class="p-3 bg-slate-900/80 border-b border-slate-800/80 sticky top-0 z-20 space-y-2.5 backdrop-blur-md">
         <div class="flex items-center gap-2">
           <div class="relative flex-1">
-            <i data-lucide="search" class="w-4 h-4 text-indigo-400 absolute left-3.5 top-3.5"></i>
-            <input type="text" id="inputBusqueda" onkeyup="filtrarProductos()" placeholder="¿Qué necesitas hoy? Buscar..." class="w-full pl-10 pr-4 py-3 bg-slate-950/75 border border-slate-700/80 focus:border-accent-cyan rounded-2xl text-xs font-semibold text-white placeholder-slate-400 focus:outline-none transition-all shadow-inner focus:ring-2 focus:ring-accent-cyan/20">
+            <i data-lucide="search" class="w-3.5 h-3.5 text-indigo-400 absolute left-3.5 top-3.5"></i>
+            <input type="text" id="inputBusqueda" onkeyup="filtrarProductos()" placeholder="¿Qué necesitas hoy? Toca o busca..." class="w-full pl-9 pr-3 py-2.5 bg-slate-950/80 border border-slate-700/80 focus:border-accent-cyan rounded-2xl text-xs font-semibold text-white placeholder-slate-400 focus:outline-none transition-all shadow-inner focus:ring-2 focus:ring-accent-cyan/20">
           </div>
           
-          <button onclick="activarAsistenteVoz()" id="btn-voz-ia" title="Dictar por voz" class="bg-indigo-950/80 hover:bg-indigo-900 text-accent-cyan border border-indigo-500/40 p-3 rounded-2xl flex items-center justify-center transition active:scale-95 shadow-md">
+          <button onclick="activarAsistenteVoz()" id="btn-voz-ia" title="Dictar por voz" class="bg-indigo-950/80 hover:bg-indigo-900 text-accent-cyan border border-indigo-500/40 p-2.5 rounded-2xl flex items-center justify-center transition active:scale-95 shadow-md">
             <i data-lucide="mic" class="w-4 h-4"></i>
           </button>
 
-          <button onclick="document.getElementById('input-foto-ia').click()" title="Subir foto de lista" class="bg-indigo-950/80 hover:bg-indigo-900 text-accent-magenta border border-accent-magenta/40 p-3 rounded-2xl flex items-center justify-center transition active:scale-95 shadow-md">
+          <button onclick="document.getElementById('input-foto-ia').click()" title="Subir foto de lista" class="bg-indigo-950/80 hover:bg-indigo-900 text-accent-magenta border border-accent-magenta/40 p-2.5 rounded-2xl flex items-center justify-center transition active:scale-95 shadow-md">
             <i data-lucide="camera" class="w-4 h-4"></i>
           </button>
           <input type="file" id="input-foto-ia" accept="image/*" class="hidden" onchange="procesarFotoIA(event)">
         </div>
 
-        <div id="banner-ia" class="hidden bg-gradient-to-r from-brand-600/30 to-accent-cyan/20 border border-accent-cyan/40 p-2.5 rounded-xl flex items-center justify-between text-xs animate-pulse">
-          <div class="flex items-center gap-2">
-            <i data-lucide="sparkles" class="w-4 h-4 text-accent-cyan"></i>
+        <div id="banner-ia" class="hidden bg-gradient-to-r from-brand-600/30 to-accent-cyan/20 border border-accent-cyan/40 p-2 rounded-xl flex items-center justify-between text-[11px] animate-pulse">
+          <div class="flex items-center gap-1.5">
+            <i data-lucide="sparkles" class="w-3.5 h-3.5 text-accent-cyan"></i>
             <span id="txt-estado-ia" class="font-bold text-slate-100">Procesando...</span>
           </div>
-          <button onclick="cerrarBannerIA()" class="text-slate-400 hover:text-white"><i data-lucide="x" class="w-3.5 h-3.5"></i></button>
+          <button onclick="cerrarBannerIA()" class="text-slate-400 hover:text-white"><i data-lucide="x" class="w-3 h-3"></i></button>
         </div>
       </div>
 
-      <!-- CATÁLOGO Y MENÚ PRINCIPAL EN CUADROS -->
-      <main class="flex-1 p-4 space-y-4 overflow-y-auto no-scrollbar pb-28">
+      <!-- CATÁLOGO Y MENÚ PRINCIPAL -->
+      <main class="flex-1 p-3.5 space-y-3.5 overflow-y-auto no-scrollbar pb-24">
 
         <!-- MENÚ PRINCIPAL: CUADROS DE SERVICIOS -->
-        <div id="menu-principal-servicios" class="space-y-3 py-2">
+        <div id="menu-principal-servicios" class="space-y-2 py-1">
           <div class="flex items-center justify-between px-1">
-            <h3 class="text-xs font-black text-indigo-200 uppercase tracking-wider">Selecciona un Servicio</h3>
-            <span class="text-[10px] text-slate-200">Toca un cuadro para abrirlo</span>
+            <h3 class="text-[10px] font-black text-indigo-200 uppercase tracking-wider">Selecciona un Servicio</h3>
+            <span class="text-[8px] text-slate-400">Toca para abrir</span>
           </div>
           
-          <div class="grid grid-cols-2 gap-3.5">
+          <div class="grid grid-cols-2 gap-2.5">
             <!-- Cuadro Víveres -->
-            <button onclick="cambiarSeccion('viveres')" class="group relative bg-slate-900/80 border border-indigo-500/30 hover:border-accent-cyan p-3 rounded-3xl flex flex-col items-center justify-center text-center gap-2 shadow-xl transition-all active:scale-95 overflow-hidden backdrop-blur-md">
-              <div class="w-full h-20 rounded-2xl bg-slate-950/60 border border-slate-800 overflow-hidden flex items-center justify-center group-hover:scale-105 transition-transform shadow-inner">
-                <img src="img/1728627033.webp" alt="Víveres" class="w-full h-full object-cover">
+            <button onclick="cambiarSeccion('viveres')" class="group relative bg-slate-900/85 border border-indigo-500/30 hover:border-accent-cyan p-2 rounded-2xl flex flex-col items-center justify-center text-center gap-1 shadow-xl transition-all active:scale-95 overflow-hidden backdrop-blur-md">
+              <div class="w-full h-14 rounded-xl bg-transparent overflow-hidden flex items-center justify-center group-hover:scale-105 transition-transform">
+                <img src="img/1728627033.webp" alt="Víveres" class="w-full h-full object-cover rounded-lg">
               </div>
               <div>
-                <h4 class="font-black text-white text-sm">Víveres</h4>
-                <p class="text-[10px] text-slate-300 mt-0.5">Harinas, granos, lácteos y más</p>
+                <h4 class="font-black text-white text-[11px]">Víveres</h4>
+                <p class="text-[8px] text-slate-400 leading-tight">Harinas, granos, lácteos</p>
+              </div>
+            </button>
+
+            <!-- Cuadro Charcutería y Quesos -->
+            <button onclick="cambiarSeccion('charcuteria')" class="group relative bg-slate-900/85 border border-indigo-500/30 hover:border-accent-orange p-2 rounded-2xl flex flex-col items-center justify-center text-center gap-1 shadow-xl transition-all active:scale-95 overflow-hidden backdrop-blur-md">
+              <div class="w-full h-14 rounded-xl bg-transparent overflow-hidden flex items-center justify-center group-hover:scale-105 transition-transform">
+                <img src="img/queso.jfif" alt="Charcutería y Quesos" class="w-full h-full object-cover rounded-lg">
+              </div>
+              <div>
+                <h4 class="font-black text-white text-[11px]">Charcutería & Quesos</h4>
+                <p class="text-[8px] text-slate-400 leading-tight">Quesos, jamones, salchichas</p>
+              </div>
+            </button>
+
+            <!-- Cuadro Carnes (Res, Pollo, Cerdo) -->
+            <button onclick="cambiarSeccion('carnes')" class="group relative bg-slate-900/85 border border-indigo-500/30 hover:border-accent-magenta p-2 rounded-2xl flex flex-col items-center justify-center text-center gap-1 shadow-xl transition-all active:scale-95 overflow-hidden backdrop-blur-md">
+              <div class="w-full h-14 rounded-xl bg-transparent overflow-hidden flex items-center justify-center group-hover:scale-105 transition-transform">
+                <img src="img/comi.webp" alt="Carnes" class="w-full h-full object-cover rounded-lg">
+              </div>
+              <div>
+                <h4 class="font-black text-white text-[11px]">Carnes, Pollo & Cerdo</h4>
+                <p class="text-[8px] text-slate-400 leading-tight">Cortes frescos y de calidad</p>
               </div>
             </button>
 
             <!-- Cuadro Dulces y Panadería -->
-            <button onclick="cambiarSeccion('panaderia')" class="group relative bg-slate-900/80 border border-indigo-500/30 hover:border-accent-orange p-3 rounded-3xl flex flex-col items-center justify-center text-center gap-2 shadow-xl transition-all active:scale-95 overflow-hidden backdrop-blur-md">
-              <div class="w-full h-20 rounded-2xl bg-slate-950/60 border border-slate-800 overflow-hidden flex items-center justify-center group-hover:scale-105 transition-transform shadow-inner">
-                <img src="img/pan.webp" alt="Dulces y Panadería" class="w-full h-full object-cover">
+            <button onclick="cambiarSeccion('panaderia')" class="group relative bg-slate-900/85 border border-indigo-500/30 hover:border-accent-yellow p-2 rounded-2xl flex flex-col items-center justify-center text-center gap-1 shadow-xl transition-all active:scale-95 overflow-hidden backdrop-blur-md">
+              <div class="w-full h-14 rounded-xl bg-transparent overflow-hidden flex items-center justify-center group-hover:scale-105 transition-transform">
+                <img src="img/pan.webp" alt="Dulces y Panadería" class="w-full h-full object-cover rounded-lg">
               </div>
               <div>
-                <h4 class="font-black text-white text-sm">Dulces y Panadería</h4>
-                <p class="text-[10px] text-slate-300 mt-0.5">Panes, galletas y postres</p>
+                <h4 class="font-black text-white text-[11px]">Panadería & Dulces</h4>
+                <p class="text-[8px] text-slate-400 leading-tight">Panes, galletas, postres</p>
               </div>
             </button>
 
             <!-- Cuadro Verduras y Frutas -->
-            <button onclick="cambiarSeccion('verduras')" class="group relative bg-slate-900/80 border border-indigo-500/30 hover:border-accent-emerald p-3 rounded-3xl flex flex-col items-center justify-center text-center gap-2 shadow-xl transition-all active:scale-95 overflow-hidden backdrop-blur-md">
-              <div class="w-full h-20 rounded-2xl bg-slate-950/60 border border-slate-800 overflow-hidden flex items-center justify-center group-hover:scale-105 transition-transform shadow-inner">
-                <img src="img/verdura.webp" alt="Verduras y Frutas" class="w-full h-full object-cover">
+            <button onclick="cambiarSeccion('verduras')" class="group relative bg-slate-900/85 border border-indigo-500/30 hover:border-accent-emerald p-2 rounded-2xl flex flex-col items-center justify-center text-center gap-1 shadow-xl transition-all active:scale-95 overflow-hidden backdrop-blur-md">
+              <div class="w-full h-14 rounded-xl bg-transparent overflow-hidden flex items-center justify-center group-hover:scale-105 transition-transform">
+                <img src="img/verdura.webp" alt="Verduras y Frutas" class="w-full h-full object-cover rounded-lg">
               </div>
               <div>
-                <h4 class="font-black text-white text-sm">Verduras y Frutas</h4>
-                <p class="text-[10px] text-slate-300 mt-0.5">Frescas del campo y a granel</p>
+                <h4 class="font-black text-white text-[11px]">Verduras & Frutas</h4>
+                <p class="text-[8px] text-slate-400 leading-tight">Frescas del campo</p>
               </div>
             </button>
 
             <!-- Cuadro Bebidas -->
-            <button onclick="cambiarSeccion('bebidas')" class="group relative bg-slate-900/80 border border-indigo-500/30 hover:border-accent-magenta p-3 rounded-3xl flex flex-col items-center justify-center text-center gap-2 shadow-xl transition-all active:scale-95 overflow-hidden backdrop-blur-md">
-              <div class="w-full h-20 rounded-2xl bg-slate-950/60 border border-slate-800 overflow-hidden flex items-center justify-center group-hover:scale-105 transition-transform shadow-inner">
-                <img src="img/bebidas.webp" alt="Bebidas" class="w-full h-full object-cover">
+            <button onclick="cambiarSeccion('bebidas')" class="group relative bg-slate-900/85 border border-indigo-500/30 hover:border-accent-cyan p-2 rounded-2xl flex flex-col items-center justify-center text-center gap-1 shadow-xl transition-all active:scale-95 overflow-hidden backdrop-blur-md">
+              <div class="w-full h-14 rounded-xl bg-transparent overflow-hidden flex items-center justify-center group-hover:scale-105 transition-transform">
+                <img src="img/bebidas.webp" alt="Bebidas" class="w-full h-full object-cover rounded-lg">
               </div>
               <div>
-                <h4 class="font-black text-white text-sm">Bebidas</h4>
-                <p class="text-[10px] text-slate-300 mt-0.5">Cervezas, refrescos y jugos</p>
+                <h4 class="font-black text-white text-[11px]">Bebidas Frías</h4>
+                <p class="text-[8px] text-slate-400 leading-tight">Cervezas, refrescos, jugos</p>
               </div>
             </button>
 
-            <!-- Cuadro Comida -->
-            <button onclick="cambiarSeccion('comida')" class="group relative bg-slate-900/80 border border-indigo-500/30 hover:border-accent-orange p-3 rounded-3xl flex flex-col items-center justify-center text-center gap-2 shadow-xl transition-all active:scale-95 overflow-hidden backdrop-blur-md">
-              <div class="w-full h-20 rounded-2xl bg-slate-950/60 border border-slate-800 overflow-hidden flex items-center justify-center group-hover:scale-105 transition-transform shadow-inner">
-                <img src="img/comi.webp" alt="Comida" class="w-full h-full object-cover">
+            <!-- Cuadro Comida Rápida (En Color Amarillo y con Broma) -->
+            <button onclick="cambiarSeccion('comida')" class="group relative bg-slate-900/85 border border-accent-yellow hover:border-accent-yellow p-2 rounded-2xl flex flex-col items-center justify-center text-center gap-1 shadow-xl transition-all active:scale-95 overflow-hidden backdrop-blur-md glow-yellow">
+              <div class="w-full h-14 rounded-xl bg-transparent overflow-hidden flex items-center justify-center group-hover:scale-105 transition-transform relative">
+                <span class="absolute top-1 right-1 bg-accent-yellow text-slate-950 font-black text-[7px] px-1.5 py-0.2 rounded-full">¡BURRO!</span>
+                <img src="img/comi.webp" alt="Comida Rápida" class="w-full h-full object-cover rounded-lg">
               </div>
               <div>
-                <h4 class="font-black text-white text-sm">Comida</h4>
-                <p class="text-[10px] text-slate-300 mt-0.5">Hamburguesas, pizzas y más</p>
+                <h4 class="font-black text-accent-yellow text-[11px]">Comida Rápida</h4>
+                <p class="text-[8px] text-amber-200 font-bold leading-tight">🍔 ¡Para tragar sin culpa!</p>
               </div>
             </button>
 
             <!-- Cuadro Transporte -->
-            <button onclick="cambiarSeccion('transporte')" class="group relative bg-slate-900/80 border border-indigo-500/30 hover:border-accent-emerald p-3 rounded-3xl flex flex-col items-center justify-center text-center gap-2 shadow-xl transition-all active:scale-95 overflow-hidden backdrop-blur-md">
-              <div class="w-full h-20 rounded-2xl bg-slate-950/60 border border-slate-800 overflow-hidden flex items-center justify-center group-hover:scale-105 transition-transform shadow-inner">
-                <img src="img/taxi.webp" alt="Transporte" class="w-full h-full object-cover">
+            <button onclick="cambiarSeccion('transporte')" class="group relative bg-slate-900/85 border border-accent-emerald/50 hover:border-accent-emerald p-2 rounded-2xl flex flex-col items-center justify-center text-center gap-1 shadow-xl transition-all active:scale-95 overflow-hidden backdrop-blur-md glow-cyan">
+              <div class="w-full h-14 rounded-xl bg-transparent overflow-hidden flex items-center justify-center group-hover:scale-105 transition-transform relative">
+                <span class="absolute top-1 right-1 bg-accent-emerald text-slate-950 font-black text-[7px] px-1 py-0.2 rounded-full">GPS</span>
+                <img src="img/taxi.webp" alt="Transporte" class="w-full h-full object-cover rounded-lg">
               </div>
               <div>
-                <h4 class="font-black text-white text-sm">Transporte</h4>
-                <p class="text-[10px] text-slate-300 mt-0.5">Moto o Carro en Nirgua</p>
-              </div>
-            </button>
-
-            <!-- Cuadro Ferretería -->
-            <button onclick="cambiarSeccion('ferreteria')" class="group relative bg-slate-900/80 border border-indigo-500/30 hover:border-accent-yellow p-3 rounded-3xl flex flex-col items-center justify-center text-center gap-2 shadow-xl transition-all active:scale-95 overflow-hidden backdrop-blur-md">
-              <div class="w-full h-20 rounded-2xl bg-slate-950/60 border border-slate-800 overflow-hidden flex items-center justify-center group-hover:scale-105 transition-transform shadow-inner">
-                <img src="img/ferreteria.webp" alt="Ferretería" class="w-full h-full object-cover">
-              </div>
-              <div>
-                <h4 class="font-black text-white text-sm">Ferretería</h4>
-                <p class="text-[10px] text-slate-300 mt-0.5">Herramientas y accesorios</p>
+                <h4 class="font-black text-white text-[11px]">Transporte Flash</h4>
+                <p class="text-[8px] text-accent-emerald font-bold leading-tight">📍 De aquí para allá</p>
               </div>
             </button>
 
             <!-- Cuadro Limpieza -->
-            <button onclick="cambiarSeccion('limpieza')" class="group relative bg-slate-900/80 border border-indigo-500/30 hover:border-accent-cyan p-3 rounded-3xl flex flex-col items-center justify-center text-center gap-2 shadow-xl transition-all active:scale-95 overflow-hidden backdrop-blur-md">
-              <div class="w-full h-20 rounded-2xl bg-slate-950/60 border border-slate-800 overflow-hidden flex items-center justify-center group-hover:scale-105 transition-transform shadow-inner">
-                <img src="img/limpieza.jfif" alt="Limpieza" class="w-full h-full object-cover">
+            <button onclick="cambiarSeccion('limpieza')" class="group relative bg-slate-900/85 border border-indigo-500/30 hover:border-accent-cyan p-2 rounded-2xl flex flex-col items-center justify-center text-center gap-1 shadow-xl transition-all active:scale-95 overflow-hidden backdrop-blur-md col-span-2">
+              <div class="w-full h-14 rounded-xl bg-transparent overflow-hidden flex items-center justify-center group-hover:scale-105 transition-transform">
+                <img src="img/limpieza.jfif" alt="Limpieza" class="w-full h-full object-cover rounded-lg">
               </div>
               <div>
-                <h4 class="font-black text-white text-sm">Limpieza</h4>
-                <p class="text-[10px] text-slate-300 mt-0.5">Cloro, desinfectantes y aseo</p>
+                <h4 class="font-black text-white text-[11px]">Aseo & Limpieza</h4>
+                <p class="text-[8px] text-slate-400 leading-tight">Salsas, vinagres y detergentes</p>
               </div>
             </button>
           </div>
         </div>
 
         <!-- CONTENEDOR INTERIOR DE SECCIONES -->
-        <div id="contenedor-seccion-activa" class="hidden space-y-4">
-          <!-- Botón flotante superior para volver -->
-          <button onclick="volverAlMenuPrincipal()" class="bg-slate-950/80 hover:bg-slate-850 text-accent-cyan border border-accent-cyan/30 px-3 py-2 rounded-xl text-xs font-bold flex items-center gap-2 transition active:scale-95 shadow-md backdrop-blur-md">
-            <i data-lucide="arrow-left" class="w-4 h-4"></i> Volver al Menú Principal
+        <div id="contenedor-seccion-activa" class="hidden space-y-3">
+          <button onclick="volverAlMenuPrincipal()" class="bg-slate-950/85 hover:bg-slate-850 text-accent-cyan border border-accent-cyan/30 px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-2 transition active:scale-95 shadow-md backdrop-blur-md">
+            <i data-lucide="arrow-left" class="w-3.5 h-3.5"></i> Volver al Menú Principal
           </button>
 
-          <!-- VÍVERES Y SUBMENÚ EN CUADROS -->
-          <div id="sec-viveres" class="seccion-target space-y-3.5 hidden">
+          <!-- VÍVERES Y SUBMENÚ -->
+          <div id="sec-viveres" class="seccion-target space-y-3 hidden">
             <div class="space-y-1">
-              <span class="text-[10px] font-black text-indigo-200 uppercase tracking-wider block px-1">Subcategorías de Víveres</span>
-              <div id="sub-nav-viveres" class="grid grid-cols-3 gap-2">
-                <button onclick="filtrarSubViveres('todos')" id="sub-viveres-todos" class="btn-sub-viveres p-2.5 rounded-2xl text-[10px] font-extrabold bg-accent-magenta text-white shadow-md transition text-center flex flex-col items-center justify-center gap-1 border border-accent-magenta/50">
-                  <span>✨ Todos</span>
+              <span class="text-[9px] font-black text-indigo-200 uppercase tracking-wider block px-1">Subcategorías de Víveres</span>
+              <div id="sub-nav-viveres" class="grid grid-cols-3 gap-1.5">
+                <button onclick="filtrarSubViveres('todos')" id="sub-viveres-todos" class="btn-sub-viveres p-1.5 rounded-xl text-[8px] font-extrabold bg-accent-magenta text-white shadow-md transition text-center flex flex-col items-center justify-center gap-0.5 border border-accent-magenta/50">
+                  <span>Todos</span>
                 </button>
-                <button onclick="filtrarSubViveres('harinas')" id="sub-viveres-harinas" class="btn-sub-viveres p-2.5 rounded-2xl text-[10px] font-bold bg-slate-950/75 text-slate-300 border border-slate-800 hover:text-white transition text-center flex flex-col items-center justify-center gap-1 backdrop-blur-md">
-                  <span>🌾 Harinas</span>
+                <button onclick="filtrarSubViveres('harinas')" id="sub-viveres-harinas" class="btn-sub-viveres p-1.5 rounded-xl text-[8px] font-bold bg-slate-950/75 text-slate-300 border border-slate-800 hover:text-white transition text-center flex flex-col items-center justify-center gap-0.5 backdrop-blur-md">
+                  <span>Harinas</span>
                 </button>
-                <button onclick="filtrarSubViveres('pastas')" id="sub-viveres-pastas" class="btn-sub-viveres p-2.5 rounded-2xl text-[10px] font-bold bg-slate-950/75 text-slate-300 border border-slate-800 hover:text-white transition text-center flex flex-col items-center justify-center gap-1 backdrop-blur-md">
-                  <span>🍝 Pastas</span>
+                <button onclick="filtrarSubViveres('pastas')" id="sub-viveres-pastas" class="btn-sub-viveres p-1.5 rounded-xl text-[8px] font-bold bg-slate-950/75 text-slate-300 border border-slate-800 hover:text-white transition text-center flex flex-col items-center justify-center gap-0.5 backdrop-blur-md">
+                  <span>Pastas</span>
                 </button>
-                <button onclick="filtrarSubViveres('granos')" id="sub-viveres-granos" class="btn-sub-viveres p-2.5 rounded-2xl text-[10px] font-bold bg-slate-950/75 text-slate-300 border border-slate-800 hover:text-white transition text-center flex flex-col items-center justify-center gap-1 col-span-1 backdrop-blur-md">
-                  <span>🫘 Granos / Arroz</span>
+                <button onclick="filtrarSubViveres('granos')" id="sub-viveres-granos" class="btn-sub-viveres p-1.5 rounded-xl text-[8px] font-bold bg-slate-950/75 text-slate-300 border border-slate-800 hover:text-white transition text-center flex flex-col items-center justify-center gap-0.5 col-span-1 backdrop-blur-md">
+                  <span>🫘 Granos</span>
                 </button>
-                <button onclick="filtrarSubViveres('lacteos')" id="sub-viveres-lacteos" class="btn-sub-viveres p-2.5 rounded-2xl text-[10px] font-bold bg-slate-950/75 text-slate-300 border border-slate-800 hover:text-white transition text-center flex flex-col items-center justify-center gap-1 col-span-2 backdrop-blur-md">
-                  <span>🧈 Lácteos y Galletas</span>
+                <button onclick="filtrarSubViveres('lacteos')" id="sub-viveres-lacteos" class="btn-sub-viveres p-1.5 rounded-xl text-[8px] font-bold bg-slate-950/75 text-slate-300 border border-slate-800 hover:text-white transition text-center flex flex-col items-center justify-center gap-0.5 col-span-2 backdrop-blur-md">
+                  <span>Lácteos, Aceites y Galletas</span>
                 </button>
               </div>
             </div>
-            <div id="grid-viveres" class="grid grid-cols-2 gap-3.5 pt-2"></div>
+            <div id="grid-viveres" class="grid grid-cols-2 gap-3 pt-1"></div>
           </div>
 
-          <div id="sec-panaderia" class="seccion-target grid grid-cols-2 gap-3.5 hidden"></div>
-          <div id="sec-verduras" class="seccion-target grid grid-cols-2 gap-3.5 hidden"></div>
-          <div id="sec-bebidas" class="seccion-target grid grid-cols-2 gap-3.5 hidden"></div>
-          <div id="sec-comida" class="seccion-target grid grid-cols-2 gap-3.5 hidden"></div>
+          <div id="sec-charcuteria" class="seccion-target grid grid-cols-2 gap-3 hidden"></div>
+          <div id="sec-carnes" class="seccion-target grid grid-cols-2 gap-3 hidden"></div>
+          <div id="sec-panaderia" class="seccion-target grid grid-cols-2 gap-3 hidden"></div>
+          <div id="sec-verduras" class="seccion-target grid grid-cols-2 gap-3 hidden"></div>
+          <div id="sec-bebidas" class="seccion-target grid grid-cols-2 gap-3 hidden"></div>
+          <div id="sec-comida" class="seccion-target grid grid-cols-2 gap-3 hidden"></div>
           
-          <!-- TRANSPORTE EN NIRGUA -->
-          <div id="sec-transporte" class="seccion-target space-y-4 hidden">
-            <div class="bg-slate-950/85 border border-indigo-500/40 rounded-3xl p-4 shadow-xl space-y-3 backdrop-blur-md">
-              <div class="flex items-center justify-between border-b border-slate-800 pb-2.5">
+          <!-- TRANSPORTE CON GPS AUTOMÁTICO -->
+          <div id="sec-transporte" class="seccion-target space-y-3.5 hidden">
+            <div class="bg-slate-950/90 border border-emerald-500/40 rounded-3xl p-3 shadow-xl space-y-2.5 backdrop-blur-md">
+              <div class="flex items-center justify-between border-b border-slate-800 pb-2">
                 <div class="flex items-center gap-2">
-                  <div class="p-2 bg-accent-cyan/15 text-accent-cyan rounded-xl">
-                    <i data-lucide="navigation" class="w-4 h-4"></i>
+                  <div class="p-1.5 bg-accent-emerald/15 text-accent-emerald rounded-xl border border-accent-emerald/30">
+                    <i data-lucide="navigation" class="w-3.5 h-3.5"></i>
                   </div>
                   <div>
-                    <h3 class="font-black text-white text-xs uppercase tracking-wider">Transporte en Nirgua</h3>
-                    <p id="instruccion-mapa" class="text-[9px] text-accent-yellow font-bold">Tarifa única: $1.00 | Clic 1: Origen | Clic 2: Destino</p>
+                    <h3 class="font-black text-white text-[10px] uppercase tracking-wider flex items-center gap-1">
+                      Transporte Flash
+                    </h3>
+                    <p id="instruccion-mapa" class="text-[8px] text-accent-yellow font-bold">📍 Activa tu GPS o escribe tu ubicación</p>
                   </div>
                 </div>
-                <button onclick="reiniciarPuntosRuta()" class="text-[9px] bg-slate-800 hover:bg-slate-700 text-slate-300 px-2.5 py-1 rounded-lg border border-slate-700">Reiniciar</button>
+                <button onclick="reiniciarPuntosRuta()" class="text-[8px] bg-slate-800 hover:bg-slate-700 text-slate-300 px-2 py-0.5 rounded-lg border border-slate-700">Reiniciar</button>
               </div>
 
-              <!-- SELECTOR DE TIPO DE TRANSPORTE EN CUADROS -->
+              <!-- SELECTOR DE TIPO DE TRANSPORTE -->
               <div class="grid grid-cols-2 gap-2">
-                <button onclick="seleccionarTransporte('moto', 1.00)" id="btn-trans-moto" class="p-2.5 rounded-2xl border border-accent-cyan bg-accent-cyan/20 text-white text-xs font-bold flex flex-col items-center justify-center gap-1 transition shadow-md">
-                  <span class="text-lg">🛵</span>
-                  <span>Moto ($1.00)</span>
+                <button onclick="seleccionarTransporte('moto', 1.00)" id="btn-trans-moto" class="group relative p-2 rounded-2xl border border-accent-cyan bg-accent-cyan/20 text-white text-[10px] font-bold flex flex-col items-center justify-center gap-1 transition shadow-md">
+                  <div class="w-full h-10 rounded-xl bg-transparent overflow-hidden flex items-center justify-center">
+                    <img src="img/moto.webp" alt="Moto" class="w-full h-full object-contain group-hover:scale-110 transition-transform">
+                  </div>
+                  <span>🛵 Moto ($1.00)</span>
                 </button>
-                <button onclick="seleccionarTransporte('carro', 1.00)" id="btn-trans-carro" class="p-2.5 rounded-2xl border border-slate-700 bg-slate-900 text-slate-300 text-xs font-bold flex flex-col items-center justify-center gap-1 transition">
-                  <span class="text-lg">🚗</span>
-                  <span>Carro / Taxi ($1.00)</span>
+
+                <button onclick="seleccionarTransporte('carro', 1.00)" id="btn-trans-carro" class="group relative p-2 rounded-2xl border border-slate-700 bg-slate-900 text-slate-300 text-[10px] font-bold flex flex-col items-center justify-center gap-1 transition">
+                  <div class="w-full h-10 rounded-xl bg-transparent overflow-hidden flex items-center justify-center">
+                    <img src="img/taxi icon.webp" alt="Carro" class="w-full h-full object-contain group-hover:scale-110 transition-transform">
+                  </div>
+                  <span>🚗 Carro ($1.00)</span>
                 </button>
               </div>
 
-              <div class="grid grid-cols-2 gap-2 text-[10px]">
-                <div class="bg-slate-900/90 p-2 rounded-xl border border-emerald-500/35">
-                  <span class="text-slate-400 block">🟢 Origen:</span>
-                  <span id="txt-origen-elegido" class="text-emerald-400 font-bold truncate block">Detectando ubicación...</span>
+              <!-- BUSCADOR ORIGEN -->
+              <div class="space-y-1 bg-slate-900/90 p-2 rounded-xl border border-emerald-500/30">
+                <div class="flex items-center justify-between">
+                  <label class="block text-[8px] text-emerald-400 font-bold uppercase">📍 ¿De dónde sales?</label>
+                  <button type="button" onclick="usarGpsActualComoOrigen()" class="text-[8px] text-accent-cyan font-bold hover:underline">Activar GPS</button>
                 </div>
-                <div class="bg-slate-900/90 p-2 rounded-xl border border-accent-magenta/35">
-                  <span class="text-slate-400 block">🔴 Destino:</span>
-                  <span id="txt-destino-elegido" class="text-accent-magenta font-bold truncate block">Haz clic en el mapa</span>
+                <div class="flex gap-1.5">
+                  <input type="text" id="inputBuscadorOrigen" placeholder="Escribe tu punto de salida o activa GPS..." class="w-full p-1.5 bg-slate-950 border border-slate-700 rounded-lg text-[10px] text-white placeholder-slate-500 focus:outline-none focus:border-accent-cyan">
+                  <button type="button" onclick="buscarPuntoOrigenPorTexto()" class="bg-emerald-500 text-slate-950 font-black px-2.5 py-1 rounded-lg text-[9px] shadow-md transition active:scale-95">Definir</button>
                 </div>
               </div>
 
-              <div id="mapa-interactivo-ruta" style="height: 270px; width: 100%; position: relative;" class="rounded-2xl border border-slate-800 overflow-hidden shadow-inner z-0"></div>
+              <!-- BUSCADOR DESTINO -->
+              <div class="space-y-1 bg-slate-900/90 p-2 rounded-xl border border-accent-magenta/30">
+                <label class="block text-[8px] text-accent-magenta font-bold uppercase">🏁 ¿A dónde vas?</label>
+                <div class="flex gap-1.5">
+                  <input type="text" id="inputBuscadorDestino" placeholder="Escribe tu destino libremente..." class="w-full p-1.5 bg-slate-950 border border-slate-700 rounded-lg text-[10px] text-white placeholder-slate-500 focus:outline-none focus:border-accent-magenta">
+                  <button type="button" onclick="buscarPuntoDestinoPorTexto()" class="bg-accent-magenta text-white font-black px-2.5 py-1 rounded-lg text-[9px] shadow-md transition active:scale-95">Definir</button>
+                </div>
+              </div>
 
-              <button onclick="agregarServicioTransporteAlCarrito()" class="w-full bg-gradient-to-r from-accent-emerald to-emerald-600 hover:brightness-110 text-slate-950 font-black py-3 rounded-xl text-xs shadow-md transition flex items-center justify-center gap-1.5 mt-1">
-                <i data-lucide="plus-circle" class="w-4 h-4 fill-slate-950"></i> Agregar Servicio ($1.00) al Pedido
+              <div class="grid grid-cols-2 gap-1.5 text-[8px]">
+                <div class="bg-slate-900 p-1.5 rounded-xl border border-accent-emerald/60">
+                  <span class="text-emerald-400 font-bold block">📍 Origen:</span>
+                  <span id="txt-origen-elegido" class="text-white font-semibold truncate block">GPS / Escrito</span>
+                </div>
+                <div class="bg-slate-900 p-1.5 rounded-xl border border-accent-magenta/60">
+                  <span class="text-accent-magenta font-bold block">🏁 Destino:</span>
+                  <span id="txt-destino-elegido" class="text-white font-semibold truncate block">Pendiente</span>
+                </div>
+              </div>
+
+              <!-- MAPA -->
+              <div class="relative w-full h-[150px] rounded-2xl border border-emerald-500/30 overflow-hidden shadow-inner z-0">
+                <div id="mapa-interactivo-ruta" style="height: 100%; width: 100%;"></div>
+              </div>
+
+              <button onclick="irAPagarTransporteDirecto()" class="w-full bg-gradient-to-r from-accent-emerald via-emerald-500 to-accent-cyan hover:brightness-110 text-slate-950 font-black py-2.5 rounded-xl text-xs shadow-lg transition flex items-center justify-center gap-1.5 active:scale-95">
+                <i data-lucide="arrow-right-circle" class="w-4 h-4 fill-slate-950"></i> ¡Pagar Viaje Directo! ($1.00)
               </button>
             </div>
           </div>
 
-          <div id="sec-ferreteria" class="seccion-target grid grid-cols-2 gap-3.5 hidden"></div>
-          <div id="sec-limpieza" class="seccion-target grid grid-cols-2 gap-3.5 hidden"></div>
+          <div id="sec-limpieza" class="seccion-target grid grid-cols-2 gap-3 hidden"></div>
         </div>
 
       </main>
 
       <!-- BOTÓN FLOTANTE UNIVERSAL: PEDIR PRODUCTO PERSONALIZADO -->
-      <button onclick="abrirModalPersonalizado()" class="fixed z-40 bottom-20 left-4 bg-gradient-to-r from-accent-cyan to-brand-600 text-slate-950 font-black px-4 py-3 rounded-2xl shadow-[0_4px_25px_rgba(0,242,254,0.5)] flex items-center gap-2 text-xs transition active:scale-95 glow-cyan">
-        <i data-lucide="plus-circle" class="w-4 h-4 fill-slate-950"></i> <span>¿No lo ves? Pídelo aquí</span>
+      <button onclick="abrirModalPersonalizado()" class="fixed z-40 bottom-16 left-4 bg-gradient-to-r from-accent-cyan to-brand-600 text-slate-950 font-black px-3 py-2 rounded-2xl shadow-[0_4px_25px_rgba(0,242,254,0.5)] flex items-center gap-1.5 text-[10px] transition active:scale-95 glow-cyan">
+        <i data-lucide="plus-circle" class="w-3.5 h-3.5 fill-slate-950"></i> <span>¿No lo ves? Pídelo</span>
       </button>
 
-      <!-- WIDGET FLOTANTE INTERACTIVO Y ARRASTRABLE (CARRITO) -->
-      <div id="widget-total-flotante" onclick="abrirModalCarrito()" class="fixed z-40 transition-opacity duration-300 opacity-0 pointer-events-none touch-none select-none cursor-pointer active:scale-95" style="top: 180px; right: 16px;">
+      <!-- WIDGET FLOTANTE CARRITO -->
+      <div id="widget-total-flotante" onclick="abrirModalCarrito()" class="fixed z-40 transition-opacity duration-300 opacity-0 pointer-events-none touch-none select-none cursor-pointer active:scale-95" style="top: 160px; right: 12px;">
         <div class="bg-gradient-to-b from-indigo-500/30 to-slate-950 p-[1px] rounded-2xl shadow-[0_12px_35px_rgba(0,0,0,0.8)] border border-indigo-500/40 glow-violet">
-          <div class="bg-slate-950/90 backdrop-blur-md px-4 py-3 rounded-[15px] flex flex-col items-center justify-center text-center">
-            <div class="flex items-center gap-1.5 text-accent-cyan mb-1">
-              <i data-lucide="shopping-cart" class="w-4 h-4 pointer-events-none"></i>
-              <span id="txt-widget-cant" class="text-[10px] font-black bg-accent-magenta text-white px-2 py-0.5 rounded-full pointer-events-none glow-magenta">0</span>
+          <div class="bg-slate-950/90 backdrop-blur-md px-2.5 py-2 rounded-[15px] flex flex-col items-center justify-center text-center">
+            <div class="flex items-center gap-1 text-accent-cyan mb-0.5">
+              <i data-lucide="shopping-cart" class="w-3 h-3 pointer-events-none"></i>
+              <span id="txt-widget-cant" class="text-[8px] font-black bg-accent-magenta text-white px-1.5 py-0.1 rounded-full pointer-events-none glow-magenta">0</span>
             </div>
-            <span class="text-[8px] text-indigo-300 font-black uppercase tracking-wider block pointer-events-none">Ver Pedido</span>
-            <span id="txt-widget-monto" class="text-base font-black text-accent-yellow leading-none pointer-events-none mt-0.5">$0.00</span>
+            <span class="text-[7px] text-indigo-300 font-black uppercase tracking-wider block pointer-events-none">Ver Pedido</span>
+            <span id="txt-widget-monto" class="text-xs font-black text-accent-yellow leading-none pointer-events-none mt-0.5">$0.00</span>
           </div>
         </div>
       </div>
 
-      <!-- BARRA INFERIOR FIJA PASO 1 -->
-      <div class="absolute bottom-0 left-0 right-0 bg-slate-900/85 backdrop-blur-md border-t border-slate-800/80 p-4 shadow-2xl z-30">
+      <!-- BARRA INFERIOR FIJA -->
+      <div class="absolute bottom-0 left-0 right-0 bg-slate-900/90 backdrop-blur-md border-t border-slate-800/80 p-3 shadow-2xl z-30">
         <div class="flex items-center justify-between gap-3">
           <div>
-            <span class="text-[9px] text-indigo-300 block font-black uppercase tracking-wider">Total a Pagar:</span>
-            <span id="total-precio-paso1" class="text-2xl font-black text-white">$0.00</span>
+            <span class="text-[8px] text-indigo-300 block font-black uppercase tracking-wider">Total a Pagar:</span>
+            <span id="total-precio-paso1" class="text-lg font-black text-white">$0.00</span>
           </div>
-          <button onclick="irAPaso2()" class="flex-1 bg-gradient-to-r from-accent-magenta via-indigo-600 to-accent-cyan hover:brightness-110 text-white font-black py-3.5 px-4 rounded-2xl flex items-center justify-center gap-2 text-xs transition active:scale-95 shadow-lg glow-magenta">
-            <span>CONTINUAR CON EL PEDIDO</span> <i data-lucide="arrow-right" class="w-4 h-4"></i>
+          <button onclick="irAPaso2()" class="flex-1 bg-gradient-to-r from-accent-magenta via-indigo-600 to-accent-cyan hover:brightness-110 text-white font-black py-2.5 px-3 rounded-2xl flex items-center justify-center gap-1.5 text-[10px] transition active:scale-95 shadow-lg glow-magenta">
+            <span>CONTINUAR PEDIDO</span> <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
           </button>
         </div>
       </div>
@@ -360,7 +441,7 @@
             </div>
             <div>
               <h3 class="text-sm font-black text-white">Producto Bajo Pedido</h3>
-              <span class="text-[10px] text-indigo-300">Precio variable según disponibilidad</span>
+              <span class="text-[9px] text-indigo-300">Precio variable según disponibilidad</span>
             </div>
           </div>
           <button onclick="cerrarModalPersonalizado()" class="w-7 h-7 rounded-full bg-slate-800 text-slate-400 hover:text-white flex items-center justify-center">
@@ -369,113 +450,123 @@
         </div>
         <div class="space-y-3">
           <div>
-            <label class="block text-[10px] text-indigo-300 font-bold uppercase mb-1">Nombre o descripción del producto</label>
-            <input type="text" id="input-nombre-personalizado" placeholder="Ej: Pan sobado, quesillo, ponqué..." class="w-full p-3 bg-slate-950 border border-slate-700 focus:border-accent-cyan rounded-2xl text-xs text-white placeholder-slate-500 focus:outline-none shadow-inner">
+            <label class="block text-[9px] text-indigo-300 font-bold uppercase mb-1">Nombre o descripción del producto</label>
+            <input type="text" id="input-nombre-personalizado" placeholder="Ej: Pan sobado, quesillo..." class="w-full p-3 bg-slate-950 border border-slate-700 focus:border-accent-cyan rounded-2xl text-xs text-white placeholder-slate-500 focus:outline-none shadow-inner">
           </div>
-          <p class="text-[10px] text-slate-400 italic">💡 El precio puede variar dependiendo del lugar ya que no contamos con ese producto en el almacén.</p>
+          <p class="text-[9px] text-slate-400 italic">💡 El precio puede variar dependiendo del lugar ya que no contamos con ese producto en el almacén.</p>
         </div>
         <div class="flex gap-2 pt-2">
           <button onclick="cerrarModalPersonalizado()" class="flex-1 bg-slate-800 text-slate-300 font-bold py-3 rounded-2xl text-xs">Cancelar</button>
-          <button onclick="guardarProductoPersonalizadoFlotante()" class="flex-1 bg-gradient-to-r from-accent-cyan to-brand-600 text-slate-950 font-black py-3 rounded-2xl text-xs shadow-md">Agregar al Pedido</button>
+          <button onclick="guardarProductoPersonalizadoFlotante()" class="flex-1 bg-gradient-to-r from-accent-cyan to-brand-600 text-slate-950 font-black py-3 rounded-2xl text-xs shadow-md">Agregar</button>
         </div>
       </div>
     </div>
 
     <!-- ================= MODAL DEL CARRITO DE COMPRAS ================= -->
     <div id="modal-carrito-detalle" class="fixed inset-0 bg-slate-950/75 backdrop-blur-md z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 hidden">
-      <div class="anim-modal bg-slate-900 border-t sm:border border-indigo-500/30 w-full max-w-md rounded-t-[32px] sm:rounded-3xl p-5 space-y-4 shadow-2xl max-h-[82vh] flex flex-col">
-        <div class="flex justify-between items-center border-b border-slate-800 pb-3.5">
-          <div class="flex items-center gap-2.5">
-            <div class="p-2.5 bg-indigo-500/15 text-accent-cyan rounded-2xl border border-indigo-500/20">
-              <i data-lucide="shopping-bag" class="w-5 h-5"></i>
+      <div class="anim-modal bg-slate-900 border-t sm:border border-indigo-500/30 w-full max-w-md rounded-t-[32px] sm:rounded-3xl p-4 space-y-3 shadow-2xl max-h-[82vh] flex flex-col">
+        <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+          <div class="flex items-center gap-2">
+            <div class="p-2 bg-indigo-500/15 text-accent-cyan rounded-2xl border border-indigo-500/20">
+              <i data-lucide="shopping-bag" class="w-4 h-4"></i>
             </div>
             <div>
-              <h3 class="text-base font-black text-white leading-tight">Tu Carrito de Compras</h3>
-              <span class="text-[10px] text-indigo-300 font-bold">Revisa o modifica tus artículos</span>
+              <h3 class="text-sm font-black text-white leading-tight">Tu Carrito</h3>
+              <span class="text-[8px] text-indigo-300 font-bold">Revisa o modifica tus artículos</span>
             </div>
           </div>
-          <button onclick="cerrarModalCarrito()" class="w-8 h-8 rounded-full bg-slate-800/80 text-slate-400 hover:text-white flex items-center justify-center transition">
-            <i data-lucide="x" class="w-5 h-5"></i>
+          <button onclick="cerrarModalCarrito()" class="w-7 h-7 rounded-full bg-slate-800 text-slate-400 hover:text-white flex items-center justify-center transition">
+            <i data-lucide="x" class="w-4 h-4"></i>
           </button>
         </div>
-        <div id="lista-modal-carrito" class="flex-1 overflow-y-auto no-scrollbar space-y-2.5 pr-1"></div>
-        <div class="border-t border-slate-800 pt-3.5 space-y-3.5">
+        <div id="lista-modal-carrito" class="flex-1 overflow-y-auto no-scrollbar space-y-2 pr-1"></div>
+        <div class="border-t border-slate-800 pt-3 space-y-3">
           <div class="flex justify-between items-center px-1">
             <span class="text-xs font-bold text-slate-400">Total acumulado:</span>
-            <span id="modal-carrito-monto-total" class="text-xl font-black text-accent-yellow">$0.00</span>
+            <span id="modal-carrito-monto-total" class="text-base font-black text-accent-yellow">$0.00</span>
           </div>
-          <div class="flex gap-2.5">
-            <button onclick="cerrarModalCarrito()" class="flex-1 bg-slate-800/80 hover:bg-slate-750 text-slate-200 font-bold py-3.5 rounded-2xl text-xs transition border border-slate-700/50">
+          <div class="flex gap-2">
+            <button onclick="cerrarModalCarrito()" class="flex-1 bg-slate-800 text-slate-200 font-bold py-2.5 rounded-2xl text-xs transition border border-slate-700/50">
               Seguir Comprando
             </button>
-            <button onclick="cerrarModalCarrito(); irAPaso2();" class="flex-1 bg-gradient-to-r from-accent-magenta to-indigo-600 text-white font-black py-3.5 rounded-2xl text-xs transition glow-magenta flex items-center justify-center gap-1.5 active:scale-95">
-              <span>Ir a Pagar</span> <i data-lucide="arrow-right" class="w-4 h-4"></i>
+            <button onclick="cerrarModalCarrito(); irAPaso2();" class="flex-1 bg-gradient-to-r from-accent-magenta to-indigo-600 text-white font-black py-2.5 rounded-2xl text-xs transition glow-magenta flex items-center justify-center gap-1 active:scale-95">
+              <span>Pagar</span> <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
             </button>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- ================= PASO 2: FORMULARIO Y DATOS DE ENVÍO ================= -->
+    <!-- ================= PASO 2: DATOS Y PAGO ================= -->
     <div id="paso-datos" class="flex-1 flex flex-col overflow-hidden bg-slate-900 hidden z-10">
-      <div class="p-4 bg-slate-900/85 border-b border-slate-800 flex items-center justify-between shrink-0 shadow-sm backdrop-blur-md">
-        <button onclick="volverAPaso1()" class="text-accent-cyan font-black text-xs flex items-center gap-1.5 hover:text-white active:scale-95 transition">
-          <i data-lucide="arrow-left" class="w-4 h-4"></i> Volver al Catálogo
+      <div class="p-3 bg-slate-900/85 border-b border-slate-800 flex items-center justify-between shrink-0 shadow-sm backdrop-blur-md">
+        <button onclick="volverAPaso1()" class="text-accent-cyan font-black text-xs flex items-center gap-1 hover:text-white active:scale-95 transition">
+          <i data-lucide="arrow-left" class="w-4 h-4"></i> Volver
         </button>
-        <span class="text-[10px] font-black text-indigo-300 uppercase tracking-widest bg-slate-950/80 px-3 py-1 rounded-full border border-slate-800">Paso 2 de 2</span>
+        <span id="titulo-paso-2" class="text-[8px] font-black text-indigo-300 uppercase tracking-widest bg-slate-950/80 px-2.5 py-0.5 rounded-full border border-slate-800">Finalizar Pedido</span>
       </div>
-      <main class="flex-1 p-4 space-y-4 overflow-y-auto no-scrollbar pb-28">
-        <section class="bg-slate-950/70 backdrop-blur-md p-4 rounded-3xl border border-slate-800 shadow-lg space-y-3">
-          <h3 class="font-black text-transparent bg-clip-text bg-gradient-to-r from-white to-indigo-200 text-xs uppercase tracking-wider flex items-center gap-2 border-b border-slate-800 pb-3">
-            <i data-lucide="receipt" class="w-4 h-4 text-accent-cyan"></i> Resumen de tu Pedido
-          </h3>
-          <div id="resumen-lista-paso2" class="space-y-2 text-xs text-slate-200 max-h-40 overflow-y-auto no-scrollbar"></div>
+      
+      <main class="flex-1 p-3 space-y-3 overflow-y-auto no-scrollbar pb-24">
+        <section class="bg-slate-950/80 p-2.5 rounded-2xl border border-slate-800 shadow-md space-y-1.5">
+          <div class="flex justify-between items-center text-[10px] font-black text-slate-300 border-b border-slate-800 pb-1">
+            <span id="titulo-resumen-paso2">Resumen</span>
+            <span id="total-precio-resumen" class="text-accent-yellow">$0.00</span>
+          </div>
+          <div id="resumen-lista-paso2" class="space-y-1 text-[10px] text-slate-300 max-h-20 overflow-y-auto no-scrollbar"></div>
         </section>
-        <section class="bg-slate-950/70 backdrop-blur-md p-4 rounded-3xl border border-slate-800 shadow-lg space-y-3.5">
-          <h3 class="font-black text-transparent bg-clip-text bg-gradient-to-r from-white to-indigo-200 text-xs uppercase tracking-wider border-b border-slate-800 pb-3 flex items-center gap-2">
-            <i data-lucide="user-check" class="w-4 h-4 text-accent-magenta"></i> Datos para la Entrega
-          </h3>
-          
-          <div class="grid grid-cols-2 gap-3">
+
+        <section class="bg-slate-950/80 p-3 rounded-2xl border border-slate-800 shadow-md space-y-2.5">
+          <div>
+            <label class="block text-[8px] text-indigo-300 font-black uppercase mb-1">¿Para quién es?</label>
+            <div class="grid grid-cols-2 gap-1.5">
+              <button type="button" onclick="seleccionarBeneficiario('mio')" id="btn-beneficiario-mio" class="p-2 rounded-xl border border-accent-cyan bg-accent-cyan/20 text-white text-[10px] font-bold transition">
+                🙋 Es para mí
+              </button>
+              <button type="button" onclick="seleccionarBeneficiario('tercero')" id="btn-beneficiario-tercero" class="p-2 rounded-xl border border-slate-700 bg-slate-900 text-slate-300 text-[10px] font-bold transition">
+                👥 Es para un 3ero
+              </button>
+            </div>
+            <input type="hidden" id="tipoBeneficiario" value="Es para mí">
+          </div>
+
+          <div id="contenedor-tercero" class="hidden">
+            <label class="block text-[8px] text-accent-magenta font-black uppercase mb-1">Nombre y Teléfono del 3ero</label>
+            <input type="text" id="nombreTercero" placeholder="Ej: María (0412-1234567)" class="w-full p-2 bg-slate-900 border border-slate-700 rounded-xl text-[10px] text-white placeholder-slate-500 focus:outline-none">
+          </div>
+
+          <div class="grid grid-cols-2 gap-1.5">
             <div>
-              <label class="block text-[9px] text-indigo-300 font-black uppercase mb-1">Nombre</label>
-              <input type="text" id="nombreCliente" placeholder="Ej: Pedro" class="w-full p-3 bg-slate-900/90 border border-slate-700/80 focus:border-accent-cyan rounded-2xl text-xs font-semibold text-white placeholder-slate-500 focus:outline-none transition shadow-inner">
+              <label class="block text-[8px] text-indigo-300 font-black uppercase mb-1">Tu Nombre</label>
+              <input type="text" id="nombreCliente" placeholder="Ej: Pedro" class="w-full p-2 bg-slate-900 border border-slate-700 rounded-xl text-[10px] font-semibold text-white placeholder-slate-500 focus:outline-none">
             </div>
             <div>
-              <label class="block text-[9px] text-indigo-300 font-black uppercase mb-1">Apellido</label>
-              <input type="text" id="apellidoCliente" placeholder="Ej: Pérez" class="w-full p-3 bg-slate-900/90 border border-slate-700/80 focus:border-accent-cyan rounded-2xl text-xs font-semibold text-white placeholder-slate-500 focus:outline-none transition shadow-inner">
+              <label class="block text-[8px] text-indigo-300 font-black uppercase mb-1">Tu Teléfono</label>
+              <input type="tel" id="telefonoCliente" placeholder="Ej: 04121234567" class="w-full p-2 bg-slate-900 border border-slate-700 rounded-xl text-[10px] font-semibold text-white placeholder-slate-500 focus:outline-none">
             </div>
           </div>
+
           <div>
-            <label class="block text-[9px] text-indigo-300 font-black uppercase mb-1">Teléfono WhatsApp</label>
-            <input type="tel" id="telefonoCliente" placeholder="Ej: 04121234567" class="w-full p-3 bg-slate-900/90 border border-slate-700/80 focus:border-accent-cyan rounded-2xl text-xs font-semibold text-white placeholder-slate-500 focus:outline-none transition shadow-inner">
+            <label class="block text-[8px] text-indigo-300 font-black uppercase mb-1">Dirección de Entrega / Destino</label>
+            <input type="text" id="direccion" placeholder="Ej: Calle principal, casa #12" class="w-full p-2 bg-slate-900 border border-slate-700 rounded-xl text-[10px] font-semibold text-white placeholder-slate-500 focus:outline-none">
           </div>
+
           <div>
-            <label class="block text-[9px] text-indigo-300 font-black uppercase mb-1">Dirección de Entrega / Referencia</label>
-            <textarea id="direccion" rows="2" placeholder="Urb, Calle, Casa/Apto, Punto de referencia" class="w-full p-3 bg-slate-900/90 border border-slate-700/80 focus:border-accent-cyan rounded-2xl text-xs font-semibold text-white placeholder-slate-500 focus:outline-none transition shadow-inner"></textarea>
-          </div>
-          <div>
-            <button type="button" onclick="obtenerUbicacionGPS()" id="btn-gps" class="w-full bg-slate-900 hover:bg-slate-850 text-indigo-200 border border-indigo-500/30 font-black py-3 px-3 rounded-2xl text-xs flex items-center justify-center gap-2 transition active:scale-95 shadow-sm">
-              <i data-lucide="navigation" class="w-3.5 h-3.5 text-accent-cyan"></i> <span id="lbl-gps">Obtener mi Ubicación GPS</span>
+            <button type="button" onclick="obtenerUbicacionGPS()" id="btn-gps" class="w-full bg-slate-900 hover:bg-slate-850 text-indigo-200 border border-indigo-500/30 font-black py-2 px-3 rounded-xl text-[9px] flex items-center justify-center gap-1.5 transition active:scale-95 shadow-sm">
+              <i data-lucide="navigation" class="w-3 h-3 text-accent-cyan"></i> <span id="lbl-gps">Adjuntar mi Ubicación GPS</span>
             </button>
             <input type="hidden" id="ubicacionGPS" value="">
           </div>
         </section>
       </main>
-      <div class="absolute bottom-0 left-0 right-0 bg-slate-900/85 backdrop-blur-md border-t border-slate-800/80 p-4 shadow-2xl z-40">
-        <div class="flex items-center justify-between gap-3">
-          <div>
-            <span class="text-[9px] text-indigo-300 block font-black uppercase tracking-wider">Total Final:</span>
-            <span id="total-precio-paso2" class="text-2xl font-black text-accent-yellow">$0.00</span>
-          </div>
-          <button onclick="enviarPedidoAConductor()" class="flex-1 bg-gradient-to-r from-accent-emerald to-emerald-600 hover:brightness-110 text-slate-950 font-black py-3.5 px-4 rounded-2xl flex items-center justify-center gap-2 text-xs transition active:scale-95 shadow-lg glow-cyan">
-            <i data-lucide="send" class="w-4 h-4 fill-slate-950"></i> ENVIAR AL REPARTIDOR
-          </button>
-        </div>
+
+      <div class="absolute bottom-0 left-0 right-0 bg-slate-900/90 backdrop-blur-md border-t border-slate-800 p-3 z-40">
+        <button onclick="enviarPedidoAConductor()" class="w-full bg-gradient-to-r from-accent-emerald to-emerald-600 hover:brightness-110 text-slate-950 font-black py-2.5 px-3 rounded-2xl flex items-center justify-center gap-1.5 text-xs transition active:scale-95 shadow-lg glow-cyan">
+          <i data-lucide="send" class="w-4 h-4 fill-slate-950"></i> ENVIAR PEDIDO POR WHATSAPP
+        </button>
       </div>
     </div>
 
-    <!-- ================= MODAL DE ÉXITO CON BARRA DE CARGA Y COHETE ================= -->
+    <!-- ================= MODAL DE ÉXITO ================= -->
     <div id="modal-exito" class="fixed inset-0 bg-slate-950/85 backdrop-blur-md z-50 flex flex-col items-center justify-center p-4 hidden">
       <div class="anim-modal bg-slate-900 border border-indigo-500/40 p-6 rounded-[32px] text-center shadow-[0_0_60px_rgba(99,102,241,0.4)] max-w-xs w-full space-y-4">
         
@@ -484,7 +575,7 @@
         </div>
         
         <div>
-          <h2 class="text-xl font-black text-white tracking-tight">¡PROCESANDO TU PEDIDO!</h2>
+          <h2 class="text-xl font-black text-white tracking-tight">¡PROCESANDO SOLICITUD!</h2>
           <p id="txt-estado-carga" class="text-xs font-semibold text-indigo-200 mt-1">Lanzando la orden al sistema...</p>
         </div>
         <div class="space-y-2 pt-2">
@@ -495,7 +586,6 @@
           
           <div class="relative w-full h-8 bg-slate-950 rounded-full border border-slate-800 p-1 flex items-center overflow-hidden shadow-inner">
             <div id="barra-progreso-relleno" class="h-full bg-gradient-to-r from-accent-magenta via-indigo-600 to-accent-cyan rounded-full transition-all duration-100 ease-linear" style="width: 0%;"></div>
-            
             <div id="cohete-desplazable" class="absolute top-1/2 -translate-y-1/2 text-2xl transition-all duration-100 ease-linear pointer-events-none drop-shadow-[0_0_10px_rgba(0,242,254,0.9)]" style="left: 0%;">
               🚀
             </div>
@@ -532,135 +622,275 @@
 
     const NUMERO_WHATSAPP = "584262566854";
     let carrito = {};
+    let esPagoTransporteDirecto = false;
 
     let mapaRuta = null;
-    let puntoOrigen = [10.1500, -68.5667];
+    let puntoOrigen = [10.1500, -68.5667]; 
+    let textoOrigenStr = "Mi Ubicación (GPS)";
     let puntoDestino = null;
+    let textoDestinoStr = "No seleccionado";
     let lineaTrayecto = null;
-    let marcadorVehiculoVivo = null;
     let tipoTransporteSeleccionado = 'moto';
     let precioTransporte = 1.00;
 
     const productos = {
       viveres: [
-        { id: 'v_queso', nombre: 'Queso Blanco Duro (kg)', precioBase: 5.50, imagen: 'img/queso.jfif', sub: 'lacteos', badge: 'GRANEL', esGranel: true, unidadMedida: 'g', pasoGranel: 50, minGranel: 100, maxGranel: 3000, defGranel: 500 },
-        { id: 'v_jamon', nombre: 'Jamón de Espalda (kg)', precioBase: 7.60, imagen: 'img/jamon.jfif', sub: 'lacteos', badge: 'GRANEL', esGranel: true, unidadMedida: 'g', pasoGranel: 50, minGranel: 100, maxGranel: 3000, defGranel: 500 },
-        { id: 'v1', nombre: 'Harina PAN Blanca 1kg', precioBase: 1.20, imagen: 'img/harina.jfif', badge: 'MÁS VENDIDA', sub: 'harinas' },
-        { id: 'v2', nombre: 'Harina PAN Amarilla 1kg', precioBase: 1.20, imagen: 'img/harina.jfif', sub: 'harinas' },
-        { id: 'v3', nombre: 'Harina Trigo Leudante 1kg', precioBase: 1.35, imagen: 'img/Trigo.jfif', sub: 'harinas' },
-        { id: 'v22', nombre: 'Harina de Maíz Blanco Precocida Mary', precioBase: 0.74, imagen: 'img/Harina de Maíz Blanco Precocida Mary.jfif', badge: 'OFERTA', sub: 'harinas' },
-        { id: 'v23', nombre: 'Harina de Trigo Mary Leudante', precioBase: 0.92, imagen: 'img/Trigo.jfif', sub: 'harinas' },
-        { id: 'v24', nombre: 'Harina de Trigo Mary Todo Uso (20x903g)', precioBase: 0.88, imagen: 'img/Harina de Trigo Mary Leudante.jfif', sub: 'harinas' },
-        { id: 'v_arr_clasico', nombre: 'Arroz Clásico Superior Primor 1kg', precioBase: 1.30, imagen: 'img/Arroz Clásico primor.webp', badge: 'TOP', sub: 'granos' },
-        { id: 'v_arr_perlado', nombre: 'Arroz Perlado Primor 900g', precioBase: 1.25, imagen: 'img/arroz perlado primor.webp', sub: 'granos' },
-        { id: 'v_arr_tradicional', nombre: 'Arroz Tradicional Primor 1kg', precioBase: 1.15, imagen: 'img/arroz tradicional prim0or.webp', sub: 'granos' },
-        { id: 'v_crema_arroz', nombre: 'Crema de Arroz Primor', precioBase: 1.10, imagen: 'img/arror primor crema.webp', sub: 'granos' },
-        { id: 'v7', nombre: 'Caraotas Negras 500g', precioBase: 1.50, icon: '🫘', sub: 'granos' },
-        { id: 'v8', nombre: 'Lentejas 500g', precioBase: 1.40, icon: '🫘', sub: 'granos' },
-        { id: 'v17', nombre: 'Arroz Mary Esmeralda', precioBase: 1.62, imagen: 'img/Arroz Mary Esmeralda.jfif', sub: 'granos' },
-        { id: 'v18', nombre: 'Arroz Mary Premium', precioBase: 1.51, imagen: 'img/Arroz Mary Premium.jfif', sub: 'granos' },
-        { id: 'v19', nombre: 'Arroz Mary Superior', precioBase: 1.07, imagen: 'img/Arroz Mary Superior.jfif', sub: 'granos' },
-        { id: 'v20', nombre: 'Arroz Mary Tradicional', precioBase: 1.06, imagen: 'img/Arroz Mary Superior.jfif', badge: 'ECONÓMICO', sub: 'granos' },
-        { id: 'v25', nombre: 'Arvejas Verdes Partidas Mary (30x400g)', precioBase: 1.06, icon: '🫘', sub: 'granos' },
-        { id: 'v26', nombre: 'Caraotas Negras Mary (24x500g)', precioBase: 1.31, icon: '🫘', sub: 'granos' },
-        { id: 'v28', nombre: 'Maíz para Cotufa Mary (24x500g)', precioBase: 1.29, icon: '🍿', sub: 'granos' },
-        { id: 'v_pasta_larga', nombre: 'Pasta Larga Primor 1kg', precioBase: 1.40, imagen: 'img/primor pasta larga.webp', sub: 'pastas' },
-        { id: 'v_linguini', nombre: 'Pasta Linguini Primor 1kg', precioBase: 1.40, imagen: 'img/linguini primor.webp', sub: 'pastas' },
-        { id: 'v_tornillos', nombre: 'Pasta Tornillos Primor 1kg', precioBase: 1.40, imagen: 'img/tornillo psta primor.webp', sub: 'pastas' },
-        { id: 'v_plumitas', nombre: 'Pasta Plumitas Primor 1kg', precioBase: 1.40, imagen: 'img/plumitas primor.webp', sub: 'pastas' },
-        { id: 'v_dedales', nombre: 'Pasta Dedales Primor 1kg', precioBase: 1.40, imagen: 'img/dedale primor.webp', sub: 'pastas' },
-        { id: 'v29', nombre: 'Pasta Mary Dedal Premium (12x500g)', precioBase: 0.87, imagen: 'img/pasyta corta m.jfif', sub: 'pastas' },
-        { id: 'v30', nombre: 'Pasta Mary Linguini Premium (24x500g)', precioBase: 0.83, imagen: 'img/pasta larga.jfif', badge: 'ECONÓMICA', sub: 'pastas' },
-        { id: 'v31', nombre: 'Pasta Mary Macarrón Premium (12x500g)', precioBase: 0.87, imagen: 'img/pasyta corta m.jfif', sub: 'pastas' },
-        { id: 'v32', nombre: 'Pasta Mary Pluma Superior (12x1kg)', precioBase: 1.30, imagen: 'img/pasyta corta m.jfif', sub: 'pastas' },
-        { id: 'v_mazeite', nombre: 'Aceite de Maíz Mazeite 1L', precioBase: 2.80, imagen: 'img/Mazeite.webp', badge: 'PROMO', sub: 'lacteos' },
-        { id: 'vf_mantequilla_nelly', nombre: 'Margarina Nelly 500g', precioBase: 2.50, imagen: 'img/mantequila nelly.webp', sub: 'lacteos' },
-        { id: 'v12', nombre: 'Mantequilla Mavesa 500g', precioBase: 2.40, imagen: 'img/mantequilla.jfif', sub: 'lacteos' },
-        { id: 'v13', nombre: 'Mayonesa Mavesa 500g', precioBase: 3.20, imagen: 'img/maynesa.jfif', sub: 'lacteos' },
-        { id: 'v14', nombre: 'Queso Fundido Rikesa Cheddar', precioBase: 2.50, imagen: 'img/rikesa.jfif', sub: 'lacteos' },
-        { id: 'v15', nombre: 'Salsa de Tomate Ketchup Pampero', precioBase: 2.00, imagen: 'img/salsa.jfif', sub: 'lacteos' },
-        { id: 'v16', nombre: 'Alimento Achocolatado Toddy 400g', precioBase: 4.50, imagen: 'img/tody.jfif', sub: 'lacteos' },
-        { id: 'v21', nombre: 'Crema de Arroz Mary Ener.', precioBase: 0.80, imagen: 'img/crema.jfif', sub: 'lacteos' },
-        { id: 'v34', nombre: 'Galletas Charmy Brownie (24x192g)', precioBase: 1.11, imagen: 'img/charmi browie.jfif', sub: 'lacteos' },
-        { id: 'v35', nombre: 'Galletas Charmy Choco Manía (24x192g)', precioBase: 1.11, icon: '🍪', sub: 'lacteos' },
-        { id: 'v42', nombre: 'Galletas TipTop Choco Maní (48x96g)', precioBase: 0.63, imagen: 'img/tiptop chpcholate.jfif', sub: 'lacteos' },
-        { id: 'v43', nombre: 'Galletas TipTop Chocolate (48x96g)', precioBase: 0.63, imagen: 'img/tiptop chpcholate.jfif', sub: 'lacteos' },
-        { id: 'v48', nombre: 'Galletas Caledonia María (24x168g)', precioBase: 0.61, icon: '🍪', sub: 'lacteos' },
-        { id: 'v52', nombre: 'NESTLE Crema de Leche 48x300g', precioBase: 3.22, icon: '🥛', sub: 'lacteos' },
-        { id: 'v53', nombre: 'NESTLE Leche Condensada 48x395g', precioBase: 3.40, icon: '🥛', sub: 'lacteos' },
-        { id: 'v61', nombre: 'NIDO FORTICRECE LactoFree 6x900g VE', precioBase: 19.99, icon: '🍼', sub: 'lacteos' },
-        { id: 'v66', nombre: 'Cerelac Sachet 24x400g', precioBase: 6.80, icon: '🥣', sub: 'lacteos' },
-        { id: 'v71', nombre: 'Rica Chicha Fortificado Sobre 24x400g', precioBase: 4.58, icon: '🥛', sub: 'lacteos' }
+        { id: 'v_harina_bellini', nombre: 'Harina de Maíz Bellini 1kg', precioBase: 0.75, imagen: 'img/harina.jfif', sub: 'harinas' },
+        { id: 'v_harina_belen', nombre: 'Harina de Maíz Belén 1kg', precioBase: 0.99, imagen: 'img/harina.jfif', sub: 'harinas' },
+        { id: 'v_harina_pan_mezcla', nombre: 'Harina PAN Mezcla Maíz y Arroz 1kg', precioBase: 1.26, imagen: 'img/harina.jfif', sub: 'harinas' },
+        { id: 'v_harina_pan_blanca', nombre: 'Harina PAN Maíz Blanco 1kg', precioBase: 1.31, imagen: 'img/harina.jfif', badge: 'MÁS VENDIDA', sub: 'harinas' },
+        { id: 'v_harina_pan_amarilla', nombre: 'Harina de Maíz Amarillo 1kg', precioBase: 1.18, imagen: 'img/harina.jfif', sub: 'harinas' },
+        { id: 'v_harina_juana', nombre: 'Harina de Maíz Juana 1kg', precioBase: 1.10, imagen: 'img/harina.jfif', sub: 'harinas' },
+        { id: 'v_harina_fina', nombre: 'Harina Fina 1kg', precioBase: 0.89, imagen: 'img/harina.jfif', sub: 'harinas' },
+        { id: 'v_harina_emilia', nombre: 'Harina de Maíz Doña Emilia 1kg', precioBase: 1.00, imagen: 'img/harina.jfif', sub: 'harinas' },
+        { id: 'v_trigo_domaria', nombre: 'Harina de Trigo Leudante Doña María 1kg', precioBase: 1.40, imagen: 'img/Trigo.jfif', sub: 'harinas' },
+        { id: 'v_trigo_mary_leu', nombre: 'Harina de Trigo Leudante Mary 900g', precioBase: 1.35, imagen: 'img/Harina de Trigo Mary Leudante.jfif', sub: 'harinas' },
+        { id: 'v_trigo_mary_tu', nombre: 'Harina de Trigo Todo Uso Mary 900g', precioBase: 1.24, imagen: 'img/Trigo.jfif', sub: 'harinas' },
+        { id: 'v_trigo_dulcemar', nombre: 'Harina de Trigo Leudante Dulce Mar 1kg', precioBase: 1.33, imagen: 'img/Trigo.jfif', sub: 'harinas' },
+        { id: 'v_levadura_gloripan', nombre: 'Levadura Gloripan 500g', precioBase: 3.75, icon: '🍞', sub: 'harinas' },
+        { id: 'v_trigo_aveiro_kg', nombre: 'Harina de Trigo Aveiro (kg)', precioBase: 1.00, imagen: 'img/Trigo.jfif', sub: 'harinas' },
+
+        { id: 'v_pasta_primavera', nombre: 'Pasata Primavera Larga 1kg', precioBase: 0.78, imagen: 'img/pasta larga.jfif', sub: 'pastas' },
+        { id: 'v_pasta_veneciana', nombre: 'Pasta Veneciana Corta 1kg', precioBase: 1.32, imagen: 'img/pasyta corta m.jfif', sub: 'pastas' },
+        { id: 'v_pasta_mary_larga', nombre: 'Pasta Mary Larga 1kg', precioBase: 1.40, imagen: 'img/pasta larga.jfif', sub: 'pastas' },
+        { id: 'v_pasta_esp_500g', nombre: 'Pasta Especial Larga 500g', precioBase: 0.77, imagen: 'img/pasta larga.jfif', sub: 'pastas' },
+        { id: 'v_pasta_esp_l_1kg', nombre: 'Pasta Especial Larga 1kg', precioBase: 1.27, imagen: 'img/pasta larga.jfif', sub: 'pastas' },
+        { id: 'v_pasta_esp_c_1kg', nombre: 'Pasta Especial Corta 1kg', precioBase: 1.27, imagen: 'img/pasyta corta m.jfif', sub: 'pastas' },
+        { id: 'v_pasta_horiz_l', nombre: 'Pasta Larga Horizonte 1kg', precioBase: 1.10, imagen: 'img/pasta larga.jfif', sub: 'pastas' },
+        { id: 'v_pasta_horiz_c', nombre: 'Pasta Corta Horizonte 1kg', precioBase: 1.45, imagen: 'img/pasyta corta m.jfif', sub: 'pastas' },
+        { id: 'v_pasta_allegri_l', nombre: 'Pasta Larga Allegri 1kg', precioBase: 1.50, imagen: 'img/pasta larga.jfif', sub: 'pastas' },
+        { id: 'v_pasta_allegri_c', nombre: 'Pasta Corta Allegri 1kg', precioBase: 1.58, imagen: 'img/pasyta corta m.jfif', sub: 'pastas' },
+        { id: 'v_pasta_sindoni_l', nombre: 'Pasta Larga Sindoni 1kg', precioBase: 1.34, imagen: 'img/pasta larga.jfif', sub: 'pastas' },
+        { id: 'v_pasta_sindoni_c', nombre: 'Pasta Corta Sindoni 1kg', precioBase: 1.34, imagen: 'img/pasyta corta m.jfif', sub: 'pastas' },
+        { id: 'v_pasta_sindoni_500g', nombre: 'Pasta Corta Sindoni 500g', precioBase: 0.72, imagen: 'img/pasyta corta m.jfif', sub: 'pastas' },
+        { id: 'v_pasata_sindoni', nombre: 'Pasata Sindoni 480g', precioBase: 2.24, icon: '🥫', sub: 'pastas' },
+        { id: 'v_pasta_oba_500g', nombre: 'Pasta Larga Oba 500g', precioBase: 0.77, imagen: 'img/pasta larga.jfif', sub: 'pastas' },
+
+        { id: 'v_arroz_delicia', nombre: 'Arroz Delicia 1kg', precioBase: 0.96, imagen: 'img/Arroz Mary Superior.jfif', sub: 'granos' },
+        { id: 'v_arroz_mary_trad', nombre: 'Arroz Blanco Mary Tradicional 1kg', precioBase: 0.95, imagen: 'img/Arroz Mary Superior.jfif', sub: 'granos' },
+        { id: 'v_arroz_mary_sup', nombre: 'Arroz Blanco Mary Superior 1kg', precioBase: 1.02, imagen: 'img/Arroz Mary Superior.jfif', sub: 'granos' },
+        { id: 'v_arroz_mary_prem', nombre: 'Arroz Blanco Mary Premium 1kg', precioBase: 1.08, imagen: 'img/Arroz Mary Premium.jfif', sub: 'granos' },
+        { id: 'v_arroz_mary_esm', nombre: 'Arroz Blanco Mary Esmeralda 1kg', precioBase: 1.19, imagen: 'img/Arroz Mary Esmeralda.jfif', badge: 'TOP', sub: 'granos' },
+        { id: 'v_arroz_llano_verde', nombre: 'Arroz Llano Verde 1kg', precioBase: 0.96, imagen: 'img/Arroz Mary Superior.jfif', sub: 'granos' },
+        { id: 'v_arroz_molienda', nombre: 'Arroz La Molienda 1kg', precioBase: 0.90, imagen: 'img/Arroz Mary Superior.jfif', sub: 'granos' },
+        { id: 'v_arroz_emilia', nombre: 'Arroz Doña Emilia 1kg', precioBase: 0.96, imagen: 'img/Arroz Mary Superior.jfif', sub: 'granos' },
+
+        { id: 'v_azucar_miangel', nombre: 'Azúcar Mi Ángel 1kg', precioBase: 1.03, icon: '🍬', sub: 'granos' },
+        { id: 'v_azucar_montalban', nombre: 'Azúcar Montalbán 1kg', precioBase: 1.18, icon: '🍬', sub: 'granos' },
+        { id: 'v_azucar_konfit', nombre: 'Azúcar Blanca Konfit 1kg', precioBase: 1.23, icon: '🍬', sub: 'granos' },
+        { id: 'v_azucar_sonora', nombre: 'Azúcar Blanca Sonora 1kg', precioBase: 1.10, icon: '🍬', sub: 'granos' },
+        { id: 'v_sal_prosanca_1kg', nombre: 'Sal Blanca Refinada Prosanca 1kg', precioBase: 0.19, icon: '🧂', sub: 'granos' },
+
+        { id: 'v_arvejas_maizalito', nombre: 'Arvejas Verdes Maizalito 400g', precioBase: 0.89, icon: '🫘', sub: 'granos' },
+        { id: 'v_lentejas_maizalito', nombre: 'Lentejas Maizalito 400g', precioBase: 1.13, icon: '🫘', sub: 'granos' },
+        { id: 'v_caraotas_m_400g', nombre: 'Caraotas Negras Maizalito 400g', precioBase: 0.96, icon: '🫘', sub: 'granos' },
+        { id: 'v_caraotas_m_900g', nombre: 'Caraotas Negras Maizalito 900g', precioBase: 2.14, icon: '🫘', sub: 'granos' },
+        { id: 'v_maiz_cotufa_m', nombre: 'Maíz para Cotufas Maizalito 400g', precioBase: 0.91, icon: '🍿', sub: 'granos' },
+
+        { id: 'v_crema_arroz_polly', nombre: 'Crema de Arroz Polly Bolsa 450g', precioBase: 2.37, imagen: 'img/crema.jfif', sub: 'lacteos' },
+        { id: 'v_villa_lactea_400g', nombre: 'Alimento en Polvo Villa Láctea 400g', precioBase: 2.67, icon: '🥛', sub: 'lacteos' },
+        { id: 'v_lactovisoy_200g', nombre: 'Lactovisoy Sachet 200g', precioBase: 11.98, icon: '🥤', sub: 'lacteos' },
+        { id: 'v_lactovisoy_500g', nombre: 'Lactovisoy Sobre 500g', precioBase: 3.33, icon: '🥤', sub: 'lacteos' },
+        { id: 'v_cerelac_400g', nombre: 'Cerelac 400g', precioBase: 4.47, icon: '🥣', sub: 'lacteos' },
+        { id: 'v_cerelac_900g', nombre: 'Cerelac 900g', precioBase: 8.84, icon: '🥣', sub: 'lacteos' },
+        { id: 'v_nestum_trigo_miel', nombre: 'Nestum Trigo y Miel 225g', precioBase: 2.96, icon: '🥣', sub: 'lacteos' },
+        { id: 'v_nestum_3cereales', nombre: 'Nestum 3 Cereales 225g', precioBase: 2.96, icon: '🥣', sub: 'lacteos' },
+        { id: 'v_nestum_arroz', nombre: 'Nestum de Arroz 225g', precioBase: 2.96, icon: '🥣', sub: 'lacteos' },
+        { id: 'v_nestum_maiz', nombre: 'Nestum Hierro Maíz 225g', precioBase: 2.96, icon: '🥣', sub: 'lacteos' },
+        { id: 'v_toddy_100g', nombre: 'Toddy Bolsa 100g', precioBase: 1.38, imagen: 'img/tody.jfif', sub: 'lacteos' },
+        { id: 'v_toddy_200g', nombre: 'Toddy 200g', precioBase: 2.59, imagen: 'img/tody.jfif', sub: 'lacteos' },
+        { id: 'v_toddy_400g', nombre: 'Toddy 400g', precioBase: 4.94, imagen: 'img/tody.jfif', sub: 'lacteos' },
+        { id: 'v_leche_campesina_800g', nombre: 'Leche Campesina 800g', precioBase: 8.85, icon: '🥛', sub: 'lacteos' },
+        { id: 'v_induleche_360g', nombre: 'Leche en Polvo Induleche 360g', precioBase: 4.00, icon: '🥛', sub: 'lacteos' },
+        { id: 'v_campestre_900g', nombre: 'Leche en Polvo Campestre 900g', precioBase: 8.29, icon: '🥛', sub: 'lacteos' },
+        { id: 'v_campestre_500g', nombre: 'Leche en Polvo Campestre 500g', precioBase: 4.43, icon: '🥛', sub: 'lacteos' },
+
+        { id: 'v_sardina_aceite', nombre: 'Sardina Misión Mar Aceite', precioBase: 0.55, icon: '🐟', sub: 'lacteos' },
+        { id: 'v_sardina_tomate', nombre: 'Sardina Misión Mar Tomate', precioBase: 0.56, icon: '🐟', sub: 'lacteos' },
+        { id: 'v_atun_margarita_140g', nombre: 'Atún en Aceite Margarita 140g', precioBase: 2.09, icon: '🐟', sub: 'lacteos' },
+        { id: 'v_atun_marguajira', nombre: 'Atún Marguajira', precioBase: 0.94, icon: '🐟', sub: 'lacteos' },
+        { id: 'v_atun_lobo_175g', nombre: 'Atún Lobo de Mar 175g', precioBase: 1.09, icon: '🐟', sub: 'lacteos' },
+        { id: 'v_diablito_115g', nombre: 'Diablito Underwood 115g', precioBase: 2.35, icon: '🥫', sub: 'lacteos' },
+        { id: 'v_diablito_54g', nombre: 'Diablito Underwood 54g', precioBase: 1.25, icon: '🥫', sub: 'lacteos' },
+        { id: 'v_twisty_keso_200g', nombre: 'Twisty Keso 200g', precioBase: 2.19, icon: '🧀', sub: 'lacteos' },
+        { id: 'v_dalvito_200g', nombre: 'Dalvito 200g', precioBase: 2.56, icon: '🧀', sub: 'lacteos' },
+
+        { id: 'v_margarina_delicia_500g', nombre: 'Margarina Delicia (500g)', precioBase: 0.73, imagen: 'img/mantequilla.jfif', sub: 'lacteos' },
+        { id: 'v_margarina_deline_250g', nombre: 'Margarina Deline 250g', precioBase: 0.85, imagen: 'img/mantequilla.jfif', sub: 'lacteos' },
+        { id: 'v_margarina_albeca_400g', nombre: 'Margarina La Rendidora Albeca 400g', precioBase: 1.73, imagen: 'img/mantequilla.jfif', sub: 'lacteos' },
+        { id: 'v_aceite_oriental_760ml', nombre: 'Aceite Oriental 760ml', precioBase: 2.18, imagen: 'img/Mazeite.webp', sub: 'lacteos' },
+        { id: 'v_aceite_palma_800ml', nombre: 'Aceite Oleo Gold de Palma 800ml', precioBase: 2.28, imagen: 'img/Mazeite.webp', sub: 'lacteos' },
+        { id: 'v_aceite_soya_900ml', nombre: 'Aceite Brasilero Soya 900ml', precioBase: 2.18, imagen: 'img/Mazeite.webp', sub: 'lacteos' },
+        { id: 'v_aceite_oliva_500ml', nombre: 'Aceite de Oliva Puro 500ml', precioBase: 6.67, imagen: 'img/Mazeite.webp', sub: 'lacteos' },
+        { id: 'v_aceite_mixto_430ml', nombre: 'Aceite Mixto 430ml', precioBase: 0.96, imagen: 'img/Mazeite.webp', sub: 'lacteos' },
+        { id: 'v_mazeite_1l', nombre: 'Aceite Mazeite 1L', precioBase: 5.28, imagen: 'img/Mazeite.webp', badge: 'PROMO', sub: 'lacteos' }
+      ],
+      charcuteria: [
+        { id: 'ch_salchicha_pollo_kg', nombre: 'Salchicha de Pollo Don Ramón (kg)', precioBase: 1.98, icon: '🌭', esGranel: true, unidadMedida: 'g', pasoGranel: 100, minGranel: 200, maxGranel: 3000, defGranel: 500 },
+        { id: 'ch_salchicha_coctel_kg', nombre: 'Salchicha Pollo Cóctel (kg)', precioBase: 2.09, icon: '🌭', esGranel: true, unidadMedida: 'g', pasoGranel: 100, minGranel: 200, maxGranel: 3000, defGranel: 500 },
+        { id: 'ch_salchicha_vacio_kg', nombre: 'Salchicha Pollo Al Vacío (kg)', precioBase: 2.20, icon: '🌭', esGranel: true, unidadMedida: 'g', pasoGranel: 100, minGranel: 200, maxGranel: 3000, defGranel: 500 },
+        { id: 'ch_salchicha_polaca_kg', nombre: 'Salchicha Tipo Polaca (kg)', precioBase: 2.20, icon: '🌭', esGranel: true, unidadMedida: 'g', pasoGranel: 100, minGranel: 200, maxGranel: 3000, defGranel: 500 },
+        { id: 'ch_jamon_espalda_kg', nombre: 'Jamón de Espalda Don Ramón (kg)', precioBase: 4.18, imagen: 'img/jamon.jfif', esGranel: true, unidadMedida: 'g', pasoGranel: 100, minGranel: 200, maxGranel: 3000, defGranel: 500 },
+        { id: 'ch_jamon_navideno_kg', nombre: 'Jamón Ahumado Navideño (kg)', precioBase: 2.97, imagen: 'img/jamon.jfif', esGranel: true, unidadMedida: 'g', pasoGranel: 100, minGranel: 200, maxGranel: 3000, defGranel: 500 },
+        { id: 'ch_jamon_espalda_600g', nombre: 'Jamón de Espalda 600g (Unidad)', precioBase: 2.09, imagen: 'img/jamon.jfif' },
+        { id: 'ch_jamon_arepero_kg', nombre: 'Jamón Arepero Don Ramón (kg)', precioBase: 4.07, imagen: 'img/jamon.jfif', esGranel: true, unidadMedida: 'g', pasoGranel: 100, minGranel: 200, maxGranel: 3000, defGranel: 500 },
+        { id: 'ch_mortadela_pollo_400g', nombre: 'Mortadela de Pollo 400g (Unidad)', precioBase: 0.83, icon: '🥩' },
+        { id: 'ch_mortadela_pollo_600g', nombre: 'Mortadela de Pollo 600g (Unidad)', precioBase: 1.33, icon: '🥩' },
+        { id: 'ch_mortadela_pollo_900g', nombre: 'Mortadela de Pollo 900g (Unidad)', precioBase: 2.01, icon: '🥩' },
+
+        { id: 'ch_masa_pastelito_800g', nombre: 'Masa de Pastelito 800g', precioBase: 0.89, icon: '🥟' },
+        { id: 'ch_masa_picaro_500g', nombre: 'Masa de Pastelito Pícaro\'s 500g', precioBase: 0.68, icon: '🥟' },
+        { id: 'ch_masa_picaro_1kg', nombre: 'Masa de Pastelito Pícaro\'s 1kg', precioBase: 1.26, icon: '🥟' },
+        { id: 'ch_suero_bravos', nombre: 'Suero Cremoso Bravos de Apure', precioBase: 2.05, icon: '🥛' },
+        { id: 'ch_queso_blanco_kg', nombre: 'Queso Blanco Duro (kg)', precioBase: 4.40, imagen: 'img/queso.jfif', badge: 'MÁS VENDIDO', esGranel: true, unidadMedida: 'g', pasoGranel: 100, minGranel: 200, maxGranel: 3000, defGranel: 500 },
+        { id: 'ch_chorizo_seara_kg', nombre: 'Chorizo Calabresa Seara (kg)', precioBase: 5.73, icon: '🌭', esGranel: true, unidadMedida: 'g', pasoGranel: 100, minGranel: 200, maxGranel: 3000, defGranel: 500 },
+        { id: 'ch_mozzarella_oriana_kg', nombre: 'Queso Mozzarella Oriana (kg)', precioBase: 6.38, imagen: 'img/queso.jfif', esGranel: true, unidadMedida: 'g', pasoGranel: 100, minGranel: 200, maxGranel: 3000, defGranel: 500 },
+        { id: 'ch_ricotta_imperial_kg', nombre: 'Ricotta Imperial (kg)', precioBase: 2.76, imagen: 'img/queso.jfif', esGranel: true, unidadMedida: 'g', pasoGranel: 100, minGranel: 200, maxGranel: 3000, defGranel: 500 },
+        { id: 'ch_munster_imperial_kg', nombre: 'Queso Munster Imperial (kg)', precioBase: 9.52, imagen: 'img/queso.jfif', esGranel: true, unidadMedida: 'g', pasoGranel: 100, minGranel: 200, maxGranel: 3000, defGranel: 500 },
+        { id: 'ch_amarillo_imperial_kg', nombre: 'Queso Amarillo Imperial (kg)', precioBase: 8.85, imagen: 'img/queso.jfif', esGranel: true, unidadMedida: 'g', pasoGranel: 100, minGranel: 200, maxGranel: 3000, defGranel: 500 },
+        { id: 'ch_paisa_imperial_kg', nombre: 'Queso Paisa Imperial (kg)', precioBase: 6.72, imagen: 'img/queso.jfif', esGranel: true, unidadMedida: 'g', pasoGranel: 100, minGranel: 200, maxGranel: 3000, defGranel: 500 },
+        { id: 'ch_pecorino_100g', nombre: 'Pecorino Imperial (Por 100g)', precioBase: 2.24, icon: '🧀' },
+        { id: 'ch_paisa_galeron_kg', nombre: 'Queso Paisa Galerón (kg)', precioBase: 7.06, imagen: 'img/queso.jfif', esGranel: true, unidadMedida: 'g', pasoGranel: 100, minGranel: 200, maxGranel: 3000, defGranel: 500 },
+        { id: 'ch_mozzarella_galeron_kg', nombre: 'Queso Mozzarella Galerón (kg)', precioBase: 7.62, imagen: 'img/queso.jfif', esGranel: true, unidadMedida: 'g', pasoGranel: 100, minGranel: 200, maxGranel: 3000, defGranel: 500 },
+        { id: 'ch_cheddar_cheddys_kg', nombre: 'Queso Cheddar Cheddys (kg)', precioBase: 7.64, imagen: 'img/queso.jfif', esGranel: true, unidadMedida: 'g', pasoGranel: 100, minGranel: 200, maxGranel: 3000, defGranel: 500 },
+        { id: 'ch_amarillo_bravos_kg', nombre: 'Queso Amarillo Bravos de Apure (kg)', precioBase: 7.28, imagen: 'img/queso.jfif', esGranel: true, unidadMedida: 'g', pasoGranel: 100, minGranel: 200, maxGranel: 3000, defGranel: 500 },
+        { id: 'ch_mozzarella_bravos_kg', nombre: 'Queso Mozzarella Bravos de Apure (kg)', precioBase: 5.60, imagen: 'img/queso.jfif', esGranel: true, unidadMedida: 'g', pasoGranel: 100, minGranel: 200, maxGranel: 3000, defGranel: 500 },
+        { id: 'ch_mozzarella_andina_kg', nombre: 'Queso Mozzarella La Andina (kg)', precioBase: 5.06, imagen: 'img/queso.jfif', esGranel: true, unidadMedida: 'g', pasoGranel: 100, minGranel: 200, maxGranel: 3000, defGranel: 500 },
+        { id: 'ch_cheddar_andina_kg', nombre: 'Queso Cheddar La Andina (kg)', precioBase: 5.28, imagen: 'img/queso.jfif', esGranel: true, unidadMedida: 'g', pasoGranel: 100, minGranel: 200, maxGranel: 3000, defGranel: 500 },
+
+        { id: 'ch_pavo_lanonna_kg', nombre: 'Jamón de Pavo La Nonna (kg)', precioBase: 6.77, imagen: 'img/jamon.jfif', esGranel: true, unidadMedida: 'g', pasoGranel: 100, minGranel: 200, maxGranel: 3000, defGranel: 500 },
+        { id: 'ch_pollo_lanonna_kg', nombre: 'Jamón de Pollo La Nonna (kg)', precioBase: 6.67, imagen: 'img/jamon.jfif', esGranel: true, unidadMedida: 'g', pasoGranel: 100, minGranel: 200, maxGranel: 3000, defGranel: 500 },
+        { id: 'ch_tender_pieza', nombre: 'Jamón Ahumado tipo Tender', precioBase: 4.95, imagen: 'img/jamon.jfif' },
+        { id: 'ch_fiambre_cumbre_kg', nombre: 'Fiambre Cumbre Fresca (kg)', precioBase: 4.20, imagen: 'img/jamon.jfif', esGranel: true, unidadMedida: 'g', pasoGranel: 100, minGranel: 200, maxGranel: 3000, defGranel: 500 },
+        { id: 'ch_arepero_cumbre_kg', nombre: 'Jamón Arepero Cumbre Fresca (kg)', precioBase: 4.49, imagen: 'img/jamon.jfif', esGranel: true, unidadMedida: 'g', pasoGranel: 100, minGranel: 200, maxGranel: 3000, defGranel: 500 },
+        { id: 'ch_pechuga_cumbre_kg', nombre: 'Jamón Pechuga de Pollo Cumbre (kg)', precioBase: 4.85, imagen: 'img/jamon.jfif', esGranel: true, unidadMedida: 'g', pasoGranel: 100, minGranel: 200, maxGranel: 3000, defGranel: 500 },
+        { id: 'ch_pavo_cumbre_kg', nombre: 'Jamón de Pavo Cumbre Fresca (kg)', precioBase: 5.98, imagen: 'img/jamon.jfif', esGranel: true, unidadMedida: 'g', pasoGranel: 100, minGranel: 200, maxGranel: 3000, defGranel: 500 },
+        { id: 'ch_pierna_cumbre_kg', nombre: 'Jamón de Pierna Cumbre Fresca (kg)', precioBase: 6.15, imagen: 'img/jamon.jfif', esGranel: true, unidadMedida: 'g', pasoGranel: 100, minGranel: 200, maxGranel: 3000, defGranel: 500 },
+        { id: 'ch_salchicha_cumbre_l_kg', nombre: 'Salchicha Larga Duración Cumbre (kg)', precioBase: 3.11, icon: '🌭', esGranel: true, unidadMedida: 'g', pasoGranel: 100, minGranel: 200, maxGranel: 3000, defGranel: 500 },
+        { id: 'ch_salchicha_cumbre_v_kg', nombre: 'Salchicha Cumbre Al Vacío (kg)', precioBase: 3.16, icon: '🌭', esGranel: true, unidadMedida: 'g', pasoGranel: 100, minGranel: 200, maxGranel: 3000, defGranel: 500 },
+        { id: 'ch_tocineta_pieza_kg', nombre: 'Tocineta Ahumada en Pieza (kg)', precioBase: 8.00, icon: '🥓', esGranel: true, unidadMedida: 'g', pasoGranel: 100, minGranel: 200, maxGranel: 3000, defGranel: 500 },
+        { id: 'ch_tocineta_rebanada_kg', nombre: 'Tocineta Ahumada Rebanada (kg)', precioBase: 8.50, icon: '🥓', esGranel: true, unidadMedida: 'g', pasoGranel: 100, minGranel: 200, maxGranel: 3000, defGranel: 500 },
+        { id: 'ch_mortadela_extra_lanonna_kg', nombre: 'Mortadela Extra La Nonna (kg)', precioBase: 4.44, icon: '🥩', esGranel: true, unidadMedida: 'g', pasoGranel: 100, minGranel: 200, maxGranel: 3000, defGranel: 500 },
+        { id: 'ch_salchicha_mana_kg', nombre: 'Salchicha Tipo Polaca Mana (kg)', precioBase: 2.81, icon: '🌭', esGranel: true, unidadMedida: 'g', pasoGranel: 100, minGranel: 200, maxGranel: 3000, defGranel: 500 },
+        { id: 'ch_salchicha_guibon_kg', nombre: 'Salchicha Polaca Guibon (kg)', precioBase: 2.57, icon: '🌭', esGranel: true, unidadMedida: 'g', pasoGranel: 100, minGranel: 200, maxGranel: 3000, defGranel: 500 },
+        { id: 'ch_huevos_carton', nombre: 'Cartón de Huevos (30 Und)', precioBase: 3.85, icon: '🥚', badge: 'FRESCO' }
+      ],
+      carnes: [
+        { id: 'cn_costilla_res_kg', nombre: 'Costilla de Res (kg)', precioBase: 2.50, icon: '🥩', esGranel: true, unidadMedida: 'g', pasoGranel: 100, minGranel: 250, maxGranel: 4000, defGranel: 1000 },
+        { id: 'cn_carne_molida_kg', nombre: 'Carne Molida (kg)', precioBase: 4.20, icon: '🥩', badge: 'TOP', esGranel: true, unidadMedida: 'g', pasoGranel: 100, minGranel: 250, maxGranel: 4000, defGranel: 1000 },
+        { id: 'cn_carne_guisar_kg', nombre: 'Carne para Guisar (kg)', precioBase: 4.20, icon: '🥩', esGranel: true, unidadMedida: 'g', pasoGranel: 100, minGranel: 250, maxGranel: 4000, defGranel: 1000 },
+        { id: 'cn_carne_mechar_kg', nombre: 'Carne para Mechar (kg)', precioBase: 4.20, icon: '🥩', esGranel: true, unidadMedida: 'g', pasoGranel: 100, minGranel: 250, maxGranel: 4000, defGranel: 1000 },
+        { id: 'cn_lagarto_reina_kg', nombre: 'Carne Lagarto La Reina (kg)', precioBase: 4.20, icon: '🥩', esGranel: true, unidadMedida: 'g', pasoGranel: 100, minGranel: 250, maxGranel: 4000, defGranel: 1000 },
+        { id: 'cn_higado_res_kg', nombre: 'Hígado de Res (kg)', precioBase: 4.20, icon: '🥩', esGranel: true, unidadMedida: 'g', pasoGranel: 100, minGranel: 250, maxGranel: 4000, defGranel: 1000 },
+        { id: 'cn_bisteck_kg', nombre: 'Carne de Bisteck (kg)', precioBase: 5.50, icon: '🥩', badge: 'POPULAR', esGranel: true, unidadMedida: 'g', pasoGranel: 100, minGranel: 250, maxGranel: 4000, defGranel: 1000 },
+        { id: 'cn_strogonoff_kg', nombre: 'Carne Strogonoff (kg)', precioBase: 5.50, icon: '🥩', esGranel: true, unidadMedida: 'g', pasoGranel: 100, minGranel: 250, maxGranel: 4000, defGranel: 1000 },
+        { id: 'cn_muchacho_red_kg', nombre: 'Muchacho Redondo (kg)', precioBase: 5.50, icon: '🥩', esGranel: true, unidadMedida: 'g', pasoGranel: 100, minGranel: 250, maxGranel: 4000, defGranel: 1000 },
+        { id: 'cn_muchacho_cuad_kg', nombre: 'Muchacho Cuadrado (kg)', precioBase: 5.50, icon: '🥩', esGranel: true, unidadMedida: 'g', pasoGranel: 100, minGranel: 250, maxGranel: 4000, defGranel: 1000 },
+        { id: 'cn_punta_trasera_kg', nombre: 'Punta Trasera (kg)', precioBase: 6.30, icon: '🥩', badge: 'PREMIUM', esGranel: true, unidadMedida: 'g', pasoGranel: 100, minGranel: 250, maxGranel: 4000, defGranel: 1000 },
+        { id: 'cn_solomo_cuerito_kg', nombre: 'Solomo de Cuerito (kg)', precioBase: 6.00, icon: '🥩', esGranel: true, unidadMedida: 'g', pasoGranel: 100, minGranel: 250, maxGranel: 4000, defGranel: 1000 },
+        { id: 'cn_lomito_res_kg', nombre: 'Lomito de Res (kg)', precioBase: 7.10, icon: '🥩', badge: 'PREMIUM', esGranel: true, unidadMedida: 'g', pasoGranel: 100, minGranel: 250, maxGranel: 4000, defGranel: 1000 },
+
+        { id: 'cn_pata_pollo_kg', nombre: 'Pata de Pollo (kg)', precioBase: 2.04, icon: '🍗', esGranel: true, unidadMedida: 'g', pasoGranel: 100, minGranel: 250, maxGranel: 4000, defGranel: 1000 },
+        { id: 'cn_molleja_pollo_kg', nombre: 'Molleja de Pollo (kg)', precioBase: 3.36, icon: '🍗', esGranel: true, unidadMedida: 'g', pasoGranel: 100, minGranel: 250, maxGranel: 4000, defGranel: 1000 },
+        { id: 'cn_muslo_pollo_kg', nombre: 'Muslo de Pollo (kg)', precioBase: 2.50, icon: '🍗', esGranel: true, unidadMedida: 'g', pasoGranel: 100, minGranel: 250, maxGranel: 4000, defGranel: 1000 },
+        { id: 'cn_pollo_milpollos_kg', nombre: 'Pollo Entero Mil Pollos (kg)', precioBase: 2.19, icon: '🍗', esGranel: true, unidadMedida: 'g', pasoGranel: 250, minGranel: 1000, maxGranel: 6000, defGranel: 2000 },
+        { id: 'cn_pollo_qpollos_kg', nombre: 'Pollo Entero Q Pollos (kg)', precioBase: 2.39, icon: '🍗', esGranel: true, unidadMedida: 'g', pasoGranel: 250, minGranel: 1000, maxGranel: 6000, defGranel: 2000 },
+        { id: 'cn_pechuga_pollo_kg', nombre: 'Pechuga de Pollo (kg)', precioBase: 3.80, icon: '🍗', badge: 'FRESCO', esGranel: true, unidadMedida: 'g', pasoGranel: 100, minGranel: 250, maxGranel: 4000, defGranel: 1000 },
+        { id: 'cn_milanesa_pollo_kg', nombre: 'Milanesa de Pollo (kg)', precioBase: 6.00, icon: '🍗', badge: 'TOP', esGranel: true, unidadMedida: 'g', pasoGranel: 100, minGranel: 250, maxGranel: 4000, defGranel: 1000 },
+
+        { id: 'cn_chuleta_pernil_kg', nombre: 'Chuleta de Pernil de Cerdo (kg)', precioBase: 5.60, icon: '🥩', esGranel: true, unidadMedida: 'g', pasoGranel: 100, minGranel: 250, maxGranel: 4000, defGranel: 1000 },
+        { id: 'cn_lomo_fresco_kg', nombre: 'Lomo Fresco de Cerdo (kg)', precioBase: 6.00, icon: '🥩', esGranel: true, unidadMedida: 'g', pasoGranel: 100, minGranel: 250, maxGranel: 4000, defGranel: 1000 },
+        { id: 'cn_pulpa_cerdo_kg', nombre: 'Pulpa de Cerdo (kg)', precioBase: 6.60, icon: '🥩', esGranel: true, unidadMedida: 'g', pasoGranel: 100, minGranel: 250, maxGranel: 4000, defGranel: 1000 },
+        { id: 'cn_lomo_ahumado_entero_kg', nombre: 'Lomo Ahumado Pieza Entera (kg)', precioBase: 5.50, icon: '🥩', esGranel: true, unidadMedida: 'g', pasoGranel: 100, minGranel: 250, maxGranel: 4000, defGranel: 1000 },
+        { id: 'cn_pernil_kg', nombre: 'Pernil de Cerdo (kg)', precioBase: 5.60, icon: '🥩', esGranel: true, unidadMedida: 'g', pasoGranel: 100, minGranel: 250, maxGranel: 4000, defGranel: 1000 },
+        { id: 'cn_costilla_cerdo_kg', nombre: 'Costilla de Cerdo (kg)', precioBase: 5.60, icon: '🥩', esGranel: true, unidadMedida: 'g', pasoGranel: 100, minGranel: 250, maxGranel: 4000, defGranel: 1000 },
+        { id: 'cn_lomo_ahumado_rebanado_kg', nombre: 'Lomo Ahumado Rebanado (kg)', precioBase: 6.00, icon: '🥩', esGranel: true, unidadMedida: 'g', pasoGranel: 100, minGranel: 250, maxGranel: 4000, defGranel: 1000 }
       ],
       panaderia: [
         { id: 'p_pan_sobado', nombre: 'Pan Sobado / Piñita Artesanal', precioBase: 1.50, imagen: 'img/pan.webp', badge: 'FRESCO' },
         { id: 'p_pan_baguette', nombre: 'Pan Baguette Francés', precioBase: 1.20, imagen: 'img/pan.webp' },
-        { id: 'p_quesillo', nombre: 'Quesillo Venezolano Casero (Porción)', precioBase: 2.50, imagen: 'img/pan.webp', badge: 'DULCE' },
-        { id: 'p_quesito', nombre: 'Palmeritas / Dulces Secos (Paquete)', precioBase: 1.80, imagen: 'img/pan.webp' },
-        { id: 'p_ponque', nombre: 'Ponqué Tradicional con Pasas', precioBase: 2.00, imagen: 'img/pan.webp', badge: 'DULCE' }
+        { id: 'p_quesillo', nombre: 'Quesillo Casero (Porción)', precioBase: 2.50, imagen: 'img/pan.webp', badge: 'DULCE' },
+        { id: 'p_quesito', nombre: 'Palmeritas / Dulces Secos', precioBase: 1.80, imagen: 'img/pan.webp' },
+        { id: 'p_ponque', nombre: 'Ponqué con Pasas', precioBase: 2.00, imagen: 'img/pan.webp', badge: 'DULCE' },
+        { id: 'v34', nombre: 'Galletas Charmy Brownie', precioBase: 1.11, imagen: 'img/charmi browie.jfif' },
+        { id: 'v35', nombre: 'Galletas Charmy Choco', precioBase: 1.11, icon: '🍪' },
+        { id: 'v42', nombre: 'Galletas TipTop Maní', precioBase: 0.63, imagen: 'img/tiptop chpcholate.jfif' },
+        { id: 'v43', nombre: 'Galletas TipTop Chocolate', precioBase: 0.63, imagen: 'img/tiptop chpcholate.jfif' },
+        { id: 'v48', nombre: 'Galletas Caledonia María', precioBase: 0.61, icon: '🍪' }
       ],
       verduras: [
         { id: 'vf_tomate', nombre: 'Tomate Perita (kg)', precioBase: 1.80, imagen: 'img/verdura.webp', badge: 'FRESCO', esGranel: true, unidadMedida: 'g', pasoGranel: 100, minGranel: 250, maxGranel: 3000, defGranel: 1000 },
         { id: 'vf_cebolla', nombre: 'Cebolla Blanca (kg)', precioBase: 1.60, imagen: 'img/verdura.webp', badge: 'FRESCO', esGranel: true, unidadMedida: 'g', pasoGranel: 100, minGranel: 250, maxGranel: 3000, defGranel: 1000 },
         { id: 'vf_papa', nombre: 'Papa Comercial (kg)', precioBase: 2.00, imagen: 'img/verdura.webp', esGranel: true, unidadMedida: 'g', pasoGranel: 100, minGranel: 250, maxGranel: 3000, defGranel: 1000 },
         { id: 'vf_zanahoria', nombre: 'Zanahoria Fresca (kg)', precioBase: 1.50, imagen: 'img/verdura.webp', esGranel: true, unidadMedida: 'g', pasoGranel: 100, minGranel: 250, maxGranel: 3000, defGranel: 1000 },
-        { id: 'vf_cambur', nombre: 'Cambur Verde / Maduro (kg)', precioBase: 1.10, imagen: 'img/verdura.webp', badge: 'FRUTA', esGranel: true, unidadMedida: 'g', pasoGranel: 100, minGranel: 250, maxGranel: 3000, defGranel: 1000 },
-        { id: 'vf_platano', nombre: 'Plátano Verde (Kg)', precioBase: 1.40, imagen: 'img/verdura.webp', esGranel: true, unidadMedida: 'g', pasoGranel: 100, minGranel: 250, maxGranel: 3000, defGranel: 1000 },
+        { id: 'vf_cambur', nombre: 'Cambur (kg)', precioBase: 1.10, imagen: 'img/verdura.webp', badge: 'FRUTA', esGranel: true, unidadMedida: 'g', pasoGranel: 100, minGranel: 250, maxGranel: 3000, defGranel: 1000 },
+        { id: 'vf_platano', nombre: 'Plátano Verde (kg)', precioBase: 1.40, imagen: 'img/verdura.webp', esGranel: true, unidadMedida: 'g', pasoGranel: 100, minGranel: 250, maxGranel: 3000, defGranel: 1000 },
         { id: 'vf_papaya', nombre: 'Lechosa / Papaya (kg)', precioBase: 1.30, imagen: 'img/verdura.webp', badge: 'FRUTA', esGranel: true, unidadMedida: 'g', pasoGranel: 250, minGranel: 500, maxGranel: 4000, defGranel: 1000 },
         { id: 'vf_aguacate', nombre: 'Aguacate Nacional (Und)', precioBase: 1.20, imagen: 'img/verdura.webp', badge: 'TOP' }
       ],
       bebidas: [
-        { id: 'b_solera_azul', nombre: 'Cerveza Solera Light (Azul)', precioBase: 1.50, imagen: 'img/solera azul.webp', badge: 'FRÍA' },
-        { id: 'b_solera_verde', nombre: 'Cerveza Solera Classic (Verde)', precioBase: 1.20, imagen: 'img/solera verde.webp', badge: 'PREMIUM' },
-        { id: 'b_polar_light_lata', nombre: 'Cerveza Polar Light (Lata 250ml)', precioBase: 1.00, imagen: 'img/lite lata.webp', badge: 'FRÍA' },
-        { id: 'b_polar_light_botella', nombre: 'Cerveza Polar Light (Botella)', precioBase: 1.00, imagen: 'img/lite.webp', badge: 'FRÍA' },
-        { id: 'b_polar_lata', nombre: 'Cerveza Polar Pilsen (Lata 250ml)', precioBase: 1.00, imagen: 'img/lata.webp', badge: 'POPULAR' },
-        { id: 'b_polarcita_botella', nombre: 'Cerveza Polarcita Pilsen (Botella)', precioBase: 1.00, imagen: 'img/negr de botella.webp', badge: 'POPULAR' },
-        { id: 'b_carorena_blanca_lata', nombre: 'Sangría Caroreña Verano Blanca (Lata 250ml)', precioBase: 1.50, imagen: 'img/latq caroena.webp', badge: 'SANGRÍA' },
-        { id: 'b_carorena_verano_lata', nombre: 'Sangría Caroreña Verano Tinta (Lata 250ml)', precioBase: 1.50, imagen: 'img/carorenq laatq.webp', badge: 'SANGRÍA' },
-        { id: 'b_carorena_botella_175l', nombre: 'Sangría Caroreña Tinta 1.75L', precioBase: 6.50, imagen: 'img/carorena cla.webp', badge: 'TOP' },
-        { id: 'b_pepsi_2l', nombre: 'Refresco Pepsi Cola 2L', precioBase: 2.20, imagen: 'img/Pepsi-Regular-2L-1.webp' },
-        { id: 'b_pepsi_15l', nombre: 'Refresco Pepsi Cola 1.5L', precioBase: 1.80, imagen: 'img/Pepsi-Regular-15L-1x.webp' },
-        { id: 'b_pepsi_1l', nombre: 'Refresco Pepsi Cola 1L', precioBase: 1.30, imagen: 'img/Pepsi-Regular-1L-1x.webp' },
-        { id: 'b_pepsi_light_lata', nombre: 'Refresco Pepsi Light (Lata 355ml)', precioBase: 1.10, imagen: 'img/Pepsi Light.webp' },
-        { id: 'b_golden_manzanita_2l', nombre: 'Refresco Golden Manzanita 2L', precioBase: 2.00, imagen: 'img/golden mansanita.webp' },
-        { id: 'b_golden_kolita_2l', nombre: 'Refresco Golden Kolita 2L', precioBase: 2.00, imagen: 'img/kolita glden.webp' },
-        { id: 'b_golden_uva_2l', nombre: 'Refresco Golden Uva 2L', precioBase: 2.00, imagen: 'img/golden uva.webp' },
+        { id: 'b_solera_azul', nombre: 'Solera Light (Azul)', precioBase: 1.50, imagen: 'img/solera azul.webp', badge: 'FRÍA' },
+        { id: 'b_solera_verde', nombre: 'Solera Classic (Verde)', precioBase: 1.20, imagen: 'img/solera verde.webp', badge: 'PREMIUM' },
+        { id: 'b_polar_light_lata', nombre: 'Polar Light (Lata 250ml)', precioBase: 1.00, imagen: 'img/lite lata.webp', badge: 'FRÍA' },
+        { id: 'b_polar_light_botella', nombre: 'Polar Light (Botella)', precioBase: 1.00, imagen: 'img/lite.webp', badge: 'FRÍA' },
+        { id: 'b_polar_lata', nombre: 'Polar Pilsen (Lata 250ml)', precioBase: 1.00, imagen: 'img/lata.webp', badge: 'POPULAR' },
+        { id: 'b_polarcita_botella', nombre: 'Polarcita Pilsen (Botella)', precioBase: 1.00, imagen: 'img/negr de botella.webp', badge: 'POPULAR' },
+        { id: 'b_carorena_blanca_lata', nombre: 'Sangría Caroreña Blanca', precioBase: 1.50, imagen: 'img/latq caroena.webp', badge: 'SANGRÍA' },
+        { id: 'b_carorena_verano_lata', nombre: 'Sangría Caroreña Tinta', precioBase: 1.50, imagen: 'img/carorenq laatq.webp', badge: 'SANGRÍA' },
+        { id: 'b_carorena_botella_175l', nombre: 'Sangría Caroreña 1.75L', precioBase: 6.50, imagen: 'img/carorena cla.webp', badge: 'TOP' },
+        { id: 'b_pepsi_2l', nombre: 'Refresco Pepsi 2L', precioBase: 2.20, imagen: 'img/Pepsi-Regular-2L-1.webp' },
+        { id: 'b_pepsi_15l', nombre: 'Refresco Pepsi 1.5L', precioBase: 1.80, imagen: 'img/Pepsi-Regular-15L-1x.webp' },
+        { id: 'b_pepsi_1l', nombre: 'Refresco Pepsi 1L', precioBase: 1.30, imagen: 'img/Pepsi-Regular-1L-1x.webp' },
+        { id: 'b_pepsi_light_lata', nombre: 'Pepsi Light (Lata)', precioBase: 1.10, imagen: 'img/Pepsi Light.webp' },
+        { id: 'b_golden_manzanita_2l', nombre: 'Golden Manzanita 2L', precioBase: 2.00, imagen: 'img/golden mansanita.webp' },
+        { id: 'b_golden_kolita_2l', nombre: 'Golden Kolita 2L', precioBase: 2.00, imagen: 'img/kolita glden.webp' },
+        { id: 'b_golden_uva_2l', nombre: 'Golden Uva 2L', precioBase: 2.00, imagen: 'img/golden uva.webp' },
         { id: 'b1', nombre: 'Coca-Cola 1.5L', precioBase: 2.00, icon: '🥤' },
-        { id: 'b3', nombre: 'Maltín Polar (Bandeja / Pack)', precioBase: 15.00, imagen: 'img/malta.jfif', badge: 'PACK' },
+        { id: 'b3', nombre: 'Maltín Polar (Pack)', precioBase: 15.00, imagen: 'img/malta.jfif', badge: 'PACK' },
         { id: 'b4', nombre: 'Jugo Yukery Durazno 1L', precioBase: 1.80, imagen: 'img/yukery.jfif' },
         { id: 'b5', nombre: 'Agua Mineral 5L', precioBase: 2.50, icon: '💧' },
         { id: 'b6', nombre: 'Energizante Monster', precioBase: 2.80, icon: '⚡' }
       ],
       comida: [
-        { id: 'c1', nombre: 'Hamburguesa Mixta', precioBase: 5.00, icon: '🍔', badge: 'TOP' },
-        { id: 'c2', nombre: 'Perro Caliente Doble', precioBase: 2.00, icon: '🌭' },
-        { id: 'c3', nombre: 'Pizza Familiar', precioBase: 12.00, icon: '🍕' },
-        { id: 'c4', nombre: 'Combo 3 Empanadas', precioBase: 3.50, icon: '🥟' }
-      ],
-      ferreteria: [
-        { id: 'f1', nombre: 'Alimento para Cachorros Dogourmet 2Kg', precioBase: 6.50, imagen: 'img/perrarina.jfif', badge: 'MASCOTAS' },
-        { id: 'f2', nombre: 'Bombillo LED 12W', precioBase: 1.80, icon: '💡' },
-        { id: 'f3', nombre: 'Silicona Transparente', precioBase: 3.50, icon: '🧪' },
-        { id: 'f4', nombre: 'Destornilladores (2pcs)', precioBase: 3.00, icon: '🛠️' }
+        { id: 'c1', nombre: 'Hamburguesa "Pasa el Hambre" 🍔', precioBase: 5.00, imagen: 'img/comi.webp', badge: 'TOP' },
+        { id: 'c2', nombre: 'Perro Caliente "Carga Tu Batería" 🌭', precioBase: 2.00, icon: '🌭' },
+        { id: 'c3', nombre: 'Pizza "Pa\' que el novio no coma cuento" 🍕', precioBase: 12.00, icon: '🍕' },
+        { id: 'c4', nombre: 'Combo 3 Empanadas "Levántate y Anda" 🥟', precioBase: 3.50, icon: '🥟', badge: 'FRESCO' },
+        { id: 'c5', nombre: 'Pepito "Traga sin Culpa" 🥖', precioBase: 6.50, icon: '🥖', badge: 'POPULAR' }
       ],
       limpieza: [
-        { id: 'l1', nombre: 'Cloro Blancura y Desinfección (12x1L)', precioBase: 1.01, icon: '🧴', badge: 'ASEO' },
-        { id: 'l2', nombre: 'Desinfectante Aroma Floral (12x1L)', precioBase: 1.21, icon: '✨', badge: 'ASEO' },
-        { id: 'l3', nombre: 'Desinfectante Aroma Lavanda (12x1L)', precioBase: 1.21, icon: '🌸', badge: 'ASEO' },
-        { id: 'l4', nombre: 'Detergente Líquido Sin Aroma (12x1L)', precioBase: 2.14, icon: '🫧', badge: 'ASEO' },
-        { id: 'l5', nombre: 'Lavaplatos Aroma Limón (12x1L)', precioBase: 2.14, icon: '🍋', badge: 'ASEO' }
+        { id: 'l_vinagre_lavina_150ml', nombre: 'Vinagre La Viña 150ml', precioBase: 0.39, icon: '🍾' },
+        { id: 'l_vinagre_lavina_1l', nombre: 'Vinagre La Viña 1L', precioBase: 0.83, icon: '🍾' },
+        { id: 'l_vinagre_lacolmena_1l', nombre: 'Vinagre La Colmena 1L', precioBase: 1.01, icon: '🍾' },
+        { id: 'l_vinagre_lalucha_1l', nombre: 'Vinagre La Lucha 1L', precioBase: 1.05, icon: '🍾' },
+        { id: 'l_vinagre_heinz_500ml', nombre: 'Vinagre Heinz 500ml', precioBase: 1.72, icon: '🍾' },
+        { id: 'l_vinagre_tiquire_500ml', nombre: 'Vinagre Tiquire 500ml', precioBase: 0.76, icon: '🍾' },
+        { id: 'l_sazonalisto_200g', nombre: 'Sazonalisto La Viña 200g', precioBase: 1.10, icon: '🧂' },
+        { id: 'l_tripack_lavina', nombre: 'Salsa Tripack La Viña 150ml', precioBase: 1.37, icon: '🥫' },
+        { id: 'l_salsa_ajo_colmena_338l', nombre: 'Salsa de Ajo La Colmena 3.38L', precioBase: 4.91, icon: '🧄' },
+        { id: 'l_salsa_soya_colmena_385l', nombre: 'Salsa de Soya La Colmena 3.85L', precioBase: 6.29, icon: '🥢' },
+        { id: 'l_salsa_inglesa_colmena_385l', nombre: 'Salsa Inglesa La Colmena 3.85L', precioBase: 6.68, icon: '🍾' },
+        { id: 'l_salsa_inglesa_kiero_150cc', nombre: 'Salsa Inglesa Kiero 150cc', precioBase: 0.92, icon: '🍾' },
+        { id: 'l_salsa_ajo_kiero_150cc', nombre: 'Salsa de Ajo Kiero 150cc', precioBase: 0.98, icon: '🧄' },
+        { id: 'l_salsa_ajo_albeca_150ml', nombre: 'Salsa de Ajo Albeca 150ml', precioBase: 0.84, icon: '🧄' },
+        { id: 'l1', nombre: 'Cloro Desinfección 1L', precioBase: 1.01, icon: '🧴', badge: 'ASEO' },
+        { id: 'l2', nombre: 'Desinfectante Floral 1L', precioBase: 1.21, icon: '✨', badge: 'ASEO' },
+        { id: 'l3', nombre: 'Desinfectante Lavanda 1L', precioBase: 1.21, icon: '🌸', badge: 'ASEO' },
+        { id: 'l4', nombre: 'Detergente Líquido 1L', precioBase: 2.14, icon: '🫧', badge: 'ASEO' },
+        { id: 'l5', nombre: 'Lavaplatos Limón 1L', precioBase: 2.14, icon: '🍋', badge: 'ASEO' }
       ]
     };
 
     function renderizarCatalogo() {
-      ['viveres', 'panaderia', 'verduras', 'bebidas', 'comida', 'ferreteria', 'limpieza'].forEach(cat => {
+      ['viveres', 'charcuteria', 'carnes', 'panaderia', 'verduras', 'bebidas', 'comida', 'limpieza'].forEach(cat => {
         const sec = document.getElementById(`grid-${cat}`);
         if (sec) {
           sec.innerHTML = "";
-          productos[cat].forEach(item => {
-            sec.innerHTML += crearTarjetaProductoHTML(item);
-          });
+          if (productos[cat]) {
+            productos[cat].forEach(item => {
+              sec.innerHTML += crearTarjetaProductoHTML(item);
+            });
+          }
         }
       });
       lucide.createIcons();
@@ -668,38 +898,38 @@
 
     function crearTarjetaProductoHTML(item) {
       const contenidoImagen = item.imagen 
-        ? `<img src="${item.imagen}" alt="${item.nombre}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">`
+        ? `<img src="${item.imagen}" alt="${item.nombre}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300 rounded-xl">`
         : `<span class="text-3xl group-hover:scale-110 transition-transform duration-300">${item.icon || '📦'}</span>`;
       
       if (item.esGranel) {
         const gramosIniciales = item.defGranel;
         const precioInicial = (item.precioBase * gramosIniciales) / 1000;
         return `
-          <div class="item-producto group bg-slate-900/80 backdrop-blur-md p-3.5 rounded-2xl border border-slate-800 shadow-xl flex flex-col justify-between select-none" data-nombre="${item.nombre.toLowerCase()}" data-sub="${item.sub || 'varios'}">
+          <div class="item-producto group bg-slate-900/85 backdrop-blur-md p-3 rounded-2xl border border-slate-800 shadow-xl flex flex-col justify-between select-none" data-nombre="${item.nombre.toLowerCase()}" data-sub="${item.sub || 'varios'}">
             <div>
-              <div class="flex items-center justify-between gap-1 mb-2">
-                <span class="bg-gradient-to-r from-accent-cyan to-brand-500 text-slate-950 text-[8px] font-black px-2 py-0.5 rounded-md uppercase shadow-sm">A Granel</span>
-                <span class="text-[9px] font-black text-indigo-300 bg-indigo-950/60 px-1.5 py-0.5 rounded border border-indigo-800/40">Por Peso</span>
+              <div class="flex items-center justify-between gap-1 mb-1.5">
+                <span class="bg-gradient-to-r from-accent-cyan to-brand-500 text-slate-950 text-[8px] font-black px-2 py-0.5 rounded-md uppercase shadow-sm">Granel</span>
+                <span class="text-[8px] font-black text-indigo-300 bg-indigo-950/60 px-1.5 py-0.5 rounded border border-indigo-800/40">Por Peso</span>
               </div>
-              <div class="bg-slate-950/70 h-20 rounded-xl flex items-center justify-center mb-2 border border-slate-800/80 overflow-hidden relative shadow-inner">
+              <div class="bg-transparent h-20 rounded-xl flex items-center justify-center mb-1.5 overflow-hidden relative">
                 ${contenidoImagen}
               </div>
-              <h4 class="font-bold text-white text-xs leading-snug line-clamp-2 mb-1">${item.nombre}</h4>
-              <p class="text-[9px] text-indigo-300 font-semibold mb-2">Precio kg: <span class="text-accent-yellow font-bold">$${item.precioBase.toFixed(2)}</span></p>
+              <h4 class="font-bold text-white text-[11px] leading-snug line-clamp-2 mb-1">${item.nombre}</h4>
+              <p class="text-[8px] text-indigo-300 font-semibold mb-1.5">Precio kg: <span class="text-accent-yellow font-bold">$${item.precioBase.toFixed(2)}</span></p>
             </div>
             
-            <div class="space-y-2 pt-2 border-t border-slate-800">
+            <div class="space-y-1.5 pt-1.5 border-t border-slate-800" onclick="event.stopPropagation()">
               <div>
-                <div class="flex justify-between items-center text-[10px] font-bold text-slate-300 mb-0.5">
+                <div class="flex justify-between items-center text-[9px] font-bold text-slate-300 mb-0.5">
                   <span>Selección:</span>
                   <span id="label-gramos-${item.id}" class="text-accent-cyan font-black">${gramosIniciales >= 1000 ? (gramosIniciales/1000).toFixed(1)+'kg' : gramosIniciales+'g'}</span>
                 </div>
                 <input type="range" min="${item.minGranel}" max="${item.maxGranel}" step="${item.pasoGranel}" value="${gramosIniciales}" oninput="actualizarSliderGranel('${item.id}', ${item.precioBase})" id="slider-${item.id}" class="w-full accent-accent-cyan cursor-pointer h-1.5 bg-slate-950 rounded-lg">
               </div>
               
-              <div class="flex items-center justify-between pt-1">
-                <span id="precio-granel-${item.id}" class="text-xs font-black text-accent-yellow">$${precioInicial.toFixed(2)}</span>
-                <button onclick="agregarGranelAlCarrito('${item.id}', '${item.nombre}', ${item.precioBase})" class="bg-gradient-to-r from-accent-cyan to-brand-600 hover:brightness-110 text-slate-950 font-black px-3 py-1.5 rounded-xl text-[10px] shadow-md transition active:scale-95">
+              <div class="flex items-center justify-between pt-0.5">
+                <span id="precio-granel-${item.id}" class="text-[11px] font-black text-accent-yellow">$${precioInicial.toFixed(2)}</span>
+                <button onclick="agregarGranelAlCarrito('${item.id}', '${item.nombre}', ${item.precioBase})" class="bg-gradient-to-r from-accent-cyan to-brand-600 hover:brightness-110 text-slate-950 font-black px-2.5 py-1 rounded-xl text-[9px] shadow-md transition active:scale-95">
                   Agregar
                 </button>
               </div>
@@ -709,25 +939,25 @@
       }
 
       return `
-        <div class="item-producto group bg-slate-900/80 backdrop-blur-md p-3.5 rounded-2xl border border-slate-800 shadow-xl flex flex-col justify-between select-none" data-nombre="${item.nombre.toLowerCase()}" data-sub="${item.sub || 'varios'}">
+        <div onclick="agregarAlCarritoDirecto('${item.id}', '${item.nombre.replace(/'/g, "")}', ${item.precioBase}, 1)" class="item-producto group bg-slate-900/85 backdrop-blur-md p-3 rounded-2xl border border-slate-800 shadow-xl flex flex-col justify-between select-none cursor-pointer transition active:scale-95 hover:border-accent-magenta/60" data-nombre="${item.nombre.toLowerCase()}" data-sub="${item.sub || 'varios'}">
           <div>
-            <div class="flex items-center justify-between gap-1 mb-2">
+            <div class="flex items-center justify-between gap-1 mb-1.5">
               ${item.badge 
                 ? `<span class="bg-gradient-to-r from-accent-orange to-accent-magenta text-white text-[8px] font-black px-2 py-0.5 rounded-md uppercase shadow-sm">${item.badge}</span>`
                 : `<span></span>`
               }
-              <span class="text-[9px] font-black text-indigo-300 bg-indigo-950/60 px-1.5 py-0.5 rounded border border-indigo-800/40">Comercial</span>
+              <span class="text-[8px] font-black text-indigo-300 bg-indigo-950/60 px-1.5 py-0.5 rounded border border-indigo-800/40">Toca</span>
             </div>
-            <div class="bg-slate-950/70 h-20 rounded-xl flex items-center justify-center mb-2 border border-slate-800/80 overflow-hidden relative shadow-inner">
+            <div class="bg-transparent h-20 rounded-xl flex items-center justify-center mb-1.5 overflow-hidden relative">
               ${contenidoImagen}
             </div>
-            <h4 class="font-bold text-white text-xs leading-snug line-clamp-2 mb-1">${item.nombre}</h4>
+            <h4 class="font-bold text-white text-[11px] leading-snug line-clamp-2 mb-1">${item.nombre}</h4>
           </div>
-          <div class="pt-2 border-t border-slate-800 flex items-center justify-between">
-            <span class="text-xs font-black text-accent-yellow">$${item.precioBase.toFixed(2)}</span>
-            <button onclick="agregarAlCarritoDirecto('${item.id}', '${item.nombre.replace(/'/g, "")}', ${item.precioBase}, 1)" class="bg-gradient-to-r from-brand-500 to-accent-magenta hover:brightness-110 text-white font-black px-3 py-1.5 rounded-xl text-[10px] shadow-md transition active:scale-95 glow-magenta">
-              Agregar
-            </button>
+          <div class="pt-1.5 border-t border-slate-800 flex items-center justify-between">
+            <span class="text-[11px] font-black text-accent-yellow">$${item.precioBase.toFixed(2)}</span>
+            <span class="bg-brand-500/30 text-accent-cyan font-bold text-[9px] px-2 py-0.5 rounded-xl border border-accent-cyan/30">
+              + Agregar
+            </span>
           </div>
         </div>
       `;
@@ -767,98 +997,151 @@
 
       document.querySelectorAll('.seccion-target').forEach(el => el.classList.add('hidden'));
       
-      if (seccion === 'panaderia') {
-        let secPan = document.getElementById('sec-panaderia');
-        if (secPan.innerHTML === "") {
-          secPan.innerHTML = `<div id="grid-panaderia" class="grid grid-cols-2 gap-3.5 col-span-2"></div>`;
-          productos['panaderia'].forEach(item => {
-            document.getElementById('grid-panaderia').innerHTML += crearTarjetaProductoHTML(item);
-          });
-        }
-      }
-      if (seccion === 'verduras') {
-        let secVerduras = document.getElementById('sec-verduras');
-        if (secVerduras.innerHTML === "") {
-          secVerduras.innerHTML = `<div id="grid-verduras" class="grid grid-cols-2 gap-3.5 col-span-2"></div>`;
-          productos['verduras'].forEach(item => {
-            document.getElementById('grid-verduras').innerHTML += crearTarjetaProductoHTML(item);
-          });
-        }
-      }
-
       const secDestino = document.getElementById(`sec-${seccion}`);
-      if (secDestino) secDestino.classList.remove('hidden');
+      if (secDestino) {
+        if (secDestino.innerHTML === "" && productos[seccion]) {
+          secDestino.innerHTML = `<div id="grid-${seccion}" class="grid grid-cols-2 gap-3 col-span-2"></div>`;
+          productos[seccion].forEach(item => {
+            document.getElementById(`grid-${seccion}`).innerHTML += crearTarjetaProductoHTML(item);
+          });
+        }
+        secDestino.classList.remove('hidden');
+      }
 
       if (seccion === 'transporte') {
         setTimeout(() => {
           if (!mapaRuta) {
-            mapaRuta = L.map('mapa-interactivo-ruta', { zoomControl: true, attributionControl: false }).setView(puntoOrigen, 14);
-
+            mapaRuta = L.map('mapa-interactivo-ruta', { zoomControl: true, attributionControl: false }).setView(puntoOrigen, 15);
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(mapaRuta);
 
             if (navigator.geolocation) {
               navigator.geolocation.getCurrentPosition((pos) => {
                 puntoOrigen = [pos.coords.latitude, pos.coords.longitude];
+                textoOrigenStr = "Mi Ubicación (GPS)";
                 mapaRuta.setView(puntoOrigen, 15);
-                document.getElementById('txt-origen-elegido').innerText = `GPS Activo`;
-                
-                if (window.marcadorOrigRef) mapaRuta.removeLayer(window.marcadorOrigRef);
-                window.marcadorOrigRef = L.marker(puntoOrigen, {
-                  icon: L.divIcon({ html: '<div style="background:#00e676; width:18px; height:18px; border-radius:50%; border:2px solid white;"></div>', iconSize: [18, 18] })
-                }).addTo(mapaRuta).bindPopup('🟢 Tu Origen (GPS)').openPopup();
+                document.getElementById('txt-origen-elegido').innerText = `Mi Ubicación (GPS)`;
+                actualizarMarcadorOrigen();
               }, () => {
-                document.getElementById('txt-origen-elegido').innerText = "Nirgua Centro";
-                if (window.marcadorOrigRef) mapaRuta.removeLayer(window.marcadorOrigRef);
-                window.marcadorOrigRef = L.marker(puntoOrigen, {
-                  icon: L.divIcon({ html: '<div style="background:#00e676; width:18px; height:18px; border-radius:50%; border:2px solid white;"></div>', iconSize: [18, 18] })
-                }).addTo(mapaRuta).bindPopup('🟢 Origen').openPopup();
+                actualizarMarcadorOrigen();
               });
+            } else {
+              actualizarMarcadorOrigen();
             }
-
-            mapaRuta.on('click', (e) => {
-              const clickLatLon = [e.latlng.lat, e.latlng.lng];
-
-              if (!window.origenFijadoManual && !puntoDestino) {
-                puntoOrigen = clickLatLon;
-                window.origenFijadoManual = true;
-                document.getElementById('txt-origen-elegido').innerText = `Personalizado`;
-                document.getElementById('instruccion-mapa').innerText = "🟢 Origen fijado. Haz clic para marcar el 🔴 Destino.";
-
-                if (window.marcadorOrigRef) mapaRuta.removeLayer(window.marcadorOrigRef);
-                window.marcadorOrigRef = L.marker(puntoOrigen, {
-                  icon: L.divIcon({ html: '<div style="background:#00e676; width:18px; height:18px; border-radius:50%; border:2px solid white;"></div>', iconSize: [18, 18] })
-                }).addTo(mapaRuta).bindPopup('🟢 Origen').openPopup();
-              } else {
-                puntoDestino = clickLatLon;
-                document.getElementById('txt-destino-elegido').innerText = `Destino Marcado`;
-                document.getElementById('instruccion-mapa').innerText = "¡Ruta calculada por carretera!";
-
-                if (window.marcadorDestRef) mapaRuta.removeLayer(window.marcadorDestRef);
-                window.marcadorDestRef = L.marker(puntoDestino, {
-                  icon: L.divIcon({ html: '<div style="background:#ff007a; width:18px; height:18px; border-radius:50%; border:2px solid white;"></div>', iconSize: [18, 18] })
-                }).addTo(mapaRuta).bindPopup('🔴 Destino').openPopup();
-
-                if (lineaTrayecto) mapaRuta.removeLayer(lineaTrayecto);
-
-                const urlOSRM = `https://router.project-osrm.org/route/v1/driving/${puntoOrigen[1]},${puntoOrigen[0]};${puntoDestino[1]},${puntoDestino[0]}?overview=full&geometries=geojson`;
-
-                fetch(urlOSRM)
-                  .then(res => res.json())
-                  .then(data => {
-                    if (data.routes && data.routes.length > 0) {
-                      const coordsGeoJSON = data.routes[0].geometry.coordinates;
-                      const latLngs = coordsGeoJSON.map(coord => [coord[1], coord[0]]);
-                      lineaTrayecto = L.polyline(latLngs, { color: '#00f2fe', weight: 5, opacity: 0.85 }).addTo(mapaRuta);
-                      mapaRuta.fitBounds(lineaTrayecto.getBounds(), { padding: [40, 40] });
-                    }
-                  }).catch(() => {});
-              }
-            });
           } else {
             mapaRuta.invalidateSize();
           }
         }, 200);
       }
+    }
+
+    function actualizarMarcadorOrigen() {
+      if (window.marcadorOrigRef) mapaRuta.removeLayer(window.marcadorOrigRef);
+      window.marcadorOrigRef = L.marker(puntoOrigen, {
+        icon: L.divIcon({ 
+          html: '<div style="background:#00e676; width:28px; height:28px; border-radius:50%; border:2px solid white; display:flex; align-items:center; justify-content:center; box-shadow: 0 0 12px #00e676;"><i data-lucide="map-pin" style="width:14px; height:14px; color:#022c22;"></i></div>', 
+          iconSize: [28, 28],
+          iconAnchor: [14, 14]
+        })
+      }).addTo(mapaRuta).bindPopup('🟢 Origen (Tú)').openPopup();
+      lucide.createIcons();
+    }
+
+    function usarGpsActualComoOrigen() {
+      if (!navigator.geolocation) {
+        alert("Geolocalización no disponible.");
+        return;
+      }
+      navigator.geolocation.getCurrentPosition((pos) => {
+        puntoOrigen = [pos.coords.latitude, pos.coords.longitude];
+        textoOrigenStr = "Mi Ubicación (GPS)";
+        document.getElementById('txt-origen-elegido').innerText = "Mi Ubicación (GPS)";
+        document.getElementById('inputBuscadorOrigen').value = "Mi ubicación GPS actual";
+        actualizarMarcadorOrigen();
+        mapaRuta.setView(puntoOrigen, 16);
+        if (puntoDestino) trazarLineaRuta();
+      }, () => {
+        alert("No se pudo obtener la ubicación GPS.");
+      });
+    }
+
+    function buscarPuntoOrigenPorTexto() {
+      const texto = document.getElementById('inputBuscadorOrigen').value.trim();
+      if (!texto) {
+        alert("Escribe de dónde partes.");
+        return;
+      }
+      textoOrigenStr = texto;
+      document.getElementById('txt-origen-elegido').innerText = texto;
+      buscarUbicacionNirguaPrecisa(texto, (lat, lon, nombre) => {
+        puntoOrigen = [lat, lon];
+        actualizarMarcadorOrigen();
+        mapaRuta.setView(puntoOrigen, 16);
+        if (puntoDestino) trazarLineaRuta();
+      });
+    }
+
+    function buscarPuntoDestinoPorTexto() {
+      const texto = document.getElementById('inputBuscadorDestino').value.trim();
+      if (!texto) {
+        alert("Escribe a dónde vas.");
+        return;
+      }
+      textoDestinoStr = texto;
+      document.getElementById('txt-destino-elegido').innerText = texto;
+      document.getElementById('instruccion-mapa').innerText = "✨ ¡Destino fijado con éxito!";
+
+      buscarUbicacionNirguaPrecisa(texto, (lat, lon, nombre) => {
+        puntoDestino = [lat, lon];
+        if (window.marcadorDestRef) mapaRuta.removeLayer(window.marcadorDestRef);
+        window.marcadorDestRef = L.marker(puntoDestino, {
+          icon: L.divIcon({ 
+            html: '<div style="background:#ff007a; width:28px; height:28px; border-radius:50%; border:2px solid white; display:flex; align-items:center; justify-content:center; box-shadow: 0 0 12px #ff007a;"><i data-lucide="flag" style="width:14px; height:14px; color:#ffffff;"></i></div>', 
+            iconSize: [28, 28],
+            iconAnchor: [14, 14]
+          })
+        }).addTo(mapaRuta).bindPopup(`🏁 ${texto}`).openPopup();
+        lucide.createIcons();
+
+        mapaRuta.setView(puntoDestino, 16);
+        trazarLineaRuta();
+      });
+    }
+
+    function buscarUbicacionNirguaPrecisa(textoBusqueda, callbackExito) {
+      const query = `${textoBusqueda}, Nirgua, Yaracuy, Venezuela`;
+      const urlGeo = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}`;
+
+      fetch(urlGeo)
+        .then(res => res.json())
+        .then(data => {
+          if (data && data.length > 0) {
+            callbackExito(parseFloat(data[0].lat), parseFloat(data[0].lon), data[0].display_name);
+          } else {
+            let offset = (textoBusqueda.length % 5) * 0.001;
+            callbackExito(10.1500 + offset, -68.5667 - offset, textoBusqueda);
+          }
+        })
+        .catch(() => {
+          callbackExito(10.1500, -68.5667, textoBusqueda);
+        });
+    }
+
+    function trazarLineaRuta() {
+      if (!puntoDestino) return;
+      if (lineaTrayecto) mapaRuta.removeLayer(lineaTrayecto);
+
+      const urlOSRM = `https://router.project-osrm.org/route/v1/driving/${puntoOrigen[1]},${puntoOrigen[0]};${puntoDestino[1]},${puntoDestino[0]}?overview=full&geometries=geojson`;
+
+      fetch(urlOSRM)
+        .then(res => res.json())
+        .then(data => {
+          if (data.routes && data.routes.length > 0) {
+            const coordsGeoJSON = data.routes[0].geometry.coordinates;
+            const latLngs = coordsGeoJSON.map(coord => [coord[1], coord[0]]);
+            lineaTrayecto = L.polyline(latLngs, { color: '#00f2fe', weight: 5, opacity: 0.9 }).addTo(mapaRuta);
+            mapaRuta.fitBounds(lineaTrayecto.getBounds(), { padding: [30, 30] });
+          }
+        }).catch(() => {});
     }
 
     function volverAlMenuPrincipal() {
@@ -873,7 +1156,7 @@
       
       banner.classList.remove('hidden');
       btnVoz.classList.add('ia-activo', 'bg-accent-cyan', 'text-slate-950');
-      txtEstado.innerHTML = "🎙️ Escuchando... (Ej: 'pan sobado o quesillo')...";
+      txtEstado.innerHTML = "🎙️ Escuchando... (Ej: 'hamburguesa o perro caliente')...";
 
       if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
         const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -893,15 +1176,15 @@
     }
 
     function simularVozPorDefecto() {
-      const dicho = "Quiero pan sobado.";
+      const dicho = "Quiero una hamburguesa.";
       document.getElementById('txt-estado-ia').innerHTML = `🗣️ Anotado: "${dicho}"`;
       interpretarVozEstricta(dicho);
     }
 
     function interpretarVozEstricta(fraseCompleta) {
       setTimeout(() => {
-        agregarAlCarritoDirecto('p_pan_sobado', 'Pan Sobado / Piñita Artesanal', 1.50, 1);
-        document.getElementById('txt-estado-ia').innerHTML = `✅ Agregado: Pan Sobado`;
+        agregarAlCarritoDirecto('c1', 'Hamburguesa "Pasa el Hambre"', 5.00, 1);
+        document.getElementById('txt-estado-ia').innerHTML = `✅ Agregado: Hamburguesa`;
         setTimeout(() => {
           document.getElementById('banner-ia').classList.add('hidden');
           document.getElementById('btn-voz-ia').classList.remove('ia-activo', 'bg-accent-cyan', 'text-slate-950');
@@ -917,7 +1200,7 @@
       document.getElementById('txt-estado-ia').innerHTML = "📷 Analizando foto con IA...";
       setTimeout(() => {
         document.getElementById('txt-estado-ia').innerHTML = "✨ ¡Lista detectada y agregada!";
-        agregarAlCarritoDirecto('p_pan_sobado', 'Pan Sobado / Piñita Artesanal', 1.50, 1);
+        agregarAlCarritoDirecto('c1', 'Hamburguesa "Pasa el Hambre"', 5.00, 1);
         setTimeout(() => banner.classList.add('hidden'), 3000);
       }, 2500);
     }
@@ -963,11 +1246,11 @@
 
     function filtrarSubViveres(subTipo) {
       document.querySelectorAll('.btn-sub-viveres').forEach(btn => {
-        btn.className = "btn-sub-viveres p-2.5 rounded-2xl text-[10px] font-bold bg-slate-950/75 text-slate-300 border border-slate-800 hover:text-white transition text-center flex flex-col items-center justify-center gap-1 backdrop-blur-md";
+        btn.className = "btn-sub-viveres p-1.5 rounded-xl text-[8px] font-bold bg-slate-950/75 text-slate-300 border border-slate-800 hover:text-white transition text-center flex flex-col items-center justify-center gap-0.5 backdrop-blur-md";
       });
       const btnSel = document.getElementById(`sub-viveres-${subTipo}`);
       if (btnSel) {
-        btnSel.className = "btn-sub-viveres p-2.5 rounded-2xl text-[10px] font-extrabold bg-accent-magenta text-white shadow-md transition text-center flex flex-col items-center justify-center gap-1 border border-accent-magenta/50";
+        btnSel.className = "btn-sub-viveres p-1.5 rounded-xl text-[8px] font-extrabold bg-accent-magenta text-white shadow-md transition text-center flex flex-col items-center justify-center gap-0.5 border border-accent-magenta/50";
       }
 
       document.querySelectorAll('#grid-viveres .item-producto').forEach(item => {
@@ -999,7 +1282,6 @@
     function actualizarTotales() {
       const { total, cant } = calcularTotal();
       document.getElementById('total-precio-paso1').innerText = `$${total.toFixed(2)}`;
-      document.getElementById('total-precio-paso2').innerText = `$${total.toFixed(2)}`;
       document.getElementById('txt-widget-monto').innerText = `$${total.toFixed(2)}`;
       document.getElementById('txt-widget-cant').innerText = cant;
       
@@ -1031,18 +1313,17 @@
       Object.keys(carrito).forEach(id => {
         const item = carrito[id];
         const precioTxt = item.esPersonalizado 
-          ? `<span class="text-[9px] text-accent-cyan font-bold block">Estándar ($0.00) - Varía según disponibilidad y lugar</span>` 
+          ? `<span class="text-[8px] text-accent-cyan font-bold block">Estándar ($0.00) - Varía</span>` 
           : `<span class="text-[10px] text-accent-yellow font-black">$${(item.cantidad * item.precio).toFixed(2)}</span>`;
         contenedor.innerHTML += `
-          <div class="flex items-center justify-between bg-slate-950/70 p-3 rounded-2xl border border-slate-800 backdrop-blur-md">
+          <div class="flex items-center justify-between bg-slate-950/75 p-2.5 rounded-2xl border border-slate-800 backdrop-blur-md">
             <div class="flex-1 pr-2">
-              <h5 class="text-xs font-bold text-white line-clamp-1">${item.nombre}</h5>
-              ${precioTxt}
+              <h5 class="text-[11px] font-bold text-white line-clamp-1">${item.nombre}</h5>${precioTxt}
             </div>
-            <div class="flex items-center gap-1.5 bg-slate-900 p-1 rounded-xl border border-slate-800">
-              <button onclick="cambiarCantCarrito('${id}', -1)" class="w-6 h-6 bg-slate-800 text-white font-black rounded-lg text-xs">-</button>
-              <span class="text-xs font-black text-white w-4 text-center">${item.cantidad}</span>
-              <button onclick="cambiarCantCarrito('${id}', 1)" class="w-6 h-6 bg-accent-magenta text-white font-black rounded-lg text-xs">+</button>
+            <div class="flex items-center gap-1 bg-slate-900 p-1 rounded-xl border border-slate-800">
+              <button onclick="cambiarCantCarrito('${id}', -1)" class="w-5 h-5 bg-slate-800 text-white font-black rounded-lg text-[10px]">-</button>
+              <span class="text-[11px] font-black text-white w-4 text-center">${item.cantidad}</span>
+              <button onclick="cambiarCantCarrito('${id}', 1)" class="w-5 h-5 bg-accent-magenta text-white font-black rounded-lg text-[10px]">+</button>
             </div>
           </div>
         `;
@@ -1052,36 +1333,65 @@
 
     function irAPaso2() {
       if (calcularTotal().cant === 0) {
-        alert("Selecciona al menos un artículo o servicio.");
+        alert("Selecciona al menos un artículo.");
         return;
       }
-      
-      let secPan = document.getElementById('sec-panaderia');
-      if (secPan.innerHTML === "") {
-        secPan.innerHTML = `<div id="grid-panaderia" class="grid grid-cols-2 gap-3.5 col-span-2"></div>`;
-        productos['panaderia'].forEach(item => {
-          document.getElementById('grid-panaderia').innerHTML += crearTarjetaProductoHTML(item);
-        });
-      }
-      let secVerduras = document.getElementById('sec-verduras');
-      if (secVerduras.innerHTML === "") {
-        secVerduras.innerHTML = `<div id="grid-verduras" class="grid grid-cols-2 gap-3.5 col-span-2"></div>`;
-        productos['verduras'].forEach(item => {
-          document.getElementById('grid-verduras').innerHTML += crearTarjetaProductoHTML(item);
-        });
-      }
+      esPagoTransporteDirecto = false;
+      document.getElementById('titulo-paso-2').innerText = "Pago de Delivery";
+      document.getElementById('titulo-resumen-paso2').innerText = "Resumen de tu Pedido";
+      prepararPaso2Datos();
+    }
 
+    function irAPagarTransporteDirecto() {
+      if (!puntoDestino) {
+        alert("Por favor escribe tu destino exacto.");
+        return;
+      }
+      esPagoTransporteDirecto = true;
+      document.getElementById('titulo-paso-2').innerText = "Pago de Transporte";
+      document.getElementById('titulo-resumen-paso2').innerText = "Resumen de tu Viaje";
+      prepararPaso2Datos();
+    }
+
+    function prepararPaso2Datos() {
       const listaResumen = document.getElementById('resumen-lista-paso2');
       listaResumen.innerHTML = "";
-      Object.keys(carrito).forEach(id => {
-        const item = carrito[id];
-        const precioTxt = item.esPersonalizado 
-          ? `<span class="text-accent-cyan font-bold text-[9px]">Estándar (Varía según lugar)</span>` 
-          : `<span class="text-accent-yellow font-black">$${(item.cantidad * item.precio).toFixed(2)}</span>`;
-        listaResumen.innerHTML += `<div class="flex justify-between items-center bg-slate-900/80 p-2.5 rounded-xl border border-slate-800 backdrop-blur-md"><span class="text-slate-200">• ${item.cantidad}x ${item.nombre}</span>${precioTxt}</div>`;
-      });
+
+      if (esPagoTransporteDirecto) {
+        const nombreServicio = `Servicio de ${tipoTransporteSeleccionado.toUpperCase()} en Nirgua`;
+        listaResumen.innerHTML += `<div class="flex justify-between items-center"><span class="text-slate-200">1x ${nombreServicio}</span><span class="text-accent-yellow font-black">$${precioTransporte.toFixed(2)}</span></div>`;
+        document.getElementById('total-precio-resumen').innerText = `$${precioTransporte.toFixed(2)}`;
+      } else {
+        Object.keys(carrito).forEach(id => {
+          const item = carrito[id];
+          const precioTxt = item.esPersonalizado ? `<span class="text-accent-cyan font-bold">Variable</span>` : `<span class="text-accent-yellow font-black">$${(item.cantidad * item.precio).toFixed(2)}</span>`;
+          listaResumen.innerHTML += `<div class="flex justify-between items-center"><span class="text-slate-200">${item.cantidad}x ${item.nombre}</span>${precioTxt}</div>`;
+        });
+        const { total } = calcularTotal();
+        document.getElementById('total-precio-resumen').innerText = `$${total.toFixed(2)}`;
+      }
+
       document.getElementById('paso-catalogo').classList.add('hidden');
       document.getElementById('paso-datos').classList.remove('hidden');
+    }
+
+    function seleccionarBeneficiario(tipo) {
+      const btnMio = document.getElementById('btn-beneficiario-mio');
+      const btnTercero = document.getElementById('btn-beneficiario-tercero');
+      const contenedorTercero = document.getElementById('contenedor-tercero');
+      const inputTipo = document.getElementById('tipoBeneficiario');
+
+      if (tipo === 'mio') {
+        btnMio.className = "p-2 rounded-xl border border-accent-cyan bg-accent-cyan/20 text-white text-[10px] font-bold transition";
+        btnTercero.className = "p-2 rounded-xl border border-slate-700 bg-slate-900 text-slate-300 text-[10px] font-bold transition";
+        contenedorTercero.classList.add('hidden');
+        inputTipo.value = "Es para mí";
+      } else {
+        btnTercero.className = "p-2 rounded-xl border border-accent-magenta bg-accent-magenta/20 text-white text-[10px] font-bold transition";
+        btnMio.className = "p-2 rounded-xl border border-slate-700 bg-slate-900 text-slate-300 text-[10px] font-bold transition";
+        contenedorTercero.classList.remove('hidden');
+        inputTipo.value = "Es para un 3ero";
+      }
     }
 
     function volverAPaso1() {
@@ -1096,29 +1406,21 @@
       const btnCarro = document.getElementById('btn-trans-carro');
       
       if (tipo === 'moto') {
-        btnMoto.className = "p-2.5 rounded-2xl border border-accent-cyan bg-accent-cyan/20 text-white text-xs font-bold flex flex-col items-center justify-center gap-1 transition shadow-md";
-        btnCarro.className = "p-2.5 rounded-2xl border border-slate-700 bg-slate-900 text-slate-300 text-xs font-bold flex flex-col items-center justify-center gap-1 transition";
+        btnMoto.className = "group relative p-2 rounded-2xl border border-accent-cyan bg-accent-cyan/20 text-white text-[10px] font-bold flex flex-col items-center justify-center gap-1 transition shadow-md";
+        btnCarro.className = "group relative p-2 rounded-2xl border border-slate-700 bg-slate-900 text-slate-300 text-[10px] font-bold flex flex-col items-center justify-center gap-1 transition";
       } else {
-        btnCarro.className = "p-2.5 rounded-2xl border border-accent-cyan bg-accent-cyan/20 text-white text-xs font-bold flex flex-col items-center justify-center gap-1 transition shadow-md";
-        btnMoto.className = "p-2.5 rounded-2xl border border-slate-700 bg-slate-900 text-slate-300 text-xs font-bold flex flex-col items-center justify-center gap-1 transition";
+        btnCarro.className = "group relative p-2 rounded-2xl border border-accent-cyan bg-accent-cyan/20 text-white text-[10px] font-bold flex flex-col items-center justify-center gap-1 transition shadow-md";
+        btnMoto.className = "group relative p-2 rounded-2xl border border-slate-700 bg-slate-900 text-slate-300 text-[10px] font-bold flex flex-col items-center justify-center gap-1 transition";
       }
-    }
-
-    function agregarServicioTransporteAlCarrito() {
-      if (!puntoDestino) {
-        alert("Por favor selecciona primero tu punto de partida y tu destino en el mapa.");
-        return;
-      }
-      const nombreServicio = `Servicio de ${tipoTransporteSeleccionado.toUpperCase()} en Nirgua`;
-      agregarAlCarritoDirecto(`trans_${tipoTransporteSeleccionado}`, nombreServicio, precioTransporte, 1);
-      alert(`¡${nombreServicio} agregado por $${precioTransporte.toFixed(2)}! Revisa tu carrito.`);
     }
 
     function reiniciarPuntosRuta() {
       puntoDestino = null;
-      window.origenFijadoManual = false;
-      document.getElementById('txt-destino-elegido').innerText = "Haz clic en el mapa";
-      document.getElementById('txt-origen-elegido').innerText = "Nirgua Centro";
+      textoDestinoStr = "No seleccionado";
+      document.getElementById('inputBuscadorOrigen').value = "";
+      document.getElementById('inputBuscadorDestino').value = "";
+      document.getElementById('txt-origen-elegido').innerText = "GPS / Escrito";
+      document.getElementById('txt-destino-elegido').innerText = "Pendiente";
       if (window.marcadorDestRef) mapaRuta.removeLayer(window.marcadorDestRef);
       if (lineaTrayecto) mapaRuta.removeLayer(lineaTrayecto);
     }
@@ -1128,22 +1430,6 @@
       if (q !== "") {
         document.getElementById('menu-principal-servicios').classList.add('hidden');
         document.getElementById('contenedor-seccion-activa').classList.remove('hidden');
-        
-        let secPan = document.getElementById('sec-panaderia');
-        if (secPan.innerHTML === "") {
-          secPan.innerHTML = `<div id="grid-panaderia" class="grid grid-cols-2 gap-3.5 col-span-2"></div>`;
-          productos['panaderia'].forEach(item => {
-            document.getElementById('grid-panaderia').innerHTML += crearTarjetaProductoHTML(item);
-          });
-        }
-        let secVerduras = document.getElementById('sec-verduras');
-        if (secVerduras.innerHTML === "") {
-          secVerduras.innerHTML = `<div id="grid-verduras" class="grid grid-cols-2 gap-3.5 col-span-2"></div>`;
-          productos['verduras'].forEach(item => {
-            document.getElementById('grid-verduras').innerHTML += crearTarjetaProductoHTML(item);
-          });
-        }
-
         document.querySelectorAll('.seccion-target').forEach(el => el.classList.remove('hidden'));
       }
       document.querySelectorAll('.item-producto').forEach(card => {
@@ -1158,14 +1444,14 @@
         alert("Tu navegador no soporta geolocalización.");
         return;
       }
-      lblGps.innerText = "Obteniendo coordenadas...";
+      lblGps.innerText = "Obteniendo...";
       btnGps.disabled = true;
       navigator.geolocation.getCurrentPosition(
         (pos) => {
           const lat = pos.coords.latitude;
           const lon = pos.coords.longitude;
           document.getElementById('ubicacionGPS').value = `https://maps.google.com/?q=${lat},${lon}`;
-          lblGps.innerText = "¡Ubicación Adjuntada Exitosamente!";
+          lblGps.innerText = "¡Ubicación GPS Adjuntada!";
           btnGps.disabled = false;
         },
         () => {
@@ -1178,34 +1464,60 @@
 
     function enviarPedidoAConductor() {
       const nombre = document.getElementById('nombreCliente').value.trim();
-      const apellido = document.getElementById('apellidoCliente').value.trim();
       const telefono = document.getElementById('telefonoCliente').value.trim();
       const direccion = document.getElementById('direccion').value.trim();
+      const tipoBeneficiario = document.getElementById('tipoBeneficiario').value;
+      const nombreTercero = document.getElementById('nombreTercero').value.trim();
       const ubicacionGPS = document.getElementById('ubicacionGPS').value;
+
       if (!nombre || !telefono || !direccion) {
-        alert("Por favor completa tu Nombre, Teléfono y Dirección de entrega.");
+        alert("Por favor completa tu Nombre, Teléfono y Dirección.");
         return;
       }
-      const { total } = calcularTotal();
-      lanzarAnimacionYWhatsApp(nombre, apellido, telefono, direccion, ubicacionGPS, total);
+      if (tipoBeneficiario === 'Es para un 3ero' && !nombreTercero) {
+        alert("Por favor indica los datos del tercero.");
+        return;
+      }
+
+      lanzarAnimacionYWhatsApp(nombre, telefono, direccion, tipoBeneficiario, nombreTercero, ubicacionGPS);
     }
 
-    function lanzarAnimacionYWhatsApp(nombre, apellido, telefono, direccion, ubicacionGPS, total) {
-      let msj = `🚀 *¡NUEVO PEDIDO FLASH!* 🚀\n\n`;
-      msj += `👤 *Cliente:* ${nombre} ${apellido}\n`;
-      msj += `📱 *Teléfono:* ${telefono}\n`;
-      msj += `📍 *Dirección:* ${direccion}\n`;
-      if (ubicacionGPS) msj += `🗺️ *Ubicación GPS:* ${ubicacionGPS}\n`;
-      msj += `\n🛒 *DETALLE DEL PEDIDO:*\n`;
-      Object.keys(carrito).forEach(id => {
-        const item = carrito[id];
-        if (item.esPersonalizado) {
-          msj += `• ${item.cantidad}x ${item.nombre} (⚠️ Precio estándar $0.00 - Puede variar dependiendo del lugar ya que no contamos con ese producto)\n`;
-        } else {
-          msj += `• ${item.cantidad}x ${item.nombre} - $${(item.cantidad * item.precio).toFixed(2)}\n`;
+    function lanzarAnimacionYWhatsApp(nombre, telefono, direccion, tipoBeneficiario, nombreTercero, ubicacionGPS) {
+      let msj = "";
+      
+      if (esPagoTransporteDirecto) {
+        msj += `🚗 *¡TRANSPORTE FLASH!* 🚗\n\n`;
+        msj += `👤 *Cliente:* ${nombre}\n`;
+        msj += `📱 *Teléfono:* ${telefono}\n`;
+        msj += `👥 *Para:* ${tipoBeneficiario} ${tipoBeneficiario === 'Es para un 3ero' ? '('+nombreTercero+')' : ''}\n\n`;
+        
+        msj += `📍 *DE DÓNDE ES (ORIGEN):*\n`;
+        msj += `• ${textoOrigenStr}\n`;
+        msj += `• Link: https://maps.google.com/?q=${puntoOrigen[0]},${puntoOrigen[1]}\n\n`;
+        
+        if (puntoDestino) {
+          msj += `🏁 *PARA DÓNDE VA (DESTINO):*\n`;
+          msj += `• ${textoDestinoStr}\n`;
+          msj += `• Link: https://maps.google.com/?q=${puntoDestino[0]},${puntoDestino[1]}\n\n`;
         }
-      });
-      msj += `\n💵 *TOTAL ESTIMADO EN PRODUCTOS:* $${total.toFixed(2)}`;
+        
+        msj += `🚘 *Servicio:* ${tipoTransporteSeleccionado.toUpperCase()} ($${precioTransporte.toFixed(2)})`;
+      } else {
+        const { total } = calcularTotal();
+        msj += `🚀 *¡PEDIDO FLASH!* 🚀\n\n`;
+        msj += `👤 *Cliente:* ${nombre}\n`;
+        msj += `📱 *Teléfono:* ${telefono}\n`;
+        msj += `👥 *Para:* ${tipoBeneficiario} ${tipoBeneficiario === 'Es para un 3ero' ? '('+nombreTercero+')' : ''}\n`;
+        msj += `📍 *Dirección:* ${direccion}\n`;
+        if (ubicacionGPS) msj += `🗺️ *GPS:* ${ubicacionGPS}\n`;
+        msj += `\n🛒 *DETALLE:*\n`;
+        Object.keys(carrito).forEach(id => {
+          const item = carrito[id];
+          msj += `• ${item.cantidad}x ${item.nombre} ${item.esPersonalizado ? '(A pedido)' : '- $' + (item.cantidad * item.precio).toFixed(2)}\n`;
+        });
+        msj += `\n💵 *TOTAL:* $${total.toFixed(2)}`;
+      }
+
       const urlWhatsApp = `https://wa.me/${NUMERO_WHATSAPP}?text=${encodeURIComponent(msj)}`;
       
       const modal = document.getElementById('modal-exito');
