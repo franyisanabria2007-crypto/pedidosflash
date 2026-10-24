@@ -1872,8 +1872,54 @@
       }
 
       const numOrden = `FLASH-${Math.floor(1000 + Math.random() * 9000)}`;
-      let msj = "";
+      const montoTotalCalculado = esPagoTransporteDirecto ? precioTransporte : calcularTotal().total;
 
+      // CONSTRUCCIÓN DEL OBJETO ARRAY COMPLETO PARA FIREBASE
+      const listaItemsArray = [];
+      if (!esPagoTransporteDirecto) {
+        Object.keys(carrito).forEach(id => {
+          listaItemsArray.push({
+            id: id,
+            nombre: carrito[id].nombre,
+            precio: carrito[id].precio || 0,
+            cantidad: carrito[id].cantidad,
+            esPersonalizado: carrito[id].esPersonalizado || false
+          });
+        });
+      } else {
+        listaItemsArray.push({
+          nombre: `Servicio de Transporte: ${tipoTransporteSeleccionado.toUpperCase()}`,
+          precio: precioTransporte,
+          cantidad: 1
+        });
+      }
+
+      // REGISTRO EN LA BASE DE DATOS DE FIREBASE
+      if (firebaseActivo && db) {
+        try {
+          db.ref('pedidos').push({
+            orden: numOrden,
+            cliente: nombre,
+            telefono: telefono,
+            direccion: direccion || textoDestinoStr || 'Ubicación especificada',
+            ubicacionGPS: ubicacionGPS || '',
+            metodoPago: metodoPagoActual,
+            referenciaPago: refPago || '',
+            pagaCon: montoPaga || '',
+            total: montoTotalCalculado,
+            estado: 'pendiente',
+            chofer: 'Sin Asignar',
+            choferTelefono: '',
+            items: listaItemsArray,
+            fecha: new Date().toISOString()
+          });
+        } catch(e) {
+          console.error("Error al registrar en Firebase:", e);
+        }
+      }
+
+      // MALA Y FORMATO DEL MENSAJE DE WHATSAPP
+      let msj = "";
       if (esPagoTransporteDirecto) {
         msj += `🚗 *SOLICITUD DE VIAJE: #${numOrden}* 🚗\n`;
         msj += `_Pedidos Flash Nirgua_\n\n`;
@@ -1890,7 +1936,6 @@
         msj += `💵 *Tarifa:* $${precioTransporte.toFixed(2)}\n`;
         msj += `💳 *Método de Pago:* ${metodoPagoActual}\n`;
       } else {
-        const { total } = calcularTotal();
         msj += `🛍️ *ORDEN DE COMPRA: #${numOrden}* 🛍️\n`;
         msj += `_Pedidos Flash Nirgua_\n\n`;
         msj += `👤 *Cliente:* ${nombre}\n`;
@@ -1899,28 +1944,13 @@
         msj += `📍 *Dirección:* ${direccion}\n`;
         if (ubicacionGPS) msj += `🗺️ *GPS en Vivo:* ${ubicacionGPS}\n`;
         msj += `\n🛒 *LISTA DE ARTÍCULOS:*\n`;
-        Object.keys(carrito).forEach(id => {
-          const item = carrito[id];
-          msj += ` • ${item.cantidad}x ${item.nombre} ${item.esPersonalizado ? '(Bajo Pedido)' : '($' + (item.cantidad * item.precio).toFixed(2) + ')'}\n`;
+        listaItemsArray.forEach(it => {
+          msj += ` • ${it.cantidad}x ${it.nombre} ${it.esPersonalizado ? '(Bajo Pedido)' : '($' + (it.cantidad * it.precio).toFixed(2) + ')'}\n`;
         });
-        msj += `\n💰 *TOTAL A PAGAR:* $${total.toFixed(2)}\n`;
+        msj += `\n💰 *TOTAL A PAGAR:* $${montoTotalCalculado.toFixed(2)}\n`;
         msj += `💳 *Forma de Pago:* ${metodoPagoActual}\n`;
         if (metodoPagoActual === 'Pago Móvil' && refPago) msj += `🔢 *Ref Pago Móvil:* ${refPago}\n`;
         if (metodoPagoActual === 'Efectivo' && montoPaga) msj += `💵 *Paga con:* ${montoPaga} (Llevar vuelto)\n`;
-      }
-
-      if (firebaseActivo && db) {
-        try {
-          db.ref('pedidos').push({
-            orden: numOrden,
-            cliente: nombre,
-            telefono,
-            direccion: direccion || textoDestinoStr,
-            metodoPago: metodoPagoActual,
-            total: esPagoTransporteDirecto ? precioTransporte : calcularTotal().total,
-            fecha: new Date().toISOString()
-          });
-        } catch(e){}
       }
 
       const urlWA = `https://wa.me/${NUMERO_WHATSAPP}?text=${encodeURIComponent(msj)}`;
