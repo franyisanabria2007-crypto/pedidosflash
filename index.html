@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -93,18 +95,32 @@
     <!-- CAPA DE SOBREPOSICIÓN -->
     <div class="absolute inset-0 bg-slate-950/70 backdrop-blur-[2px] z-0 pointer-events-none"></div>
 
-    <!-- ENCABEZADO DE LA APP -->
-    <header class="bg-slate-900/90 border-b border-indigo-500/20 px-3 py-2.5 shadow-lg relative shrink-0 z-30 backdrop-blur-md">
-      <div class="flex justify-between items-center relative z-10 gap-2">
-        <div class="flex items-center">
-          <img src="img/logo.jfif" alt="Pedidos Flash Logo" class="h-18 w-auto max-w-[300px] object-contain rounded-lg">
+    <!-- ENCABEZADO DE LA APP: EL VIDEO OCUPA TODO EL ESPACIO HASTA 'EN LÍNEA' -->
+    <header class="bg-slate-900/90 border-b border-indigo-500/20 px-3 py-2 shadow-lg relative shrink-0 z-30 backdrop-blur-md">
+      <div class="flex items-center justify-between relative z-10 gap-2.5">
+        
+        <!-- CONTENEDOR DEL VIDEO (EXPANDIDO) -->
+        <div class="flex-1 h-22 sm:h-18 flex items-center overflow-hidden rounded-xl bg-slate-950/40 border border-indigo-500/70">
+          <video id="video-logo" 
+                 autoplay 
+                 loop 
+                 muted 
+                 playsinline 
+                 preload="auto"
+                 class="w-full h-full object-cover rounded-xl"
+                 onerror="this.style.display='none'; document.getElementById('logo-fallback').style.display='block';">
+            <source src="img/1002084633.mp4" type="video/mp4">
+            <source src="1002084633.mp4" type="video/mp4">
+          </video>
+
+          <img id="logo-fallback" 
+               src="img/logo.jfif" 
+               alt="Pedidos Flash Logo" 
+               class="w-full h-full object-contain rounded-xl p-1" 
+               style="display: none;">
         </div>
-        <div class="flex items-center gap-2">
-          <span class="bg-emerald-500/15 text-accent-emerald border border-emerald-500/30 text-[10px] font-extrabold px-2.5 py-1 rounded-full flex items-center gap-1.5 shadow-sm">
-            <span class="w-2 h-2 rounded-full bg-accent-emerald animate-ping"></span> En Línea
-          </span>
-        </div>
-      </div>
+
+        
     </header>
 
     <!-- ================= PASO 1: CATÁLOGO Y COMPRAS ================= -->
@@ -363,13 +379,13 @@
 
       </main>
 
-      <!-- BOTÓN FLOTANTE: PEDIR PRODUCTO PERSONALIZADO -->
-      <button onclick="abrirModalPersonalizado()" type="button" class="fixed z-40 bottom-16 left-3 bg-gradient-to-r from-accent-cyan to-brand-600 text-slate-950 font-black px-3.5 py-2 rounded-2xl shadow-[0_4px_25px_rgba(0,242,254,0.45)] flex items-center gap-1.5 text-xs transition active:scale-95 glow-cyan">
+      <!-- BOTÓN FLOTANTE: PEDIR PRODUCTO PERSONALIZADO (FIJADO DENTRO DE LA APP) -->
+      <button onclick="abrirModalPersonalizado()" type="button" class="absolute z-40 bottom-16 left-3 bg-gradient-to-r from-accent-cyan to-brand-600 text-slate-950 font-black px-3.5 py-2 rounded-2xl shadow-[0_4px_25px_rgba(0,242,254,0.45)] flex items-center gap-1.5 text-xs transition active:scale-95 glow-cyan">
         <i data-lucide="plus-circle" class="w-4 h-4 fill-slate-950"></i> <span>¿No lo ves? Pídelo</span>
       </button>
 
-      <!-- WIDGET FLOTANTE DEL CARRITO (ARRASTRABLE Y MUESTRA CUÁNTO LLEVAS) -->
-      <div id="widget-total-flotante" onclick="abrirModalCarrito()" class="fixed z-40 transition-opacity duration-300 opacity-0 pointer-events-none touch-none select-none cursor-pointer active:scale-95" style="top: 135px; right: 12px;">
+      <!-- WIDGET FLOTANTE DEL CARRITO (FIJADO DENTRO DE LA APP) -->
+      <div id="widget-total-flotante" onclick="abrirModalCarrito()" class="absolute z-40 transition-opacity duration-300 opacity-0 pointer-events-none touch-none select-none cursor-pointer active:scale-95" style="top: 135px; right: 12px;">
         <div class="bg-gradient-to-b from-indigo-500/40 to-slate-950 p-[1px] rounded-2xl shadow-[0_12px_35px_rgba(0,0,0,0.85)] border border-indigo-500/50 glow-violet">
           <div class="bg-slate-950/90 backdrop-blur-md px-3 py-2 rounded-[15px] flex flex-col items-center justify-center text-center">
             <div class="flex items-center gap-1.5 text-accent-cyan mb-0.5">
@@ -742,18 +758,18 @@
     const productos = {
       viveres: [
         { id: 'v_harina_bellini', nombre: 'Harina de Maíz Bellini 1kg', precioBase: 0.75, imagen: 'img/harina.jfif', sub: 'harinas' },
-        { id: 'v_harina_belen', nombre: 'Harina de Maíz Belén 1kg', precioBase: 0.99, imagen: 'img/harina.jfif', sub: 'harinas' },
-        { id: 'v_harina_pan_mezcla', nombre: 'Harina PAN Mezcla Maíz y Arroz 1kg', precioBase: 1.26, imagen: 'img/harina.jfif', sub: 'harinas' },
+        { id: 'v_harina_belen', nombre: 'Harina de Maíz Belén 1kg', precioBase: 0.99, imagen: 'img/Harina de Maíz Belén 1kg.webp', sub: 'harinas' },
+        { id: 'v_harina_pan_mezcla', nombre: 'Harina PAN Mezcla Maíz y Arroz 1kg', precioBase: 1.26, imagen: 'img/Harina PAN Mezcla Maíz y Arroz.jfif', sub: 'harinas' },
         { id: 'v_harina_pan_blanca', nombre: 'Harina PAN Maíz Blanco 1kg', precioBase: 1.31, imagen: 'img/harina.jfif', badge: 'MÁS VENDIDA', sub: 'harinas' },
         { id: 'v_harina_pan_amarilla', nombre: 'Harina de Maíz Amarillo 1kg', precioBase: 1.18, imagen: 'img/harina.jfif', sub: 'harinas' },
-        { id: 'v_harina_juana', nombre: 'Harina de Maíz Juana 1kg', precioBase: 1.10, imagen: 'img/Harina de Maiz Juana 1Kg.jpg', sub: 'harinas' },
+        { id: 'v_harina_juana', nombre: 'Harina de Maíz Juana 1kg', precioBase: 1.10, imagen: 'img/harina juana.jpg', sub: 'harinas' },
         { id: 'v_harina_fina', nombre: 'Harina Fina 1kg', precioBase: 0.89, imagen: 'img/harina.jfif', sub: 'harinas' },
-        { id: 'v_harina_emilia', nombre: 'Harina de Maíz Doña Emilia 1kg', precioBase: 1.00, imagen: 'img/harina.jfif', sub: 'harinas' },
+        { id: 'v_harina_emilia', nombre: 'Harina de Maíz Doña Emilia 1kg', precioBase: 1.00, imagen: 'img/Harina de Maíz Doña Emilia.jfif', sub: 'harinas' },
         { id: 'v_trigo_domaria', nombre: 'Harina de Trigo Leudante Doña María 1kg', precioBase: 1.40, imagen: 'img/Trigo.jfif', sub: 'harinas' },
         { id: 'v_trigo_mary_leu', nombre: 'Harina de Trigo Leudante Mary 900g', precioBase: 1.35, imagen: 'img/Harina de Trigo Mary Leudante.jfif', sub: 'harinas' },
         { id: 'v_trigo_mary_tu', nombre: 'Harina de Trigo Todo Uso Mary 900g', precioBase: 1.24, imagen: 'img/Trigo.jfif', sub: 'harinas' },
         { id: 'v_trigo_dulcemar', nombre: 'Harina de Trigo Leudante Dulce Mar 1kg', precioBase: 1.33, imagen: 'img/Trigo.jfif', sub: 'harinas' },
-        { id: 'v_levadura_gloripan', nombre: 'Levadura Gloripan 500g', precioBase: 3.75, icon: '🍞', sub: 'harinas' },
+        { id: 'v_levadura_gloripan', nombre: 'Levadura Gloripan 500g', precioBase: 3.75, imagen: 'img/Levadura Gloripan 500g.webp', sub: 'harinas' },
         { id: 'v_trigo_aveiro_kg', nombre: 'Harina de Trigo Aveiro (kg)', precioBase: 1.00, imagen: 'img/Trigo.jfif', sub: 'harinas' },
 
         { id: 'v_pasta_primavera', nombre: 'Pasata Primavera Larga 1kg', precioBase: 0.78, imagen: 'img/pasta larga.jfif', sub: 'pastas' },
@@ -769,7 +785,7 @@
         { id: 'v_pasta_sindoni_l', nombre: 'Pasta Larga Sindoni 1kg', precioBase: 1.34, imagen: 'img/pasta larga.jfif', sub: 'pastas' },
         { id: 'v_pasta_sindoni_c', nombre: 'Pasta Corta Sindoni 1kg', precioBase: 1.34, imagen: 'img/pasyta corta m.jfif', sub: 'pastas' },
         { id: 'v_pasta_sindoni_500g', nombre: 'Pasta Corta Sindoni 500g', precioBase: 0.72, imagen: 'img/pasyta corta m.jfif', sub: 'pastas' },
-        { id: 'v_pasata_sindoni', nombre: 'Pasata Sindoni 480g', precioBase: 2.24, icon: '🥫', sub: 'pastas' },
+        { id: 'v_pasata_sindoni', nombre: 'Pasata Sindoni 480g', precioBase: 2.24, imagen: 'img/Pasata Sindoni 480g.webp', sub: 'pastas' },
         { id: 'v_pasta_oba_500g', nombre: 'Pasta Larga Oba 500g', precioBase: 0.77, imagen: 'img/pasta larga.jfif', sub: 'pastas' },
 
         { id: 'v_arroz_delicia', nombre: 'Arroz Delicia 1kg', precioBase: 0.96, imagen: 'img/Arroz Mary Superior.jfif', sub: 'granos' },
@@ -808,18 +824,18 @@
         { id: 'v_toddy_400g', nombre: 'Toddy 400g', precioBase: 4.94, imagen: 'img/tody.jfif', sub: 'lacteos' },
         { id: 'v_leche_campesina_800g', nombre: 'Leche Campesina 800g', precioBase: 8.85, icon: '🥛', sub: 'lacteos' },
         { id: 'v_induleche_360g', nombre: 'Leche en Polvo Induleche 360g', precioBase: 4.00, icon: '🥛', sub: 'lacteos' },
-        { id: 'v_campestre_900g', nombre: 'Leche en Polvo Campestre 900g', precioBase: 8.29, icon: '🥛', sub: 'lacteos' },
-        { id: 'v_campestre_500g', nombre: 'Leche en Polvo Campestre 500g', precioBase: 4.43, icon: '🥛', sub: 'lacteos' },
+        { id: 'v_campestre_900g', nombre: 'Leche en Polvo Campestre 900g', precioBase: 8.29, imagen: 'img/campestre_900g.jpg', sub: 'lacteos' },
+        { id: 'v_campestre_500g', nombre: 'Leche en Polvo Campestre 500g', precioBase: 4.43, imagen: 'img/campestre_500g.jpg', sub: 'lacteos' },
 
-        { id: 'v_sardina_aceite', nombre: 'Sardina Misión Mar Aceite', precioBase: 0.55, icon: '🐟', sub: 'lacteos' },
-        { id: 'v_sardina_tomate', nombre: 'Sardina Misión Mar Tomate', precioBase: 0.56, icon: '🐟', sub: 'lacteos' },
-        { id: 'v_atun_margarita_140g', nombre: 'Atún en Aceite Margarita 140g', precioBase: 2.09, icon: '🐟', sub: 'lacteos' },
-        { id: 'v_atun_marguajira', nombre: 'Atún Marguajira', precioBase: 0.94, icon: '🐟', sub: 'lacteos' },
-        { id: 'v_atun_lobo_175g', nombre: 'Atún Lobo de Mar 175g', precioBase: 1.09, icon: '🐟', sub: 'lacteos' },
-        { id: 'v_diablito_115g', nombre: 'Diablito Underwood 115g', precioBase: 2.35, icon: '🥫', sub: 'lacteos' },
-        { id: 'v_diablito_54g', nombre: 'Diablito Underwood 54g', precioBase: 1.25, icon: '🥫', sub: 'lacteos' },
+        { id: 'v_sardina_aceite', nombre: 'Sardina Misión Mar Aceite', precioBase: 0.55, imagen: 'img/sardina_aceite.jpg', sub: 'lacteos' },
+        { id: 'v_sardina_tomate', nombre: 'Sardina Misión Mar Tomate', precioBase: 0.56, imagen: 'img/sardina_tomate.jpg', sub: 'lacteos' },
+        { id: 'v_atun_margarita_140g', nombre: 'Atún en Aceite Margarita 140g', precioBase: 2.09, imagen: 'img/atun_margarita_140g.webp', sub: 'lacteos' },
+        { id: 'v_atun_marguajira', nombre: 'Atún Marguajira', precioBase: 0.94, imagen: 'img/atun_marguajira.jpg', sub: 'lacteos' },
+        { id: 'v_atun_lobo_175g', nombre: 'Atún Lobo de Mar 175g', precioBase: 1.09, imagen: 'img/atun_lobo_175.jpg', sub: 'lacteos' },
+        { id: 'v_diablito_115g', nombre: 'Diablito Underwood 115g', precioBase: 2.35, imagen: 'img/diablito.jpg', sub: 'lacteos' },
+        { id: 'v_diablito_54g', nombre: 'Diablito Underwood 54g', precioBase: 1.25, imagen: 'img/diablito.jpg', sub: 'lacteos' },
         { id: 'v_twisty_keso_200g', nombre: 'Twisty Keso 200g', precioBase: 2.19, icon: '🧀', sub: 'lacteos' },
-        { id: 'v_dalvito_200g', nombre: 'Dalvito 200g', precioBase: 2.56, icon: '🧀', sub: 'lacteos' },
+        { id: 'v_dalvito_200g', nombre: 'Dalvito 200g', precioBase: 2.56, imagen: 'img/dalvito.webp', sub: 'lacteos' },
 
         { id: 'v_margarina_delicia_500g', nombre: 'Margarina Delicia (500g)', precioBase: 0.73, imagen: 'img/mantequilla.jfif', sub: 'lacteos' },
         { id: 'v_margarina_deline_250g', nombre: 'Margarina Deline 250g', precioBase: 0.85, imagen: 'img/mantequilla.jfif', sub: 'lacteos' },
@@ -843,7 +859,6 @@
         { id: 'ch_mortadela_pollo_400g', nombre: 'Mortadela de Pollo 400g (Unidad)', precioBase: 0.83, icon: '🥩' },
         { id: 'ch_mortadela_pollo_600g', nombre: 'Mortadela de Pollo 600g (Unidad)', precioBase: 1.33, icon: '🥩' },
         { id: 'ch_mortadela_pollo_900g', nombre: 'Mortadela de Pollo 900g (Unidad)', precioBase: 2.01, icon: '🥩' },
-
         { id: 'ch_masa_pastelito_800g', nombre: 'Masa de Pastelito 800g', precioBase: 0.89, icon: '🥟' },
         { id: 'ch_masa_picaro_500g', nombre: "Masa de Pastelito Pícaro's 500g", precioBase: 0.68, icon: '🥟' },
         { id: 'ch_masa_picaro_1kg', nombre: "Masa de Pastelito Pícaro's 1kg", precioBase: 1.26, icon: '🥟' },
@@ -863,7 +878,6 @@
         { id: 'ch_mozzarella_bravos_kg', nombre: 'Queso Mozzarella Bravos de Apure (kg)', precioBase: 5.60, imagen: 'img/queso.jfif', esGranel: true, unidadMedida: 'g', pasoGranel: 100, minGranel: 200, maxGranel: 3000, defGranel: 500 },
         { id: 'ch_mozzarella_andina_kg', nombre: 'Queso Mozzarella La Andina (kg)', precioBase: 5.06, imagen: 'img/queso.jfif', esGranel: true, unidadMedida: 'g', pasoGranel: 100, minGranel: 200, maxGranel: 3000, defGranel: 500 },
         { id: 'ch_cheddar_andina_kg', nombre: 'Queso Cheddar La Andina (kg)', precioBase: 5.28, imagen: 'img/queso.jfif', esGranel: true, unidadMedida: 'g', pasoGranel: 100, minGranel: 200, maxGranel: 3000, defGranel: 500 },
-
         { id: 'ch_pavo_lanonna_kg', nombre: 'Jamón de Pavo La Nonna (kg)', precioBase: 6.77, imagen: 'img/jamon.jfif', esGranel: true, unidadMedida: 'g', pasoGranel: 100, minGranel: 200, maxGranel: 3000, defGranel: 500 },
         { id: 'ch_pollo_lanonna_kg', nombre: 'Jamón de Pollo La Nonna (kg)', precioBase: 6.67, imagen: 'img/jamon.jfif', esGranel: true, unidadMedida: 'g', pasoGranel: 100, minGranel: 200, maxGranel: 3000, defGranel: 500 },
         { id: 'ch_tender_pieza', nombre: 'Jamón Ahumado tipo Tender', precioBase: 4.95, imagen: 'img/jamon.jfif' },
@@ -877,9 +891,7 @@
         { id: 'ch_tocineta_pieza_kg', nombre: 'Tocineta Ahumada en Pieza (kg)', precioBase: 8.00, icon: '🥓', esGranel: true, unidadMedida: 'g', pasoGranel: 100, minGranel: 200, maxGranel: 3000, defGranel: 500 },
         { id: 'ch_tocineta_rebanada_kg', nombre: 'Tocineta Ahumada Rebanada (kg)', precioBase: 8.50, icon: '🥓', esGranel: true, unidadMedida: 'g', pasoGranel: 100, minGranel: 200, maxGranel: 3000, defGranel: 500 },
         { id: 'ch_mortadela_extra_lanonna_kg', nombre: 'Mortadela Extra La Nonna (kg)', precioBase: 4.44, icon: '🥩', esGranel: true, unidadMedida: 'g', pasoGranel: 100, minGranel: 200, maxGranel: 3000, defGranel: 500 },
-        { id: 'ch_salchicha_mana_kg', nombre: 'Salchicha Tipo Polaca Mana (kg)', precioBase: 2.81, icon: '🌭', esGranel: true, unidadMedida: 'g', pasoGranel: 100, minGranel: 200, maxGranel: 3000, defGranel: 500 },
-        { id: 'ch_salchicha_guibon_kg', nombre: 'Salchicha Polaca Guibon (kg)', precioBase: 2.57, icon: '🌭', esGranel: true, unidadMedida: 'g', pasoGranel: 100, minGranel: 200, maxGranel: 3000, defGranel: 500 },
-        { id: 'ch_huevos_carton', nombre: 'Cartón de Huevos (30 Und)', precioBase: 3.85, icon: '🥚', badge: 'FRESCO' }
+        { id: 'ch_salchicha_mana_kg', nombre: 'Salchicha Tipo Polaca Mana (kg)', precioBase: 2.81, icon: '🌭', esGranel: true, unidadMedida: 'g', pasoGranel: 100 },
       ],
       carnes: [
         { id: 'cn_costilla_res_kg', nombre: 'Costilla de Res (kg)', precioBase: 2.50, imagen: 'img/costllia de res_2.png', esGranel: true, unidadMedida: 'g', pasoGranel: 100, minGranel: 250, maxGranel: 4000, defGranel: 1000 },
@@ -895,7 +907,6 @@
         { id: 'cn_punta_trasera_kg', nombre: 'Punta Trasera (kg)', precioBase: 6.30, icon: '🥩', badge: 'PREMIUM', esGranel: true, unidadMedida: 'g', pasoGranel: 100, minGranel: 250, maxGranel: 4000, defGranel: 1000 },
         { id: 'cn_solomo_cuerito_kg', nombre: 'Solomo de Cuerito (kg)', precioBase: 6.00, icon: '🥩', esGranel: true, unidadMedida: 'g', pasoGranel: 100, minGranel: 250, maxGranel: 4000, defGranel: 1000 },
         { id: 'cn_lomito_res_kg', nombre: 'Lomito de Res (kg)', precioBase: 7.10, icon: '🥩', badge: 'PREMIUM', esGranel: true, unidadMedida: 'g', pasoGranel: 100, minGranel: 250, maxGranel: 4000, defGranel: 1000 },
-
         { id: 'cn_pata_pollo_kg', nombre: 'Pata de Pollo (kg)', precioBase: 2.04, icon: '🍗', esGranel: true, unidadMedida: 'g', pasoGranel: 100, minGranel: 250, maxGranel: 4000, defGranel: 1000 },
         { id: 'cn_molleja_pollo_kg', nombre: 'Molleja de Pollo (kg)', precioBase: 3.36, icon: '🍗', esGranel: true, unidadMedida: 'g', pasoGranel: 100, minGranel: 250, maxGranel: 4000, defGranel: 1000 },
         { id: 'cn_muslo_pollo_kg', nombre: 'Muslo de Pollo (kg)', precioBase: 2.50, icon: '🍗', esGranel: true, unidadMedida: 'g', pasoGranel: 100, minGranel: 250, maxGranel: 4000, defGranel: 1000 },
@@ -1318,7 +1329,6 @@
       const raiz = tokens.find(t => palabrasGenericas.includes(t));
       const especificadores = tokens.filter(t => t !== raiz && !['maiz', 'trigo', 'blanco', 'blanca'].includes(t));
 
-      // 1. SI ESPECIFICÓ MARCA O TIPO
       if (especificadores.length > 0) {
         let candidatos = [];
         for (const id in mapaProductos) {
@@ -1334,7 +1344,6 @@
         }
       }
 
-      // 2. SI NO ESPECIFICÓ -> ELIGE LA MÁS BARATA
       if (raiz) {
         let candidatos = [];
         for (const id in mapaProductos) {
@@ -1347,7 +1356,6 @@
         }
       }
 
-      // 3. PRODUCTO FUERA DE ALMACÉN
       return { tipo: 'personalizado', nombre: terminoBruto.trim(), cantidad, nota: 'A Pedido / Sin Stock' };
     }
 
@@ -1874,7 +1882,6 @@
       const numOrden = `FLASH-${Math.floor(1000 + Math.random() * 9000)}`;
       const montoTotalCalculado = esPagoTransporteDirecto ? precioTransporte : calcularTotal().total;
 
-      // CONSTRUCCIÓN DEL OBJETO ARRAY COMPLETO PARA FIREBASE
       const listaItemsArray = [];
       if (!esPagoTransporteDirecto) {
         Object.keys(carrito).forEach(id => {
@@ -1894,7 +1901,6 @@
         });
       }
 
-      // REGISTRO EN LA BASE DE DATOS DE FIREBASE
       if (firebaseActivo && db) {
         try {
           db.ref('pedidos').push({
@@ -1918,7 +1924,6 @@
         }
       }
 
-      // MALA Y FORMATO DEL MENSAJE DE WHATSAPP
       let msj = "";
       if (esPagoTransporteDirecto) {
         msj += `🚗 *SOLICITUD DE VIAJE: #${numOrden}* 🚗\n`;
@@ -2014,7 +2019,19 @@
     widget.addEventListener('touchend', stopDrag);
     widget.addEventListener('click', (e) => { if (hasDragged) e.stopPropagation(); });
 
-    window.onload = () => { renderizarCatalogo(); };
+    // ================= INICIALIZACIÓN =================
+    window.onload = () => { 
+      renderizarCatalogo(); 
+      
+      const vid = document.getElementById('video-logo');
+      if (vid) {
+        vid.muted = true;
+        vid.play().catch(() => {
+          document.addEventListener('touchstart', () => vid.play(), { once: true });
+          document.addEventListener('click', () => vid.play(), { once: true });
+        });
+      }
+    };
   </script>
 </body>
 </html>
