@@ -94,24 +94,22 @@
     <!-- CAPA DE SOBREPOSICIÓN -->
     <div class="absolute inset-0 bg-slate-950/70 backdrop-blur-[2px] z-0 pointer-events-none"></div>
 
-    <!-- ENCABEZADO DE LA APP: EL VIDEO OCUPA TODO EL ESPACIO HASTA 'EN LÍNEA' -->
-    <header class="bg-slate-800/600 border-b border-indigo-500/100 px-3 py-2 shadow-lg relative shrink-0 z-30 backdrop-blur-md">
-      <div class="flex items-center justify-between relative z-20 gap-2.5">
-        
-        <!-- CONTENEDOR DEL VIDEO (EXPANDIDO) -->
-        <div class="flex-2 h-36 sm:h-40 flex items-center overflow-hidden rounded-xl bg-slate-950/40 border border-indigo-500/50">
-          <video id="video-logo" 
-                 autoplay 
-                 loop 
-                 muted 
-                 playsinline 
-                 preload="auto"
-                 class="w-full h-full object-cover rounded-xl"
-                 onerror="this.style.display='none'; document.getElementById('logo-fallback').style.display='block';">
-            <source src="img/1002084633.mp4" type="video/mp4">
-            <source src="1002084633.mp4" type="video/mp4">
-          </video>
-
+    <!-- ENCABEZADO DE LA APP: VIDEO A TAMAÑO DESTACADO CON FLECHAS INDICADORAS -->
+    <header class="bg-slate-900/90 border-b border-indigo-500/20 p-3 shadow-lg relative shrink-0 z-40 backdrop-blur-md flex flex-col gap-2">
+      
+      <!-- CONTENEDOR DE VIDEO DE GRAN TAMAÑO -->
+      <div class="relative w-full h-36 sm:h-44 overflow-hidden rounded-2xl bg-slate-950/60 border border-indigo-500/40 shadow-inner group">
+        <video id="video-logo" 
+               autoplay 
+               loop 
+               muted 
+               playsinline 
+               preload="auto"
+               class="w-full h-full object-cover rounded-2xl"
+               onerror="this.style.display='none'; document.getElementById('logo-fallback').style.display='block';">
+          <source src="img/1002084633.mp4" type="video/mp4">
+          <source src="1002084633.mp4" type="video/mp4">
+        </video>
           <img id="logo-fallback" 
                src="img/logo.jfif" 
                alt="Pedidos Flash Logo" 
