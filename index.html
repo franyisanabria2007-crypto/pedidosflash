@@ -93,10 +93,8 @@
     <!-- CAPA DE SOBREPOSICIÓN -->
     <div class="absolute inset-0 bg-slate-950/70 backdrop-blur-[2px] z-0 pointer-events-none"></div>
 
-    <!-- ENCABEZADO DE LA APP: VIDEO A TAMAÑO DESTACADO CON FLECHAS INDICADORAS -->
+    <!-- ENCABEZADO DE LA APP -->
     <header class="bg-slate-900/90 border-b border-indigo-500/20 p-3 shadow-lg relative shrink-0 z-40 backdrop-blur-md flex flex-col gap-2">
-      
-      <!-- CONTENEDOR DE VIDEO DE GRAN TAMAÑO -->
       <div class="relative w-full h-36 sm:h-44 overflow-hidden rounded-2xl bg-slate-950/60 border border-indigo-500/40 shadow-inner group">
         <video id="video-logo" 
                autoplay 
@@ -160,11 +158,11 @@
             <h3 class="text-xs font-black text-indigo-200 uppercase tracking-wider">Servicios y Categorías</h3>
             <span class="text-[11px] text-slate-400">Toca para abrir</span>
           </div>
-          
           <div class="grid grid-cols-2 gap-2.5">
-            <!-- Víveres -->
+            <!-- 1. Víveres -->
             <button onclick="cambiarSeccion('viveres')" class="group relative bg-slate-900/90 border border-indigo-500/30 hover:border-accent-cyan p-2.5 rounded-2xl flex flex-col items-center justify-center text-center gap-1.5 shadow-lg transition-all active:scale-95 overflow-hidden backdrop-blur-md">
-              <div class="w-full h-14 rounded-xl overflow-hidden flex items-center justify-center group-hover:scale-105 transition-transform">
+              <div class="w-full h-14 rounded-xl overflow-hidden flex items-center justify-center group-hover:scale-105 transition-transform relative">
+                <span class="absolute top-1.5 right-1.5 bg-accent-cyan text-slate-950 font-black text-[9px] px-1.5 py-0.5 rounded-md shadow-md">TOP</span>
                 <img src="img/1728627033.webp" alt="Víveres" class="w-full h-full object-cover rounded-lg">
               </div>
               <div>
@@ -173,103 +171,164 @@
               </div>
             </button>
 
-            <!-- Charcutería -->
-            <button onclick="cambiarSeccion('charcuteria')" class="group relative bg-slate-900/90 border border-indigo-500/30 hover:border-accent-orange p-2.5 rounded-2xl flex flex-col items-center justify-center text-center gap-1.5 shadow-lg transition-all active:scale-95 overflow-hidden backdrop-blur-md">
-              <div class="w-full h-14 rounded-xl overflow-hidden flex items-center justify-center group-hover:scale-105 transition-transform">
-                <img src="img/charcuteria.webp" alt="Charcutería" class="w-full h-full object-cover rounded-lg">
-              </div>
-              <div>
-                <h4 class="font-black text-white text-xs">Charcutería & Quesos</h4>
-                <p class="text-[10px] text-slate-400 leading-tight">Quesos, jamones, salchichas</p>
-              </div>
-            </button>
-
-            <!-- Carnes -->
+            <!-- 2. Carnes -->
             <button onclick="cambiarSeccion('carnes')" class="group relative bg-slate-900/90 border border-indigo-500/30 hover:border-accent-magenta p-2.5 rounded-2xl flex flex-col items-center justify-center text-center gap-1.5 shadow-lg transition-all active:scale-95 overflow-hidden backdrop-blur-md">
               <div class="w-full h-14 rounded-xl overflow-hidden flex items-center justify-center group-hover:scale-105 transition-transform">
                 <img src="img/carniceria.webp" alt="Carnes" class="w-full h-full object-cover rounded-lg">
               </div>
               <div>
-                <h4 class="font-black text-white text-xs">Carnes, Pollo & Cerdo</h4>
+                <h4 class="font-black text-white text-xs">Carnes & Pollo</h4>
                 <p class="text-[10px] text-slate-400 leading-tight">Cortes frescos del día</p>
               </div>
             </button>
 
-            <!-- Panadería -->
-            <button onclick="cambiarSeccion('panaderia')" class="group relative bg-slate-900/90 border border-indigo-500/30 hover:border-accent-yellow p-2.5 rounded-2xl flex flex-col items-center justify-center text-center gap-1.5 shadow-lg transition-all active:scale-95 overflow-hidden backdrop-blur-md">
+            <!-- 3. Charcutería -->
+            <button onclick="cambiarSeccion('charcuteria')" class="group relative bg-slate-900/90 border border-indigo-500/30 hover:border-accent-orange p-2.5 rounded-2xl flex flex-col items-center justify-center text-center gap-1.5 shadow-lg transition-all active:scale-95 overflow-hidden backdrop-blur-md">
               <div class="w-full h-14 rounded-xl overflow-hidden flex items-center justify-center group-hover:scale-105 transition-transform">
-                <img src="img/pan.webp" alt="Panadería" class="w-full h-full object-cover rounded-lg">
+                <img src="img/charcuteria.webp" alt="Charcutería" class="w-full h-full object-cover rounded-lg">
               </div>
               <div>
-                <h4 class="font-black text-white text-xs">Panadería & Dulces</h4>
-                <p class="text-[10px] text-slate-400 leading-tight">Panes artesanales y galletas</p>
+                <h4 class="font-black text-white text-xs">Charcutería</h4>
+                <p class="text-[10px] text-slate-400 leading-tight">Quesos y jamones</p>
               </div>
             </button>
 
-            <!-- Verduras -->
-            <button onclick="cambiarSeccion('verduras')" class="group relative bg-slate-900/90 border border-indigo-500/30 hover:border-accent-emerald p-2.5 rounded-2xl flex flex-col items-center justify-center text-center gap-1.5 shadow-lg transition-all active:scale-95 overflow-hidden backdrop-blur-md">
-              <div class="w-full h-14 rounded-xl overflow-hidden flex items-center justify-center group-hover:scale-105 transition-transform">
-                <img src="img/verdura.webp" alt="Verduras" class="w-full h-full object-cover rounded-lg">
-              </div>
-              <div>
-                <h4 class="font-black text-white text-xs">Verduras & Frutas</h4>
-                <p class="text-[10px] text-slate-400 leading-tight">Frescas del campo</p>
-              </div>
-            </button>
-
-            <!-- Bebidas -->
+            <!-- 4. Bebidas -->
             <button onclick="cambiarSeccion('bebidas')" class="group relative bg-slate-900/90 border border-indigo-500/30 hover:border-accent-cyan p-2.5 rounded-2xl flex flex-col items-center justify-center text-center gap-1.5 shadow-lg transition-all active:scale-95 overflow-hidden backdrop-blur-md">
               <div class="w-full h-14 rounded-xl overflow-hidden flex items-center justify-center group-hover:scale-105 transition-transform">
                 <img src="img/bebidas.webp" alt="Bebidas" class="w-full h-full object-cover rounded-lg">
               </div>
               <div>
                 <h4 class="font-black text-white text-xs">Bebidas Frías</h4>
-                <p class="text-[10px] text-slate-400 leading-tight">Cervezas, refrescos, jugos</p>
+                <p class="text-[10px] text-slate-400 leading-tight">Cervezas, refrescos</p>
               </div>
             </button>
 
-            <!-- Comida Rápida -->
-            <button onclick="cambiarSeccion('comida')" class="group relative bg-slate-900/90 border border-accent-yellow/50 hover:border-accent-yellow p-2.5 rounded-2xl flex flex-col items-center justify-center text-center gap-1.5 shadow-lg transition-all active:scale-95 overflow-hidden backdrop-blur-md">
-              <div class="w-full h-14 rounded-xl overflow-hidden flex items-center justify-center group-hover:scale-105 transition-transform relative">
-                <span class="absolute top-1 right-1 bg-accent-yellow text-slate-950 font-black text-[9px] px-1.5 py-0.5 rounded-md">¡POPULAR!</span>
+            <!-- 5. Comida Rápida -->
+            <button onclick="cambiarSeccion('comida')" class="group relative bg-slate-900/90 border border-indigo-500/30 hover:border-accent-yellow p-2.5 rounded-2xl flex flex-col items-center justify-center text-center gap-1.5 shadow-lg transition-all active:scale-95 overflow-hidden backdrop-blur-md">
+              <div class="w-full h-14 rounded-xl overflow-hidden flex items-center justify-center group-hover:scale-105 transition-transform">
                 <img src="img/comidarap.png" alt="Comida Rápida" class="w-full h-full object-cover rounded-lg">
               </div>
               <div>
-                <h4 class="font-black text-accent-yellow text-xs">Comida Rápida</h4>
-                <p class="text-[10px] text-slate-300 leading-tight">Hamburguesas y pizzas</p>
+                <h4 class="font-black text-white text-xs">Comida Rápida</h4>
+                <p class="text-[10px] text-slate-400 leading-tight">Café, Burgers, Pizza</p>
               </div>
             </button>
 
-            <!-- Transporte -->
-            <button onclick="cambiarSeccion('transporte')" class="group relative bg-slate-900/90 border border-accent-emerald/50 hover:border-accent-emerald p-2.5 rounded-2xl flex flex-col items-center justify-center text-center gap-1.5 shadow-lg transition-all active:scale-95 overflow-hidden backdrop-blur-md">
+            <!-- 6. Panadería -->
+            <button onclick="cambiarSeccion('panaderia')" class="group relative bg-slate-900/90 border border-indigo-500/30 hover:border-accent-yellow p-2.5 rounded-2xl flex flex-col items-center justify-center text-center gap-1.5 shadow-lg transition-all active:scale-95 overflow-hidden backdrop-blur-md">
               <div class="w-full h-14 rounded-xl overflow-hidden flex items-center justify-center group-hover:scale-105 transition-transform relative">
-                <span class="absolute top-1 right-1 bg-accent-emerald text-slate-950 font-black text-[9px] px-1.5 py-0.5 rounded-md">GPS</span>
-                <img src="img/taxi.webp" alt="Transporte" class="w-full h-full object-cover rounded-lg">
+                <span class="absolute top-1 right-1 bg-accent-yellow text-slate-950 font-black text-[9px] px-1.5 py-0.5 rounded-md">¡NUEVO!</span>
+                <img src="img/pan.webp" alt="Panadería" class="w-full h-full object-cover rounded-lg">
               </div>
               <div>
-                <h4 class="font-black text-white text-xs">Transporte Flash</h4>
-                <p class="text-[10px] text-accent-emerald font-bold leading-tight">Motos y Carros en Nirgua</p>
+                <h4 class="font-black text-white text-xs">Panadería</h4>
+                <p class="text-[10px] text-slate-400 leading-tight">La Panamericana</p>
               </div>
             </button>
 
-            <!-- Limpieza -->
-            <button onclick="cambiarSeccion('limpieza')" class="group relative bg-slate-900/90 border border-indigo-500/30 hover:border-accent-cyan p-2.5 rounded-2xl flex flex-col items-center justify-center text-center gap-1.5 shadow-lg transition-all active:scale-95 overflow-hidden backdrop-blur-md col-span-2">
+            <!-- 7. Verduras -->
+            <button onclick="cambiarSeccion('verduras')" class="group relative bg-slate-900/90 border border-indigo-500/30 hover:border-accent-emerald p-2.5 rounded-2xl flex flex-col items-center justify-center text-center gap-1.5 shadow-lg transition-all active:scale-95 overflow-hidden backdrop-blur-md">
+              <div class="w-full h-14 rounded-xl overflow-hidden flex items-center justify-center group-hover:scale-105 transition-transform">
+                <img src="img/verdura.webp" alt="Verduras" class="w-full h-full object-cover rounded-lg">
+              </div>
+              <div>
+                <h4 class="font-black text-white text-xs">Verduras</h4>
+                <p class="text-[10px] text-slate-400 leading-tight">Frescas del campo</p>
+              </div>
+            </button>
+
+            <!-- 8. Transporte -->
+            <button onclick="cambiarSeccion('transporte')" class="group relative bg-slate-900/90 border border-indigo-500/30 hover:border-accent-emerald p-2.5 rounded-2xl flex flex-col items-center justify-center text-center gap-1.5 shadow-lg transition-all active:scale-95 overflow-hidden backdrop-blur-md">
+              <div class="w-full h-14 rounded-xl overflow-hidden flex items-center justify-center group-hover:scale-105 transition-transform relative">
+                <span class="absolute top-1 right-1 bg-accent-emerald text-slate-950 font-black text-[9px] px-1.5 py-0.5 rounded-md">GPS</span>
+                <img src="img/taxi.webp" alt="Transporte" class="w-full h-full object-contain rounded-lg">
+              </div>
+              <div>
+                <h4 class="font-black text-white text-xs">Transporte</h4>
+                <p class="text-[10px] text-accent-emerald font-bold leading-tight">Motos y Carros</p>
+              </div>
+            </button>
+
+            <!-- 9. Limpieza -->
+            <button onclick="cambiarSeccion('limpieza')" class="group relative bg-slate-900/90 border border-indigo-500/30 hover:border-accent-cyan p-2.5 rounded-2xl flex flex-col items-center justify-center text-center gap-1.5 shadow-lg transition-all active:scale-95 overflow-hidden backdrop-blur-md">
               <div class="w-full h-14 rounded-xl overflow-hidden flex items-center justify-center group-hover:scale-105 transition-transform">
                 <img src="img/limpieza.jfif" alt="Limpieza" class="w-full h-full object-cover rounded-lg">
               </div>
               <div>
                 <h4 class="font-black text-white text-xs">Aseo & Limpieza</h4>
-                <p class="text-[10px] text-slate-400 leading-tight">Detergentes, cloro, vinagres y salsas</p>
+                <p class="text-[10px] text-slate-400 leading-tight">Detergentes, cloro</p>
               </div>
             </button>
           </div>
         </div>
-
+       
         <!-- CONTENEDOR INTERIOR DE SECCIÓN ACTIVA -->
         <div id="contenedor-seccion-activa" class="hidden space-y-3">
           <button onclick="volverAlMenuPrincipal()" class="bg-slate-950/90 hover:bg-slate-800 text-accent-cyan border border-accent-cyan/30 px-3.5 py-2 rounded-xl text-xs font-bold flex items-center gap-2 transition active:scale-95 shadow-md">
             <i data-lucide="arrow-left" class="w-4 h-4"></i> Volver a Categorías
           </button>
+
+          <!-- SECCIÓN COMIDA RÁPIDA Y CAFÉ ORGANIZADA POR LOCALES SELECCIONABLES -->
+          <div id="sec-comida" class="seccion-target space-y-3 hidden">
+            <div class="px-1">
+              <h3 class="text-xs font-black text-accent-yellow uppercase tracking-wider">Elige el Local para ver sus Productos</h3>
+              <p class="text-[11px] text-slate-400">Toca en la tarjeta o imagen del comercio</p>
+            </div>
+
+            <!-- TARJETAS DE LOCALES COMERCIALES (TOCA PARA ABRIR SUS PRODUCTOS) -->
+            <div class="grid grid-cols-2 gap-3">
+
+              <!-- LOCAL 1: Moravos Café -->
+              <button onclick="abrirMenuLocal('moravos')" class="group relative bg-slate-900/90 border border-accent-orange/40 hover:border-accent-orange p-3 rounded-2xl flex flex-col items-center text-center gap-2 shadow-lg transition-all active:scale-95 backdrop-blur-md">
+                <div class="w-16 h-16 rounded-full overflow-hidden border-2 border-accent-orange shadow-md group-hover:scale-105 transition-transform">
+                  <img src="img/moravos.jpg" alt="Moravos Café" class="w-full h-full object-cover" onerror="this.src='img/logo.jfif';">
+                </div>
+                <div>
+                  <h4 class="font-black text-white text-xs uppercase tracking-wider line-clamp-1">Moravos Café</h4>
+                  <p class="text-[10px] text-accent-yellow font-semibold leading-tight">Café, Postres & Dulces</p>
+                  <span class="inline-block mt-1 bg-accent-orange/20 text-accent-orange border border-accent-orange/30 text-[9px] font-black px-2 py-0.5 rounded-full">Ver Menú</span>
+                </div>
+              </button>
+
+              <!-- LOCAL 2: El Sabor de Fran & Chero -->
+              <button onclick="abrirMenuLocal('fran_chero')" class="group relative bg-slate-900/90 border border-accent-orange/40 hover:border-accent-orange p-3 rounded-2xl flex flex-col items-center text-center gap-2 shadow-lg transition-all active:scale-95 backdrop-blur-md">
+                <div class="w-16 h-16 rounded-full overflow-hidden border-2 border-accent-orange shadow-md group-hover:scale-105 transition-transform">
+                  <img src="img/fran y chero.jpg" alt="Fran & Chero" class="w-full h-full object-cover" onerror="this.src='img/logo.jfif';">
+                </div>
+                <div>
+                  <h4 class="font-black text-white text-xs uppercase tracking-wider line-clamp-1">Fran & Chero</h4>
+                  <p class="text-[10px] text-accent-yellow font-semibold leading-tight">Burgers, Pepitos, Perros</p>
+                  <span class="inline-block mt-1 bg-accent-orange/20 text-accent-orange border border-accent-orange/30 text-[9px] font-black px-2 py-0.5 rounded-full">Ver Menú</span>
+                </div>
+              </button>
+
+              <!-- LOCAL 3: Anton's Burgers -->
+              <button onclick="abrirMenuLocal('antons')" class="group relative bg-slate-900/90 border border-indigo-500/40 hover:border-indigo-400 p-3 rounded-2xl flex flex-col items-center text-center gap-2 shadow-lg transition-all active:scale-95 backdrop-blur-md">
+                <div class="w-16 h-16 rounded-full overflow-hidden border-2 border-indigo-500 shadow-md group-hover:scale-105 transition-transform">
+                  <img src="img/anto bruger nirgua.jpg" alt="Anton's Burgers" class="w-full h-full object-cover" onerror="this.src='img/logo.jfif';">
+                </div>
+                <div>
+                  <h4 class="font-black text-white text-xs uppercase tracking-wider line-clamp-1">Anton's Burgers</h4>
+                  <p class="text-[10px] text-indigo-300 font-semibold leading-tight">Burgers Gourmet & Empanadas</p>
+                  <span class="inline-block mt-1 bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 text-[9px] font-black px-2 py-0.5 rounded-full">Ver Menú</span>
+                </div>
+              </button>
+
+              <!-- LOCAL 4: Zirus Pizza -->
+              <button onclick="abrirMenuLocal('zirus')" class="group relative bg-slate-900/90 border border-accent-yellow/40 hover:border-accent-yellow p-3 rounded-2xl flex flex-col items-center text-center gap-2 shadow-lg transition-all active:scale-95 backdrop-blur-md">
+                <div class="w-16 h-16 rounded-full overflow-hidden border-2 border-accent-yellow shadow-md group-hover:scale-105 transition-transform">
+                  <img src="img/ziruspizza.webp" alt="Zirus Pizza" class="w-full h-full object-cover" onerror="this.src='img/logo.jfif';">
+                </div>
+                <div>
+                  <h4 class="font-black text-white text-xs uppercase tracking-wider line-clamp-1">Zirus Pizza</h4>
+                  <p class="text-[10px] text-accent-yellow font-semibold leading-tight">Pizzas Artesanales</p>
+                  <span class="inline-block mt-1 bg-accent-yellow/20 text-accent-yellow border border-accent-yellow/30 text-[9px] font-black px-2 py-0.5 rounded-full">Ver Menú</span>
+                </div>
+              </button>
+
+            </div>
+          </div>
 
           <!-- VÍVERES Y SUBMENÚ -->
           <div id="sec-viveres" class="seccion-target space-y-3 hidden">
@@ -298,10 +357,23 @@
 
           <div id="sec-charcuteria" class="seccion-target space-y-2 hidden"><div id="grid-charcuteria" class="grid grid-cols-2 gap-3"></div></div>
           <div id="sec-carnes" class="seccion-target space-y-2 hidden"><div id="grid-carnes" class="grid grid-cols-2 gap-3"></div></div>
-          <div id="sec-panaderia" class="seccion-target space-y-2 hidden"><div id="grid-panaderia" class="grid grid-cols-2 gap-3"></div></div>
+          
+          <!-- PANADERÍA CON LA PANAMERICANA -->
+          <div id="sec-panaderia" class="seccion-target space-y-4 hidden">
+            <div class="bg-slate-900/90 border border-accent-yellow/40 p-3 rounded-2xl space-y-2.5 backdrop-blur-md">
+              <div class="flex items-center gap-2.5 border-b border-slate-800 pb-2">
+                <img src="img/panamericana.webp" alt="La Panamericana" class="w-10 h-10 rounded-full object-cover border border-accent-yellow shadow-md" onerror="this.src='img/logo.jfif';">
+                <div>
+                  <h4 class="font-black text-white text-xs uppercase tracking-wider">La Panamericana</h4>
+                  <p class="text-[10px] text-accent-yellow font-semibold">¡La calidad es nuestra receta!</p>
+                </div>
+              </div>
+              <div id="grid-panaderia-panamericana" class="grid grid-cols-2 gap-2.5"></div>
+            </div>
+          </div>
+
           <div id="sec-verduras" class="seccion-target space-y-2 hidden"><div id="grid-verduras" class="grid grid-cols-2 gap-3"></div></div>
           <div id="sec-bebidas" class="seccion-target space-y-2 hidden"><div id="grid-bebidas" class="grid grid-cols-2 gap-3"></div></div>
-          <div id="sec-comida" class="seccion-target space-y-2 hidden"><div id="grid-comida" class="grid grid-cols-2 gap-3"></div></div>
           
           <!-- TRANSPORTE CON MAPA -->
           <div id="sec-transporte" class="seccion-target space-y-3.5 hidden">
@@ -373,12 +445,12 @@
 
       </main>
 
-      <!-- BOTÓN FLOTANTE: PEDIR PRODUCTO PERSONALIZADO (FIJADO DENTRO DE LA APP) -->
+      <!-- BOTÓN FLOTANTE: PEDIR PRODUCTO PERSONALIZADO -->
       <button onclick="abrirModalPersonalizado()" type="button" class="absolute z-40 bottom-16 left-3 bg-gradient-to-r from-accent-cyan to-brand-600 text-slate-950 font-black px-3.5 py-2 rounded-2xl shadow-[0_4px_25px_rgba(0,242,254,0.45)] flex items-center gap-1.5 text-xs transition active:scale-95 glow-cyan">
         <i data-lucide="plus-circle" class="w-4 h-4 fill-slate-950"></i> <span>¿No lo ves? Pídelo</span>
       </button>
 
-      <!-- WIDGET FLOTANTE DEL CARRITO (FIJADO DENTRO DE LA APP) -->
+      <!-- WIDGET FLOTANTE DEL CARRITO -->
       <div id="widget-total-flotante" onclick="abrirModalCarrito()" class="absolute z-40 transition-opacity duration-300 opacity-0 pointer-events-none touch-none select-none cursor-pointer active:scale-95" style="top: 135px; right: 12px;">
         <div class="bg-gradient-to-b from-indigo-500/40 to-slate-950 p-[1px] rounded-2xl shadow-[0_12px_35px_rgba(0,0,0,0.85)] border border-indigo-500/50 glow-violet">
           <div class="bg-slate-950/90 backdrop-blur-md px-3 py-2 rounded-[15px] flex flex-col items-center justify-center text-center">
@@ -392,7 +464,7 @@
         </div>
       </div>
 
-      <!-- BARRA DE NAVEGACIÓN INFERIOR ESTILO APP COMERCIAL -->
+      <!-- BARRA DE NAVEGACIÓN INFERIOR -->
       <nav class="absolute bottom-0 left-0 right-0 bg-slate-900/95 backdrop-blur-xl border-t border-slate-800 px-3 py-2 z-40 flex items-center justify-around shadow-2xl">
         <button onclick="volverAlMenuPrincipal()" type="button" class="flex flex-col items-center gap-1 text-accent-cyan py-1 px-2 transition active:scale-90">
           <i data-lucide="home" class="w-5 h-5"></i>
@@ -417,6 +489,32 @@
           <span id="badge-nav-monto" class="text-[10px] font-black text-accent-yellow">$0.00</span>
         </button>
       </nav>
+    </div>
+
+    <!-- ================= MODAL DESPLEGABLE DE PRODUCTOS DEL LOCAL SELECCIONADO ================= -->
+    <div id="modal-productos-local" onclick="if(event.target === this) cerrarModalLocal()" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 hidden">
+      <div class="anim-modal bg-slate-900 border-t sm:border border-indigo-500/40 w-full max-w-md rounded-t-[32px] sm:rounded-3xl p-4 space-y-3 shadow-2xl max-h-[85vh] flex flex-col">
+        <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+          <div class="flex items-center gap-2.5">
+            <img id="img-modal-local" src="" alt="Logo Local" class="w-10 h-10 rounded-full object-cover border-2 border-accent-yellow shadow-md" onerror="this.src='img/logo.jfif';">
+            <div>
+              <h3 id="titulo-modal-local" class="text-sm font-black text-white uppercase tracking-wider leading-tight">Nombre del Local</h3>
+              <span id="sub-modal-local" class="text-[10px] text-accent-yellow font-semibold">Productos disponibles</span>
+            </div>
+          </div>
+          <button onclick="cerrarModalLocal()" class="w-7 h-7 rounded-full bg-slate-800 text-slate-400 hover:text-white flex items-center justify-center transition">
+            <i data-lucide="x" class="w-4 h-4"></i>
+          </button>
+        </div>
+
+        <div id="grid-modal-productos-local" class="flex-1 overflow-y-auto no-scrollbar grid grid-cols-2 gap-2.5 pr-1"></div>
+
+        <div class="border-t border-slate-800 pt-2.5">
+          <button onclick="cerrarModalLocal()" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold py-2.5 rounded-xl text-xs transition">
+            Volver a Selección de Locales
+          </button>
+        </div>
+      </div>
     </div>
 
     <!-- ================= PASO 2: CHECKOUT CON MÉTODOS DE PAGO ================= -->
@@ -748,6 +846,14 @@
     let productoDetectadoTemporal = null;
     let metodoPagoActual = 'Pago Móvil';
 
+    // DATOS DE LOS LOCALES DE COMIDA RÁPIDA
+    const infoLocales = {
+      moravos: { nombre: 'Moravos Café', sub: 'Café, Postres y Especialidades', logo: 'img/moravos.jpg' },
+      fran_chero: { nombre: 'El Sabor de Fran & Chero', sub: 'Hamburguesas, Pepitos y Perros', logo: 'img/fran y chero.jpg' },
+      antons: { nombre: "Anton's Burgers", sub: 'Hamburguesas Gourmet y Combos', logo: 'img/anto bruger nirgua.jpg' },
+      zirus: { nombre: 'Zirus Pizza', sub: 'Pizzas Artesanales', logo: 'img/ziruspizza.webp' }
+    };
+
     // ================= CATÁLOGO COMPLETO INCORPORADO =================
     const productos = {
       viveres: [
@@ -910,16 +1016,12 @@
         { id: 'cn_milanesa_pollo_kg', nombre: 'Milanesa de Pollo (kg)', precioBase: 6.00, imagen: 'img/cn_milanesa_pollo_kg.png', badge: 'TOP', esGranel: true, unidadMedida: 'g', pasoGranel: 100, minGranel: 250, maxGranel: 4000, defGranel: 1000 }
       ],
       panaderia: [
-        { id: 'p_pan_sobado', nombre: 'Pan Sobado / Piñita Artesanal', precioBase: 1.50, imagen: 'img/p_pan_sobado.png', badge: 'FRESCO' },
-        { id: 'p_pan_baguette', nombre: 'Pan Baguette Francés', precioBase: 1.20, imagen: 'img/p_pan_baguette.png' },
-        { id: 'p_quesillo', nombre: 'Quesillo Casero (Porción)', precioBase: 2.50, imagen: 'img/p_quesillo.png', badge: 'DULCE' },
-        { id: 'p_quesito', nombre: 'Palmeritas / Dulces Secos', precioBase: 1.80, imagen: 'img/p_quesito.png' },
-        { id: 'p_ponque', nombre: 'Ponqué con Pasas', precioBase: 2.00, imagen: 'img/p_ponque.png', badge: 'DULCE' },
-        { id: 'v34', nombre: 'Galletas Charmy Brownie', precioBase: 1.11, imagen: 'img/v34.png' },
-        { id: 'v35', nombre: 'Galletas Charmy Choco', precioBase: 1.11, imagen: 'img/v35.png' },
-        { id: 'v42', nombre: 'Galletas TipTop Maní', precioBase: 0.63, imagen: 'img/v42.png' },
-        { id: 'v43', nombre: 'Galletas TipTop Chocolate', precioBase: 0.63, imagen: 'img/v43.png' },
-        { id: 'v48', nombre: 'Galletas Caledonia María', precioBase: 0.61, imagen: 'img/v48.png' }
+        // La Panamericana
+        { id: 'pa_pan_sobado', nombre: 'Pan Sobado / Piñita Artesanal', precioBase: 1.50, imagen: 'img/p_pan_sobado.png', badge: 'FRESCO', local: 'panamericana' },
+        { id: 'pa_pan_baguette', nombre: 'Pan Baguette Francés', precioBase: 1.20, imagen: 'img/p_pan_baguette.png', local: 'panamericana' },
+        { id: 'pa_quesillo', nombre: 'Quesillo Casero (Porción)', precioBase: 2.50, imagen: 'img/p_quesillo.png', badge: 'DULCE', local: 'panamericana' },
+        { id: 'pa_ponque', nombre: 'Ponqué con Pasas', precioBase: 2.00, imagen: 'img/p_ponque.png', badge: 'DULCE', local: 'panamericana' },
+        { id: 'pa_galletas_charmy', nombre: 'Galletas Charmy Brownie', precioBase: 1.11, imagen: 'img/v34.png', local: 'panamericana' }
       ],
       verduras: [
         { id: 'vf_tomate', nombre: 'Tomate Perita (kg)', precioBase: 1.80, imagen: 'img/vf_tomate.png', badge: 'FRESCO', esGranel: true, unidadMedida: 'g', pasoGranel: 100, minGranel: 250, maxGranel: 3000, defGranel: 1000 },
@@ -955,11 +1057,21 @@
         { id: 'b6', nombre: 'Energizante Monster', precioBase: 2.80, imagen: 'img/b6.png' }
       ],
       comida: [
-        { id: 'c1', nombre: 'Hamburguesa "Pasa el Hambre" 🍔', precioBase: 5.00, imagen: 'img/c1.png', badge: 'TOP' },
-        { id: 'c2', nombre: 'Perro Caliente "Carga Tu Batería" 🌭', precioBase: 2.00, imagen: 'img/c2.png' },
-        { id: 'c3', nombre: "Pizza \"Pa' que el novio no coma cuento\" 🍕", precioBase: 12.00, imagen: 'img/c3.png' },
-        { id: 'c4', nombre: 'Combo 3 Empanadas "Levántate y Anda" 🥟', precioBase: 3.50, imagen: 'img/c4.png', badge: 'FRESCO' },
-        { id: 'c5', nombre: 'Pepito "Traga sin Culpa" 🥖', precioBase: 6.50, imagen: 'img/c5.png', badge: 'POPULAR' }
+        // Moravos Café
+        { id: 'mc_cafe_capuchino', nombre: 'Café Capuchino Especial ☕', precioBase: 2.00, imagen: 'img/b6.png', badge: 'CAFÉ', local: 'moravos' },
+        { id: 'mc_postre_chocolate', nombre: 'Torta de Chocolate Moravos 🍰', precioBase: 3.00, imagen: 'img/p_quesillo.png', badge: 'POSTRE', local: 'moravos' },
+
+        // El Sabor de Fran & Chero
+        { id: 'fc_hamb_mixta', nombre: 'Hamburguesa Mixta Fran & Chero 🍔', precioBase: 5.00, imagen: 'img/c1.png', badge: 'DESTACADO', local: 'fran_chero' },
+        { id: 'fc_perro_caliente', nombre: 'Perro Caliente Especial 🌭', precioBase: 2.00, imagen: 'img/c2.png', local: 'fran_chero' },
+        { id: 'fc_pepito_res', nombre: 'Pepito Especial de Res 🥖', precioBase: 6.50, imagen: 'img/c5.png', badge: 'POPULAR', local: 'fran_chero' },
+
+        // Anton's Burgers
+        { id: 'ab_hamb_antons', nombre: "Hamburguesa Anton's Supreme 🍔", precioBase: 6.00, imagen: 'img/c1.png', badge: 'TOP', local: 'antons' },
+        { id: 'ab_combo_empanadas', nombre: 'Combo 3 Empanadas 🥟', precioBase: 3.50, imagen: 'img/c4.png', badge: 'FRESCO', local: 'antons' },
+
+        // Zirus Pizza
+        { id: 'zp_pizza_familiar', nombre: 'Pizza Familiar Zirus 🍕', precioBase: 12.00, imagen: 'img/c3.png', badge: 'TOP', local: 'zirus' }
       ],
       limpieza: [
         { id: 'l_vinagre_lavina_150ml', nombre: 'Vinagre La Viña 150ml', precioBase: 0.39, imagen: 'img/l_vinagre_lavina_150ml.png' },
@@ -1033,7 +1145,7 @@
     }
 
     function renderizarCatalogo() {
-      ['viveres', 'charcuteria', 'carnes', 'panaderia', 'verduras', 'bebidas', 'comida', 'limpieza'].forEach(cat => {
+      ['viveres', 'charcuteria', 'carnes', 'verduras', 'bebidas', 'limpieza'].forEach(cat => {
         const sec = document.getElementById(`grid-${cat}`);
         if (sec && productos[cat]) {
           sec.innerHTML = "";
@@ -1042,7 +1154,46 @@
           });
         }
       });
+
+      // Renderizado de Panadería
+      if (productos.panaderia) {
+        const gridPanaderia = document.getElementById('grid-panaderia-panamericana');
+        if (gridPanaderia) {
+          gridPanaderia.innerHTML = "";
+          productos.panaderia.forEach(item => {
+            if (item.local === 'panamericana') {
+              gridPanaderia.innerHTML += crearTarjetaProductoHTML(item);
+            }
+          });
+        }
+      }
+
       lucide.createIcons();
+    }
+
+    // ABRIR MENÚ MODAL DE CADA LOCAL DE COMIDA RÁPIDA
+    function abrirMenuLocal(idLocal) {
+      const info = infoLocales[idLocal];
+      if (!info) return;
+
+      document.getElementById('titulo-modal-local').innerText = info.nombre;
+      document.getElementById('sub-modal-local').innerText = info.sub;
+      document.getElementById('img-modal-local').src = info.logo;
+
+      const gridModal = document.getElementById('grid-modal-productos-local');
+      gridModal.innerHTML = "";
+
+      const prodsFiltrados = productos.comida.filter(p => p.local === idLocal);
+      prodsFiltrados.forEach(item => {
+        gridModal.innerHTML += crearTarjetaProductoHTML(item);
+      });
+
+      document.getElementById('modal-productos-local').classList.remove('hidden');
+      lucide.createIcons();
+    }
+
+    function cerrarModalLocal() {
+      document.getElementById('modal-productos-local').classList.add('hidden');
     }
 
     function crearTarjetaProductoHTML(item) {
@@ -1295,8 +1446,8 @@
       document.querySelectorAll('.item-producto').forEach(card => card.style.display = "flex");
     }
 
-    // ================= REGLA DE COMPRA: LO MÁS BARATO O ESPECIFICADO =================
-    const palabrasGenericas = ['harina', 'arroz', 'pasta', 'espagueti', 'azucar', 'sal', 'aceite', 'margarina', 'mantequilla', 'leche', 'sardina', 'atun', 'diablito', 'salchicha', 'jamon', 'mortadela', 'queso', 'carne', 'pollo', 'pan', 'galleta', 'cerveza', 'refresco', 'vinagre', 'cloro', 'huevo'];
+    // REGLA DE COMPRA: LO MÁS BARATO O ESPECIFICADO
+    const palabrasGenericas = ['harina', 'arroz', 'pasta', 'espagueti', 'azucar', 'sal', 'aceite', 'margarina', 'mantequilla', 'leche', 'sardina', 'atun', 'diablito', 'salchicha', 'jamon', 'mortadela', 'queso', 'carne', 'pollo', 'pan', 'galleta', 'cerveza', 'refresco', 'vinagre', 'cloro', 'huevo', 'cafe'];
 
     function resolverProductoInteligente(terminoBruto) {
       const limpio = normalizarTexto(terminoBruto);
@@ -1724,7 +1875,6 @@
       document.getElementById('paso-catalogo').classList.remove('hidden');
     }
 
-    // ================= MÉTODOS DE PAGO VENEZOLANOS =================
     function seleccionarMetodoPago(metodo) {
       const btnMovil = document.getElementById('btn-pago-movil');
       const btnEfec = document.getElementById('btn-pago-efectivo');
@@ -1853,7 +2003,6 @@
       );
     }
 
-    // ================= ENVÍO PROFESIONAL DEL TICKET =================
     function enviarPedidoAConductor() {
       const nombre = document.getElementById('nombreCliente').value.trim();
       const telefono = document.getElementById('telefonoCliente').value.trim();
@@ -1975,7 +2124,6 @@
       }, 35);
     }
 
-    // ================= ARRASTRE FLUIDO DEL WIDGET FLOTANTE =================
     const widget = document.getElementById('widget-total-flotante');
     let isDragging = false, hasDragged = false, offsetX = 0, offsetY = 0, startTouchX = 0, startTouchY = 0;
     
@@ -2013,7 +2161,6 @@
     widget.addEventListener('touchend', stopDrag);
     widget.addEventListener('click', (e) => { if (hasDragged) e.stopPropagation(); });
 
-    // ================= INICIALIZACIÓN =================
     window.onload = () => { 
       renderizarCatalogo(); 
       
@@ -2029,4 +2176,3 @@
   </script>
 </body>
 </html>
-
