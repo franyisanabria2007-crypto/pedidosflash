@@ -1,8 +1,12 @@
+
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" class="h-full">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#030712">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <title>Pedidos Flash - App Móvil Nirgua</title>
   
   <!-- Tailwind CSS CDN -->
@@ -14,13 +18,16 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
-  <!-- Tesseract.js (IA para reconocimiento óptico) -->
+  <!-- Tesseract.js (IA para reconocimiento óptico de texto) -->
   <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
 
   <!-- Firebase SDKs -->
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+  
   <!-- Google Fonts: Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   
   <script>
@@ -28,7 +35,7 @@
       theme: {
         extend: {
           fontFamily: {
-            sans: ['Plus Jakarta Sans', 'sans-serif'],
+            sans: ['"Plus Jakarta Sans"', 'system-ui', '-apple-system', 'sans-serif'],
           },
           colors: {
             brand: {
@@ -45,38 +52,81 @@
               yellow: '#ffb800',
               emerald: '#00e676',
             }
+          },
+          boxShadow: {
+            'glow-cyan': '0 0 25px rgba(0, 242, 254, 0.45)',
+            'glow-magenta': '0 0 25px rgba(255, 0, 122, 0.45)',
+            'glow-emerald': '0 0 25px rgba(0, 230, 118, 0.45)',
+            'glow-yellow': '0 0 25px rgba(255, 184, 0, 0.45)',
+            'glow-indigo': '0 0 30px rgba(99, 102, 241, 0.45)',
           }
         }
       }
     }
   </script>
+  
   <style>
+    /* Ocultar barra de desplazamiento sin perder funcionalidad */
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     
-    .glow-magenta { box-shadow: 0 0 25px rgba(255, 0, 122, 0.4); }
-    .glow-cyan { box-shadow: 0 0 25px rgba(0, 242, 254, 0.4); }
-    .glow-violet { box-shadow: 0 0 30px rgba(99, 102, 241, 0.45); }
-    .glow-yellow { box-shadow: 0 0 25px rgba(255, 184, 0, 0.5); }
-    
+    /* Touch optimization para Android y iPhone */
+    * {
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
+    }
+
+    /* Animaciones fluidas */
     @keyframes entradaModal {
-      0% { transform: translateY(20px) scale(0.96); opacity: 0; }
+      0% { transform: translateY(24px) scale(0.97); opacity: 0; }
       100% { transform: translateY(0) scale(1); opacity: 1; }
     }
-    .anim-modal { animation: entradaModal 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-    
-    @keyframes pulsoIA {
-      0%, 100% { box-shadow: 0 0 0 0 rgba(0, 242, 254, 0.6); }
-      50% { box-shadow: 0 0 0 12px rgba(0, 242, 254, 0); }
+    .anim-modal { animation: entradaModal 0.24s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+
+    @keyframes laserScan {
+      0% { top: 4%; opacity: 0.9; }
+      50% { top: 92%; opacity: 1; box-shadow: 0 0 16px #00f2fe; }
+      100% { top: 4%; opacity: 0.9; }
     }
-    .ia-activo { animation: pulsoIA 1.3s infinite; }
+    .laser-line {
+      position: absolute;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, transparent, #00f2fe, #ffffff, #00f2fe, transparent);
+      box-shadow: 0 0 12px #00f2fe;
+      animation: laserScan 2s infinite ease-in-out;
+    }
+
+    @keyframes pulseGlow {
+      0%, 100% { transform: scale(1); opacity: 0.9; }
+      50% { transform: scale(1.05); opacity: 1; filter: drop-shadow(0 0 12px rgba(0,242,254,0.6)); }
+    }
+    .ia-activo { animation: pulseGlow 1.2s infinite ease-in-out; }
+
+    /* Efecto de presión en botones táctiles */
+    .btn-tactil {
+      transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .btn-tactil:active {
+      transform: scale(0.96);
+      filter: brightness(0.92);
+    }
+
+    /* Safe areas para notch y barra de navegación de iPhone/Android */
+    .safe-top {
+      padding-top: max(env(safe-area-inset-top, 0px), 8px);
+    }
+    .safe-bottom {
+      padding-bottom: max(env(safe-area-inset-bottom, 0px), 12px);
+    }
   </style>
 </head>
-<body class="bg-slate-950 font-sans text-slate-100 antialiased min-h-screen flex items-center justify-center p-0 sm:p-4 selection:bg-accent-magenta selection:text-white">
+<body class="bg-slate-950 font-sans text-slate-100 antialiased min-h-[100dvh] flex items-center justify-center p-0 sm:p-4 selection:bg-accent-magenta selection:text-white overflow-x-hidden">
   
   <!-- TOAST FLOTANTE MODERNO -->
-  <div id="toast-notificacion" class="fixed top-4 left-1/2 -translate-x-1/2 z-50 transition-all duration-300 opacity-0 pointer-events-none -translate-y-4 max-w-xs w-full px-4">
-    <div class="bg-slate-900/95 border border-indigo-500/40 backdrop-blur-xl shadow-2xl rounded-2xl p-3 flex items-center gap-3">
+  <div id="toast-notificacion" class="fixed top-4 left-1/2 -translate-x-1/2 z-[100] transition-all duration-300 opacity-0 pointer-events-none -translate-y-4 max-w-xs w-[90%] px-2">
+    <div class="bg-slate-900/95 border border-indigo-500/50 backdrop-blur-2xl shadow-2xl rounded-2xl p-3 flex items-center gap-3">
       <div id="toast-icono-bg" class="w-8 h-8 rounded-xl bg-accent-cyan/20 text-accent-cyan flex items-center justify-center shrink-0">
         <i id="toast-icono" data-lucide="info" class="w-4 h-4"></i>
       </div>
@@ -87,15 +137,21 @@
     </div>
   </div>
 
-  <!-- CONTENEDOR TIPO MÓVIL COMERCIAL CON FONDO DE NIRGUA -->
-  <div class="w-full max-w-sm sm:max-w-md bg-slate-900 min-h-screen sm:min-h-[92vh] sm:max-h-[94vh] sm:rounded-[40px] shadow-[0_0_80px_rgba(79,70,229,0.25)] overflow-hidden flex flex-col border border-slate-800 relative bg-[url('img/nirgua.webp')] bg-cover bg-center">
+  <!-- ================= DISPOSITIVO MÓVIL (TAMAÑO IPHONE / ANDROID) ================= -->
+  <div class="w-full h-[100dvh] sm:h-[92dvh] sm:max-h-[890px] sm:max-w-[420px] bg-slate-900 sm:rounded-[46px] sm:border-[5px] sm:border-slate-800/90 shadow-[0_20px_70px_rgba(0,0,0,0.8),0_0_50px_rgba(99,102,241,0.2)] overflow-hidden flex flex-col relative bg-[url('img/nirgua.webp')] bg-cover bg-center">
 
-    <!-- CAPA DE SOBREPOSICIÓN -->
-    <div class="absolute inset-0 bg-slate-950/70 backdrop-blur-[2px] z-0 pointer-events-none"></div>
+    <!-- CAPA DE SOBREPOSICIÓN OSCURA -->
+    <div class="absolute inset-0 bg-slate-950/75 backdrop-blur-[2px] z-0 pointer-events-none"></div>
 
-    <!-- ENCABEZADO DE LA APP -->
-    <header class="bg-slate-900/90 border-b border-indigo-500/20 p-3 shadow-lg relative shrink-0 z-40 backdrop-blur-md flex flex-col gap-2">
-      <div class="relative w-full h-36 sm:h-44 overflow-hidden rounded-2xl bg-slate-950/60 border border-indigo-500/40 shadow-inner group">
+    <!-- NOTCH / ISLA DINÁMICA ESTILO IPHONE (FRAME ESCRITORIO) -->
+    <div class="hidden sm:flex absolute top-2 left-1/2 -translate-x-1/2 w-28 h-4 bg-slate-950 rounded-full z-50 items-center justify-center border border-slate-800/60 pointer-events-none shadow-inner">
+      <div class="w-2.5 h-2.5 rounded-full bg-slate-900 border border-slate-800 mr-2"></div>
+      <div class="w-2 h-2 rounded-full bg-indigo-950 border border-indigo-800/40"></div>
+    </div>
+
+    <!-- ENCABEZADO DE LA APP CON VIDEO / LOGO -->
+    <header class="bg-slate-900/95 border-b border-indigo-500/25 p-2.5 sm:p-3 shadow-lg relative shrink-0 z-40 backdrop-blur-xl flex flex-col gap-2 safe-top">
+      <div class="relative w-full h-28 sm:h-36 overflow-hidden rounded-2xl bg-slate-950/70 border border-indigo-500/40 shadow-inner group">
         <video id="video-logo" 
                autoplay 
                loop 
@@ -107,33 +163,41 @@
           <source src="img/1002084633.mp4" type="video/mp4">
           <source src="1002084633.mp4" type="video/mp4">
         </video>
-          <img id="logo-fallback" 
-               src="img/logo.jfif" 
-               alt="Pedidos Flash Logo" 
-               class="w-full h-full object-contain rounded-xl p-1" 
-               style="display: none;">
+        <img id="logo-fallback" 
+             src="img/logo.jfif" 
+             alt="Pedidos Flash Logo" 
+             class="w-full h-full object-contain rounded-xl p-2" 
+             style="display: none;">
       </div>
     </header>
 
     <!-- ================= PASO 1: CATÁLOGO Y COMPRAS ================= -->
     <div id="paso-catalogo" class="flex-1 flex flex-col overflow-hidden relative z-10">
       
-      <!-- BÚSQUEDA Y ASISTENTES -->
-      <div class="p-3 bg-slate-900/85 border-b border-slate-800 sticky top-0 z-20 space-y-2 backdrop-blur-md">
+      <!-- BARRA DE HERRAMIENTAS: BÚSQUEDA Y BOTONES PRO (VOZ Y CÁMARA/LISTA) -->
+      <div class="p-2.5 sm:p-3 bg-slate-900/90 border-b border-slate-800/80 sticky top-0 z-20 space-y-2 backdrop-blur-xl">
         <div class="flex items-center gap-2">
+          
+          <!-- BUSCADOR -->
           <div class="relative flex-1">
-            <i data-lucide="search" class="w-4 h-4 text-indigo-400 absolute left-3.5 top-3"></i>
-            <input type="text" id="inputBusqueda" oninput="filtrarProductos()" placeholder="¿Qué necesitas? Toca o busca..." class="w-full pl-10 pr-3 py-2 bg-slate-950/90 border border-slate-700/80 focus:border-accent-cyan rounded-2xl text-xs font-semibold text-white placeholder-slate-400 focus:outline-none transition-all shadow-inner">
+            <i data-lucide="search" class="w-4 h-4 text-indigo-400 absolute left-3.5 top-3 pointer-events-none"></i>
+            <input type="text" id="inputBusqueda" oninput="filtrarProductos()" placeholder="¿Qué buscas? Harina, carne..." class="w-full pl-10 pr-3 py-2.5 bg-slate-950/90 border border-slate-700/80 focus:border-accent-cyan rounded-2xl text-xs font-semibold text-white placeholder-slate-400 focus:outline-none transition shadow-inner">
           </div>
           
-          <button onclick="activarAsistenteVoz()" id="btn-voz-ia" type="button" title="Dictar por voz" class="bg-indigo-950/90 hover:bg-indigo-900 text-accent-cyan border border-indigo-500/40 p-2.5 rounded-2xl flex items-center justify-center transition active:scale-95 shadow-md">
+          <!-- BOTÓN VOZ PRO -->
+          <button onclick="activarAsistenteVoz()" id="btn-voz-ia" type="button" title="Dictar por voz" class="btn-tactil bg-gradient-to-br from-indigo-900/90 to-slate-950 text-accent-cyan border border-indigo-500/50 p-2.5 rounded-2xl flex items-center justify-center shadow-lg shadow-indigo-950/50">
             <i data-lucide="mic" class="w-4 h-4"></i>
           </button>
 
-          <button onclick="document.getElementById('input-foto-ia').click()" type="button" title="Tomar foto a producto o lista" class="bg-indigo-950/90 hover:bg-indigo-900 text-accent-magenta border border-accent-magenta/40 p-2.5 rounded-2xl flex items-center justify-center transition active:scale-95 shadow-md">
-            <i data-lucide="camera" class="w-4 h-4"></i>
+          <!-- BOTÓN CÁMARA / ESCANEAR LISTA PRO -->
+          <button onclick="abrirSelectorCapturaLista()" type="button" title="Escanear lista o foto de productos" class="btn-tactil bg-gradient-to-r from-accent-magenta/90 via-pink-600 to-indigo-600 text-white border border-pink-400/50 px-3 py-2.5 rounded-2xl flex items-center gap-1.5 shadow-lg shadow-accent-magenta/30">
+            <i data-lucide="camera" class="w-4 h-4 stroke-[2.5]"></i>
+            <span class="text-[11px] font-black tracking-tight">Lista</span>
           </button>
-          <input type="file" id="input-foto-ia" accept="image/*" capture="environment" class="hidden" onchange="procesarFotoIA(event)">
+
+          <!-- Inputs invisibles para foto de cámara o galería -->
+          <input type="file" id="input-camara-directa" accept="image/*" capture="environment" class="hidden" onchange="procesarFotoIA(event)">
+          <input type="file" id="input-galeria-foto" accept="image/*" class="hidden" onchange="procesarFotoIA(event)">
         </div>
 
         <!-- NOTIFICACIÓN DE ESTADO IA -->
@@ -150,20 +214,24 @@
       </div>
 
       <!-- CATÁLOGO SCROLLABLE -->
-      <main class="flex-1 p-3.5 space-y-3.5 overflow-y-auto no-scrollbar pb-32">
+      <main class="flex-1 p-3 space-y-3.5 overflow-y-auto no-scrollbar pb-32">
 
         <!-- MENÚ PRINCIPAL: CUADROS DE SERVICIOS -->
-        <div id="menu-principal-servicios" class="space-y-2 py-1">
+        <div id="menu-principal-servicios" class="space-y-2.5 py-1">
           <div class="flex items-center justify-between px-1">
-            <h3 class="text-xs font-black text-indigo-200 uppercase tracking-wider">Servicios y Categorías</h3>
-            <span class="text-[11px] text-slate-400">Toca para abrir</span>
+            <h3 class="text-xs font-black text-indigo-200 uppercase tracking-wider flex items-center gap-1.5">
+              <span class="w-2 h-2 rounded-full bg-accent-cyan animate-ping"></span>
+              Servicios y Categorías
+            </h3>
+            <span class="text-[10px] font-bold text-slate-400 bg-slate-950/70 px-2 py-0.5 rounded-full border border-slate-800">Toca para abrir</span>
           </div>
+          
           <div class="grid grid-cols-2 gap-2.5">
             <!-- 1. Víveres -->
-            <button onclick="cambiarSeccion('viveres')" class="group relative bg-slate-900/90 border border-indigo-500/30 hover:border-accent-cyan p-2.5 rounded-2xl flex flex-col items-center justify-center text-center gap-1.5 shadow-lg transition-all active:scale-95 overflow-hidden backdrop-blur-md">
-              <div class="w-full h-14 rounded-xl overflow-hidden flex items-center justify-center group-hover:scale-105 transition-transform relative">
-                <span class="absolute top-1.5 right-1.5 bg-accent-cyan text-slate-950 font-black text-[9px] px-1.5 py-0.5 rounded-md shadow-md">TOP</span>
-                <img src="img/1728627033.webp" alt="Víveres" class="w-full h-full object-cover rounded-lg">
+            <button onclick="cambiarSeccion('viveres')" class="btn-tactil group relative bg-slate-900/90 border border-slate-800 hover:border-accent-cyan p-2.5 rounded-[22px] flex flex-col items-center justify-center text-center gap-1.5 shadow-lg overflow-hidden backdrop-blur-md">
+              <div class="w-full h-16 rounded-xl overflow-hidden flex items-center justify-center group-hover:scale-105 transition-transform duration-300 relative bg-slate-950">
+                <span class="absolute top-1.5 right-1.5 bg-accent-cyan text-slate-950 font-black text-[9px] px-1.5 py-0.5 rounded-md shadow-md z-10">TOP</span>
+                <img src="img/1728627033.webp" alt="Víveres" class="w-full h-full object-cover rounded-xl" onerror="this.src='img/logo.jfif';">
               </div>
               <div>
                 <h4 class="font-black text-white text-xs">Víveres</h4>
@@ -172,9 +240,9 @@
             </button>
 
             <!-- 2. Carnes -->
-            <button onclick="cambiarSeccion('carnes')" class="group relative bg-slate-900/90 border border-indigo-500/30 hover:border-accent-magenta p-2.5 rounded-2xl flex flex-col items-center justify-center text-center gap-1.5 shadow-lg transition-all active:scale-95 overflow-hidden backdrop-blur-md">
-              <div class="w-full h-14 rounded-xl overflow-hidden flex items-center justify-center group-hover:scale-105 transition-transform">
-                <img src="img/carniceria.webp" alt="Carnes" class="w-full h-full object-cover rounded-lg">
+            <button onclick="cambiarSeccion('carnes')" class="btn-tactil group relative bg-slate-900/90 border border-slate-800 hover:border-accent-magenta p-2.5 rounded-[22px] flex flex-col items-center justify-center text-center gap-1.5 shadow-lg overflow-hidden backdrop-blur-md">
+              <div class="w-full h-16 rounded-xl overflow-hidden flex items-center justify-center group-hover:scale-105 transition-transform duration-300 bg-slate-950">
+                <img src="img/carniceria.webp" alt="Carnes" class="w-full h-full object-cover rounded-xl" onerror="this.src='img/logo.jfif';">
               </div>
               <div>
                 <h4 class="font-black text-white text-xs">Carnes & Pollo</h4>
@@ -183,9 +251,9 @@
             </button>
 
             <!-- 3. Charcutería -->
-            <button onclick="cambiarSeccion('charcuteria')" class="group relative bg-slate-900/90 border border-indigo-500/30 hover:border-accent-orange p-2.5 rounded-2xl flex flex-col items-center justify-center text-center gap-1.5 shadow-lg transition-all active:scale-95 overflow-hidden backdrop-blur-md">
-              <div class="w-full h-14 rounded-xl overflow-hidden flex items-center justify-center group-hover:scale-105 transition-transform">
-                <img src="img/charcuteria.webp" alt="Charcutería" class="w-full h-full object-cover rounded-lg">
+            <button onclick="cambiarSeccion('charcuteria')" class="btn-tactil group relative bg-slate-900/90 border border-slate-800 hover:border-accent-orange p-2.5 rounded-[22px] flex flex-col items-center justify-center text-center gap-1.5 shadow-lg overflow-hidden backdrop-blur-md">
+              <div class="w-full h-16 rounded-xl overflow-hidden flex items-center justify-center group-hover:scale-105 transition-transform duration-300 bg-slate-950">
+                <img src="img/charcuteria.webp" alt="Charcutería" class="w-full h-full object-cover rounded-xl" onerror="this.src='img/logo.jfif';">
               </div>
               <div>
                 <h4 class="font-black text-white text-xs">Charcutería</h4>
@@ -194,9 +262,9 @@
             </button>
 
             <!-- 4. Bebidas -->
-            <button onclick="cambiarSeccion('bebidas')" class="group relative bg-slate-900/90 border border-indigo-500/30 hover:border-accent-cyan p-2.5 rounded-2xl flex flex-col items-center justify-center text-center gap-1.5 shadow-lg transition-all active:scale-95 overflow-hidden backdrop-blur-md">
-              <div class="w-full h-14 rounded-xl overflow-hidden flex items-center justify-center group-hover:scale-105 transition-transform">
-                <img src="img/bebidas.webp" alt="Bebidas" class="w-full h-full object-cover rounded-lg">
+            <button onclick="cambiarSeccion('bebidas')" class="btn-tactil group relative bg-slate-900/90 border border-slate-800 hover:border-accent-cyan p-2.5 rounded-[22px] flex flex-col items-center justify-center text-center gap-1.5 shadow-lg overflow-hidden backdrop-blur-md">
+              <div class="w-full h-16 rounded-xl overflow-hidden flex items-center justify-center group-hover:scale-105 transition-transform duration-300 bg-slate-950">
+                <img src="img/bebidas.webp" alt="Bebidas" class="w-full h-full object-cover rounded-xl" onerror="this.src='img/logo.jfif';">
               </div>
               <div>
                 <h4 class="font-black text-white text-xs">Bebidas Frías</h4>
@@ -205,9 +273,9 @@
             </button>
 
             <!-- 5. Comida Rápida -->
-            <button onclick="cambiarSeccion('comida')" class="group relative bg-slate-900/90 border border-indigo-500/30 hover:border-accent-yellow p-2.5 rounded-2xl flex flex-col items-center justify-center text-center gap-1.5 shadow-lg transition-all active:scale-95 overflow-hidden backdrop-blur-md">
-              <div class="w-full h-14 rounded-xl overflow-hidden flex items-center justify-center group-hover:scale-105 transition-transform">
-                <img src="img/comidarap.png" alt="Comida Rápida" class="w-full h-full object-cover rounded-lg">
+            <button onclick="cambiarSeccion('comida')" class="btn-tactil group relative bg-slate-900/90 border border-slate-800 hover:border-accent-yellow p-2.5 rounded-[22px] flex flex-col items-center justify-center text-center gap-1.5 shadow-lg overflow-hidden backdrop-blur-md">
+              <div class="w-full h-16 rounded-xl overflow-hidden flex items-center justify-center group-hover:scale-105 transition-transform duration-300 bg-slate-950">
+                <img src="img/comidarap.png" alt="Comida Rápida" class="w-full h-full object-cover rounded-xl" onerror="this.src='img/logo.jfif';">
               </div>
               <div>
                 <h4 class="font-black text-white text-xs">Comida Rápida</h4>
@@ -216,10 +284,10 @@
             </button>
 
             <!-- 6. Panadería -->
-            <button onclick="cambiarSeccion('panaderia')" class="group relative bg-slate-900/90 border border-indigo-500/30 hover:border-accent-yellow p-2.5 rounded-2xl flex flex-col items-center justify-center text-center gap-1.5 shadow-lg transition-all active:scale-95 overflow-hidden backdrop-blur-md">
-              <div class="w-full h-14 rounded-xl overflow-hidden flex items-center justify-center group-hover:scale-105 transition-transform relative">
-                <span class="absolute top-1 right-1 bg-accent-yellow text-slate-950 font-black text-[9px] px-1.5 py-0.5 rounded-md">¡NUEVO!</span>
-                <img src="img/pan.webp" alt="Panadería" class="w-full h-full object-cover rounded-lg">
+            <button onclick="cambiarSeccion('panaderia')" class="btn-tactil group relative bg-slate-900/90 border border-slate-800 hover:border-accent-yellow p-2.5 rounded-[22px] flex flex-col items-center justify-center text-center gap-1.5 shadow-lg overflow-hidden backdrop-blur-md">
+              <div class="w-full h-16 rounded-xl overflow-hidden flex items-center justify-center group-hover:scale-105 transition-transform duration-300 relative bg-slate-950">
+                <span class="absolute top-1 right-1 bg-accent-yellow text-slate-950 font-black text-[9px] px-1.5 py-0.5 rounded-md z-10">¡NUEVO!</span>
+                <img src="img/pan.webp" alt="Panadería" class="w-full h-full object-cover rounded-xl" onerror="this.src='img/logo.jfif';">
               </div>
               <div>
                 <h4 class="font-black text-white text-xs">Panadería</h4>
@@ -228,9 +296,9 @@
             </button>
 
             <!-- 7. Verduras -->
-            <button onclick="cambiarSeccion('verduras')" class="group relative bg-slate-900/90 border border-indigo-500/30 hover:border-accent-emerald p-2.5 rounded-2xl flex flex-col items-center justify-center text-center gap-1.5 shadow-lg transition-all active:scale-95 overflow-hidden backdrop-blur-md">
-              <div class="w-full h-14 rounded-xl overflow-hidden flex items-center justify-center group-hover:scale-105 transition-transform">
-                <img src="img/verdura.webp" alt="Verduras" class="w-full h-full object-cover rounded-lg">
+            <button onclick="cambiarSeccion('verduras')" class="btn-tactil group relative bg-slate-900/90 border border-slate-800 hover:border-accent-emerald p-2.5 rounded-[22px] flex flex-col items-center justify-center text-center gap-1.5 shadow-lg overflow-hidden backdrop-blur-md">
+              <div class="w-full h-16 rounded-xl overflow-hidden flex items-center justify-center group-hover:scale-105 transition-transform duration-300 bg-slate-950">
+                <img src="img/verdura.webp" alt="Verduras" class="w-full h-full object-cover rounded-xl" onerror="this.src='img/logo.jfif';">
               </div>
               <div>
                 <h4 class="font-black text-white text-xs">Verduras</h4>
@@ -239,10 +307,10 @@
             </button>
 
             <!-- 8. Transporte -->
-            <button onclick="cambiarSeccion('transporte')" class="group relative bg-slate-900/90 border border-indigo-500/30 hover:border-accent-emerald p-2.5 rounded-2xl flex flex-col items-center justify-center text-center gap-1.5 shadow-lg transition-all active:scale-95 overflow-hidden backdrop-blur-md">
-              <div class="w-full h-14 rounded-xl overflow-hidden flex items-center justify-center group-hover:scale-105 transition-transform relative">
-                <span class="absolute top-1 right-1 bg-accent-emerald text-slate-950 font-black text-[9px] px-1.5 py-0.5 rounded-md">GPS</span>
-                <img src="img/taxi.webp" alt="Transporte" class="w-full h-full object-contain rounded-lg">
+            <button onclick="cambiarSeccion('transporte')" class="btn-tactil group relative bg-slate-900/90 border border-slate-800 hover:border-accent-emerald p-2.5 rounded-[22px] flex flex-col items-center justify-center text-center gap-1.5 shadow-lg overflow-hidden backdrop-blur-md">
+              <div class="w-full h-16 rounded-xl overflow-hidden flex items-center justify-center group-hover:scale-105 transition-transform duration-300 relative bg-slate-950">
+                <span class="absolute top-1 right-1 bg-accent-emerald text-slate-950 font-black text-[9px] px-1.5 py-0.5 rounded-md z-10">GPS</span>
+                <img src="img/taxi.webp" alt="Transporte" class="w-full h-full object-contain rounded-xl" onerror="this.src='img/logo.jfif';">
               </div>
               <div>
                 <h4 class="font-black text-white text-xs">Transporte</h4>
@@ -251,13 +319,13 @@
             </button>
 
             <!-- 9. Limpieza -->
-            <button onclick="cambiarSeccion('limpieza')" class="group relative bg-slate-900/90 border border-indigo-500/30 hover:border-accent-cyan p-2.5 rounded-2xl flex flex-col items-center justify-center text-center gap-1.5 shadow-lg transition-all active:scale-95 overflow-hidden backdrop-blur-md">
-              <div class="w-full h-14 rounded-xl overflow-hidden flex items-center justify-center group-hover:scale-105 transition-transform">
-                <img src="img/limpieza.jfif" alt="Limpieza" class="w-full h-full object-cover rounded-lg">
+            <button onclick="cambiarSeccion('limpieza')" class="btn-tactil group relative bg-slate-900/90 border border-slate-800 hover:border-accent-cyan p-2.5 rounded-[22px] flex flex-col items-center justify-center text-center gap-1.5 shadow-lg overflow-hidden backdrop-blur-md col-span-2">
+              <div class="w-full h-16 rounded-xl overflow-hidden flex items-center justify-center group-hover:scale-105 transition-transform duration-300 bg-slate-950">
+                <img src="img/limpieza.jfif" alt="Limpieza" class="w-full h-full object-cover rounded-xl" onerror="this.src='img/logo.jfif';">
               </div>
               <div>
-                <h4 class="font-black text-white text-xs">Aseo & Limpieza</h4>
-                <p class="text-[10px] text-slate-400 leading-tight">Detergentes, cloro</p>
+                <h4 class="font-black text-white text-xs">Aseo & Limpieza del Hogar</h4>
+                <p class="text-[10px] text-slate-400 leading-tight">Detergentes, cloro, desinfectantes</p>
               </div>
             </button>
           </div>
@@ -265,22 +333,22 @@
        
         <!-- CONTENEDOR INTERIOR DE SECCIÓN ACTIVA -->
         <div id="contenedor-seccion-activa" class="hidden space-y-3">
-          <button onclick="volverAlMenuPrincipal()" class="bg-slate-950/90 hover:bg-slate-800 text-accent-cyan border border-accent-cyan/30 px-3.5 py-2 rounded-xl text-xs font-bold flex items-center gap-2 transition active:scale-95 shadow-md">
+          <button onclick="volverAlMenuPrincipal()" class="btn-tactil bg-slate-950/90 hover:bg-slate-800 text-accent-cyan border border-accent-cyan/30 px-3.5 py-2.5 rounded-2xl text-xs font-black flex items-center gap-2 shadow-md">
             <i data-lucide="arrow-left" class="w-4 h-4"></i> Volver a Categorías
           </button>
 
-          <!-- SECCIÓN COMIDA RÁPIDA Y CAFÉ ORGANIZADA POR LOCALES SELECCIONABLES -->
+          <!-- SECCIÓN COMIDA RÁPIDA Y CAFÉ ORGANIZADA POR LOCALES -->
           <div id="sec-comida" class="seccion-target space-y-3 hidden">
             <div class="px-1">
               <h3 class="text-xs font-black text-accent-yellow uppercase tracking-wider">Elige el Local para ver sus Productos</h3>
-              <p class="text-[11px] text-slate-400">Toca en la tarjeta o imagen del comercio</p>
+              <p class="text-[11px] text-slate-400">Toca en la tarjeta del comercio para abrir su menú</p>
             </div>
 
-            <!-- TARJETAS DE LOCALES COMERCIALES (TOCA PARA ABRIR SUS PRODUCTOS) -->
+            <!-- TARJETAS DE LOCALES COMERCIALES -->
             <div class="grid grid-cols-2 gap-3">
 
               <!-- LOCAL 1: Moravos Café -->
-              <button onclick="abrirMenuLocal('moravos')" class="group relative bg-slate-900/90 border border-accent-orange/40 hover:border-accent-orange p-3 rounded-2xl flex flex-col items-center text-center gap-2 shadow-lg transition-all active:scale-95 backdrop-blur-md">
+              <button onclick="abrirMenuLocal('moravos')" class="btn-tactil group relative bg-slate-900/90 border border-accent-orange/40 hover:border-accent-orange p-3 rounded-2xl flex flex-col items-center text-center gap-2 shadow-lg backdrop-blur-md">
                 <div class="w-16 h-16 rounded-full overflow-hidden border-2 border-accent-orange shadow-md group-hover:scale-105 transition-transform">
                   <img src="img/moravos.jpg" alt="Moravos Café" class="w-full h-full object-cover" onerror="this.src='img/logo.jfif';">
                 </div>
@@ -292,7 +360,7 @@
               </button>
 
               <!-- LOCAL 2: El Sabor de Fran & Chero -->
-              <button onclick="abrirMenuLocal('fran_chero')" class="group relative bg-slate-900/90 border border-accent-orange/40 hover:border-accent-orange p-3 rounded-2xl flex flex-col items-center text-center gap-2 shadow-lg transition-all active:scale-95 backdrop-blur-md">
+              <button onclick="abrirMenuLocal('fran_chero')" class="btn-tactil group relative bg-slate-900/90 border border-accent-orange/40 hover:border-accent-orange p-3 rounded-2xl flex flex-col items-center text-center gap-2 shadow-lg backdrop-blur-md">
                 <div class="w-16 h-16 rounded-full overflow-hidden border-2 border-accent-orange shadow-md group-hover:scale-105 transition-transform">
                   <img src="img/fran y chero.jpg" alt="Fran & Chero" class="w-full h-full object-cover" onerror="this.src='img/logo.jfif';">
                 </div>
@@ -304,7 +372,7 @@
               </button>
 
               <!-- LOCAL 3: Anton's Burgers -->
-              <button onclick="abrirMenuLocal('antons')" class="group relative bg-slate-900/90 border border-indigo-500/40 hover:border-indigo-400 p-3 rounded-2xl flex flex-col items-center text-center gap-2 shadow-lg transition-all active:scale-95 backdrop-blur-md">
+              <button onclick="abrirMenuLocal('antons')" class="btn-tactil group relative bg-slate-900/90 border border-indigo-500/40 hover:border-indigo-400 p-3 rounded-2xl flex flex-col items-center text-center gap-2 shadow-lg backdrop-blur-md">
                 <div class="w-16 h-16 rounded-full overflow-hidden border-2 border-indigo-500 shadow-md group-hover:scale-105 transition-transform">
                   <img src="img/anto bruger nirgua.jpg" alt="Anton's Burgers" class="w-full h-full object-cover" onerror="this.src='img/logo.jfif';">
                 </div>
@@ -316,7 +384,7 @@
               </button>
 
               <!-- LOCAL 4: Zirus Pizza -->
-              <button onclick="abrirMenuLocal('zirus')" class="group relative bg-slate-900/90 border border-accent-yellow/40 hover:border-accent-yellow p-3 rounded-2xl flex flex-col items-center text-center gap-2 shadow-lg transition-all active:scale-95 backdrop-blur-md">
+              <button onclick="abrirMenuLocal('zirus')" class="btn-tactil group relative bg-slate-900/90 border border-accent-yellow/40 hover:border-accent-yellow p-3 rounded-2xl flex flex-col items-center text-center gap-2 shadow-lg backdrop-blur-md">
                 <div class="w-16 h-16 rounded-full overflow-hidden border-2 border-accent-yellow shadow-md group-hover:scale-105 transition-transform">
                   <img src="img/ziruspizza.webp" alt="Zirus Pizza" class="w-full h-full object-cover" onerror="this.src='img/logo.jfif';">
                 </div>
@@ -335,28 +403,28 @@
             <div class="space-y-1.5">
               <span class="text-[11px] font-black text-indigo-200 uppercase tracking-wider block px-1">Subcategorías de Víveres</span>
               <div id="sub-nav-viveres" class="grid grid-cols-3 gap-1.5">
-                <button onclick="filtrarSubViveres('todos')" id="sub-viveres-todos" class="btn-sub-viveres p-2 rounded-xl text-[10px] font-black bg-accent-magenta text-white shadow-md transition text-center flex flex-col items-center justify-center gap-0.5 border border-accent-magenta/50">
+                <button onclick="filtrarSubViveres('todos')" id="sub-viveres-todos" class="btn-sub-viveres btn-tactil p-2 rounded-xl text-[10px] font-black bg-accent-magenta text-white shadow-md transition text-center flex flex-col items-center justify-center gap-0.5 border border-accent-magenta/50">
                   <span>Todos</span>
                 </button>
-                <button onclick="filtrarSubViveres('harinas')" id="sub-viveres-harinas" class="btn-sub-viveres p-2 rounded-xl text-[10px] font-bold bg-slate-950/80 text-slate-300 border border-slate-800 hover:text-white transition text-center flex flex-col items-center justify-center gap-0.5">
+                <button onclick="filtrarSubViveres('harinas')" id="sub-viveres-harinas" class="btn-sub-viveres btn-tactil p-2 rounded-xl text-[10px] font-bold bg-slate-950/80 text-slate-300 border border-slate-800 hover:text-white transition text-center flex flex-col items-center justify-center gap-0.5">
                   <span>Harinas</span>
                 </button>
-                <button onclick="filtrarSubViveres('pastas')" id="sub-viveres-pastas" class="btn-sub-viveres p-2 rounded-xl text-[10px] font-bold bg-slate-950/80 text-slate-300 border border-slate-800 hover:text-white transition text-center flex flex-col items-center justify-center gap-0.5">
+                <button onclick="filtrarSubViveres('pastas')" id="sub-viveres-pastas" class="btn-sub-viveres btn-tactil p-2 rounded-xl text-[10px] font-bold bg-slate-950/80 text-slate-300 border border-slate-800 hover:text-white transition text-center flex flex-col items-center justify-center gap-0.5">
                   <span>Pastas</span>
                 </button>
-                <button onclick="filtrarSubViveres('granos')" id="sub-viveres-granos" class="btn-sub-viveres p-2 rounded-xl text-[10px] font-bold bg-slate-950/80 text-slate-300 border border-slate-800 hover:text-white transition text-center flex flex-col items-center justify-center gap-0.5 col-span-1">
+                <button onclick="filtrarSubViveres('granos')" id="sub-viveres-granos" class="btn-sub-viveres btn-tactil p-2 rounded-xl text-[10px] font-bold bg-slate-950/80 text-slate-300 border border-slate-800 hover:text-white transition text-center flex flex-col items-center justify-center gap-0.5 col-span-1">
                   <span>🫘 Granos</span>
                 </button>
-                <button onclick="filtrarSubViveres('lacteos')" id="sub-viveres-lacteos" class="btn-sub-viveres p-2 rounded-xl text-[10px] font-bold bg-slate-950/80 text-slate-300 border border-slate-800 hover:text-white transition text-center flex flex-col items-center justify-center gap-0.5 col-span-2">
+                <button onclick="filtrarSubViveres('lacteos')" id="sub-viveres-lacteos" class="btn-sub-viveres btn-tactil p-2 rounded-xl text-[10px] font-bold bg-slate-950/80 text-slate-300 border border-slate-800 hover:text-white transition text-center flex flex-col items-center justify-center gap-0.5 col-span-2">
                   <span>Lácteos y Aceites</span>
                 </button>
               </div>
             </div>
-            <div id="grid-viveres" class="grid grid-cols-2 gap-3 pt-1"></div>
+            <div id="grid-viveres" class="grid grid-cols-2 gap-2.5 pt-1"></div>
           </div>
 
-          <div id="sec-charcuteria" class="seccion-target space-y-2 hidden"><div id="grid-charcuteria" class="grid grid-cols-2 gap-3"></div></div>
-          <div id="sec-carnes" class="seccion-target space-y-2 hidden"><div id="grid-carnes" class="grid grid-cols-2 gap-3"></div></div>
+          <div id="sec-charcuteria" class="seccion-target space-y-2 hidden"><div id="grid-charcuteria" class="grid grid-cols-2 gap-2.5"></div></div>
+          <div id="sec-carnes" class="seccion-target space-y-2 hidden"><div id="grid-carnes" class="grid grid-cols-2 gap-2.5"></div></div>
           
           <!-- PANADERÍA CON LA PANAMERICANA -->
           <div id="sec-panaderia" class="seccion-target space-y-4 hidden">
@@ -372,11 +440,11 @@
             </div>
           </div>
 
-          <div id="sec-verduras" class="seccion-target space-y-2 hidden"><div id="grid-verduras" class="grid grid-cols-2 gap-3"></div></div>
-          <div id="sec-bebidas" class="seccion-target space-y-2 hidden"><div id="grid-bebidas" class="grid grid-cols-2 gap-3"></div></div>
+          <div id="sec-verduras" class="seccion-target space-y-2 hidden"><div id="grid-verduras" class="grid grid-cols-2 gap-2.5"></div></div>
+          <div id="sec-bebidas" class="seccion-target space-y-2 hidden"><div id="grid-bebidas" class="grid grid-cols-2 gap-2.5"></div></div>
           
           <!-- TRANSPORTE CON MAPA -->
-          <div id="sec-transporte" class="seccion-target space-y-3.5 hidden">
+          <div id="sec-transporte" class="seccion-target space-y-3 hidden">
             <div class="bg-slate-950/90 border border-emerald-500/40 rounded-3xl p-3.5 shadow-xl space-y-3 backdrop-blur-md">
               <div class="flex items-center justify-between border-b border-slate-800 pb-2">
                 <div class="flex items-center gap-2">
@@ -388,21 +456,21 @@
                     <p id="instruccion-mapa" class="text-[10px] text-accent-yellow font-bold">📍 Toca en el mapa o escribe tu destino</p>
                   </div>
                 </div>
-                <button onclick="reiniciarPuntosRuta()" class="text-[10px] font-bold bg-slate-800 hover:bg-slate-700 text-slate-300 px-2.5 py-1 rounded-lg border border-slate-700">Reiniciar</button>
+                <button onclick="reiniciarPuntosRuta()" class="btn-tactil text-[10px] font-bold bg-slate-800 hover:bg-slate-700 text-slate-300 px-2.5 py-1 rounded-lg border border-slate-700">Reiniciar</button>
               </div>
 
-              <!-- SELECTOR DE TIPO -->
+              <!-- SELECTOR DE VEHÍCULO PRO -->
               <div class="grid grid-cols-2 gap-2">
-                <button onclick="seleccionarTransporte('moto', 1.00)" id="btn-trans-moto" type="button" class="p-2 rounded-2xl border border-accent-cyan bg-accent-cyan/20 text-white text-xs font-bold flex flex-col items-center justify-center gap-1 shadow-md transition">
-                  <div class="w-full h-10 rounded-xl overflow-hidden flex items-center justify-center">
-                    <img src="img/moto.webp" alt="Moto" class="w-full h-full object-contain">
+                <button onclick="seleccionarTransporte('moto', 1.00)" id="btn-trans-moto" type="button" class="btn-tactil p-2.5 rounded-2xl border-2 border-accent-cyan bg-accent-cyan/20 text-white text-xs font-black flex flex-col items-center justify-center gap-1 shadow-glow-cyan transition">
+                  <div class="w-full h-11 rounded-xl overflow-hidden flex items-center justify-center">
+                    <img src="img/moto.webp" alt="Moto" class="w-full h-full object-contain" onerror="this.src='img/logo.jfif';">
                   </div>
                   <span>🛵 Moto ($1.00)</span>
                 </button>
 
-                <button onclick="seleccionarTransporte('carro', 2.00)" id="btn-trans-carro" type="button" class="p-2 rounded-2xl border border-slate-700 bg-slate-900 text-slate-300 text-xs font-bold flex flex-col items-center justify-center gap-1 transition">
-                  <div class="w-full h-10 rounded-xl overflow-hidden flex items-center justify-center">
-                    <img src="img/taxi icon.webp" alt="Carro" class="w-full h-full object-contain">
+                <button onclick="seleccionarTransporte('carro', 2.00)" id="btn-trans-carro" type="button" class="btn-tactil p-2.5 rounded-2xl border-2 border-slate-800 bg-slate-900 text-slate-300 text-xs font-bold flex flex-col items-center justify-center gap-1 transition">
+                  <div class="w-full h-11 rounded-xl overflow-hidden flex items-center justify-center">
+                    <img src="img/taxi icon.webp" alt="Carro" class="w-full h-full object-contain" onerror="this.src='img/logo.jfif';">
                   </div>
                   <span>🚗 Carro ($2.00)</span>
                 </button>
@@ -412,11 +480,13 @@
               <div class="space-y-1 bg-slate-900/90 p-2.5 rounded-xl border border-emerald-500/30">
                 <div class="flex items-center justify-between">
                   <label class="block text-[10px] text-emerald-400 font-bold uppercase">📍 ¿De dónde sales?</label>
-                  <button type="button" onclick="usarGpsActualComoOrigen()" class="text-[10px] text-accent-cyan font-bold hover:underline">Activar GPS</button>
+                  <button type="button" onclick="usarGpsActualComoOrigen()" class="btn-tactil text-[10px] text-accent-cyan font-bold hover:underline flex items-center gap-1">
+                    <span class="w-1.5 h-1.5 rounded-full bg-accent-cyan animate-ping"></span> Activar GPS
+                  </button>
                 </div>
                 <div class="flex gap-1.5">
                   <input type="text" id="inputBuscadorOrigen" onkeydown="if(event.key==='Enter') buscarPuntoOrigenPorTexto()" placeholder="Salida o GPS..." class="w-full p-2 bg-slate-950 border border-slate-700 rounded-lg text-xs text-white placeholder-slate-500 focus:outline-none focus:border-accent-cyan">
-                  <button type="button" onclick="buscarPuntoOrigenPorTexto()" class="bg-emerald-500 text-slate-950 font-black px-3 py-1 rounded-lg text-xs shadow-md transition active:scale-95">Definir</button>
+                  <button type="button" onclick="buscarPuntoOrigenPorTexto()" class="btn-tactil bg-emerald-500 text-slate-950 font-black px-3 py-1 rounded-lg text-xs shadow-md">Definir</button>
                 </div>
               </div>
 
@@ -425,7 +495,7 @@
                 <label class="block text-[10px] text-accent-magenta font-bold uppercase">🏁 ¿A dónde vas?</label>
                 <div class="flex gap-1.5">
                   <input type="text" id="inputBuscadorDestino" onkeydown="if(event.key==='Enter') buscarPuntoDestinoPorTexto()" placeholder="Destino o toca en el mapa..." class="w-full p-2 bg-slate-950 border border-slate-700 rounded-lg text-xs text-white placeholder-slate-500 focus:outline-none focus:border-accent-magenta">
-                  <button type="button" onclick="buscarPuntoDestinoPorTexto()" class="bg-accent-magenta text-white font-black px-3 py-1 rounded-lg text-xs shadow-md transition active:scale-95">Definir</button>
+                  <button type="button" onclick="buscarPuntoDestinoPorTexto()" class="btn-tactil bg-accent-magenta text-white font-black px-3 py-1 rounded-lg text-xs shadow-md">Definir</button>
                 </div>
               </div>
 
@@ -434,29 +504,30 @@
                 <div id="mapa-interactivo-ruta" style="height: 100%; width: 100%;"></div>
               </div>
 
-              <button onclick="irAPagarTransporteDirecto()" type="button" class="w-full bg-gradient-to-r from-accent-emerald to-accent-cyan hover:brightness-110 text-slate-950 font-black py-3 rounded-xl text-xs shadow-lg transition flex items-center justify-center gap-1.5 active:scale-95">
-                <i data-lucide="arrow-right-circle" class="w-4 h-4 fill-slate-950"></i> ¡Pagar Viaje Directo! (<span id="txt-precio-btn-viaje">$1.00</span>)
+              <!-- BOTÓN PAGAR VIAJE CON ESTILO PRO -->
+              <button onclick="irAPagarTransporteDirecto()" type="button" class="btn-tactil w-full bg-gradient-to-r from-accent-emerald via-emerald-500 to-accent-cyan text-slate-950 font-black py-3.5 rounded-2xl text-xs shadow-glow-emerald flex items-center justify-center gap-2 border-t border-white/30">
+                <i data-lucide="arrow-right-circle" class="w-4 h-4 fill-slate-950"></i> ¡PAGAR VIAJE DIRECTO! (<span id="txt-precio-btn-viaje">$1.00</span>)
               </button>
             </div>
           </div>
 
-          <div id="sec-limpieza" class="seccion-target space-y-2 hidden"><div id="grid-limpieza" class="grid grid-cols-2 gap-3"></div></div>
+          <div id="sec-limpieza" class="seccion-target space-y-2 hidden"><div id="grid-limpieza" class="grid grid-cols-2 gap-2.5"></div></div>
         </div>
 
       </main>
 
       <!-- BOTÓN FLOTANTE: PEDIR PRODUCTO PERSONALIZADO -->
-      <button onclick="abrirModalPersonalizado()" type="button" class="absolute z-40 bottom-16 left-3 bg-gradient-to-r from-accent-cyan to-brand-600 text-slate-950 font-black px-3.5 py-2 rounded-2xl shadow-[0_4px_25px_rgba(0,242,254,0.45)] flex items-center gap-1.5 text-xs transition active:scale-95 glow-cyan">
+      <button onclick="abrirModalPersonalizado()" type="button" class="btn-tactil absolute z-30 bottom-16 left-3 bg-gradient-to-r from-accent-cyan to-brand-600 text-slate-950 font-black px-3.5 py-2.5 rounded-2xl shadow-glow-cyan flex items-center gap-1.5 text-xs border-t border-white/30">
         <i data-lucide="plus-circle" class="w-4 h-4 fill-slate-950"></i> <span>¿No lo ves? Pídelo</span>
       </button>
 
       <!-- WIDGET FLOTANTE DEL CARRITO -->
-      <div id="widget-total-flotante" onclick="abrirModalCarrito()" class="absolute z-40 transition-opacity duration-300 opacity-0 pointer-events-none touch-none select-none cursor-pointer active:scale-95" style="top: 135px; right: 12px;">
-        <div class="bg-gradient-to-b from-indigo-500/40 to-slate-950 p-[1px] rounded-2xl shadow-[0_12px_35px_rgba(0,0,0,0.85)] border border-indigo-500/50 glow-violet">
+      <div id="widget-total-flotante" onclick="abrirModalCarrito()" class="absolute z-40 transition-all duration-300 opacity-0 pointer-events-none touch-none select-none cursor-pointer active:scale-95" style="top: 130px; right: 12px;">
+        <div class="bg-gradient-to-b from-indigo-500/50 to-slate-950 p-[1.5px] rounded-2xl shadow-glow-indigo">
           <div class="bg-slate-950/90 backdrop-blur-md px-3 py-2 rounded-[15px] flex flex-col items-center justify-center text-center">
             <div class="flex items-center gap-1.5 text-accent-cyan mb-0.5">
               <i data-lucide="shopping-cart" class="w-3.5 h-3.5 pointer-events-none"></i>
-              <span id="txt-widget-cant" class="text-[9px] font-black bg-accent-magenta text-white px-1.5 py-0.5 rounded-full pointer-events-none glow-magenta">0</span>
+              <span id="txt-widget-cant" class="text-[9px] font-black bg-accent-magenta text-white px-1.5 py-0.5 rounded-full pointer-events-none shadow-glow-magenta">0</span>
             </div>
             <span class="text-[8px] text-indigo-300 font-black uppercase tracking-wider block pointer-events-none">Llevas</span>
             <span id="txt-widget-monto" class="text-xs font-black text-accent-yellow leading-none pointer-events-none mt-0.5">$0.00</span>
@@ -464,35 +535,35 @@
         </div>
       </div>
 
-      <!-- BARRA DE NAVEGACIÓN INFERIOR -->
-      <nav class="absolute bottom-0 left-0 right-0 bg-slate-900/95 backdrop-blur-xl border-t border-slate-800 px-3 py-2 z-40 flex items-center justify-around shadow-2xl">
-        <button onclick="volverAlMenuPrincipal()" type="button" class="flex flex-col items-center gap-1 text-accent-cyan py-1 px-2 transition active:scale-90">
+      <!-- BARRA DE NAVEGACIÓN INFERIOR (ESTILO NATIVO IPHONE/ANDROID) -->
+      <nav class="absolute bottom-0 left-0 right-0 bg-slate-950/90 backdrop-blur-2xl border-t border-slate-800/80 px-3 py-2 z-40 flex items-center justify-around shadow-2xl safe-bottom">
+        <button onclick="volverAlMenuPrincipal()" type="button" class="btn-tactil flex flex-col items-center gap-1 text-accent-cyan py-1 px-3">
           <i data-lucide="home" class="w-5 h-5"></i>
-          <span class="text-[10px] font-black">Inicio</span>
+          <span class="text-[10px] font-black tracking-tight">Inicio</span>
         </button>
 
-        <button onclick="document.getElementById('inputBusqueda').focus()" type="button" class="flex flex-col items-center gap-1 text-slate-400 hover:text-white py-1 px-2 transition active:scale-90">
+        <button onclick="document.getElementById('inputBusqueda').focus()" type="button" class="btn-tactil flex flex-col items-center gap-1 text-slate-400 hover:text-white py-1 px-3">
           <i data-lucide="search" class="w-5 h-5"></i>
-          <span class="text-[10px] font-semibold">Buscar</span>
+          <span class="text-[10px] font-bold tracking-tight">Buscar</span>
         </button>
 
-        <button onclick="cambiarSeccion('transporte')" type="button" class="flex flex-col items-center gap-1 text-slate-400 hover:text-accent-emerald py-1 px-2 transition active:scale-90">
+        <button onclick="cambiarSeccion('transporte')" type="button" class="btn-tactil flex flex-col items-center gap-1 text-slate-400 hover:text-accent-emerald py-1 px-3">
           <i data-lucide="navigation" class="w-5 h-5"></i>
-          <span class="text-[10px] font-semibold">Viajes</span>
+          <span class="text-[10px] font-bold tracking-tight">Viajes</span>
         </button>
 
-        <button onclick="abrirModalCarrito()" type="button" class="relative flex flex-col items-center gap-1 text-slate-400 hover:text-accent-yellow py-1 px-2 transition active:scale-90">
+        <button onclick="abrirModalCarrito()" type="button" class="btn-tactil relative flex flex-col items-center gap-1 text-slate-400 hover:text-accent-yellow py-1 px-3">
           <div class="relative">
             <i data-lucide="shopping-bag" class="w-5 h-5"></i>
-            <span id="badge-nav-cant" class="absolute -top-1.5 -right-2 bg-accent-magenta text-white font-black text-[9px] w-4 h-4 rounded-full flex items-center justify-center">0</span>
+            <span id="badge-nav-cant" class="absolute -top-1.5 -right-2 bg-accent-magenta text-white font-black text-[9px] w-4 h-4 rounded-full flex items-center justify-center shadow-glow-magenta">0</span>
           </div>
           <span id="badge-nav-monto" class="text-[10px] font-black text-accent-yellow">$0.00</span>
         </button>
       </nav>
     </div>
 
-    <!-- ================= MODAL DESPLEGABLE DE PRODUCTOS DEL LOCAL SELECCIONADO ================= -->
-    <div id="modal-productos-local" onclick="if(event.target === this) cerrarModalLocal()" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 hidden">
+    <!-- ================= MODAL DESPLEGABLE DE PRODUCTOS DEL LOCAL ================= -->
+    <div id="modal-productos-local" onclick="if(event.target === this) cerrarModalLocal()" class="fixed inset-0 bg-slate-950/85 backdrop-blur-md z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 hidden">
       <div class="anim-modal bg-slate-900 border-t sm:border border-indigo-500/40 w-full max-w-md rounded-t-[32px] sm:rounded-3xl p-4 space-y-3 shadow-2xl max-h-[85vh] flex flex-col">
         <div class="flex justify-between items-center border-b border-slate-800 pb-3">
           <div class="flex items-center gap-2.5">
@@ -502,7 +573,7 @@
               <span id="sub-modal-local" class="text-[10px] text-accent-yellow font-semibold">Productos disponibles</span>
             </div>
           </div>
-          <button onclick="cerrarModalLocal()" class="w-7 h-7 rounded-full bg-slate-800 text-slate-400 hover:text-white flex items-center justify-center transition">
+          <button onclick="cerrarModalLocal()" class="btn-tactil w-8 h-8 rounded-full bg-slate-800 text-slate-400 hover:text-white flex items-center justify-center">
             <i data-lucide="x" class="w-4 h-4"></i>
           </button>
         </div>
@@ -510,7 +581,7 @@
         <div id="grid-modal-productos-local" class="flex-1 overflow-y-auto no-scrollbar grid grid-cols-2 gap-2.5 pr-1"></div>
 
         <div class="border-t border-slate-800 pt-2.5">
-          <button onclick="cerrarModalLocal()" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold py-2.5 rounded-xl text-xs transition">
+          <button onclick="cerrarModalLocal()" class="btn-tactil w-full bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold py-2.5 rounded-xl text-xs">
             Volver a Selección de Locales
           </button>
         </div>
@@ -519,8 +590,8 @@
 
     <!-- ================= PASO 2: CHECKOUT CON MÉTODOS DE PAGO ================= -->
     <div id="paso-datos" class="flex-1 flex flex-col overflow-hidden bg-slate-900 hidden z-20">
-      <div class="p-3 bg-slate-900/90 border-b border-slate-800 flex items-center justify-between shrink-0 shadow-sm backdrop-blur-md">
-        <button onclick="volverAPaso1()" class="text-accent-cyan font-black text-xs flex items-center gap-1 hover:text-white active:scale-95 transition">
+      <div class="p-3 bg-slate-900/90 border-b border-slate-800 flex items-center justify-between shrink-0 shadow-sm backdrop-blur-md safe-top">
+        <button onclick="volverAPaso1()" class="btn-tactil text-accent-cyan font-black text-xs flex items-center gap-1.5 hover:text-white">
           <i data-lucide="arrow-left" class="w-4 h-4"></i> Seguir Comprando
         </button>
         <span id="titulo-paso-2" class="text-[10px] font-black text-indigo-300 uppercase tracking-widest bg-slate-950 px-3 py-1 rounded-full border border-slate-800">Finalizar Orden</span>
@@ -529,7 +600,7 @@
       <main class="flex-1 p-3.5 space-y-3.5 overflow-y-auto no-scrollbar pb-28">
         
         <!-- RESUMEN DE LA ORDEN -->
-        <section class="bg-slate-950/85 p-3 rounded-2xl border border-slate-800 shadow-md space-y-2">
+        <section class="bg-slate-950/85 p-3.5 rounded-2xl border border-slate-800 shadow-md space-y-2">
           <div class="flex justify-between items-center text-xs font-black text-slate-300 border-b border-slate-800/80 pb-1.5">
             <span id="titulo-resumen-paso2">Resumen de Artículos</span>
             <span id="total-precio-resumen" class="text-accent-yellow font-black">$0.00</span>
@@ -542,14 +613,14 @@
           <div>
             <label class="block text-[11px] text-accent-cyan font-black uppercase mb-1.5">💳 Selecciona Método de Pago</label>
             <div class="grid grid-cols-3 gap-1.5">
-              <button type="button" onclick="seleccionarMetodoPago('pago_movil')" id="btn-pago-movil" class="p-2 rounded-xl border border-accent-cyan bg-accent-cyan/20 text-white text-xs font-bold transition flex flex-col items-center justify-center gap-1">
+              <button type="button" onclick="seleccionarMetodoPago('pago_movil')" id="btn-pago-movil" class="btn-tactil p-2.5 rounded-xl border-2 border-accent-cyan bg-accent-cyan/20 text-white text-xs font-black flex flex-col items-center justify-center gap-1">
                 <span>📱 Pago Móvil</span>
               </button>
-              <button type="button" onclick="seleccionarMetodoPago('efectivo')" id="btn-pago-efectivo" class="p-2 rounded-xl border border-slate-700 bg-slate-900 text-slate-300 text-xs font-bold transition flex flex-col items-center justify-center gap-1">
+              <button type="button" onclick="seleccionarMetodoPago('efectivo')" id="btn-pago-efectivo" class="btn-tactil p-2.5 rounded-xl border-2 border-slate-800 bg-slate-900 text-slate-300 text-xs font-bold flex flex-col items-center justify-center gap-1">
                 <span>💵 Efectivo</span>
               </button>
-              <button type="button" onclick="seleccionarMetodoPago('divisas')" id="btn-pago-divisas" class="p-2 rounded-xl border border-slate-700 bg-slate-900 text-slate-300 text-xs font-bold transition flex flex-col items-center justify-center gap-1">
-                <span>💲 Zelle / Divisa</span>
+              <button type="button" onclick="seleccionarMetodoPago('divisas')" id="btn-pago-divisas" class="btn-tactil p-2.5 rounded-xl border-2 border-slate-800 bg-slate-900 text-slate-300 text-xs font-bold flex flex-col items-center justify-center gap-1">
+                <span>💲 Zelle/Divisa</span>
               </button>
             </div>
             <input type="hidden" id="metodoPagoElegido" value="Pago Móvil">
@@ -562,23 +633,23 @@
                 <p class="text-[11px] text-slate-300 font-bold">Banesco (0134) • 0426-2566854</p>
                 <p class="text-[11px] text-slate-400">C.I: 28.123.456</p>
               </div>
-              <button type="button" onclick="copiarDatosPagoMovil()" class="bg-indigo-600 hover:bg-indigo-500 text-white font-black px-2.5 py-1.5 rounded-lg text-[10px] flex items-center gap-1 shadow transition active:scale-95">
+              <button type="button" onclick="copiarDatosPagoMovil()" class="btn-tactil bg-indigo-600 hover:bg-indigo-500 text-white font-black px-3 py-1.5 rounded-lg text-[10px] flex items-center gap-1 shadow">
                 <i data-lucide="copy" class="w-3 h-3"></i> Copiar
               </button>
             </div>
-            <input type="text" id="refPagoMovil" placeholder="Ingresa los últimos dígitos de la referencia..." class="w-full p-2 bg-slate-950 border border-slate-700 rounded-lg text-xs text-white placeholder-slate-500 focus:outline-none focus:border-accent-cyan">
+            <input type="text" id="refPagoMovil" placeholder="Ingresa los últimos dígitos de la referencia..." class="w-full p-2.5 bg-slate-950 border border-slate-700 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-accent-cyan">
           </div>
 
           <!-- DETALLES: EFECTIVO CON VUELTO -->
           <div id="caja-pago-efectivo" class="space-y-2 bg-slate-900 p-2.5 rounded-xl border border-slate-800 hidden">
-            <label class="block text-[11px] text-slate-300 font-bold">¿Con cuánto vas a pagar? (Para llevarte el vuelto exacto):</label>
+            <label class="block text-[11px] text-slate-300 font-bold">¿Con cuánto vas a pagar? (Llevamos el vuelto exacto):</label>
             <div class="grid grid-cols-4 gap-1.5">
-              <button type="button" onclick="fijarMontoPaga('Exacto')" class="btn-monto-paga p-1.5 bg-slate-950 border border-slate-700 text-slate-300 rounded-lg text-[11px] font-bold">Exacto</button>
-              <button type="button" onclick="fijarMontoPaga('$5')" class="btn-monto-paga p-1.5 bg-slate-950 border border-slate-700 text-slate-300 rounded-lg text-[11px] font-bold">$5</button>
-              <button type="button" onclick="fijarMontoPaga('$10')" class="btn-monto-paga p-1.5 bg-slate-950 border border-slate-700 text-slate-300 rounded-lg text-[11px] font-bold">$10</button>
-              <button type="button" onclick="fijarMontoPaga('$20')" class="btn-monto-paga p-1.5 bg-slate-950 border border-slate-700 text-slate-300 rounded-lg text-[11px] font-bold">$20</button>
+              <button type="button" onclick="fijarMontoPaga('Exacto')" class="btn-tactil p-2 bg-slate-950 border border-slate-700 text-slate-300 rounded-lg text-[11px] font-bold">Exacto</button>
+              <button type="button" onclick="fijarMontoPaga('$5')" class="btn-tactil p-2 bg-slate-950 border border-slate-700 text-slate-300 rounded-lg text-[11px] font-bold">$5</button>
+              <button type="button" onclick="fijarMontoPaga('$10')" class="btn-tactil p-2 bg-slate-950 border border-slate-700 text-slate-300 rounded-lg text-[11px] font-bold">$10</button>
+              <button type="button" onclick="fijarMontoPaga('$20')" class="btn-tactil p-2 bg-slate-950 border border-slate-700 text-slate-300 rounded-lg text-[11px] font-bold">$20</button>
             </div>
-            <input type="text" id="montoPagaCliente" placeholder="O escribe el monto (ej: $50 o 500 Bs)..." class="w-full p-2 bg-slate-950 border border-slate-700 rounded-lg text-xs text-white placeholder-slate-500 focus:outline-none focus:border-accent-yellow">
+            <input type="text" id="montoPagaCliente" placeholder="O escribe el monto (ej: $50 o 500 Bs)..." class="w-full p-2.5 bg-slate-950 border border-slate-700 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-accent-yellow">
           </div>
 
           <!-- DETALLES: ZELLE / DIVISAS -->
@@ -593,10 +664,10 @@
           <div>
             <label class="block text-[11px] text-indigo-300 font-black uppercase mb-1">¿Para quién es el pedido?</label>
             <div class="grid grid-cols-2 gap-2">
-              <button type="button" onclick="seleccionarBeneficiario('mio')" id="btn-beneficiario-mio" class="p-2 rounded-xl border border-accent-cyan bg-accent-cyan/20 text-white text-xs font-bold transition">
+              <button type="button" onclick="seleccionarBeneficiario('mio')" id="btn-beneficiario-mio" class="btn-tactil p-2 rounded-xl border-2 border-accent-cyan bg-accent-cyan/20 text-white text-xs font-black">
                 🙋 Es para mí
               </button>
-              <button type="button" onclick="seleccionarBeneficiario('tercero')" id="btn-beneficiario-tercero" class="p-2 rounded-xl border border-slate-700 bg-slate-900 text-slate-300 text-xs font-bold transition">
+              <button type="button" onclick="seleccionarBeneficiario('tercero')" id="btn-beneficiario-tercero" class="btn-tactil p-2 rounded-xl border-2 border-slate-800 bg-slate-900 text-slate-300 text-xs font-bold">
                 👥 Es para otra persona
               </button>
             </div>
@@ -625,7 +696,7 @@
           </div>
 
           <div>
-            <button type="button" onclick="obtenerUbicacionGPS()" id="btn-gps" class="w-full bg-slate-900 hover:bg-slate-800 text-indigo-200 border border-indigo-500/30 font-black py-2.5 px-3 rounded-xl text-xs flex items-center justify-center gap-2 transition active:scale-95 shadow-sm">
+            <button type="button" onclick="obtenerUbicacionGPS()" id="btn-gps" class="btn-tactil w-full bg-slate-900 hover:bg-slate-800 text-indigo-200 border border-indigo-500/30 font-black py-2.5 px-3 rounded-xl text-xs flex items-center justify-center gap-2 shadow-sm">
               <i data-lucide="navigation" class="w-4 h-4 text-accent-cyan"></i> <span id="lbl-gps">Adjuntar Ubicación GPS en Vivo</span>
             </button>
             <input type="hidden" id="ubicacionGPS" value="">
@@ -633,11 +704,202 @@
         </section>
       </main>
 
-      <!-- BOTÓN FIJO EN EL CHECKOUT -->
-      <div class="absolute bottom-0 left-0 right-0 bg-slate-900/95 backdrop-blur-xl border-t border-slate-800 p-3 z-30">
-        <button onclick="enviarPedidoAConductor()" type="button" class="w-full bg-gradient-to-r from-accent-emerald to-emerald-600 hover:brightness-110 text-slate-950 font-black py-3 px-4 rounded-2xl flex items-center justify-center gap-2 text-xs transition active:scale-95 shadow-xl">
+      <!-- BOTÓN FIJO EN EL CHECKOUT PRO -->
+      <div class="absolute bottom-0 left-0 right-0 bg-slate-900/95 backdrop-blur-xl border-t border-slate-800 p-3 z-30 safe-bottom">
+        <button onclick="enviarPedidoAConductor()" type="button" class="btn-tactil w-full bg-gradient-to-r from-accent-emerald via-emerald-500 to-accent-cyan text-slate-950 font-black py-3.5 px-4 rounded-2xl flex items-center justify-center gap-2 text-xs shadow-glow-emerald border-t border-white/30">
           <i data-lucide="send" class="w-4 h-4 fill-slate-950"></i> ENVIAR ORDEN DIRECTA POR WHATSAPP
         </button>
+      </div>
+    </div>
+
+    <!-- ================= MODAL DE OPCIONES: CAPTURA DE LISTA O FOTO ================= -->
+    <div id="modal-opciones-captura" onclick="if(event.target === this) cerrarSelectorCapturaLista()" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 hidden">
+      <div class="anim-modal bg-slate-900 border-t sm:border border-indigo-500/40 w-full max-w-sm rounded-t-[32px] sm:rounded-3xl p-5 space-y-4 shadow-2xl">
+        <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+          <div class="flex items-center gap-2">
+            <div class="p-2 bg-accent-magenta/20 text-accent-magenta rounded-xl">
+              <i data-lucide="camera" class="w-5 h-5"></i>
+            </div>
+            <div>
+              <h3 class="text-sm font-black text-white">Escanear Lista de Compras</h3>
+              <p class="text-[11px] text-slate-400">La IA lee tu lista y agrega todos los productos</p>
+            </div>
+          </div>
+          <button onclick="cerrarSelectorCapturaLista()" class="btn-tactil w-7 h-7 rounded-full bg-slate-800 text-slate-400 hover:text-white flex items-center justify-center">
+            <i data-lucide="x" class="w-4 h-4"></i>
+          </button>
+        </div>
+
+        <div class="space-y-2">
+          <!-- Opción 1: Cámara -->
+          <button onclick="dispararCamara()" class="btn-tactil w-full bg-gradient-to-r from-indigo-950 to-slate-900 hover:from-indigo-900 border border-indigo-500/40 p-3.5 rounded-2xl flex items-center gap-3 text-left">
+            <div class="w-10 h-10 rounded-xl bg-accent-magenta/20 text-accent-magenta flex items-center justify-center shrink-0">
+              <i data-lucide="camera" class="w-5 h-5"></i>
+            </div>
+            <div>
+              <h4 class="text-xs font-black text-white">Tomar foto con la cámara</h4>
+              <p class="text-[10px] text-slate-400">Apunta a una hoja escrita o lista</p>
+            </div>
+          </button>
+
+          <!-- Opción 2: Galería -->
+          <button onclick="dispararGaleria()" class="btn-tactil w-full bg-gradient-to-r from-indigo-950 to-slate-900 hover:from-indigo-900 border border-indigo-500/40 p-3.5 rounded-2xl flex items-center gap-3 text-left">
+            <div class="w-10 h-10 rounded-xl bg-accent-cyan/20 text-accent-cyan flex items-center justify-center shrink-0">
+              <i data-lucide="image" class="w-5 h-5"></i>
+            </div>
+            <div>
+              <h4 class="text-xs font-black text-white">Subir foto desde la galería</h4>
+              <p class="text-[10px] text-slate-400">Captura de WhatsApp o foto guardada</p>
+            </div>
+          </button>
+
+          <!-- Opción 3: Pegar texto -->
+          <button onclick="cerrarSelectorCapturaLista(); abrirModalPegarLista();" class="btn-tactil w-full bg-slate-950 border border-slate-800 p-3.5 rounded-2xl flex items-center gap-3 text-left">
+            <div class="w-10 h-10 rounded-xl bg-accent-yellow/20 text-accent-yellow flex items-center justify-center shrink-0">
+              <i data-lucide="clipboard-list" class="w-5 h-5"></i>
+            </div>
+            <div>
+              <h4 class="text-xs font-black text-white">Pegar o escribir lista en texto</h4>
+              <p class="text-[10px] text-slate-400">Copia y pega desde WhatsApp o notas</p>
+            </div>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================= MODAL REVOLUCIONARIO DE LISTA DETECTADA POR CÁMARA ================= -->
+    <div id="modal-foto-resultado" class="fixed inset-0 bg-slate-950/85 backdrop-blur-md z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 hidden">
+      <div class="anim-modal bg-slate-900 border-t sm:border border-indigo-500/40 w-full max-w-md rounded-t-[32px] sm:rounded-3xl p-4 space-y-3 shadow-2xl max-h-[90vh] flex flex-col">
+        
+        <!-- HEADER DEL MODAL -->
+        <div class="flex justify-between items-center border-b border-slate-800 pb-2.5 shrink-0">
+          <div class="flex items-center gap-2">
+            <div class="p-2 bg-accent-magenta/20 text-accent-magenta rounded-xl border border-accent-magenta/30">
+              <i data-lucide="sparkles" class="w-4 h-4"></i>
+            </div>
+            <div>
+              <h3 class="text-xs font-black text-white">Lista de Productos Escaneada</h3>
+              <span id="txt-modal-foto-sub" class="text-[10px] text-accent-cyan font-bold">Analizando texto con IA...</span>
+            </div>
+          </div>
+          <button onclick="cerrarModalFotoResultado()" class="btn-tactil w-7 h-7 rounded-full bg-slate-800 text-slate-400 hover:text-white flex items-center justify-center">
+            <i data-lucide="x" class="w-4 h-4"></i>
+          </button>
+        </div>
+
+        <!-- VISTA PREVIA DE LA FOTO CON EFECTO ESCÁNER LÁSER -->
+        <div class="relative w-full h-32 bg-slate-950 rounded-2xl overflow-hidden border border-slate-800 flex items-center justify-center shrink-0">
+          <img id="img-preview-foto" src="" alt="Foto Capturada" class="w-full h-full object-contain">
+          
+          <!-- LÁSER ANIMADO DE ESCANEO -->
+          <div id="laser-scan-anim" class="laser-line"></div>
+
+          <!-- LOADER DE PROGRESO DE IA -->
+          <div id="loader-foto-ia" class="absolute inset-0 bg-slate-950/75 backdrop-blur-[2px] flex flex-col items-center justify-center gap-2 z-10">
+            <div class="w-7 h-7 border-3 border-accent-cyan border-t-transparent rounded-full animate-spin"></div>
+            <span id="txt-loader-foto" class="text-xs text-accent-cyan font-black">Escaneando cada renglón...</span>
+          </div>
+        </div>
+
+        <!-- CONTENEDOR DE PRODUCTOS DETECTADOS -->
+        <div id="caja-resultado-lista" class="flex-1 overflow-hidden flex flex-col space-y-2 hidden">
+          <div class="flex items-center justify-between px-1">
+            <div class="flex items-center gap-1.5">
+              <span class="text-[11px] font-black text-white">Productos Detectados (<span id="contador-items-detectados">0</span>)</span>
+            </div>
+            <button onclick="toggleSeleccionarTodos()" id="btn-toggle-todos" class="text-[10px] font-black text-accent-cyan hover:underline">
+              Deseleccionar todos
+            </button>
+          </div>
+
+          <!-- LISTA INTERACTIVA DE ARTÍCULOS DETECTADOS -->
+          <div id="lista-articulos-detectados" class="flex-1 overflow-y-auto no-scrollbar space-y-2 pr-1"></div>
+        </div>
+
+        <!-- RESUMEN Y BOTÓN PARA AGREGAR TODO AL CARRITO -->
+        <div id="pie-acciones-lista-ia" class="border-t border-slate-800 pt-2.5 space-y-2 shrink-0 hidden">
+          <div class="flex justify-between items-center px-1">
+            <span class="text-[11px] font-bold text-slate-300">Seleccionados: <span id="txt-cant-seleccionada-ia" class="text-white font-black">0</span></span>
+            <span class="text-xs font-black text-accent-yellow">Total Estimado: <span id="txt-monto-total-ia">$0.00</span></span>
+          </div>
+          
+          <div class="flex gap-2">
+            <button onclick="cerrarModalFotoResultado()" class="btn-tactil w-1/3 bg-slate-800 text-slate-300 font-bold py-3 rounded-2xl text-xs">
+              Cancelar
+            </button>
+            <button id="btn-confirmar-lista-completa" onclick="confirmarAgregarListaCompleta()" class="btn-tactil flex-1 bg-gradient-to-r from-accent-cyan via-indigo-600 to-accent-magenta text-white font-black py-3 rounded-2xl text-xs shadow-glow-cyan flex items-center justify-center gap-1.5 border-t border-white/20">
+              <i data-lucide="shopping-bag" class="w-4 h-4"></i>
+              <span>¡AGREGAR AL PEDIDO!</span>
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ================= MODAL PARA PEGAR LISTA EN TEXTO ================= -->
+    <div id="modal-pegar-lista" onclick="if(event.target === this) cerrarModalPegarLista()" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
+      <div class="anim-modal bg-slate-900 border border-indigo-500/40 w-full max-w-sm rounded-[32px] p-5 space-y-4 shadow-2xl">
+        <div class="flex justify-between items-center border-b border-slate-800 pb-2.5">
+          <div class="flex items-center gap-2">
+            <div class="p-2 bg-accent-yellow/20 text-accent-yellow rounded-xl">
+              <i data-lucide="clipboard-list" class="w-5 h-5"></i>
+            </div>
+            <div>
+              <h3 class="text-xs font-black text-white">Pegar o Escribir Lista</h3>
+              <p class="text-[10px] text-slate-400">Separa los productos por renglón o coma</p>
+            </div>
+          </div>
+          <button onclick="cerrarModalPegarLista()" class="btn-tactil w-7 h-7 rounded-full bg-slate-800 text-slate-400 hover:text-white flex items-center justify-center">
+            <i data-lucide="x" class="w-4 h-4"></i>
+          </button>
+        </div>
+
+        <div>
+          <textarea id="textarea-lista-manual" rows="5" placeholder="Ejemplo:&#10;1 harina pan&#10;2 arroz mary&#10;1/2 kilo queso blanco&#10;1 refresco pepsi&#10;tomate y cebolla" class="w-full p-3 bg-slate-950 border border-slate-700 rounded-2xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-accent-cyan shadow-inner leading-relaxed"></textarea>
+        </div>
+
+        <div class="flex gap-2">
+          <button onclick="cerrarModalPegarLista()" class="btn-tactil flex-1 bg-slate-800 text-slate-300 font-bold py-2.5 rounded-2xl text-xs">Cancelar</button>
+          <button onclick="procesarTextoPegadoManual()" class="btn-tactil flex-1 bg-gradient-to-r from-accent-cyan to-brand-600 text-slate-950 font-black py-2.5 rounded-2xl text-xs shadow-md">
+            Identificar Lista
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================= MODAL DE DICTADO POR VOZ ================= -->
+    <div id="modal-asistente-voz" class="fixed inset-0 bg-slate-950/85 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
+      <div class="anim-modal bg-slate-900 border border-indigo-500/40 w-full max-w-sm rounded-[32px] p-5 space-y-4 shadow-2xl text-center">
+        <div class="flex justify-between items-center border-b border-slate-800 pb-2">
+          <div class="flex items-center gap-1.5">
+            <i data-lucide="mic" class="w-4 h-4 text-accent-cyan"></i>
+            <span class="text-xs font-black text-white">Dictado por Voz Inteligente</span>
+          </div>
+          <button onclick="cerrarModalVoz()" class="btn-tactil w-7 h-7 rounded-full bg-slate-800 text-slate-400 hover:text-white flex items-center justify-center">
+            <i data-lucide="x" class="w-4 h-4"></i>
+          </button>
+        </div>
+
+        <div class="py-2">
+          <button onclick="iniciarReconocimientoVoz()" id="btn-circulo-microfono" class="w-16 h-16 mx-auto rounded-full bg-gradient-to-tr from-indigo-600 to-accent-cyan flex items-center justify-center text-slate-950 shadow-xl btn-tactil ia-activo">
+            <i data-lucide="mic" class="w-7 h-7 stroke-[2.5]"></i>
+          </button>
+          <p id="lbl-estado-voz-modal" class="text-xs font-black text-white mt-3">Te estoy escuchando...</p>
+          <p class="text-[10px] text-slate-400 mt-0.5">Di lo que necesitas (ej: "harina pan, medio kilo de queso y dos maltas")</p>
+        </div>
+
+        <div class="space-y-1 text-left">
+          <label class="text-[10px] text-indigo-300 font-bold block">Texto capturado:</label>
+          <input type="text" id="input-texto-dictado" placeholder="Ej: harina, arroz, queso..." class="w-full p-2.5 bg-slate-950 border border-slate-700 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-accent-cyan">
+        </div>
+
+        <div class="flex gap-2 pt-1">
+          <button onclick="cerrarModalVoz()" class="btn-tactil flex-1 bg-slate-800 text-slate-300 font-bold py-2.5 rounded-xl text-xs">Cerrar</button>
+          <button onclick="procesarTextoDesdeModalVoz()" class="btn-tactil flex-1 bg-gradient-to-r from-accent-cyan to-brand-600 text-slate-950 font-black py-2.5 rounded-xl text-xs shadow-md">
+            Buscar y Agregar
+          </button>
+        </div>
       </div>
     </div>
 
@@ -654,7 +916,7 @@
               <span class="text-[10px] text-indigo-300">Precio variable según disponibilidad</span>
             </div>
           </div>
-          <button onclick="cerrarModalPersonalizado()" class="w-7 h-7 rounded-full bg-slate-800 text-slate-400 hover:text-white flex items-center justify-center">
+          <button onclick="cerrarModalPersonalizado()" class="btn-tactil w-7 h-7 rounded-full bg-slate-800 text-slate-400 hover:text-white flex items-center justify-center">
             <i data-lucide="x" class="w-4 h-4"></i>
           </button>
         </div>
@@ -666,89 +928,8 @@
           <p class="text-[10px] text-slate-400 italic">💡 El precio puede variar dependiendo del lugar ya que no contamos con ese producto en el almacén directo.</p>
         </div>
         <div class="flex gap-2 pt-2">
-          <button onclick="cerrarModalPersonalizado()" class="flex-1 bg-slate-800 text-slate-300 font-bold py-2.5 rounded-2xl text-xs">Cancelar</button>
-          <button onclick="guardarProductoPersonalizadoFlotante()" class="flex-1 bg-gradient-to-r from-accent-cyan to-brand-600 text-slate-950 font-black py-2.5 rounded-2xl text-xs shadow-md">Agregar al Pedido</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- ================= MODAL DE FOTO CON IA ================= -->
-    <div id="modal-foto-resultado" class="fixed inset-0 bg-slate-950/85 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
-      <div class="anim-modal bg-slate-900 border border-indigo-500/40 w-full max-w-sm rounded-[32px] p-5 space-y-3.5 shadow-2xl">
-        <div class="flex justify-between items-center border-b border-slate-800 pb-2.5">
-          <div class="flex items-center gap-2">
-            <div class="p-2 bg-accent-magenta/15 text-accent-magenta rounded-xl border border-accent-magenta/30">
-              <i data-lucide="camera" class="w-4 h-4"></i>
-            </div>
-            <div>
-              <h3 class="text-xs font-black text-white">Análisis de la Foto</h3>
-              <span id="txt-modal-foto-sub" class="text-[10px] text-accent-cyan font-bold">Identificando producto...</span>
-            </div>
-          </div>
-          <button onclick="cerrarModalFotoResultado()" class="w-7 h-7 rounded-full bg-slate-800 text-slate-400 hover:text-white flex items-center justify-center">
-            <i data-lucide="x" class="w-4 h-4"></i>
-          </button>
-        </div>
-
-        <div class="relative w-full h-36 bg-slate-950 rounded-2xl overflow-hidden border border-slate-800 flex items-center justify-center">
-          <img id="img-preview-foto" src="" alt="Foto Capturada" class="w-full h-full object-contain">
-          <div id="loader-foto-ia" class="absolute inset-0 bg-slate-950/70 backdrop-blur-[2px] flex flex-col items-center justify-center gap-2">
-            <div class="w-7 h-7 border-3 border-accent-cyan border-t-transparent rounded-full animate-spin"></div>
-            <span id="txt-loader-foto" class="text-xs text-accent-cyan font-black">Escaneando empaque...</span>
-          </div>
-        </div>
-
-        <div id="caja-resultado-producto" class="bg-slate-950/90 border border-emerald-500/30 p-3 rounded-2xl space-y-1.5 hidden">
-          <div class="flex items-center justify-between">
-            <span id="badge-tipo-resultado" class="text-[9px] font-black uppercase px-2 py-0.5 rounded-full bg-emerald-500/20 text-accent-emerald border border-emerald-500/30">
-              Detectado
-            </span>
-            <span id="precio-resultado-foto" class="text-xs font-black text-accent-yellow">$0.00</span>
-          </div>
-          <h4 id="nombre-resultado-foto" class="text-xs font-black text-white leading-tight">Nombre del producto</h4>
-          <p id="desc-resultado-foto" class="text-[10px] text-slate-400 leading-tight">Detalle o variante</p>
-        </div>
-
-        <div class="flex gap-2 pt-1">
-          <button onclick="cerrarModalFotoResultado()" class="flex-1 bg-slate-800 text-slate-300 font-bold py-2.5 rounded-xl text-xs">Cancelar</button>
-          <button id="btn-confirmar-foto" onclick="confirmarProductoFoto()" class="flex-1 bg-gradient-to-r from-accent-cyan to-brand-600 text-slate-950 font-black py-2.5 rounded-xl text-xs shadow-md active:scale-95 transition">
-            ¡Agregar al Pedido!
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <!-- ================= MODAL DE DICTADO POR VOZ ================= -->
-    <div id="modal-asistente-voz" class="fixed inset-0 bg-slate-950/85 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
-      <div class="anim-modal bg-slate-900 border border-indigo-500/40 w-full max-w-sm rounded-[32px] p-5 space-y-4 shadow-2xl text-center">
-        <div class="flex justify-between items-center border-b border-slate-800 pb-2">
-          <div class="flex items-center gap-1.5">
-            <i data-lucide="mic" class="w-4 h-4 text-accent-cyan"></i>
-            <span class="text-xs font-black text-white">Dictado por Voz Inteligente</span>
-          </div>
-          <button onclick="cerrarModalVoz()" class="w-7 h-7 rounded-full bg-slate-800 text-slate-400 hover:text-white flex items-center justify-center">
-            <i data-lucide="x" class="w-4 h-4"></i>
-          </button>
-        </div>
-
-        <div class="py-2">
-          <button onclick="iniciarReconocimientoVoz()" id="btn-circulo-microfono" class="w-16 h-16 mx-auto rounded-full bg-gradient-to-tr from-indigo-600 to-accent-cyan flex items-center justify-center text-slate-950 shadow-xl transition active:scale-90 ia-activo">
-            <i data-lucide="mic" class="w-7 h-7 stroke-[2.5]"></i>
-          </button>
-          <p id="lbl-estado-voz-modal" class="text-xs font-black text-white mt-3">Te estoy escuchando...</p>
-          <p class="text-[10px] text-slate-400 mt-0.5">Di lo que necesitas (ej: "harina", "queso blanco", "2 maltas")</p>
-        </div>
-
-        <div class="space-y-1 text-left">
-          <label class="text-[10px] text-indigo-300 font-bold block">Texto capturado:</label>
-          <input type="text" id="input-texto-dictado" placeholder="Ej: harina, arroz, queso..." class="w-full p-2.5 bg-slate-950 border border-slate-700 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-accent-cyan">
-        </div>
-
-        <div class="flex gap-2 pt-1">
-          <button onclick="cerrarModalVoz()" class="flex-1 bg-slate-800 text-slate-300 font-bold py-2.5 rounded-xl text-xs">Cerrar</button>
-          <button onclick="procesarTextoDesdeModalVoz()" class="flex-1 bg-gradient-to-r from-accent-cyan to-brand-600 text-slate-950 font-black py-2.5 rounded-xl text-xs shadow-md active:scale-95 transition">
-            Buscar y Agregar
-          </button>
+          <button onclick="cerrarModalPersonalizado()" class="btn-tactil flex-1 bg-slate-800 text-slate-300 font-bold py-2.5 rounded-2xl text-xs">Cancelar</button>
+          <button onclick="guardarProductoPersonalizadoFlotante()" class="btn-tactil flex-1 bg-gradient-to-r from-accent-cyan to-brand-600 text-slate-950 font-black py-2.5 rounded-2xl text-xs shadow-md">Agregar al Pedido</button>
         </div>
       </div>
     </div>
@@ -766,7 +947,7 @@
               <span class="text-[10px] text-indigo-300 font-bold">Modifica o elimina artículos</span>
             </div>
           </div>
-          <button onclick="cerrarModalCarrito()" class="w-7 h-7 rounded-full bg-slate-800 text-slate-400 hover:text-white flex items-center justify-center transition">
+          <button onclick="cerrarModalCarrito()" class="btn-tactil w-7 h-7 rounded-full bg-slate-800 text-slate-400 hover:text-white flex items-center justify-center">
             <i data-lucide="x" class="w-4 h-4"></i>
           </button>
         </div>
@@ -777,10 +958,10 @@
             <span id="modal-carrito-monto-total" class="text-base font-black text-accent-yellow">$0.00</span>
           </div>
           <div class="flex gap-2">
-            <button onclick="cerrarModalCarrito()" class="flex-1 bg-slate-800 text-slate-200 font-bold py-3 rounded-2xl text-xs transition border border-slate-700/50">
+            <button onclick="cerrarModalCarrito()" class="btn-tactil flex-1 bg-slate-800 text-slate-200 font-bold py-3 rounded-2xl text-xs transition border border-slate-700/50">
               Seguir Viendo
             </button>
-            <button onclick="cerrarModalCarrito(); irAPaso2();" class="flex-1 bg-gradient-to-r from-accent-magenta to-indigo-600 text-white font-black py-3 rounded-2xl text-xs transition flex items-center justify-center gap-1 active:scale-95 shadow-lg">
+            <button onclick="cerrarModalCarrito(); irAPaso2();" class="btn-tactil flex-1 bg-gradient-to-r from-accent-magenta to-indigo-600 text-white font-black py-3 rounded-2xl text-xs flex items-center justify-center gap-1 shadow-glow-magenta">
               <span>Finalizar Orden</span> <i data-lucide="arrow-right" class="w-4 h-4"></i>
             </button>
           </div>
@@ -810,6 +991,7 @@
   </div>
 
   <script>
+    // ================= CONFIGURACIÓN DE FIREBASE =================
     const firebaseConfig = {
       apiKey: "AIzaSyB19B9jLHPpgKxVvMH97D5VafgTp0CfnOc",
       authDomain: "pedidosflash-c7bb7.firebaseapp.com",
@@ -835,6 +1017,7 @@
     let carrito = {};
     let esPagoTransporteDirecto = false;
 
+    // ESTADO PARA TRANSPORTE
     let mapaRuta = null;
     let puntoOrigen = [10.1500, -68.5667]; 
     let textoOrigenStr = "Mi Ubicación (GPS)";
@@ -843,8 +1026,10 @@
     let lineaTrayecto = null;
     let tipoTransporteSeleccionado = 'moto';
     let precioTransporte = 1.00;
-    let productoDetectadoTemporal = null;
     let metodoPagoActual = 'Pago Móvil';
+
+    // ESTADO PARA ESCÁNER MULTI-PRODUCTO
+    let itemsDetectadosActuales = [];
 
     // DATOS DE LOS LOCALES DE COMIDA RÁPIDA
     const infoLocales = {
@@ -1016,7 +1201,6 @@
         { id: 'cn_milanesa_pollo_kg', nombre: 'Milanesa de Pollo (kg)', precioBase: 6.00, imagen: 'img/cn_milanesa_pollo_kg.png', badge: 'TOP', esGranel: true, unidadMedida: 'g', pasoGranel: 100, minGranel: 250, maxGranel: 4000, defGranel: 1000 }
       ],
       panaderia: [
-        // La Panamericana
         { id: 'pa_pan_sobado', nombre: 'Pan Sobado / Piñita Artesanal', precioBase: 1.50, imagen: 'img/p_pan_sobado.png', badge: 'FRESCO', local: 'panamericana' },
         { id: 'pa_pan_baguette', nombre: 'Pan Baguette Francés', precioBase: 1.20, imagen: 'img/p_pan_baguette.png', local: 'panamericana' },
         { id: 'pa_quesillo', nombre: 'Quesillo Casero (Porción)', precioBase: 2.50, imagen: 'img/p_quesillo.png', badge: 'DULCE', local: 'panamericana' },
@@ -1057,20 +1241,13 @@
         { id: 'b6', nombre: 'Energizante Monster', precioBase: 2.80, imagen: 'img/b6.png' }
       ],
       comida: [
-        // Moravos Café
         { id: 'mc_cafe_capuchino', nombre: 'Café Capuchino Especial ☕', precioBase: 2.00, imagen: 'img/b6.png', badge: 'CAFÉ', local: 'moravos' },
         { id: 'mc_postre_chocolate', nombre: 'Torta de Chocolate Moravos 🍰', precioBase: 3.00, imagen: 'img/p_quesillo.png', badge: 'POSTRE', local: 'moravos' },
-
-        // El Sabor de Fran & Chero
         { id: 'fc_hamb_mixta', nombre: 'Hamburguesa Mixta Fran & Chero 🍔', precioBase: 5.00, imagen: 'img/c1.png', badge: 'DESTACADO', local: 'fran_chero' },
         { id: 'fc_perro_caliente', nombre: 'Perro Caliente Especial 🌭', precioBase: 2.00, imagen: 'img/c2.png', local: 'fran_chero' },
         { id: 'fc_pepito_res', nombre: 'Pepito Especial de Res 🥖', precioBase: 6.50, imagen: 'img/c5.png', badge: 'POPULAR', local: 'fran_chero' },
-
-        // Anton's Burgers
         { id: 'ab_hamb_antons', nombre: "Hamburguesa Anton's Supreme 🍔", precioBase: 6.00, imagen: 'img/c1.png', badge: 'TOP', local: 'antons' },
         { id: 'ab_combo_empanadas', nombre: 'Combo 3 Empanadas 🥟', precioBase: 3.50, imagen: 'img/c4.png', badge: 'FRESCO', local: 'antons' },
-
-        // Zirus Pizza
         { id: 'zp_pizza_familiar', nombre: 'Pizza Familiar Zirus 🍕', precioBase: 12.00, imagen: 'img/c3.png', badge: 'TOP', local: 'zirus' }
       ],
       limpieza: [
@@ -1144,6 +1321,7 @@
       }, 3000);
     }
 
+    // ================= RENDERIZADO DEL CATÁLOGO =================
     function renderizarCatalogo() {
       ['viveres', 'charcuteria', 'carnes', 'verduras', 'bebidas', 'limpieza'].forEach(cat => {
         const sec = document.getElementById(`grid-${cat}`);
@@ -1155,7 +1333,6 @@
         }
       });
 
-      // Renderizado de Panadería
       if (productos.panaderia) {
         const gridPanaderia = document.getElementById('grid-panaderia-panamericana');
         if (gridPanaderia) {
@@ -1171,7 +1348,6 @@
       lucide.createIcons();
     }
 
-    // ABRIR MENÚ MODAL DE CADA LOCAL DE COMIDA RÁPIDA
     function abrirMenuLocal(idLocal) {
       const info = infoLocales[idLocal];
       if (!info) return;
@@ -1229,7 +1405,7 @@
               
               <div class="flex items-center justify-between pt-0.5">
                 <span id="precio-granel-${item.id}" class="text-xs font-black text-accent-yellow">$${precioInicial.toFixed(2)}</span>
-                <button onclick="agregarGranelAlCarrito('${item.id}')" type="button" class="bg-gradient-to-r from-accent-cyan to-brand-600 hover:brightness-110 text-slate-950 font-black px-2.5 py-1.5 rounded-xl text-[10px] shadow-md transition active:scale-95">
+                <button onclick="agregarGranelAlCarrito('${item.id}')" type="button" class="btn-tactil bg-gradient-to-r from-accent-cyan to-brand-600 hover:brightness-110 text-slate-950 font-black px-3 py-1.5 rounded-xl text-[10px] shadow-md border-t border-white/20">
                   Agregar
                 </button>
               </div>
@@ -1255,7 +1431,7 @@
           </div>
           <div class="pt-1.5 border-t border-slate-800 flex items-center justify-between">
             <span class="text-xs font-black text-accent-yellow">$${item.precioBase.toFixed(2)}</span>
-            <span class="bg-brand-500/30 text-accent-cyan font-bold text-[10px] px-2 py-1 rounded-xl border border-accent-cyan/30">
+            <span class="btn-tactil bg-brand-500/30 text-accent-cyan font-bold text-[10px] px-2.5 py-1.5 rounded-xl border border-accent-cyan/30">
               Agregar
             </span>
           </div>
@@ -1446,17 +1622,30 @@
       document.querySelectorAll('.item-producto').forEach(card => card.style.display = "flex");
     }
 
-    // REGLA DE COMPRA: LO MÁS BARATO O ESPECIFICADO
-    const palabrasGenericas = ['harina', 'arroz', 'pasta', 'espagueti', 'azucar', 'sal', 'aceite', 'margarina', 'mantequilla', 'leche', 'sardina', 'atun', 'diablito', 'salchicha', 'jamon', 'mortadela', 'queso', 'carne', 'pollo', 'pan', 'galleta', 'cerveza', 'refresco', 'vinagre', 'cloro', 'huevo', 'cafe'];
+    // ================= MOTOR INTELIGENTE DE BÚSQUEDA Y RECONOCIMIENTO =================
+    const palabrasGenericas = ['harina', 'arroz', 'pasta', 'espagueti', 'azucar', 'sal', 'aceite', 'margarina', 'mantequilla', 'leche', 'sardina', 'atun', 'diablito', 'salchicha', 'jamon', 'mortadela', 'queso', 'carne', 'pollo', 'pan', 'galleta', 'cerveza', 'refresco', 'vinagre', 'cloro', 'huevo', 'cafe', 'tomate', 'cebolla', 'papa'];
 
     function resolverProductoInteligente(terminoBruto) {
       const limpio = normalizarTexto(terminoBruto);
       if (!limpio) return null;
 
       let cantidad = 1;
+      let gramosEspecificos = null;
+
+      // Detección de peso fraccional (medio kilo, 1/2 kg, 500g, 1kg)
+      if (limpio.includes('medio kilo') || limpio.includes('1/2 kilo') || limpio.includes('1/2kg') || limpio.includes('500g') || limpio.includes('500 g') || limpio.includes('500 gr')) {
+        gramosEspecificos = 500;
+      } else if (limpio.includes('cuarto de kilo') || limpio.includes('1/4 kilo') || limpio.includes('250g') || limpio.includes('250 g')) {
+        gramosEspecificos = 250;
+      } else if (limpio.includes('1 kilo') || limpio.includes('1kg') || limpio.includes('1 kg') || limpio.includes('un kilo')) {
+        gramosEspecificos = 1000;
+      } else if (limpio.includes('2 kilos') || limpio.includes('2kg') || limpio.includes('2 kg') || limpio.includes('dos kilos')) {
+        gramosEspecificos = 2000;
+      }
+
       let palabras = limpio.split(/[\s,.-]+/).filter(Boolean);
 
-      const numerosTexto = { 'un': 1, 'una': 1, 'uno': 1, 'dos': 2, 'tres': 3, 'cuatro': 4, 'cinco': 5, 'seis': 6 };
+      const numerosTexto = { 'un': 1, 'una': 1, 'uno': 1, 'dos': 2, 'tres': 3, 'cuatro': 4, 'cinco': 5, 'seis': 6, 'medio': 1 };
       if (palabras.length > 0) {
         if (/^\d+$/.test(palabras[0])) {
           cantidad = parseInt(palabras[0]) || 1;
@@ -1467,13 +1656,22 @@
         }
       }
 
-      const stopWords = new Set(['de', 'la', 'el', 'los', 'las', 'un', 'una', 'paquete', 'bolsa', 'kilo', 'kilos', 'litro', 'litros', 'quiero', 'dame', 'traeme']);
+      const stopWords = new Set(['de', 'la', 'el', 'los', 'las', 'un', 'una', 'paquete', 'bolsa', 'kilo', 'kilos', 'litro', 'litros', 'quiero', 'dame', 'traeme', 'por', 'favor', 'medio']);
       const tokens = palabras.filter(p => !stopWords.has(p) && p.length > 1);
-      if (tokens.length === 0) return { tipo: 'personalizado', nombre: terminoBruto.trim(), cantidad };
+      if (tokens.length === 0) {
+        return { 
+          tipo: 'personalizado', 
+          nombre: terminoBruto.trim(), 
+          cantidad, 
+          precioBase: 0,
+          nota: 'Bajo Pedido (Precio Variable)'
+        };
+      }
 
       const raiz = tokens.find(t => palabrasGenericas.includes(t));
       const especificadores = tokens.filter(t => t !== raiz && !['maiz', 'trigo', 'blanco', 'blanca'].includes(t));
 
+      // Búsqueda por coincidencia de tokens específicos
       if (especificadores.length > 0) {
         let candidatos = [];
         for (const id in mapaProductos) {
@@ -1485,10 +1683,18 @@
         }
         if (candidatos.length > 0) {
           candidatos.sort((a, b) => b.match - a.match);
-          return { tipo: 'producto', producto: candidatos[0].prod, cantidad, nota: 'Marca que pediste' };
+          const mejor = candidatos[0].prod;
+          return { 
+            tipo: 'producto', 
+            producto: mejor, 
+            cantidad, 
+            gramos: gramosEspecificos || (mejor.esGranel ? mejor.defGranel : null),
+            nota: 'Marca específica detectada' 
+          };
         }
       }
 
+      // Búsqueda por raíz genérica (opción más económica)
       if (raiz) {
         let candidatos = [];
         for (const id in mapaProductos) {
@@ -1497,50 +1703,368 @@
         }
         if (candidatos.length > 0) {
           candidatos.sort((a, b) => a.precioBase - b.precioBase);
-          return { tipo: 'producto', producto: candidatos[0], cantidad, nota: 'La opción más económica' };
+          const masBarato = candidatos[0];
+          return { 
+            tipo: 'producto', 
+            producto: masBarato, 
+            cantidad, 
+            gramos: gramosEspecificos || (masBarato.esGranel ? masBarato.defGranel : null),
+            nota: 'Opción más económica' 
+          };
         }
       }
 
-      return { tipo: 'personalizado', nombre: terminoBruto.trim(), cantidad, nota: 'A Pedido / Sin Stock' };
+      return { 
+        tipo: 'personalizado', 
+        nombre: terminoBruto.trim(), 
+        cantidad, 
+        precioBase: 0,
+        nota: 'Bajo Pedido (Sin Stock en tienda)' 
+      };
     }
 
-    function procesarTextoOLista(textoCompleto) {
-      if (!textoCompleto) return;
-      const lineas = textoCompleto.split(/[\n\r;]|\s+y\s+|\s+e\s+/i).map(l => l.trim()).filter(l => l.length > 1);
-      if (lineas.length === 0) return;
+    // ================= GESTOR DE CAPTURA Y MODAL DE LISTA IA =================
+    function abrirSelectorCapturaLista() {
+      document.getElementById('modal-opciones-captura').classList.remove('hidden');
+    }
 
-      let agregados = 0;
-      lineas.forEach(linea => {
+    function cerrarSelectorCapturaLista() {
+      document.getElementById('modal-opciones-captura').classList.add('hidden');
+    }
+
+    function dispararCamara() {
+      cerrarSelectorCapturaLista();
+      document.getElementById('input-camara-directa').click();
+    }
+
+    function dispararGaleria() {
+      cerrarSelectorCapturaLista();
+      document.getElementById('input-galeria-foto').click();
+    }
+
+    function abrirModalPegarLista() {
+      document.getElementById('modal-pegar-lista').classList.remove('hidden');
+      document.getElementById('textarea-lista-manual').focus();
+    }
+
+    function cerrarModalPegarLista() {
+      document.getElementById('modal-pegar-lista').classList.add('hidden');
+      document.getElementById('textarea-lista-manual').value = "";
+    }
+
+    function procesarTextoPegadoManual() {
+      const texto = document.getElementById('textarea-lista-manual').value.trim();
+      if (!texto) {
+        mostrarToast("Escribe o pega los artículos de tu lista.", "Campo vacío", "info");
+        return;
+      }
+      cerrarModalPegarLista();
+      
+      const modalFoto = document.getElementById('modal-foto-resultado');
+      const imgPreview = document.getElementById('img-preview-foto');
+      const loader = document.getElementById('loader-foto-ia');
+      const laser = document.getElementById('laser-scan-anim');
+
+      imgPreview.src = "img/logo.jfif";
+      laser.style.display = 'none';
+      loader.classList.add('hidden');
+      modalFoto.classList.remove('hidden');
+
+      analizarTextoYMostrarListaCompleta(texto);
+    }
+
+    // ================= PROCESAMIENTO CON TESSERACT OCR =================
+    function procesarFotoIA(event) {
+      const archivo = event.target.files[0];
+      if (!archivo) return;
+
+      const modalFoto = document.getElementById('modal-foto-resultado');
+      const imgPreview = document.getElementById('img-preview-foto');
+      const loader = document.getElementById('loader-foto-ia');
+      const laser = document.getElementById('laser-scan-anim');
+      const cajaResultado = document.getElementById('caja-resultado-lista');
+      const pieAcciones = document.getElementById('pie-acciones-lista-ia');
+      const txtLoader = document.getElementById('txt-loader-foto');
+      const txtSub = document.getElementById('txt-modal-foto-sub');
+
+      const urlImagen = URL.createObjectURL(archivo);
+      imgPreview.src = urlImagen;
+      laser.style.display = 'block';
+      loader.classList.remove('hidden');
+      cajaResultado.classList.add('hidden');
+      pieAcciones.classList.add('hidden');
+      txtSub.innerText = "Escaneando texto de la imagen...";
+      txtLoader.innerText = "Preparando escaneo de lista...";
+      modalFoto.classList.remove('hidden');
+
+      let pistaNombre = archivo.name ? archivo.name.replace(/[_-]/g, ' ').replace(/\.[^/.]+$/, "") : "";
+
+      if (typeof Tesseract !== 'undefined') {
+        Tesseract.recognize(archivo, 'spa', {
+          logger: m => {
+            if (m.status === 'recognizing text') {
+              const prog = Math.round((m.progress || 0) * 100);
+              txtLoader.innerText = `Leyendo lista (${prog}%)...`;
+            }
+          }
+        }).then(({ data: { text } }) => {
+          laser.style.display = 'none';
+          loader.classList.add('hidden');
+          const textoFinal = (text && text.trim().length > 3) ? text : pistaNombre;
+          analizarTextoYMostrarListaCompleta(textoFinal);
+        }).catch((err) => {
+          console.warn("Fallo Tesseract OCR:", err);
+          laser.style.display = 'none';
+          loader.classList.add('hidden');
+          analizarTextoYMostrarListaCompleta(pistaNombre || "1 Harina pan");
+        });
+      } else {
+        setTimeout(() => {
+          laser.style.display = 'none';
+          loader.classList.add('hidden');
+          analizarTextoYMostrarListaCompleta(pistaNombre || "1 Harina pan");
+        }, 800);
+      }
+    }
+
+    // ================= DESGLOSE DE CADA RENGLÓN DE LA LISTA =================
+    function analizarTextoYMostrarListaCompleta(textoBruto) {
+      const cajaResultado = document.getElementById('caja-resultado-lista');
+      const pieAcciones = document.getElementById('pie-acciones-lista-ia');
+      const txtSub = document.getElementById('txt-modal-foto-sub');
+
+      if (!textoBruto || textoBruto.trim().length < 2) {
+        txtSub.innerText = "No se detectaron renglones claros";
+        cajaResultado.classList.remove('hidden');
+        document.getElementById('lista-articulos-detectados').innerHTML = `
+          <div class="bg-slate-950 p-4 rounded-2xl text-center space-y-2 border border-slate-800">
+            <p class="text-xs text-slate-300 font-bold">No se pudieron leer los productos en la foto.</p>
+            <button onclick="abrirModalPegarLista()" class="btn-tactil bg-accent-cyan text-slate-950 font-black px-4 py-2 rounded-xl text-xs">
+              Escribir Lista a Mano
+            </button>
+          </div>
+        `;
+        return;
+      }
+
+      // Dividir por renglones, viñetas, comas o puntos y comas
+      const lineas = textoBruto
+        .split(/\r?\n|;|\s*,\s*|\s+y\s+/i)
+        .map(l => l.replace(/^[\s*•\-–—\d+.)\]]+/g, '').trim())
+        .filter(l => l.length > 1);
+
+      const palabrasIgnoradas = ['lista', 'compras', 'supermercado', 'fecha', 'total', 'gracias', 'dia', 'por favor', 'mercado'];
+      const itemsProcesados = [];
+
+      lineas.forEach((linea, idx) => {
+        const lineaLower = linea.toLowerCase();
+        if (palabrasIgnoradas.some(p => lineaLower === p)) return;
+
         const res = resolverProductoInteligente(linea);
-        if (!res) return;
-        if (res.tipo === 'producto') {
-          const prod = res.producto;
+        if (res) {
+          itemsProcesados.push({
+            id: `item_scan_${Date.now()}_${idx}`,
+            textoOriginal: linea,
+            resultado: res,
+            seleccionado: true,
+            cantidad: res.cantidad || 1,
+            gramos: res.gramos || null
+          });
+        }
+      });
+
+      if (itemsProcesados.length === 0) {
+        itemsProcesados.push({
+          id: `item_scan_${Date.now()}_0`,
+          textoOriginal: textoBruto.trim().substring(0, 40),
+          resultado: resolverProductoInteligente(textoBruto.trim().substring(0, 40)),
+          seleccionado: true,
+          cantidad: 1,
+          gramos: null
+        });
+      }
+
+      itemsDetectadosActuales = itemsProcesados;
+      txtSub.innerText = `¡${itemsDetectadosActuales.length} producto(s) encontrado(s)!`;
+      cajaResultado.classList.remove('hidden');
+      pieAcciones.classList.remove('hidden');
+
+      renderizarListaDetectadaModal();
+    }
+
+    // ================= RENDERIZADO VISUAL DE LA LISTA EN EL MODAL =================
+    function renderizarListaDetectadaModal() {
+      const contenedor = document.getElementById('lista-articulos-detectados');
+      const contadorTotal = document.getElementById('contador-items-detectados');
+      const txtCantSel = document.getElementById('txt-cant-seleccionada-ia');
+      const txtMontoTotal = document.getElementById('txt-monto-total-ia');
+
+      contenedor.innerHTML = "";
+      let totalCalculado = 0;
+      let cantSeleccionada = 0;
+
+      itemsDetectadosActuales.forEach((it, idx) => {
+        const esProd = it.resultado.tipo === 'producto';
+        const prod = esProd ? it.resultado.producto : null;
+        
+        let nombreMostrar = esProd ? prod.nombre : it.resultado.nombre;
+        let precioUnitario = 0;
+        let subtotal = 0;
+
+        if (esProd) {
           if (prod.esGranel) {
-            const gramos = prod.defGranel;
+            const gramos = it.gramos || prod.defGranel;
+            precioUnitario = (prod.precioBase * gramos) / 1000;
+            subtotal = precioUnitario * it.cantidad;
+            const etiquetaGramos = gramos >= 1000 ? `${(gramos/1000).toFixed(1)}kg` : `${gramos}g`;
+            nombreMostrar = `${prod.nombre} (${etiquetaGramos})`;
+          } else {
+            precioUnitario = prod.precioBase;
+            subtotal = precioUnitario * it.cantidad;
+          }
+        }
+
+        if (it.seleccionado) {
+          cantSeleccionada++;
+          totalCalculado += subtotal;
+        }
+
+        const imagenThumb = (esProd && prod.imagen) 
+          ? `<img src="${prod.imagen}" alt="" class="w-10 h-10 rounded-xl object-cover border border-slate-700 shrink-0" onerror="this.src='img/logo.jfif';">`
+          : `<div class="w-10 h-10 rounded-xl bg-slate-900 border border-slate-700 flex items-center justify-center shrink-0 text-base">📦</div>`;
+
+        const badgeHtml = esProd
+          ? `<span class="bg-emerald-500/20 text-accent-emerald border border-emerald-500/30 text-[9px] font-black px-1.5 py-0.5 rounded">En Catálogo</span>`
+          : `<span class="bg-accent-yellow/20 text-accent-yellow border border-accent-yellow/30 text-[9px] font-black px-1.5 py-0.5 rounded">A Pedido</span>`;
+
+        contenedor.innerHTML += `
+          <div class="flex items-center gap-2 bg-slate-950/85 p-2.5 rounded-2xl border ${it.seleccionado ? 'border-indigo-500/50 bg-indigo-950/20' : 'border-slate-800 opacity-60'} transition">
+            
+            <!-- CHECKBOX SELECCIONAR -->
+            <button onclick="toggleSeleccionarItemScan(${idx})" type="button" class="btn-tactil shrink-0 w-6 h-6 rounded-lg border ${it.seleccionado ? 'bg-accent-cyan border-accent-cyan text-slate-950' : 'bg-slate-900 border-slate-700 text-transparent'} flex items-center justify-center transition">
+              <i data-lucide="check" class="w-3.5 h-3.5 stroke-[3]"></i>
+            </button>
+
+            <!-- MINIATURA -->
+            ${imagenThumb}
+
+            <!-- DATOS DEL ARTÍCULO -->
+            <div class="flex-1 min-w-0 pr-1">
+              <div class="flex items-center gap-1.5 mb-0.5">
+                ${badgeHtml}
+                <span class="text-[10px] text-accent-yellow font-black">${esProd ? '$' + subtotal.toFixed(2) : 'Variable'}</span>
+              </div>
+              <h5 class="text-xs font-bold text-white truncate leading-tight">${nombreMostrar}</h5>
+              <p class="text-[9px] text-slate-400 truncate">Detectado: "${it.textoOriginal}"</p>
+            </div>
+
+            <!-- CONTROLES DE CANTIDAD -->
+            <div class="flex items-center gap-1 bg-slate-900 p-1 rounded-xl border border-slate-800 shrink-0">
+              <button onclick="ajustarCantItemScan(${idx}, -1)" type="button" class="btn-tactil w-6 h-6 bg-slate-800 text-white font-black rounded-lg text-xs flex items-center justify-center">-</button>
+              <span class="text-xs font-black text-white w-5 text-center">${it.cantidad}</span>
+              <button onclick="ajustarCantItemScan(${idx}, 1)" type="button" class="btn-tactil w-6 h-6 bg-accent-magenta text-white font-black rounded-lg text-xs flex items-center justify-center">+</button>
+            </div>
+
+            <!-- ELIMINAR RENGLÓN -->
+            <button onclick="eliminarItemScan(${idx})" type="button" class="btn-tactil text-slate-500 hover:text-red-400 p-1">
+              <i data-lucide="trash-2" class="w-4 h-4"></i>
+            </button>
+          </div>
+        `;
+      });
+
+      contadorTotal.innerText = itemsDetectadosActuales.length;
+      txtCantSel.innerText = `${cantSeleccionada} de ${itemsDetectadosActuales.length}`;
+      txtMontoTotal.innerText = `$${totalCalculado.toFixed(2)}`;
+
+      lucide.createIcons();
+    }
+
+    function toggleSeleccionarItemScan(idx) {
+      if (itemsDetectadosActuales[idx]) {
+        itemsDetectadosActuales[idx].seleccionado = !itemsDetectadosActuales[idx].seleccionado;
+        renderizarListaDetectadaModal();
+      }
+    }
+
+    function ajustarCantItemScan(idx, delta) {
+      if (itemsDetectadosActuales[idx]) {
+        itemsDetectadosActuales[idx].cantidad += delta;
+        if (itemsDetectadosActuales[idx].cantidad < 1) itemsDetectadosActuales[idx].cantidad = 1;
+        renderizarListaDetectadaModal();
+      }
+    }
+
+    function eliminarItemScan(idx) {
+      itemsDetectadosActuales.splice(idx, 1);
+      renderizarListaDetectadaModal();
+    }
+
+    let todosSeleccionados = true;
+    function toggleSeleccionarTodos() {
+      todosSeleccionados = !todosSeleccionados;
+      itemsDetectadosActuales.forEach(it => it.seleccionado = todosSeleccionados);
+      document.getElementById('btn-toggle-todos').innerText = todosSeleccionados ? "Deseleccionar todos" : "Seleccionar todos";
+      renderizarListaDetectadaModal();
+    }
+
+    // ================= CONFIRMAR Y AGREGAR TODA LA LISTA AL CARRITO =================
+    function confirmarAgregarListaCompleta() {
+      const itemsParaAgregar = itemsDetectadosActuales.filter(it => it.seleccionado);
+      if (itemsParaAgregar.length === 0) {
+        mostrarToast("Selecciona al menos un producto de la lista.", "Nada seleccionado", "info");
+        return;
+      }
+
+      let contadorAgregados = 0;
+
+      itemsParaAgregar.forEach(it => {
+        const esProd = it.resultado.tipo === 'producto';
+        if (esProd) {
+          const prod = it.resultado.producto;
+          if (prod.esGranel) {
+            const gramos = it.gramos || prod.defGranel;
             const subtotal = (prod.precioBase * gramos) / 1000;
             const idUnico = `${prod.id}_${gramos}`;
             const etiqueta = gramos >= 1000 ? `${(gramos/1000).toFixed(1)}kg` : `${gramos}g`;
             if (!carrito[idUnico]) {
-              carrito[idUnico] = { nombre: `${prod.nombre} (${etiqueta})`, precio: subtotal, cantidad: res.cantidad };
+              carrito[idUnico] = { 
+                nombre: `${prod.nombre} (${etiqueta})`, 
+                precio: subtotal, 
+                cantidad: it.cantidad 
+              };
             } else {
-              carrito[idUnico].cantidad += res.cantidad;
+              carrito[idUnico].cantidad += it.cantidad;
             }
           } else {
-            agregarAlCarritoDirecto(prod.id, prod.nombre, prod.precioBase, res.cantidad);
+            agregarAlCarritoDirecto(prod.id, prod.nombre, prod.precioBase, it.cantidad);
           }
-          agregados++;
+          contadorAgregados++;
         } else {
           const idUnico = `pers_${Date.now()}_${Math.floor(Math.random()*1000)}`;
-          carrito[idUnico] = { nombre: `${res.nombre} (A Pedido)`, precio: 0.00, esPersonalizado: true, cantidad: res.cantidad };
-          agregados++;
+          carrito[idUnico] = { 
+            nombre: `${it.resultado.nombre} (A Pedido)`, 
+            precio: 0.00, 
+            esPersonalizado: true, 
+            cantidad: it.cantidad 
+          };
+          contadorAgregados++;
         }
       });
 
       actualizarTotales();
-      mostrarToast(`¡${agregados} producto(s) agregado(s) a tu canasta!`, "Éxito", "success");
+      cerrarModalFotoResultado();
+      mostrarToast(`¡${contadorAgregados} producto(s) agregados desde tu lista!`, "Canasta Actualizada", "success");
     }
 
-    // ================= RECONOCIMIENTO DE VOZ =================
+    function cerrarModalFotoResultado() {
+      document.getElementById('modal-foto-resultado').classList.add('hidden');
+      document.getElementById('input-camara-directa').value = "";
+      document.getElementById('input-galeria-foto').value = "";
+      itemsDetectadosActuales = [];
+    }
+
+    // ================= ASISTENTE DE VOZ =================
     let reconocedorWeb = null;
     function activarAsistenteVoz() {
       document.getElementById('modal-asistente-voz').classList.remove('hidden');
@@ -1595,7 +2119,18 @@
         return;
       }
       cerrarModalVoz();
-      procesarTextoOLista(txt);
+      
+      const modalFoto = document.getElementById('modal-foto-resultado');
+      const imgPreview = document.getElementById('img-preview-foto');
+      const loader = document.getElementById('loader-foto-ia');
+      const laser = document.getElementById('laser-scan-anim');
+
+      imgPreview.src = "img/logo.jfif";
+      laser.style.display = 'none';
+      loader.classList.add('hidden');
+      modalFoto.classList.remove('hidden');
+
+      analizarTextoYMostrarListaCompleta(txt);
     }
 
     function cerrarModalVoz() {
@@ -1603,83 +2138,7 @@
       document.getElementById('modal-asistente-voz').classList.add('hidden');
     }
 
-    // ================= FOTO CON IA =================
-    function procesarFotoIA(event) {
-      const archivo = event.target.files[0];
-      if (!archivo) return;
-
-      const modalFoto = document.getElementById('modal-foto-resultado');
-      const imgPreview = document.getElementById('img-preview-foto');
-      const loader = document.getElementById('loader-foto-ia');
-      const cajaResultado = document.getElementById('caja-resultado-producto');
-      const txtLoader = document.getElementById('txt-loader-foto');
-
-      imgPreview.src = URL.createObjectURL(archivo);
-      loader.classList.remove('hidden');
-      cajaResultado.classList.add('hidden');
-      txtLoader.innerText = "Analizando empaque...";
-      modalFoto.classList.remove('hidden');
-
-      let pistaTexto = archivo.name ? archivo.name.replace(/[_-]/g, ' ').replace(/\.[^/.]+$/, "") : "";
-
-      if (typeof Tesseract !== 'undefined') {
-        Tesseract.recognize(archivo, 'spa', {
-          logger: m => {
-            if (m.status === 'recognizing text') {
-              txtLoader.innerText = `Leyendo (${Math.round((m.progress||0)*100)}%)...`;
-            }
-          }
-        }).then(({ data: { text } }) => {
-          mostrarResultadoFoto((text || '') + ' ' + pistaTexto);
-        }).catch(() => mostrarResultadoFoto(pistaTexto));
-      } else {
-        setTimeout(() => mostrarResultadoFoto(pistaTexto), 600);
-      }
-    }
-
-    function mostrarResultadoFoto(textoDetectado) {
-      document.getElementById('loader-foto-ia').classList.add('hidden');
-      document.getElementById('caja-resultado-producto').classList.remove('hidden');
-
-      const res = resolverProductoInteligente(textoDetectado || "Producto");
-      productoDetectadoTemporal = res;
-
-      const nombreElem = document.getElementById('nombre-resultado-foto');
-      const descElem = document.getElementById('desc-resultado-foto');
-      const precioElem = document.getElementById('precio-resultado-foto');
-      const badgeElem = document.getElementById('badge-tipo-resultado');
-
-      if (res.tipo === 'producto') {
-        nombreElem.innerText = res.producto.nombre;
-        descElem.innerText = res.nota;
-        precioElem.innerText = `$${res.producto.precioBase.toFixed(2)}`;
-        badgeElem.innerText = res.nota.includes('económica') ? "Más Barato" : "Identificado";
-      } else {
-        nombreElem.innerText = `"${res.nombre}"`;
-        descElem.innerText = "No está en stock directo, se comprará bajo pedido.";
-        precioElem.innerText = "$0.00";
-        badgeElem.innerText = "A Pedido";
-      }
-    }
-
-    function confirmarProductoFoto() {
-      if (!productoDetectadoTemporal) return cerrarModalFotoResultado();
-      if (productoDetectadoTemporal.tipo === 'producto') {
-        agregarAlCarritoPorId(productoDetectadoTemporal.producto.id, 1);
-      } else {
-        carrito[`pers_${Date.now()}`] = { nombre: `${productoDetectadoTemporal.nombre} (A Pedido)`, precio: 0.00, esPersonalizado: true, cantidad: 1 };
-      }
-      actualizarTotales();
-      cerrarModalFotoResultado();
-      mostrarToast("¡Producto de la foto agregado!", "Canasta", "success");
-    }
-
-    function cerrarModalFotoResultado() {
-      document.getElementById('modal-foto-resultado').classList.add('hidden');
-      document.getElementById('input-foto-ia').value = "";
-      productoDetectadoTemporal = null;
-    }
-
+    // ================= FUNCIONES DE PRODUCTOS Y CARRITO =================
     function actualizarSliderGranel(id) {
       const item = mapaProductos[id];
       if (!item) return;
@@ -1813,9 +2272,9 @@
               <h5 class="text-xs font-bold text-white line-clamp-1">${item.nombre}</h5>${precioTxt}
             </div>
             <div class="flex items-center gap-1.5 bg-slate-900 p-1 rounded-xl border border-slate-800">
-              <button onclick="cambiarCantCarrito('${id}', -1)" type="button" class="w-6 h-6 bg-slate-800 text-white font-black rounded-lg text-xs">-</button>
+              <button onclick="cambiarCantCarrito('${id}', -1)" type="button" class="btn-tactil w-7 h-7 bg-slate-800 text-white font-black rounded-lg text-xs flex items-center justify-center">-</button>
               <span class="text-xs font-black text-white w-5 text-center">${item.cantidad}</span>
-              <button onclick="cambiarCantCarrito('${id}', 1)" type="button" class="w-6 h-6 bg-accent-magenta text-white font-black rounded-lg text-xs">+</button>
+              <button onclick="cambiarCantCarrito('${id}', 1)" type="button" class="btn-tactil w-7 h-7 bg-accent-magenta text-white font-black rounded-lg text-xs flex items-center justify-center">+</button>
             </div>
           </div>
         `;
@@ -1885,20 +2344,20 @@
       const cajaDiv = document.getElementById('caja-pago-divisas');
 
       [btnMovil, btnEfec, btnDiv].forEach(b => {
-        b.className = "p-2 rounded-xl border border-slate-700 bg-slate-900 text-slate-300 text-xs font-bold transition flex flex-col items-center justify-center gap-1";
+        b.className = "btn-tactil p-2.5 rounded-xl border-2 border-slate-800 bg-slate-900 text-slate-300 text-xs font-bold flex flex-col items-center justify-center gap-1";
       });
       [cajaMovil, cajaEfec, cajaDiv].forEach(c => c.classList.add('hidden'));
 
       if (metodo === 'pago_movil') {
-        btnMovil.className = "p-2 rounded-xl border border-accent-cyan bg-accent-cyan/20 text-white text-xs font-bold transition flex flex-col items-center justify-center gap-1";
+        btnMovil.className = "btn-tactil p-2.5 rounded-xl border-2 border-accent-cyan bg-accent-cyan/20 text-white text-xs font-black flex flex-col items-center justify-center gap-1 shadow-glow-cyan";
         cajaMovil.classList.remove('hidden');
         metodoPagoActual = 'Pago Móvil';
       } else if (metodo === 'efectivo') {
-        btnEfec.className = "p-2 rounded-xl border border-accent-yellow bg-accent-yellow/20 text-white text-xs font-bold transition flex flex-col items-center justify-center gap-1";
+        btnEfec.className = "btn-tactil p-2.5 rounded-xl border-2 border-accent-yellow bg-accent-yellow/20 text-white text-xs font-black flex flex-col items-center justify-center gap-1 shadow-glow-yellow";
         cajaEfec.classList.remove('hidden');
         metodoPagoActual = 'Efectivo';
       } else {
-        btnDiv.className = "p-2 rounded-xl border border-accent-emerald bg-accent-emerald/20 text-white text-xs font-bold transition flex flex-col items-center justify-center gap-1";
+        btnDiv.className = "btn-tactil p-2.5 rounded-xl border-2 border-accent-emerald bg-accent-emerald/20 text-white text-xs font-black flex flex-col items-center justify-center gap-1 shadow-glow-emerald";
         cajaDiv.classList.remove('hidden');
         metodoPagoActual = 'Zelle / Divisas';
       }
@@ -1924,13 +2383,13 @@
       const inputTipo = document.getElementById('tipoBeneficiario');
 
       if (tipo === 'mio') {
-        btnMio.className = "p-2 rounded-xl border border-accent-cyan bg-accent-cyan/20 text-white text-xs font-bold transition";
-        btnTercero.className = "p-2 rounded-xl border border-slate-700 bg-slate-900 text-slate-300 text-xs font-bold transition";
+        btnMio.className = "btn-tactil p-2 rounded-xl border-2 border-accent-cyan bg-accent-cyan/20 text-white text-xs font-black";
+        btnTercero.className = "btn-tactil p-2 rounded-xl border-2 border-slate-800 bg-slate-900 text-slate-300 text-xs font-bold";
         contenedorTercero.classList.add('hidden');
         inputTipo.value = "Es para mí";
       } else {
-        btnTercero.className = "p-2 rounded-xl border border-accent-magenta bg-accent-magenta/20 text-white text-xs font-bold transition";
-        btnMio.className = "p-2 rounded-xl border border-slate-700 bg-slate-900 text-slate-300 text-xs font-bold transition";
+        btnTercero.className = "btn-tactil p-2 rounded-xl border-2 border-accent-magenta bg-accent-magenta/20 text-white text-xs font-black";
+        btnMio.className = "btn-tactil p-2 rounded-xl border-2 border-slate-800 bg-slate-900 text-slate-300 text-xs font-bold";
         contenedorTercero.classList.remove('hidden');
         inputTipo.value = "Es para otra persona";
       }
@@ -1944,11 +2403,11 @@
       document.getElementById('txt-precio-btn-viaje').innerText = `$${costo.toFixed(2)}`;
       
       if (tipo === 'moto') {
-        btnMoto.className = "p-2 rounded-2xl border border-accent-cyan bg-accent-cyan/20 text-white text-xs font-bold flex flex-col items-center justify-center gap-1 shadow-md transition";
-        btnCarro.className = "p-2 rounded-2xl border border-slate-700 bg-slate-900 text-slate-300 text-xs font-bold flex flex-col items-center justify-center gap-1 transition";
+        btnMoto.className = "btn-tactil p-2.5 rounded-2xl border-2 border-accent-cyan bg-accent-cyan/20 text-white text-xs font-black flex flex-col items-center justify-center gap-1 shadow-glow-cyan transition";
+        btnCarro.className = "btn-tactil p-2.5 rounded-2xl border-2 border-slate-800 bg-slate-900 text-slate-300 text-xs font-bold flex flex-col items-center justify-center gap-1 transition";
       } else {
-        btnCarro.className = "p-2 rounded-2xl border border-accent-cyan bg-accent-cyan/20 text-white text-xs font-bold flex flex-col items-center justify-center gap-1 shadow-md transition";
-        btnMoto.className = "p-2 rounded-2xl border border-slate-700 bg-slate-900 text-slate-300 text-xs font-bold flex flex-col items-center justify-center gap-1 transition";
+        btnCarro.className = "btn-tactil p-2.5 rounded-2xl border-2 border-accent-cyan bg-accent-cyan/20 text-white text-xs font-black flex flex-col items-center justify-center gap-1 shadow-glow-cyan transition";
+        btnMoto.className = "btn-tactil p-2.5 rounded-2xl border-2 border-slate-800 bg-slate-900 text-slate-300 text-xs font-bold flex flex-col items-center justify-center gap-1 transition";
       }
     }
 
@@ -2124,6 +2583,7 @@
       }, 35);
     }
 
+    // ARRASTRE DEL WIDGET FLOTANTE
     const widget = document.getElementById('widget-total-flotante');
     let isDragging = false, hasDragged = false, offsetX = 0, offsetY = 0, startTouchX = 0, startTouchY = 0;
     
