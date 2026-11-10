@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="es" class="h-full">
 <head>
@@ -66,17 +65,10 @@
   </script>
   
   <style>
-    /* Ocultar barra de desplazamiento sin perder funcionalidad */
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-    
-    /* Touch optimization para Android y iPhone */
-    * {
-      -webkit-tap-highlight-color: transparent;
-      touch-action: manipulation;
-    }
+    * { -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
 
-    /* Animaciones fluidas */
     @keyframes entradaModal {
       0% { transform: translateY(24px) scale(0.97); opacity: 0; }
       100% { transform: translateY(0) scale(1); opacity: 1; }
@@ -104,7 +96,6 @@
     }
     .ia-activo { animation: pulseGlow 1.2s infinite ease-in-out; }
 
-    /* Efecto de presión en botones táctiles */
     .btn-tactil {
       transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
     }
@@ -113,13 +104,8 @@
       filter: brightness(0.92);
     }
 
-    /* Safe areas para notch y barra de navegación de iPhone/Android */
-    .safe-top {
-      padding-top: max(env(safe-area-inset-top, 0px), 8px);
-    }
-    .safe-bottom {
-      padding-bottom: max(env(safe-area-inset-bottom, 0px), 12px);
-    }
+    .safe-top { padding-top: max(env(safe-area-inset-top, 0px), 8px); }
+    .safe-bottom { padding-bottom: max(env(safe-area-inset-bottom, 0px), 12px); }
   </style>
 </head>
 <body class="bg-slate-950 font-sans text-slate-100 antialiased min-h-[100dvh] flex items-center justify-center p-0 sm:p-4 selection:bg-accent-magenta selection:text-white overflow-x-hidden">
@@ -137,19 +123,19 @@
     </div>
   </div>
 
-  <!-- ================= DISPOSITIVO MÓVIL (TAMAÑO IPHONE / ANDROID) ================= -->
+  <!-- DISPOSITIVO MÓVIL (TAMAÑO IPHONE / ANDROID) -->
   <div class="w-full h-[100dvh] sm:h-[92dvh] sm:max-h-[890px] sm:max-w-[420px] bg-slate-900 sm:rounded-[46px] sm:border-[5px] sm:border-slate-800/90 shadow-[0_20px_70px_rgba(0,0,0,0.8),0_0_50px_rgba(99,102,241,0.2)] overflow-hidden flex flex-col relative bg-[url('img/nirgua.webp')] bg-cover bg-center">
 
     <!-- CAPA DE SOBREPOSICIÓN OSCURA -->
     <div class="absolute inset-0 bg-slate-950/75 backdrop-blur-[2px] z-0 pointer-events-none"></div>
 
-    <!-- NOTCH / ISLA DINÁMICA ESTILO IPHONE (FRAME ESCRITORIO) -->
+    <!-- NOTCH -->
     <div class="hidden sm:flex absolute top-2 left-1/2 -translate-x-1/2 w-28 h-4 bg-slate-950 rounded-full z-50 items-center justify-center border border-slate-800/60 pointer-events-none shadow-inner">
       <div class="w-2.5 h-2.5 rounded-full bg-slate-900 border border-slate-800 mr-2"></div>
       <div class="w-2 h-2 rounded-full bg-indigo-950 border border-indigo-800/40"></div>
     </div>
 
-    <!-- ENCABEZADO DE LA APP CON VIDEO / LOGO -->
+    <!-- ENCABEZADO CON VIDEO / LOGO -->
     <header class="bg-slate-900/95 border-b border-indigo-500/25 p-2.5 sm:p-3 shadow-lg relative shrink-0 z-40 backdrop-blur-xl flex flex-col gap-2 safe-top">
       <div class="relative w-full h-28 sm:h-36 overflow-hidden rounded-2xl bg-slate-950/70 border border-indigo-500/40 shadow-inner group">
         <video id="video-logo" 
@@ -178,29 +164,24 @@
       <div class="p-2.5 sm:p-3 bg-slate-900/90 border-b border-slate-800/80 sticky top-0 z-20 space-y-2 backdrop-blur-xl">
         <div class="flex items-center gap-2">
           
-          <!-- BUSCADOR -->
           <div class="relative flex-1">
             <i data-lucide="search" class="w-4 h-4 text-indigo-400 absolute left-3.5 top-3 pointer-events-none"></i>
-            <input type="text" id="inputBusqueda" oninput="filtrarProductos()" placeholder="¿Qué buscas? Harina, carne..." class="w-full pl-10 pr-3 py-2.5 bg-slate-950/90 border border-slate-700/80 focus:border-accent-cyan rounded-2xl text-xs font-semibold text-white placeholder-slate-400 focus:outline-none transition shadow-inner">
+            <input type="text" id="inputBusqueda" oninput="filtrarProductos()" placeholder="¿Qué buscas? Harina, café de moravos..." class="w-full pl-10 pr-3 py-2.5 bg-slate-950/90 border border-slate-700/80 focus:border-accent-cyan rounded-2xl text-xs font-semibold text-white placeholder-slate-400 focus:outline-none transition shadow-inner">
           </div>
           
-          <!-- BOTÓN VOZ PRO -->
           <button onclick="activarAsistenteVoz()" id="btn-voz-ia" type="button" title="Dictar por voz" class="btn-tactil bg-gradient-to-br from-indigo-900/90 to-slate-950 text-accent-cyan border border-indigo-500/50 p-2.5 rounded-2xl flex items-center justify-center shadow-lg shadow-indigo-950/50">
             <i data-lucide="mic" class="w-4 h-4"></i>
           </button>
 
-          <!-- BOTÓN CÁMARA / ESCANEAR LISTA PRO -->
           <button onclick="abrirSelectorCapturaLista()" type="button" title="Escanear lista o foto de productos" class="btn-tactil bg-gradient-to-r from-accent-magenta/90 via-pink-600 to-indigo-600 text-white border border-pink-400/50 px-3 py-2.5 rounded-2xl flex items-center gap-1.5 shadow-lg shadow-accent-magenta/30">
             <i data-lucide="camera" class="w-4 h-4 stroke-[2.5]"></i>
             <span class="text-[11px] font-black tracking-tight">Lista</span>
           </button>
 
-          <!-- Inputs invisibles para foto de cámara o galería -->
           <input type="file" id="input-camara-directa" accept="image/*" capture="environment" class="hidden" onchange="procesarFotoIA(event)">
           <input type="file" id="input-galeria-foto" accept="image/*" class="hidden" onchange="procesarFotoIA(event)">
         </div>
 
-        <!-- NOTIFICACIÓN DE ESTADO IA -->
         <div id="banner-ia" class="hidden bg-slate-950/95 border border-accent-cyan/50 p-2.5 rounded-2xl flex flex-col gap-1 text-xs shadow-2xl backdrop-blur-md">
           <div class="flex items-center justify-between">
             <div class="flex items-center gap-2">
@@ -227,7 +208,19 @@
           </div>
           
           <div class="grid grid-cols-2 gap-2.5">
-            <!-- 1. Víveres -->
+            <!-- 1. Comida Rápida & Comercios (Moravos, Burgers, etc) -->
+            <button onclick="cambiarSeccion('comida')" class="btn-tactil group relative bg-slate-900/90 border border-slate-800 hover:border-accent-yellow p-2.5 rounded-[22px] flex flex-col items-center justify-center text-center gap-1.5 shadow-lg overflow-hidden backdrop-blur-md col-span-2">
+              <div class="w-full h-20 rounded-xl overflow-hidden flex items-center justify-center group-hover:scale-105 transition-transform duration-300 relative bg-slate-950">
+                <span class="absolute top-1.5 right-1.5 bg-accent-yellow text-slate-950 font-black text-[9px] px-2 py-0.5 rounded-md shadow-md z-10">TIENDAS ALIADAS</span>
+                <img src="img/comidarap.png" alt="Comercios Aliados" class="w-full h-full object-cover rounded-xl" onerror="this.src='img/logo.jfif';">
+              </div>
+              <div>
+                <h4 class="font-black text-white text-xs">Comercios, Restaurantes & Café</h4>
+                <p class="text-[10px] text-accent-yellow font-bold leading-tight">Moravos Café, Burgers, Pizzas y más</p>
+              </div>
+            </button>
+
+            <!-- 2. Víveres -->
             <button onclick="cambiarSeccion('viveres')" class="btn-tactil group relative bg-slate-900/90 border border-slate-800 hover:border-accent-cyan p-2.5 rounded-[22px] flex flex-col items-center justify-center text-center gap-1.5 shadow-lg overflow-hidden backdrop-blur-md">
               <div class="w-full h-16 rounded-xl overflow-hidden flex items-center justify-center group-hover:scale-105 transition-transform duration-300 relative bg-slate-950">
                 <span class="absolute top-1.5 right-1.5 bg-accent-cyan text-slate-950 font-black text-[9px] px-1.5 py-0.5 rounded-md shadow-md z-10">TOP</span>
@@ -239,7 +232,7 @@
               </div>
             </button>
 
-            <!-- 2. Carnes -->
+            <!-- 3. Carnes -->
             <button onclick="cambiarSeccion('carnes')" class="btn-tactil group relative bg-slate-900/90 border border-slate-800 hover:border-accent-magenta p-2.5 rounded-[22px] flex flex-col items-center justify-center text-center gap-1.5 shadow-lg overflow-hidden backdrop-blur-md">
               <div class="w-full h-16 rounded-xl overflow-hidden flex items-center justify-center group-hover:scale-105 transition-transform duration-300 bg-slate-950">
                 <img src="img/carniceria.webp" alt="Carnes" class="w-full h-full object-cover rounded-xl" onerror="this.src='img/logo.jfif';">
@@ -250,7 +243,7 @@
               </div>
             </button>
 
-            <!-- 3. Charcutería -->
+            <!-- 4. Charcutería -->
             <button onclick="cambiarSeccion('charcuteria')" class="btn-tactil group relative bg-slate-900/90 border border-slate-800 hover:border-accent-orange p-2.5 rounded-[22px] flex flex-col items-center justify-center text-center gap-1.5 shadow-lg overflow-hidden backdrop-blur-md">
               <div class="w-full h-16 rounded-xl overflow-hidden flex items-center justify-center group-hover:scale-105 transition-transform duration-300 bg-slate-950">
                 <img src="img/charcuteria.webp" alt="Charcutería" class="w-full h-full object-cover rounded-xl" onerror="this.src='img/logo.jfif';">
@@ -261,7 +254,7 @@
               </div>
             </button>
 
-            <!-- 4. Bebidas -->
+            <!-- 5. Bebidas -->
             <button onclick="cambiarSeccion('bebidas')" class="btn-tactil group relative bg-slate-900/90 border border-slate-800 hover:border-accent-cyan p-2.5 rounded-[22px] flex flex-col items-center justify-center text-center gap-1.5 shadow-lg overflow-hidden backdrop-blur-md">
               <div class="w-full h-16 rounded-xl overflow-hidden flex items-center justify-center group-hover:scale-105 transition-transform duration-300 bg-slate-950">
                 <img src="img/bebidas.webp" alt="Bebidas" class="w-full h-full object-cover rounded-xl" onerror="this.src='img/logo.jfif';">
@@ -272,21 +265,10 @@
               </div>
             </button>
 
-            <!-- 5. Comida Rápida -->
-            <button onclick="cambiarSeccion('comida')" class="btn-tactil group relative bg-slate-900/90 border border-slate-800 hover:border-accent-yellow p-2.5 rounded-[22px] flex flex-col items-center justify-center text-center gap-1.5 shadow-lg overflow-hidden backdrop-blur-md">
-              <div class="w-full h-16 rounded-xl overflow-hidden flex items-center justify-center group-hover:scale-105 transition-transform duration-300 bg-slate-950">
-                <img src="img/comidarap.png" alt="Comida Rápida" class="w-full h-full object-cover rounded-xl" onerror="this.src='img/logo.jfif';">
-              </div>
-              <div>
-                <h4 class="font-black text-white text-xs">Comida Rápida</h4>
-                <p class="text-[10px] text-slate-400 leading-tight">Café, Burgers, Pizza</p>
-              </div>
-            </button>
-
             <!-- 6. Panadería -->
             <button onclick="cambiarSeccion('panaderia')" class="btn-tactil group relative bg-slate-900/90 border border-slate-800 hover:border-accent-yellow p-2.5 rounded-[22px] flex flex-col items-center justify-center text-center gap-1.5 shadow-lg overflow-hidden backdrop-blur-md">
               <div class="w-full h-16 rounded-xl overflow-hidden flex items-center justify-center group-hover:scale-105 transition-transform duration-300 relative bg-slate-950">
-                <span class="absolute top-1 right-1 bg-accent-yellow text-slate-950 font-black text-[9px] px-1.5 py-0.5 rounded-md z-10">¡NUEVO!</span>
+                <span class="absolute top-1 right-1 bg-accent-yellow text-slate-950 font-black text-[9px] px-1.5 py-0.5 rounded-md z-10">¡FRESCO!</span>
                 <img src="img/pan.webp" alt="Panadería" class="w-full h-full object-cover rounded-xl" onerror="this.src='img/logo.jfif';">
               </div>
               <div>
@@ -319,13 +301,13 @@
             </button>
 
             <!-- 9. Limpieza -->
-            <button onclick="cambiarSeccion('limpieza')" class="btn-tactil group relative bg-slate-900/90 border border-slate-800 hover:border-accent-cyan p-2.5 rounded-[22px] flex flex-col items-center justify-center text-center gap-1.5 shadow-lg overflow-hidden backdrop-blur-md col-span-2">
+            <button onclick="cambiarSeccion('limpieza')" class="btn-tactil group relative bg-slate-900/90 border border-slate-800 hover:border-accent-cyan p-2.5 rounded-[22px] flex flex-col items-center justify-center text-center gap-1.5 shadow-lg overflow-hidden backdrop-blur-md">
               <div class="w-full h-16 rounded-xl overflow-hidden flex items-center justify-center group-hover:scale-105 transition-transform duration-300 bg-slate-950">
                 <img src="img/limpieza.jfif" alt="Limpieza" class="w-full h-full object-cover rounded-xl" onerror="this.src='img/logo.jfif';">
               </div>
               <div>
-                <h4 class="font-black text-white text-xs">Aseo & Limpieza del Hogar</h4>
-                <p class="text-[10px] text-slate-400 leading-tight">Detergentes, cloro, desinfectantes</p>
+                <h4 class="font-black text-white text-xs">Limpieza</h4>
+                <p class="text-[10px] text-slate-400 leading-tight">Aseo del Hogar</p>
               </div>
             </button>
           </div>
@@ -337,64 +319,16 @@
             <i data-lucide="arrow-left" class="w-4 h-4"></i> Volver a Categorías
           </button>
 
-          <!-- SECCIÓN COMIDA RÁPIDA Y CAFÉ ORGANIZADA POR LOCALES -->
+          <!-- SECCIÓN COMERCIOS & COMIDA RÁPIDA (DINÁMICA DESDE FIREBASE) -->
           <div id="sec-comida" class="seccion-target space-y-3 hidden">
             <div class="px-1">
-              <h3 class="text-xs font-black text-accent-yellow uppercase tracking-wider">Elige el Local para ver sus Productos</h3>
-              <p class="text-[11px] text-slate-400">Toca en la tarjeta del comercio para abrir su menú</p>
+              <h3 class="text-xs font-black text-accent-yellow uppercase tracking-wider">Tiendas y Comercios Registrados</h3>
+              <p class="text-[11px] text-slate-400">Toca en la tienda para ver su menú y ordenar directamente</p>
             </div>
 
-            <!-- TARJETAS DE LOCALES COMERCIALES -->
-            <div class="grid grid-cols-2 gap-3">
-
-              <!-- LOCAL 1: Moravos Café -->
-              <button onclick="abrirMenuLocal('moravos')" class="btn-tactil group relative bg-slate-900/90 border border-accent-orange/40 hover:border-accent-orange p-3 rounded-2xl flex flex-col items-center text-center gap-2 shadow-lg backdrop-blur-md">
-                <div class="w-16 h-16 rounded-full overflow-hidden border-2 border-accent-orange shadow-md group-hover:scale-105 transition-transform">
-                  <img src="img/moravos.jpg" alt="Moravos Café" class="w-full h-full object-cover" onerror="this.src='img/logo.jfif';">
-                </div>
-                <div>
-                  <h4 class="font-black text-white text-xs uppercase tracking-wider line-clamp-1">Moravos Café</h4>
-                  <p class="text-[10px] text-accent-yellow font-semibold leading-tight">Café, Postres & Dulces</p>
-                  <span class="inline-block mt-1 bg-accent-orange/20 text-accent-orange border border-accent-orange/30 text-[9px] font-black px-2 py-0.5 rounded-full">Ver Menú</span>
-                </div>
-              </button>
-
-              <!-- LOCAL 2: El Sabor de Fran & Chero -->
-              <button onclick="abrirMenuLocal('fran_chero')" class="btn-tactil group relative bg-slate-900/90 border border-accent-orange/40 hover:border-accent-orange p-3 rounded-2xl flex flex-col items-center text-center gap-2 shadow-lg backdrop-blur-md">
-                <div class="w-16 h-16 rounded-full overflow-hidden border-2 border-accent-orange shadow-md group-hover:scale-105 transition-transform">
-                  <img src="img/fran y chero.jpg" alt="Fran & Chero" class="w-full h-full object-cover" onerror="this.src='img/logo.jfif';">
-                </div>
-                <div>
-                  <h4 class="font-black text-white text-xs uppercase tracking-wider line-clamp-1">Fran & Chero</h4>
-                  <p class="text-[10px] text-accent-yellow font-semibold leading-tight">Burgers, Pepitos, Perros</p>
-                  <span class="inline-block mt-1 bg-accent-orange/20 text-accent-orange border border-accent-orange/30 text-[9px] font-black px-2 py-0.5 rounded-full">Ver Menú</span>
-                </div>
-              </button>
-
-              <!-- LOCAL 3: Anton's Burgers -->
-              <button onclick="abrirMenuLocal('antons')" class="btn-tactil group relative bg-slate-900/90 border border-indigo-500/40 hover:border-indigo-400 p-3 rounded-2xl flex flex-col items-center text-center gap-2 shadow-lg backdrop-blur-md">
-                <div class="w-16 h-16 rounded-full overflow-hidden border-2 border-indigo-500 shadow-md group-hover:scale-105 transition-transform">
-                  <img src="img/anto bruger nirgua.jpg" alt="Anton's Burgers" class="w-full h-full object-cover" onerror="this.src='img/logo.jfif';">
-                </div>
-                <div>
-                  <h4 class="font-black text-white text-xs uppercase tracking-wider line-clamp-1">Anton's Burgers</h4>
-                  <p class="text-[10px] text-indigo-300 font-semibold leading-tight">Burgers Gourmet & Empanadas</p>
-                  <span class="inline-block mt-1 bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 text-[9px] font-black px-2 py-0.5 rounded-full">Ver Menú</span>
-                </div>
-              </button>
-
-              <!-- LOCAL 4: Zirus Pizza -->
-              <button onclick="abrirMenuLocal('zirus')" class="btn-tactil group relative bg-slate-900/90 border border-accent-yellow/40 hover:border-accent-yellow p-3 rounded-2xl flex flex-col items-center text-center gap-2 shadow-lg backdrop-blur-md">
-                <div class="w-16 h-16 rounded-full overflow-hidden border-2 border-accent-yellow shadow-md group-hover:scale-105 transition-transform">
-                  <img src="img/ziruspizza.webp" alt="Zirus Pizza" class="w-full h-full object-cover" onerror="this.src='img/logo.jfif';">
-                </div>
-                <div>
-                  <h4 class="font-black text-white text-xs uppercase tracking-wider line-clamp-1">Zirus Pizza</h4>
-                  <p class="text-[10px] text-accent-yellow font-semibold leading-tight">Pizzas Artesanales</p>
-                  <span class="inline-block mt-1 bg-accent-yellow/20 text-accent-yellow border border-accent-yellow/30 text-[9px] font-black px-2 py-0.5 rounded-full">Ver Menú</span>
-                </div>
-              </button>
-
+            <!-- CONTENEDOR DINÁMICO DE TIENDAS/LOCALES -->
+            <div id="grid-locales-comerciales" class="grid grid-cols-2 gap-3">
+              <!-- Se puebla dinámicamente con Moravos Café y las demás registradas -->
             </div>
           </div>
 
@@ -459,7 +393,6 @@
                 <button onclick="reiniciarPuntosRuta()" class="btn-tactil text-[10px] font-bold bg-slate-800 hover:bg-slate-700 text-slate-300 px-2.5 py-1 rounded-lg border border-slate-700">Reiniciar</button>
               </div>
 
-              <!-- SELECTOR DE VEHÍCULO PRO -->
               <div class="grid grid-cols-2 gap-2">
                 <button onclick="seleccionarTransporte('moto', 1.00)" id="btn-trans-moto" type="button" class="btn-tactil p-2.5 rounded-2xl border-2 border-accent-cyan bg-accent-cyan/20 text-white text-xs font-black flex flex-col items-center justify-center gap-1 shadow-glow-cyan transition">
                   <div class="w-full h-11 rounded-xl overflow-hidden flex items-center justify-center">
@@ -476,7 +409,6 @@
                 </button>
               </div>
 
-              <!-- BUSCADOR ORIGEN -->
               <div class="space-y-1 bg-slate-900/90 p-2.5 rounded-xl border border-emerald-500/30">
                 <div class="flex items-center justify-between">
                   <label class="block text-[10px] text-emerald-400 font-bold uppercase">📍 ¿De dónde sales?</label>
@@ -490,7 +422,6 @@
                 </div>
               </div>
 
-              <!-- BUSCADOR DESTINO -->
               <div class="space-y-1 bg-slate-900/90 p-2.5 rounded-xl border border-accent-magenta/30">
                 <label class="block text-[10px] text-accent-magenta font-bold uppercase">🏁 ¿A dónde vas?</label>
                 <div class="flex gap-1.5">
@@ -499,12 +430,10 @@
                 </div>
               </div>
 
-              <!-- MAPA -->
               <div class="relative w-full h-[160px] rounded-2xl border border-emerald-500/30 overflow-hidden shadow-inner z-0">
                 <div id="mapa-interactivo-ruta" style="height: 100%; width: 100%;"></div>
               </div>
 
-              <!-- BOTÓN PAGAR VIAJE CON ESTILO PRO -->
               <button onclick="irAPagarTransporteDirecto()" type="button" class="btn-tactil w-full bg-gradient-to-r from-accent-emerald via-emerald-500 to-accent-cyan text-slate-950 font-black py-3.5 rounded-2xl text-xs shadow-glow-emerald flex items-center justify-center gap-2 border-t border-white/30">
                 <i data-lucide="arrow-right-circle" class="w-4 h-4 fill-slate-950"></i> ¡PAGAR VIAJE DIRECTO! (<span id="txt-precio-btn-viaje">$1.00</span>)
               </button>
@@ -535,7 +464,7 @@
         </div>
       </div>
 
-      <!-- BARRA DE NAVEGACIÓN INFERIOR (ESTILO NATIVO IPHONE/ANDROID) -->
+      <!-- BARRA DE NAVEGACIÓN INFERIOR -->
       <nav class="absolute bottom-0 left-0 right-0 bg-slate-950/90 backdrop-blur-2xl border-t border-slate-800/80 px-3 py-2 z-40 flex items-center justify-around shadow-2xl safe-bottom">
         <button onclick="volverAlMenuPrincipal()" type="button" class="btn-tactil flex flex-col items-center gap-1 text-accent-cyan py-1 px-3">
           <i data-lucide="home" class="w-5 h-5"></i>
@@ -608,7 +537,7 @@
           <div id="resumen-lista-paso2" class="space-y-1.5 text-xs text-slate-300 max-h-36 overflow-y-auto no-scrollbar pr-1"></div>
         </section>
 
-        <!-- SELECCIÓN DE MÉTODO DE PAGO VENEZOLANO -->
+        <!-- SELECCIÓN DE MÉTODO DE PAGO -->
         <section class="bg-slate-950/85 p-3.5 rounded-2xl border border-indigo-500/30 shadow-md space-y-3">
           <div>
             <label class="block text-[11px] text-accent-cyan font-black uppercase mb-1.5">💳 Selecciona Método de Pago</label>
@@ -626,7 +555,6 @@
             <input type="hidden" id="metodoPagoElegido" value="Pago Móvil">
           </div>
 
-          <!-- DETALLES: PAGO MÓVIL -->
           <div id="caja-pago-movil" class="space-y-2 bg-slate-900 p-2.5 rounded-xl border border-slate-800">
             <div class="flex items-center justify-between">
               <div>
@@ -640,7 +568,6 @@
             <input type="text" id="refPagoMovil" placeholder="Ingresa los últimos dígitos de la referencia..." class="w-full p-2.5 bg-slate-950 border border-slate-700 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-accent-cyan">
           </div>
 
-          <!-- DETALLES: EFECTIVO CON VUELTO -->
           <div id="caja-pago-efectivo" class="space-y-2 bg-slate-900 p-2.5 rounded-xl border border-slate-800 hidden">
             <label class="block text-[11px] text-slate-300 font-bold">¿Con cuánto vas a pagar? (Llevamos el vuelto exacto):</label>
             <div class="grid grid-cols-4 gap-1.5">
@@ -652,7 +579,6 @@
             <input type="text" id="montoPagaCliente" placeholder="O escribe el monto (ej: $50 o 500 Bs)..." class="w-full p-2.5 bg-slate-950 border border-slate-700 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-accent-yellow">
           </div>
 
-          <!-- DETALLES: ZELLE / DIVISAS -->
           <div id="caja-pago-divisas" class="space-y-1.5 bg-slate-900 p-2.5 rounded-xl border border-slate-800 hidden">
             <p class="text-[11px] text-slate-300 font-bold">Pago en Dólares Físicos o Transferencia:</p>
             <p class="text-[10px] text-slate-400 leading-tight">Aceptamos billetes en buen estado sin roturas al momento de la entrega.</p>
@@ -712,7 +638,7 @@
       </div>
     </div>
 
-    <!-- ================= MODAL DE OPCIONES: CAPTURA DE LISTA O FOTO ================= -->
+    <!-- MODAL DE CAPTURA DE LISTA -->
     <div id="modal-opciones-captura" onclick="if(event.target === this) cerrarSelectorCapturaLista()" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 hidden">
       <div class="anim-modal bg-slate-900 border-t sm:border border-indigo-500/40 w-full max-w-sm rounded-t-[32px] sm:rounded-3xl p-5 space-y-4 shadow-2xl">
         <div class="flex justify-between items-center border-b border-slate-800 pb-3">
@@ -731,7 +657,6 @@
         </div>
 
         <div class="space-y-2">
-          <!-- Opción 1: Cámara -->
           <button onclick="dispararCamara()" class="btn-tactil w-full bg-gradient-to-r from-indigo-950 to-slate-900 hover:from-indigo-900 border border-indigo-500/40 p-3.5 rounded-2xl flex items-center gap-3 text-left">
             <div class="w-10 h-10 rounded-xl bg-accent-magenta/20 text-accent-magenta flex items-center justify-center shrink-0">
               <i data-lucide="camera" class="w-5 h-5"></i>
@@ -742,7 +667,6 @@
             </div>
           </button>
 
-          <!-- Opción 2: Galería -->
           <button onclick="dispararGaleria()" class="btn-tactil w-full bg-gradient-to-r from-indigo-950 to-slate-900 hover:from-indigo-900 border border-indigo-500/40 p-3.5 rounded-2xl flex items-center gap-3 text-left">
             <div class="w-10 h-10 rounded-xl bg-accent-cyan/20 text-accent-cyan flex items-center justify-center shrink-0">
               <i data-lucide="image" class="w-5 h-5"></i>
@@ -753,7 +677,6 @@
             </div>
           </button>
 
-          <!-- Opción 3: Pegar texto -->
           <button onclick="cerrarSelectorCapturaLista(); abrirModalPegarLista();" class="btn-tactil w-full bg-slate-950 border border-slate-800 p-3.5 rounded-2xl flex items-center gap-3 text-left">
             <div class="w-10 h-10 rounded-xl bg-accent-yellow/20 text-accent-yellow flex items-center justify-center shrink-0">
               <i data-lucide="clipboard-list" class="w-5 h-5"></i>
@@ -767,11 +690,9 @@
       </div>
     </div>
 
-    <!-- ================= MODAL REVOLUCIONARIO DE LISTA DETECTADA POR CÁMARA ================= -->
+    <!-- MODAL FOTO RESULTADO OCR -->
     <div id="modal-foto-resultado" class="fixed inset-0 bg-slate-950/85 backdrop-blur-md z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 hidden">
       <div class="anim-modal bg-slate-900 border-t sm:border border-indigo-500/40 w-full max-w-md rounded-t-[32px] sm:rounded-3xl p-4 space-y-3 shadow-2xl max-h-[90vh] flex flex-col">
-        
-        <!-- HEADER DEL MODAL -->
         <div class="flex justify-between items-center border-b border-slate-800 pb-2.5 shrink-0">
           <div class="flex items-center gap-2">
             <div class="p-2 bg-accent-magenta/20 text-accent-magenta rounded-xl border border-accent-magenta/30">
@@ -787,36 +708,25 @@
           </button>
         </div>
 
-        <!-- VISTA PREVIA DE LA FOTO CON EFECTO ESCÁNER LÁSER -->
         <div class="relative w-full h-32 bg-slate-950 rounded-2xl overflow-hidden border border-slate-800 flex items-center justify-center shrink-0">
           <img id="img-preview-foto" src="" alt="Foto Capturada" class="w-full h-full object-contain">
-          
-          <!-- LÁSER ANIMADO DE ESCANEO -->
           <div id="laser-scan-anim" class="laser-line"></div>
-
-          <!-- LOADER DE PROGRESO DE IA -->
           <div id="loader-foto-ia" class="absolute inset-0 bg-slate-950/75 backdrop-blur-[2px] flex flex-col items-center justify-center gap-2 z-10">
             <div class="w-7 h-7 border-3 border-accent-cyan border-t-transparent rounded-full animate-spin"></div>
             <span id="txt-loader-foto" class="text-xs text-accent-cyan font-black">Escaneando cada renglón...</span>
           </div>
         </div>
 
-        <!-- CONTENEDOR DE PRODUCTOS DETECTADOS -->
         <div id="caja-resultado-lista" class="flex-1 overflow-hidden flex flex-col space-y-2 hidden">
           <div class="flex items-center justify-between px-1">
-            <div class="flex items-center gap-1.5">
-              <span class="text-[11px] font-black text-white">Productos Detectados (<span id="contador-items-detectados">0</span>)</span>
-            </div>
+            <span class="text-[11px] font-black text-white">Productos Detectados (<span id="contador-items-detectados">0</span>)</span>
             <button onclick="toggleSeleccionarTodos()" id="btn-toggle-todos" class="text-[10px] font-black text-accent-cyan hover:underline">
               Deseleccionar todos
             </button>
           </div>
-
-          <!-- LISTA INTERACTIVA DE ARTÍCULOS DETECTADOS -->
           <div id="lista-articulos-detectados" class="flex-1 overflow-y-auto no-scrollbar space-y-2 pr-1"></div>
         </div>
 
-        <!-- RESUMEN Y BOTÓN PARA AGREGAR TODO AL CARRITO -->
         <div id="pie-acciones-lista-ia" class="border-t border-slate-800 pt-2.5 space-y-2 shrink-0 hidden">
           <div class="flex justify-between items-center px-1">
             <span class="text-[11px] font-bold text-slate-300">Seleccionados: <span id="txt-cant-seleccionada-ia" class="text-white font-black">0</span></span>
@@ -833,11 +743,10 @@
             </button>
           </div>
         </div>
-
       </div>
     </div>
 
-    <!-- ================= MODAL PARA PEGAR LISTA EN TEXTO ================= -->
+    <!-- MODAL PEGAR LISTA MANUAL -->
     <div id="modal-pegar-lista" onclick="if(event.target === this) cerrarModalPegarLista()" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
       <div class="anim-modal bg-slate-900 border border-indigo-500/40 w-full max-w-sm rounded-[32px] p-5 space-y-4 shadow-2xl">
         <div class="flex justify-between items-center border-b border-slate-800 pb-2.5">
@@ -856,7 +765,7 @@
         </div>
 
         <div>
-          <textarea id="textarea-lista-manual" rows="5" placeholder="Ejemplo:&#10;1 harina pan&#10;2 arroz mary&#10;1/2 kilo queso blanco&#10;1 refresco pepsi&#10;tomate y cebolla" class="w-full p-3 bg-slate-950 border border-slate-700 rounded-2xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-accent-cyan shadow-inner leading-relaxed"></textarea>
+          <textarea id="textarea-lista-manual" rows="5" placeholder="Ejemplo:&#10;1 café capuchino moravos&#10;1 harina pan&#10;1/2 kilo queso blanco" class="w-full p-3 bg-slate-950 border border-slate-700 rounded-2xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-accent-cyan shadow-inner leading-relaxed"></textarea>
         </div>
 
         <div class="flex gap-2">
@@ -868,7 +777,7 @@
       </div>
     </div>
 
-    <!-- ================= MODAL DE DICTADO POR VOZ ================= -->
+    <!-- MODAL DE DICTADO POR VOZ -->
     <div id="modal-asistente-voz" class="fixed inset-0 bg-slate-950/85 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
       <div class="anim-modal bg-slate-900 border border-indigo-500/40 w-full max-w-sm rounded-[32px] p-5 space-y-4 shadow-2xl text-center">
         <div class="flex justify-between items-center border-b border-slate-800 pb-2">
@@ -886,12 +795,12 @@
             <i data-lucide="mic" class="w-7 h-7 stroke-[2.5]"></i>
           </button>
           <p id="lbl-estado-voz-modal" class="text-xs font-black text-white mt-3">Te estoy escuchando...</p>
-          <p class="text-[10px] text-slate-400 mt-0.5">Di lo que necesitas (ej: "harina pan, medio kilo de queso y dos maltas")</p>
+          <p class="text-[10px] text-slate-400 mt-0.5">Di lo que necesitas (ej: "un café de moravos y una harina pan")</p>
         </div>
 
         <div class="space-y-1 text-left">
           <label class="text-[10px] text-indigo-300 font-bold block">Texto capturado:</label>
-          <input type="text" id="input-texto-dictado" placeholder="Ej: harina, arroz, queso..." class="w-full p-2.5 bg-slate-950 border border-slate-700 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-accent-cyan">
+          <input type="text" id="input-texto-dictado" placeholder="Ej: café, hamburguesa, harina..." class="w-full p-2.5 bg-slate-950 border border-slate-700 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-accent-cyan">
         </div>
 
         <div class="flex gap-2 pt-1">
@@ -903,7 +812,7 @@
       </div>
     </div>
 
-    <!-- ================= MODAL PARA PEDIR PRODUCTO PERSONALIZADO ================= -->
+    <!-- MODAL PRODUCTO PERSONALIZADO -->
     <div id="modal-personalizado" onclick="if(event.target === this) cerrarModalPersonalizado()" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
       <div class="anim-modal bg-slate-900 border border-indigo-500/40 w-full max-w-sm rounded-[32px] p-5 space-y-4 shadow-2xl">
         <div class="flex justify-between items-center border-b border-slate-800 pb-3">
@@ -923,9 +832,9 @@
         <div class="space-y-3">
           <div>
             <label class="block text-[11px] text-indigo-300 font-bold uppercase mb-1">Nombre o descripción del producto</label>
-            <input type="text" id="input-nombre-personalizado" placeholder="Ej: Pan sobado, quesillo, medicina, bombillo..." class="w-full p-3 bg-slate-950 border border-slate-700 focus:border-accent-cyan rounded-2xl text-xs text-white placeholder-slate-500 focus:outline-none shadow-inner">
+            <input type="text" id="input-nombre-personalizado" placeholder="Ej: Café de Moravos, medicina, bombillo..." class="w-full p-3 bg-slate-950 border border-slate-700 focus:border-accent-cyan rounded-2xl text-xs text-white placeholder-slate-500 focus:outline-none shadow-inner">
           </div>
-          <p class="text-[10px] text-slate-400 italic">💡 El precio puede variar dependiendo del lugar ya que no contamos con ese producto en el almacén directo.</p>
+          <p class="text-[10px] text-slate-400 italic">💡 El repartidor lo compra y te cobra el precio exacto de la tienda.</p>
         </div>
         <div class="flex gap-2 pt-2">
           <button onclick="cerrarModalPersonalizado()" class="btn-tactil flex-1 bg-slate-800 text-slate-300 font-bold py-2.5 rounded-2xl text-xs">Cancelar</button>
@@ -934,7 +843,7 @@
       </div>
     </div>
 
-    <!-- ================= MODAL DEL CARRITO DE COMPRAS ================= -->
+    <!-- MODAL DEL CARRITO DE COMPRAS -->
     <div id="modal-carrito-detalle" onclick="if(event.target === this) cerrarModalCarrito()" class="fixed inset-0 bg-slate-950/75 backdrop-blur-md z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 hidden">
       <div class="anim-modal bg-slate-900 border-t sm:border border-indigo-500/30 w-full max-w-md rounded-t-[32px] sm:rounded-3xl p-4 space-y-3 shadow-2xl max-h-[82vh] flex flex-col">
         <div class="flex justify-between items-center border-b border-slate-800 pb-3">
@@ -969,7 +878,7 @@
       </div>
     </div>
 
-    <!-- ================= MODAL DE ÉXITO ================= -->
+    <!-- MODAL DE ÉXITO -->
     <div id="modal-exito" class="fixed inset-0 bg-slate-950/85 backdrop-blur-md z-50 flex flex-col items-center justify-center p-4 hidden">
       <div class="anim-modal bg-slate-900 border border-indigo-500/40 p-6 rounded-[32px] text-center shadow-[0_0_60px_rgba(99,102,241,0.4)] max-w-xs w-full space-y-4">
         <div class="w-14 h-14 bg-accent-emerald/15 text-accent-emerald rounded-full flex items-center justify-center mx-auto border border-accent-emerald/30">
@@ -1028,18 +937,20 @@
     let precioTransporte = 1.00;
     let metodoPagoActual = 'Pago Móvil';
 
-    // ESTADO PARA ESCÁNER MULTI-PRODUCTO
     let itemsDetectadosActuales = [];
 
-    // DATOS DE LOS LOCALES DE COMIDA RÁPIDA
-    const infoLocales = {
-      moravos: { nombre: 'Moravos Café', sub: 'Café, Postres y Especialidades', logo: 'img/moravos.jpg' },
-      fran_chero: { nombre: 'El Sabor de Fran & Chero', sub: 'Hamburguesas, Pepitos y Perros', logo: 'img/fran y chero.jpg' },
-      antons: { nombre: "Anton's Burgers", sub: 'Hamburguesas Gourmet y Combos', logo: 'img/anto bruger nirgua.jpg' },
-      zirus: { nombre: 'Zirus Pizza', sub: 'Pizzas Artesanales', logo: 'img/ziruspizza.webp' }
+    // COMERCIOS BASE (Sincronizados en tiempo real con Firebase)
+    let infoLocales = {
+      moravos: { id: 'moravos', nombre: 'Moravos Café', sub: 'Café, Postres & Especialidades', logo: 'img/moravos.jpg', porcentajeComision: 8 },
+      fran_chero: { id: 'fran_chero', nombre: 'El Sabor de Fran & Chero', sub: 'Hamburguesas, Pepitos y Perros', logo: 'img/fran y chero.jpg', porcentajeComision: 10 },
+      antons: { id: 'antons', nombre: "Anton's Burgers", sub: 'Burgers Gourmet y Empanadas', logo: 'img/anto bruger nirgua.jpg', porcentajeComision: 10 },
+      zirus: { id: 'zirus', nombre: 'Zirus Pizza', sub: 'Pizzas Artesanales', logo: 'img/ziruspizza.webp', porcentajeComision: 10 }
     };
 
-    // ================= CATÁLOGO COMPLETO INCORPORADO =================
+    // PRODUCTOS ADICIONALES POR TIENDA DESDE FIREBASE
+    let productosDinamicosTiendas = {};
+
+    // ================= CATÁLOGO BASE =================
     const productos = {
       viveres: [
         { id: 'v_harina_bellini', nombre: 'Harina de Maíz Bellini 1kg', precioBase: 0.75, imagen: 'img/v_harina_bellini.png', sub: 'harinas' },
@@ -1176,7 +1087,7 @@
         { id: 'ch_tocineta_pieza_kg', nombre: 'Tocineta Ahumada en Pieza (kg)', precioBase: 8.00, imagen: 'img/ch_tocineta_pieza_kg.png', esGranel: true, unidadMedida: 'g', pasoGranel: 100, minGranel: 200, maxGranel: 3000, defGranel: 500 },
         { id: 'ch_tocineta_rebanada_kg', nombre: 'Tocineta Ahumada Rebanada (kg)', precioBase: 8.50, imagen: 'img/ch_tocineta_rebanada_kg.png', esGranel: true, unidadMedida: 'g', pasoGranel: 100, minGranel: 200, maxGranel: 3000, defGranel: 500 },
         { id: 'ch_mortadela_extra_lanonna_kg', nombre: 'Mortadela Extra La Nonna (kg)', precioBase: 4.44, imagen: 'img/ch_mortadela_extra_lanonna_kg.png', esGranel: true, unidadMedida: 'g', pasoGranel: 100, minGranel: 200, maxGranel: 3000, defGranel: 500 },
-        { id: 'ch_salchicha_mana_kg', nombre: 'Salchicha Tipo Polaca Mana (kg)', precioBase: 2.81, imagen: 'img/ch_salchicha_mana_kg.png', esGranel: true, unidadMedida: 'g', pasoGranel: 100 },
+        { id: 'ch_salchicha_mana_kg', nombre: 'Salchicha Tipo Polaca Mana (kg)', precioBase: 2.81, imagen: 'img/ch_salchicha_mana_kg.png', esGranel: true, unidadMedida: 'g', pasoGranel: 100 }
       ],
       carnes: [
         { id: 'cn_costilla_res_kg', nombre: 'Costilla de Res (kg)', precioBase: 2.50, imagen: 'img/cn_costilla_res_kg.png', esGranel: true, unidadMedida: 'g', pasoGranel: 100, minGranel: 250, maxGranel: 4000, defGranel: 1000 },
@@ -1201,11 +1112,11 @@
         { id: 'cn_milanesa_pollo_kg', nombre: 'Milanesa de Pollo (kg)', precioBase: 6.00, imagen: 'img/cn_milanesa_pollo_kg.png', badge: 'TOP', esGranel: true, unidadMedida: 'g', pasoGranel: 100, minGranel: 250, maxGranel: 4000, defGranel: 1000 }
       ],
       panaderia: [
-        { id: 'pa_pan_sobado', nombre: 'Pan Sobado / Piñita Artesanal', precioBase: 1.50, imagen: 'img/p_pan_sobado.png', badge: 'FRESCO', local: 'panamericana' },
-        { id: 'pa_pan_baguette', nombre: 'Pan Baguette Francés', precioBase: 1.20, imagen: 'img/p_pan_baguette.png', local: 'panamericana' },
-        { id: 'pa_quesillo', nombre: 'Quesillo Casero (Porción)', precioBase: 2.50, imagen: 'img/p_quesillo.png', badge: 'DULCE', local: 'panamericana' },
-        { id: 'pa_ponque', nombre: 'Ponqué con Pasas', precioBase: 2.00, imagen: 'img/p_ponque.png', badge: 'DULCE', local: 'panamericana' },
-        { id: 'pa_galletas_charmy', nombre: 'Galletas Charmy Brownie', precioBase: 1.11, imagen: 'img/v34.png', local: 'panamericana' }
+        { id: 'pa_pan_sobado', nombre: 'Pan Sobado / Piñita Artesanal', precioBase: 1.50, imagen: 'img/p_pan_sobado.png', badge: 'FRESCO', local: 'panamericana', tiendaId: 'panamericana' },
+        { id: 'pa_pan_baguette', nombre: 'Pan Baguette Francés', precioBase: 1.20, imagen: 'img/p_pan_baguette.png', local: 'panamericana', tiendaId: 'panamericana' },
+        { id: 'pa_quesillo', nombre: 'Quesillo Casero (Porción)', precioBase: 2.50, imagen: 'img/p_quesillo.png', badge: 'DULCE', local: 'panamericana', tiendaId: 'panamericana' },
+        { id: 'pa_ponque', nombre: 'Ponqué con Pasas', precioBase: 2.00, imagen: 'img/p_ponque.png', badge: 'DULCE', local: 'panamericana', tiendaId: 'panamericana' },
+        { id: 'pa_galletas_charmy', nombre: 'Galletas Charmy Brownie', precioBase: 1.11, imagen: 'img/v34.png', local: 'panamericana', tiendaId: 'panamericana' }
       ],
       verduras: [
         { id: 'vf_tomate', nombre: 'Tomate Perita (kg)', precioBase: 1.80, imagen: 'img/vf_tomate.png', badge: 'FRESCO', esGranel: true, unidadMedida: 'g', pasoGranel: 100, minGranel: 250, maxGranel: 3000, defGranel: 1000 },
@@ -1240,15 +1151,16 @@
         { id: 'b5', nombre: 'Agua Mineral 5L', precioBase: 2.50, imagen: 'img/b5.png' },
         { id: 'b6', nombre: 'Energizante Monster', precioBase: 2.80, imagen: 'img/b6.png' }
       ],
+      // COMIDA RÁPIDA Y CAFÉ POR TIENDAS/LOCALES (Moravos Café, etc.)
       comida: [
-        { id: 'mc_cafe_capuchino', nombre: 'Café Capuchino Especial ☕', precioBase: 2.00, imagen: 'img/b6.png', badge: 'CAFÉ', local: 'moravos' },
-        { id: 'mc_postre_chocolate', nombre: 'Torta de Chocolate Moravos 🍰', precioBase: 3.00, imagen: 'img/p_quesillo.png', badge: 'POSTRE', local: 'moravos' },
-        { id: 'fc_hamb_mixta', nombre: 'Hamburguesa Mixta Fran & Chero 🍔', precioBase: 5.00, imagen: 'img/c1.png', badge: 'DESTACADO', local: 'fran_chero' },
-        { id: 'fc_perro_caliente', nombre: 'Perro Caliente Especial 🌭', precioBase: 2.00, imagen: 'img/c2.png', local: 'fran_chero' },
-        { id: 'fc_pepito_res', nombre: 'Pepito Especial de Res 🥖', precioBase: 6.50, imagen: 'img/c5.png', badge: 'POPULAR', local: 'fran_chero' },
-        { id: 'ab_hamb_antons', nombre: "Hamburguesa Anton's Supreme 🍔", precioBase: 6.00, imagen: 'img/c1.png', badge: 'TOP', local: 'antons' },
-        { id: 'ab_combo_empanadas', nombre: 'Combo 3 Empanadas 🥟', precioBase: 3.50, imagen: 'img/c4.png', badge: 'FRESCO', local: 'antons' },
-        { id: 'zp_pizza_familiar', nombre: 'Pizza Familiar Zirus 🍕', precioBase: 12.00, imagen: 'img/c3.png', badge: 'TOP', local: 'zirus' }
+        { id: 'mc_cafe_capuchino', nombre: 'Café Capuchino Especial ☕', precioBase: 2.00, imagen: 'img/b6.png', badge: 'CAFÉ', local: 'moravos', tiendaId: 'moravos' },
+        { id: 'mc_postre_chocolate', nombre: 'Torta de Chocolate Moravos 🍰', precioBase: 3.00, imagen: 'img/p_quesillo.png', badge: 'POSTRE', local: 'moravos', tiendaId: 'moravos' },
+        { id: 'fc_hamb_mixta', nombre: 'Hamburguesa Mixta Fran & Chero 🍔', precioBase: 5.00, imagen: 'img/c1.png', badge: 'DESTACADO', local: 'fran_chero', tiendaId: 'fran_chero' },
+        { id: 'fc_perro_caliente', nombre: 'Perro Caliente Especial 🌭', precioBase: 2.00, imagen: 'img/c2.png', local: 'fran_chero', tiendaId: 'fran_chero' },
+        { id: 'fc_pepito_res', nombre: 'Pepito Especial de Res 🥖', precioBase: 6.50, imagen: 'img/c5.png', badge: 'POPULAR', local: 'fran_chero', tiendaId: 'fran_chero' },
+        { id: 'ab_hamb_antons', nombre: "Hamburguesa Anton's Supreme 🍔", precioBase: 6.00, imagen: 'img/c1.png', badge: 'TOP', local: 'antons', tiendaId: 'antons' },
+        { id: 'ab_combo_empanadas', nombre: 'Combo 3 Empanadas 🥟', precioBase: 3.50, imagen: 'img/c4.png', badge: 'FRESCO', local: 'antons', tiendaId: 'antons' },
+        { id: 'zp_pizza_familiar', nombre: 'Pizza Familiar Zirus 🍕', precioBase: 12.00, imagen: 'img/c3.png', badge: 'TOP', local: 'zirus', tiendaId: 'zirus' }
       ],
       limpieza: [
         { id: 'l_vinagre_lavina_150ml', nombre: 'Vinagre La Viña 150ml', precioBase: 0.39, imagen: 'img/l_vinagre_lavina_150ml.png' },
@@ -1274,12 +1186,15 @@
     };
 
     const mapaProductos = {};
-    Object.keys(productos).forEach(cat => {
-      productos[cat].forEach(item => {
-        item.categoria = cat;
-        mapaProductos[item.id] = item;
+    function reconstruirMapaProductos() {
+      Object.keys(productos).forEach(cat => {
+        productos[cat].forEach(item => {
+          item.categoria = cat;
+          mapaProductos[item.id] = item;
+        });
       });
-    });
+    }
+    reconstruirMapaProductos();
 
     function normalizarTexto(txt) {
       return (txt || '').normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim();
@@ -1321,7 +1236,7 @@
       }, 3000);
     }
 
-    // ================= RENDERIZADO DEL CATÁLOGO =================
+    // ================= RENDERIZADO DEL CATÁLOGO & TIENDAS =================
     function renderizarCatalogo() {
       ['viveres', 'charcuteria', 'carnes', 'verduras', 'bebidas', 'limpieza'].forEach(cat => {
         const sec = document.getElementById(`grid-${cat}`);
@@ -1345,6 +1260,31 @@
         }
       }
 
+      renderizarLocalesComerciales();
+      lucide.createIcons();
+    }
+
+    // Renderizar tarjetas de comercios (Moravos Café, etc.)
+    function renderizarLocalesComerciales() {
+      const grid = document.getElementById('grid-locales-comerciales');
+      if (!grid) return;
+      grid.innerHTML = "";
+
+      Object.keys(infoLocales).forEach(idLocal => {
+        const info = infoLocales[idLocal];
+        grid.innerHTML += `
+          <button onclick="abrirMenuLocal('${idLocal}')" class="btn-tactil group relative bg-slate-900/90 border border-amber-500/30 hover:border-accent-yellow p-3 rounded-2xl flex flex-col items-center text-center gap-2 shadow-lg backdrop-blur-md">
+            <div class="w-16 h-16 rounded-full overflow-hidden border-2 border-accent-yellow shadow-md group-hover:scale-105 transition-transform bg-slate-950">
+              <img src="${info.logo || 'img/logo.jfif'}" alt="${info.nombre}" class="w-full h-full object-cover" onerror="this.src='img/logo.jfif';">
+            </div>
+            <div class="w-full min-w-0">
+              <h4 class="font-black text-white text-xs uppercase tracking-wider truncate">${info.nombre}</h4>
+              <p class="text-[10px] text-accent-yellow font-semibold truncate leading-tight">${info.sub || 'Comercio Aliado'}</p>
+              <span class="inline-block mt-1 bg-amber-500/20 text-accent-yellow border border-amber-500/30 text-[9px] font-black px-2 py-0.5 rounded-full">Ver Menú</span>
+            </div>
+          </button>
+        `;
+      });
       lucide.createIcons();
     }
 
@@ -1353,16 +1293,29 @@
       if (!info) return;
 
       document.getElementById('titulo-modal-local').innerText = info.nombre;
-      document.getElementById('sub-modal-local').innerText = info.sub;
-      document.getElementById('img-modal-local').src = info.logo;
+      document.getElementById('sub-modal-local').innerText = info.sub || 'Menú Oficial';
+      document.getElementById('img-modal-local').src = info.logo || 'img/logo.jfif';
 
       const gridModal = document.getElementById('grid-modal-productos-local');
       gridModal.innerHTML = "";
 
-      const prodsFiltrados = productos.comida.filter(p => p.local === idLocal);
-      prodsFiltrados.forEach(item => {
-        gridModal.innerHTML += crearTarjetaProductoHTML(item);
-      });
+      // Combinar productos base de comida con productos dinámicos de Firebase para este local
+      const prodsBase = productos.comida.filter(p => p.local === idLocal || p.tiendaId === idLocal);
+      const prodsDinamicos = productosDinamicosTiendas[idLocal] ? Object.values(productosDinamicosTiendas[idLocal]) : [];
+
+      const todos = [...prodsBase, ...prodsDinamicos];
+
+      if (todos.length === 0) {
+        gridModal.innerHTML = `<p class="col-span-2 text-center text-slate-500 text-xs py-6">No hay productos cargados aún para este comercio.</p>`;
+      } else {
+        todos.forEach(item => {
+          item.tiendaId = idLocal;
+          item.tiendaNombre = info.nombre;
+          item.porcentajeComision = info.porcentajeComision || 8;
+          mapaProductos[item.id] = item;
+          gridModal.innerHTML += crearTarjetaProductoHTML(item);
+        });
+      }
 
       document.getElementById('modal-productos-local').classList.remove('hidden');
       lucide.createIcons();
@@ -1455,11 +1408,21 @@
         return;
       }
       const idUnico = `pers_${Date.now()}`;
+      
+      // Chequear si menciona Moravos u otra tienda
+      let tId = null, tNom = null;
+      if (texto.toLowerCase().includes('moravo') || texto.toLowerCase().includes('morau')) {
+        tId = 'moravos';
+        tNom = 'Moravos Café';
+      }
+
       carrito[idUnico] = {
-        nombre: `${texto} (A Pedido / Sin Stock)`,
+        nombre: `${texto} (A Pedido)`,
         precio: 0.00,
         esPersonalizado: true,
-        cantidad: 1
+        cantidad: 1,
+        tiendaId: tId,
+        tiendaNombre: tNom
       };
       cerrarModalPersonalizado();
       actualizarTotales();
@@ -1623,7 +1586,7 @@
     }
 
     // ================= MOTOR INTELIGENTE DE BÚSQUEDA Y RECONOCIMIENTO =================
-    const palabrasGenericas = ['harina', 'arroz', 'pasta', 'espagueti', 'azucar', 'sal', 'aceite', 'margarina', 'mantequilla', 'leche', 'sardina', 'atun', 'diablito', 'salchicha', 'jamon', 'mortadela', 'queso', 'carne', 'pollo', 'pan', 'galleta', 'cerveza', 'refresco', 'vinagre', 'cloro', 'huevo', 'cafe', 'tomate', 'cebolla', 'papa'];
+    const palabrasGenericas = ['harina', 'arroz', 'pasta', 'espagueti', 'azucar', 'sal', 'aceite', 'margarina', 'leche', 'sardina', 'atun', 'diablito', 'salchicha', 'jamon', 'queso', 'carne', 'pollo', 'pan', 'cerveza', 'refresco', 'cloro', 'cafe', 'tomate', 'cebolla', 'papa', 'capuchino'];
 
     function resolverProductoInteligente(terminoBruto) {
       const limpio = normalizarTexto(terminoBruto);
@@ -1632,20 +1595,14 @@
       let cantidad = 1;
       let gramosEspecificos = null;
 
-      // Detección de peso fraccional (medio kilo, 1/2 kg, 500g, 1kg)
-      if (limpio.includes('medio kilo') || limpio.includes('1/2 kilo') || limpio.includes('1/2kg') || limpio.includes('500g') || limpio.includes('500 g') || limpio.includes('500 gr')) {
+      if (limpio.includes('medio kilo') || limpio.includes('1/2 kilo') || limpio.includes('500g')) {
         gramosEspecificos = 500;
-      } else if (limpio.includes('cuarto de kilo') || limpio.includes('1/4 kilo') || limpio.includes('250g') || limpio.includes('250 g')) {
-        gramosEspecificos = 250;
-      } else if (limpio.includes('1 kilo') || limpio.includes('1kg') || limpio.includes('1 kg') || limpio.includes('un kilo')) {
+      } else if (limpio.includes('1 kilo') || limpio.includes('1kg')) {
         gramosEspecificos = 1000;
-      } else if (limpio.includes('2 kilos') || limpio.includes('2kg') || limpio.includes('2 kg') || limpio.includes('dos kilos')) {
-        gramosEspecificos = 2000;
       }
 
       let palabras = limpio.split(/[\s,.-]+/).filter(Boolean);
-
-      const numerosTexto = { 'un': 1, 'una': 1, 'uno': 1, 'dos': 2, 'tres': 3, 'cuatro': 4, 'cinco': 5, 'seis': 6, 'medio': 1 };
+      const numerosTexto = { 'un': 1, 'una': 1, 'uno': 1, 'dos': 2, 'tres': 3, 'cuatro': 4, 'cinco': 5 };
       if (palabras.length > 0) {
         if (/^\d+$/.test(palabras[0])) {
           cantidad = parseInt(palabras[0]) || 1;
@@ -1656,60 +1613,38 @@
         }
       }
 
-      const stopWords = new Set(['de', 'la', 'el', 'los', 'las', 'un', 'una', 'paquete', 'bolsa', 'kilo', 'kilos', 'litro', 'litros', 'quiero', 'dame', 'traeme', 'por', 'favor', 'medio']);
+      const stopWords = new Set(['de', 'la', 'el', 'los', 'las', 'un', 'una', 'paquete', 'bolsa', 'kilo', 'quiero', 'dame', 'traeme', 'por', 'favor']);
       const tokens = palabras.filter(p => !stopWords.has(p) && p.length > 1);
-      if (tokens.length === 0) {
-        return { 
-          tipo: 'personalizado', 
-          nombre: terminoBruto.trim(), 
-          cantidad, 
-          precioBase: 0,
-          nota: 'Bajo Pedido (Precio Variable)'
-        };
-      }
 
-      const raiz = tokens.find(t => palabrasGenericas.includes(t));
-      const especificadores = tokens.filter(t => t !== raiz && !['maiz', 'trigo', 'blanco', 'blanca'].includes(t));
-
-      // Búsqueda por coincidencia de tokens específicos
-      if (especificadores.length > 0) {
-        let candidatos = [];
-        for (const id in mapaProductos) {
-          const prod = mapaProductos[id];
-          const nom = normalizarTexto(prod.nombre);
-          let match = 0;
-          tokens.forEach(t => { if (nom.includes(t)) match++; });
-          if (match > 0) candidatos.push({ prod, match, precio: prod.precioBase });
-        }
-        if (candidatos.length > 0) {
-          candidatos.sort((a, b) => b.match - a.match);
-          const mejor = candidatos[0].prod;
-          return { 
-            tipo: 'producto', 
-            producto: mejor, 
-            cantidad, 
-            gramos: gramosEspecificos || (mejor.esGranel ? mejor.defGranel : null),
-            nota: 'Marca específica detectada' 
+      // Si menciona Moravos (ej: cafe de moravos)
+      if (limpio.includes('moravo') || limpio.includes('morau')) {
+        const prodMoravos = productos.comida.find(p => p.local === 'moravos' && (limpio.includes('cafe') || limpio.includes('capuchino')));
+        if (prodMoravos) {
+          return {
+            tipo: 'producto',
+            producto: prodMoravos,
+            cantidad,
+            nota: 'Detectado en Moravos Café'
           };
         }
       }
 
-      // Búsqueda por raíz genérica (opción más económica)
-      if (raiz) {
-        let candidatos = [];
-        for (const id in mapaProductos) {
-          const prod = mapaProductos[id];
-          if (normalizarTexto(prod.nombre).includes(raiz)) candidatos.push(prod);
-        }
-        if (candidatos.length > 0) {
-          candidatos.sort((a, b) => a.precioBase - b.precioBase);
-          const masBarato = candidatos[0];
-          return { 
-            tipo: 'producto', 
-            producto: masBarato, 
-            cantidad, 
-            gramos: gramosEspecificos || (masBarato.esGranel ? masBarato.defGranel : null),
-            nota: 'Opción más económica' 
+      if (tokens.length === 0) {
+        return { tipo: 'personalizado', nombre: terminoBruto.trim(), cantidad, precioBase: 0 };
+      }
+
+      for (const id in mapaProductos) {
+        const prod = mapaProductos[id];
+        const nom = normalizarTexto(prod.nombre);
+        let match = 0;
+        tokens.forEach(t => { if (nom.includes(t)) match++; });
+        if (match >= Math.min(tokens.length, 2)) {
+          return {
+            tipo: 'producto',
+            producto: prod,
+            cantidad,
+            gramos: gramosEspecificos || (prod.esGranel ? prod.defGranel : null),
+            nota: 'En catálogo'
           };
         }
       }
@@ -1719,61 +1654,32 @@
         nombre: terminoBruto.trim(), 
         cantidad, 
         precioBase: 0,
-        nota: 'Bajo Pedido (Sin Stock en tienda)' 
+        nota: 'Bajo Pedido' 
       };
     }
 
-    // ================= GESTOR DE CAPTURA Y MODAL DE LISTA IA =================
-    function abrirSelectorCapturaLista() {
-      document.getElementById('modal-opciones-captura').classList.remove('hidden');
-    }
-
-    function cerrarSelectorCapturaLista() {
-      document.getElementById('modal-opciones-captura').classList.add('hidden');
-    }
-
-    function dispararCamara() {
-      cerrarSelectorCapturaLista();
-      document.getElementById('input-camara-directa').click();
-    }
-
-    function dispararGaleria() {
-      cerrarSelectorCapturaLista();
-      document.getElementById('input-galeria-foto').click();
-    }
-
-    function abrirModalPegarLista() {
-      document.getElementById('modal-pegar-lista').classList.remove('hidden');
-      document.getElementById('textarea-lista-manual').focus();
-    }
-
-    function cerrarModalPegarLista() {
-      document.getElementById('modal-pegar-lista').classList.add('hidden');
-      document.getElementById('textarea-lista-manual').value = "";
-    }
+    // ================= OCR Y VOZ =================
+    function abrirSelectorCapturaLista() { document.getElementById('modal-opciones-captura').classList.remove('hidden'); }
+    function cerrarSelectorCapturaLista() { document.getElementById('modal-opciones-captura').classList.add('hidden'); }
+    function dispararCamara() { cerrarSelectorCapturaLista(); document.getElementById('input-camara-directa').click(); }
+    function dispararGaleria() { cerrarSelectorCapturaLista(); document.getElementById('input-galeria-foto').click(); }
+    function abrirModalPegarLista() { document.getElementById('modal-pegar-lista').classList.remove('hidden'); document.getElementById('textarea-lista-manual').focus(); }
+    function cerrarModalPegarLista() { document.getElementById('modal-pegar-lista').classList.add('hidden'); document.getElementById('textarea-lista-manual').value = ""; }
 
     function procesarTextoPegadoManual() {
       const texto = document.getElementById('textarea-lista-manual').value.trim();
-      if (!texto) {
-        mostrarToast("Escribe o pega los artículos de tu lista.", "Campo vacío", "info");
-        return;
-      }
+      if (!texto) return;
       cerrarModalPegarLista();
       
       const modalFoto = document.getElementById('modal-foto-resultado');
-      const imgPreview = document.getElementById('img-preview-foto');
-      const loader = document.getElementById('loader-foto-ia');
-      const laser = document.getElementById('laser-scan-anim');
-
-      imgPreview.src = "img/logo.jfif";
-      laser.style.display = 'none';
-      loader.classList.add('hidden');
+      document.getElementById('img-preview-foto').src = "img/logo.jfif";
+      document.getElementById('laser-scan-anim').style.display = 'none';
+      document.getElementById('loader-foto-ia').classList.add('hidden');
       modalFoto.classList.remove('hidden');
 
       analizarTextoYMostrarListaCompleta(texto);
     }
 
-    // ================= PROCESAMIENTO CON TESSERACT OCR =================
     function procesarFotoIA(event) {
       const archivo = event.target.files[0];
       if (!archivo) return;
@@ -1782,41 +1688,25 @@
       const imgPreview = document.getElementById('img-preview-foto');
       const loader = document.getElementById('loader-foto-ia');
       const laser = document.getElementById('laser-scan-anim');
-      const cajaResultado = document.getElementById('caja-resultado-lista');
-      const pieAcciones = document.getElementById('pie-acciones-lista-ia');
-      const txtLoader = document.getElementById('txt-loader-foto');
-      const txtSub = document.getElementById('txt-modal-foto-sub');
 
-      const urlImagen = URL.createObjectURL(archivo);
-      imgPreview.src = urlImagen;
+      imgPreview.src = URL.createObjectURL(archivo);
       laser.style.display = 'block';
       loader.classList.remove('hidden');
-      cajaResultado.classList.add('hidden');
-      pieAcciones.classList.add('hidden');
-      txtSub.innerText = "Escaneando texto de la imagen...";
-      txtLoader.innerText = "Preparando escaneo de lista...";
+      document.getElementById('caja-resultado-lista').classList.add('hidden');
+      document.getElementById('pie-acciones-lista-ia').classList.add('hidden');
       modalFoto.classList.remove('hidden');
 
       let pistaNombre = archivo.name ? archivo.name.replace(/[_-]/g, ' ').replace(/\.[^/.]+$/, "") : "";
 
       if (typeof Tesseract !== 'undefined') {
-        Tesseract.recognize(archivo, 'spa', {
-          logger: m => {
-            if (m.status === 'recognizing text') {
-              const prog = Math.round((m.progress || 0) * 100);
-              txtLoader.innerText = `Leyendo lista (${prog}%)...`;
-            }
-          }
-        }).then(({ data: { text } }) => {
+        Tesseract.recognize(archivo, 'spa').then(({ data: { text } }) => {
           laser.style.display = 'none';
           loader.classList.add('hidden');
-          const textoFinal = (text && text.trim().length > 3) ? text : pistaNombre;
-          analizarTextoYMostrarListaCompleta(textoFinal);
-        }).catch((err) => {
-          console.warn("Fallo Tesseract OCR:", err);
+          analizarTextoYMostrarListaCompleta((text && text.trim().length > 3) ? text : pistaNombre);
+        }).catch(() => {
           laser.style.display = 'none';
           loader.classList.add('hidden');
-          analizarTextoYMostrarListaCompleta(pistaNombre || "1 Harina pan");
+          analizarTextoYMostrarListaCompleta(pistaNombre || "1 Café de Moravos");
         });
       } else {
         setTimeout(() => {
@@ -1827,43 +1717,18 @@
       }
     }
 
-    // ================= DESGLOSE DE CADA RENGLÓN DE LA LISTA =================
     function analizarTextoYMostrarListaCompleta(textoBruto) {
       const cajaResultado = document.getElementById('caja-resultado-lista');
       const pieAcciones = document.getElementById('pie-acciones-lista-ia');
-      const txtSub = document.getElementById('txt-modal-foto-sub');
 
-      if (!textoBruto || textoBruto.trim().length < 2) {
-        txtSub.innerText = "No se detectaron renglones claros";
-        cajaResultado.classList.remove('hidden');
-        document.getElementById('lista-articulos-detectados').innerHTML = `
-          <div class="bg-slate-950 p-4 rounded-2xl text-center space-y-2 border border-slate-800">
-            <p class="text-xs text-slate-300 font-bold">No se pudieron leer los productos en la foto.</p>
-            <button onclick="abrirModalPegarLista()" class="btn-tactil bg-accent-cyan text-slate-950 font-black px-4 py-2 rounded-xl text-xs">
-              Escribir Lista a Mano
-            </button>
-          </div>
-        `;
-        return;
-      }
-
-      // Dividir por renglones, viñetas, comas o puntos y comas
-      const lineas = textoBruto
-        .split(/\r?\n|;|\s*,\s*|\s+y\s+/i)
-        .map(l => l.replace(/^[\s*•\-–—\d+.)\]]+/g, '').trim())
-        .filter(l => l.length > 1);
-
-      const palabrasIgnoradas = ['lista', 'compras', 'supermercado', 'fecha', 'total', 'gracias', 'dia', 'por favor', 'mercado'];
+      const lineas = textoBruto.split(/\r?\n|;|\s*,\s*|\s+y\s+/i).map(l => l.trim()).filter(l => l.length > 1);
       const itemsProcesados = [];
 
       lineas.forEach((linea, idx) => {
-        const lineaLower = linea.toLowerCase();
-        if (palabrasIgnoradas.some(p => lineaLower === p)) return;
-
         const res = resolverProductoInteligente(linea);
         if (res) {
           itemsProcesados.push({
-            id: `item_scan_${Date.now()}_${idx}`,
+            id: `scan_${Date.now()}_${idx}`,
             textoOriginal: linea,
             resultado: res,
             seleccionado: true,
@@ -1873,111 +1738,47 @@
         }
       });
 
-      if (itemsProcesados.length === 0) {
-        itemsProcesados.push({
-          id: `item_scan_${Date.now()}_0`,
-          textoOriginal: textoBruto.trim().substring(0, 40),
-          resultado: resolverProductoInteligente(textoBruto.trim().substring(0, 40)),
-          seleccionado: true,
-          cantidad: 1,
-          gramos: null
-        });
-      }
-
       itemsDetectadosActuales = itemsProcesados;
-      txtSub.innerText = `¡${itemsDetectadosActuales.length} producto(s) encontrado(s)!`;
       cajaResultado.classList.remove('hidden');
       pieAcciones.classList.remove('hidden');
-
       renderizarListaDetectadaModal();
     }
 
-    // ================= RENDERIZADO VISUAL DE LA LISTA EN EL MODAL =================
     function renderizarListaDetectadaModal() {
       const contenedor = document.getElementById('lista-articulos-detectados');
-      const contadorTotal = document.getElementById('contador-items-detectados');
-      const txtCantSel = document.getElementById('txt-cant-seleccionada-ia');
-      const txtMontoTotal = document.getElementById('txt-monto-total-ia');
-
       contenedor.innerHTML = "";
-      let totalCalculado = 0;
-      let cantSeleccionada = 0;
+      let totalCalculado = 0, cantSeleccionada = 0;
 
       itemsDetectadosActuales.forEach((it, idx) => {
         const esProd = it.resultado.tipo === 'producto';
         const prod = esProd ? it.resultado.producto : null;
-        
-        let nombreMostrar = esProd ? prod.nombre : it.resultado.nombre;
-        let precioUnitario = 0;
-        let subtotal = 0;
-
-        if (esProd) {
-          if (prod.esGranel) {
-            const gramos = it.gramos || prod.defGranel;
-            precioUnitario = (prod.precioBase * gramos) / 1000;
-            subtotal = precioUnitario * it.cantidad;
-            const etiquetaGramos = gramos >= 1000 ? `${(gramos/1000).toFixed(1)}kg` : `${gramos}g`;
-            nombreMostrar = `${prod.nombre} (${etiquetaGramos})`;
-          } else {
-            precioUnitario = prod.precioBase;
-            subtotal = precioUnitario * it.cantidad;
-          }
-        }
+        let nombre = esProd ? prod.nombre : it.resultado.nombre;
+        let subtotal = esProd ? (prod.precioBase * it.cantidad) : 0;
 
         if (it.seleccionado) {
           cantSeleccionada++;
           totalCalculado += subtotal;
         }
 
-        const imagenThumb = (esProd && prod.imagen) 
-          ? `<img src="${prod.imagen}" alt="" class="w-10 h-10 rounded-xl object-cover border border-slate-700 shrink-0" onerror="this.src='img/logo.jfif';">`
-          : `<div class="w-10 h-10 rounded-xl bg-slate-900 border border-slate-700 flex items-center justify-center shrink-0 text-base">📦</div>`;
-
-        const badgeHtml = esProd
-          ? `<span class="bg-emerald-500/20 text-accent-emerald border border-emerald-500/30 text-[9px] font-black px-1.5 py-0.5 rounded">En Catálogo</span>`
-          : `<span class="bg-accent-yellow/20 text-accent-yellow border border-accent-yellow/30 text-[9px] font-black px-1.5 py-0.5 rounded">A Pedido</span>`;
-
         contenedor.innerHTML += `
-          <div class="flex items-center gap-2 bg-slate-950/85 p-2.5 rounded-2xl border ${it.seleccionado ? 'border-indigo-500/50 bg-indigo-950/20' : 'border-slate-800 opacity-60'} transition">
-            
-            <!-- CHECKBOX SELECCIONAR -->
-            <button onclick="toggleSeleccionarItemScan(${idx})" type="button" class="btn-tactil shrink-0 w-6 h-6 rounded-lg border ${it.seleccionado ? 'bg-accent-cyan border-accent-cyan text-slate-950' : 'bg-slate-900 border-slate-700 text-transparent'} flex items-center justify-center transition">
-              <i data-lucide="check" class="w-3.5 h-3.5 stroke-[3]"></i>
-            </button>
-
-            <!-- MINIATURA -->
-            ${imagenThumb}
-
-            <!-- DATOS DEL ARTÍCULO -->
-            <div class="flex-1 min-w-0 pr-1">
-              <div class="flex items-center gap-1.5 mb-0.5">
-                ${badgeHtml}
-                <span class="text-[10px] text-accent-yellow font-black">${esProd ? '$' + subtotal.toFixed(2) : 'Variable'}</span>
-              </div>
-              <h5 class="text-xs font-bold text-white truncate leading-tight">${nombreMostrar}</h5>
-              <p class="text-[9px] text-slate-400 truncate">Detectado: "${it.textoOriginal}"</p>
+          <div class="flex items-center gap-2 bg-slate-950/85 p-2.5 rounded-2xl border ${it.seleccionado ? 'border-indigo-500/50' : 'border-slate-800 opacity-60'}">
+            <button onclick="toggleSeleccionarItemScan(${idx})" class="w-6 h-6 rounded-lg border ${it.seleccionado ? 'bg-accent-cyan text-slate-950' : 'bg-slate-900 text-transparent'} flex items-center justify-center font-black">✓</button>
+            <div class="flex-1 min-w-0">
+              <h5 class="text-xs font-bold text-white truncate">${nombre}</h5>
+              <span class="text-[10px] text-accent-yellow font-black">${esProd ? '$' + subtotal.toFixed(2) : 'Variable'}</span>
             </div>
-
-            <!-- CONTROLES DE CANTIDAD -->
-            <div class="flex items-center gap-1 bg-slate-900 p-1 rounded-xl border border-slate-800 shrink-0">
-              <button onclick="ajustarCantItemScan(${idx}, -1)" type="button" class="btn-tactil w-6 h-6 bg-slate-800 text-white font-black rounded-lg text-xs flex items-center justify-center">-</button>
-              <span class="text-xs font-black text-white w-5 text-center">${it.cantidad}</span>
-              <button onclick="ajustarCantItemScan(${idx}, 1)" type="button" class="btn-tactil w-6 h-6 bg-accent-magenta text-white font-black rounded-lg text-xs flex items-center justify-center">+</button>
+            <div class="flex items-center gap-1 bg-slate-900 p-1 rounded-xl">
+              <button onclick="ajustarCantItemScan(${idx}, -1)" class="w-5 h-5 bg-slate-800 text-white rounded text-xs">-</button>
+              <span class="text-xs font-bold text-white px-1">${it.cantidad}</span>
+              <button onclick="ajustarCantItemScan(${idx}, 1)" class="w-5 h-5 bg-accent-magenta text-white rounded text-xs">+</button>
             </div>
-
-            <!-- ELIMINAR RENGLÓN -->
-            <button onclick="eliminarItemScan(${idx})" type="button" class="btn-tactil text-slate-500 hover:text-red-400 p-1">
-              <i data-lucide="trash-2" class="w-4 h-4"></i>
-            </button>
           </div>
         `;
       });
 
-      contadorTotal.innerText = itemsDetectadosActuales.length;
-      txtCantSel.innerText = `${cantSeleccionada} de ${itemsDetectadosActuales.length}`;
-      txtMontoTotal.innerText = `$${totalCalculado.toFixed(2)}`;
-
-      lucide.createIcons();
+      document.getElementById('contador-items-detectados').innerText = itemsDetectadosActuales.length;
+      document.getElementById('txt-cant-seleccionada-ia').innerText = cantSeleccionada;
+      document.getElementById('txt-monto-total-ia').innerText = `$${totalCalculado.toFixed(2)}`;
     }
 
     function toggleSeleccionarItemScan(idx) {
@@ -1995,76 +1796,26 @@
       }
     }
 
-    function eliminarItemScan(idx) {
-      itemsDetectadosActuales.splice(idx, 1);
-      renderizarListaDetectadaModal();
-    }
-
-    let todosSeleccionados = true;
-    function toggleSeleccionarTodos() {
-      todosSeleccionados = !todosSeleccionados;
-      itemsDetectadosActuales.forEach(it => it.seleccionado = todosSeleccionados);
-      document.getElementById('btn-toggle-todos').innerText = todosSeleccionados ? "Deseleccionar todos" : "Seleccionar todos";
-      renderizarListaDetectadaModal();
-    }
-
-    // ================= CONFIRMAR Y AGREGAR TODA LA LISTA AL CARRITO =================
     function confirmarAgregarListaCompleta() {
-      const itemsParaAgregar = itemsDetectadosActuales.filter(it => it.seleccionado);
-      if (itemsParaAgregar.length === 0) {
-        mostrarToast("Selecciona al menos un producto de la lista.", "Nada seleccionado", "info");
-        return;
-      }
-
-      let contadorAgregados = 0;
-
-      itemsParaAgregar.forEach(it => {
-        const esProd = it.resultado.tipo === 'producto';
-        if (esProd) {
-          const prod = it.resultado.producto;
-          if (prod.esGranel) {
-            const gramos = it.gramos || prod.defGranel;
-            const subtotal = (prod.precioBase * gramos) / 1000;
-            const idUnico = `${prod.id}_${gramos}`;
-            const etiqueta = gramos >= 1000 ? `${(gramos/1000).toFixed(1)}kg` : `${gramos}g`;
-            if (!carrito[idUnico]) {
-              carrito[idUnico] = { 
-                nombre: `${prod.nombre} (${etiqueta})`, 
-                precio: subtotal, 
-                cantidad: it.cantidad 
-              };
-            } else {
-              carrito[idUnico].cantidad += it.cantidad;
-            }
-          } else {
-            agregarAlCarritoDirecto(prod.id, prod.nombre, prod.precioBase, it.cantidad);
-          }
-          contadorAgregados++;
+      const items = itemsDetectadosActuales.filter(i => i.seleccionado);
+      items.forEach(it => {
+        if (it.resultado.tipo === 'producto') {
+          const p = it.resultado.producto;
+          agregarAlCarritoDirecto(p.id, p.nombre, p.precioBase, it.cantidad, p.tiendaId || p.local);
         } else {
-          const idUnico = `pers_${Date.now()}_${Math.floor(Math.random()*1000)}`;
-          carrito[idUnico] = { 
-            nombre: `${it.resultado.nombre} (A Pedido)`, 
-            precio: 0.00, 
-            esPersonalizado: true, 
-            cantidad: it.cantidad 
-          };
-          contadorAgregados++;
+          const idU = `pers_${Date.now()}_${Math.random()}`;
+          carrito[idU] = { nombre: `${it.resultado.nombre} (A Pedido)`, precio: 0, esPersonalizado: true, cantidad: it.cantidad };
         }
       });
-
       actualizarTotales();
       cerrarModalFotoResultado();
-      mostrarToast(`¡${contadorAgregados} producto(s) agregados desde tu lista!`, "Canasta Actualizada", "success");
+      mostrarToast(`${items.length} productos agregados`, "Canasta", "success");
     }
 
     function cerrarModalFotoResultado() {
       document.getElementById('modal-foto-resultado').classList.add('hidden');
-      document.getElementById('input-camara-directa').value = "";
-      document.getElementById('input-galeria-foto').value = "";
-      itemsDetectadosActuales = [];
     }
 
-    // ================= ASISTENTE DE VOZ =================
     let reconocedorWeb = null;
     function activarAsistenteVoz() {
       document.getElementById('modal-asistente-voz').classList.remove('hidden');
@@ -2073,64 +1824,27 @@
     }
 
     function iniciarReconocimientoVoz() {
-      const lbl = document.getElementById('lbl-estado-voz-modal');
-      const btn = document.getElementById('btn-circulo-microfono');
-      const input = document.getElementById('input-texto-dictado');
       const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-
-      if (!SpeechRecognition) {
-        lbl.innerText = "Escribe o usa el micrófono del teclado de tu teléfono 👇";
-        btn.classList.remove('ia-activo');
-        input.focus();
-        return;
-      }
-
+      if (!SpeechRecognition) return;
       try {
         if (reconocedorWeb) reconocedorWeb.abort();
         reconocedorWeb = new SpeechRecognition();
         reconocedorWeb.lang = 'es-VE';
-        reconocedorWeb.onstart = () => {
-          lbl.innerText = "🎙️ Escuchando... ¡Habla ahora!";
-          btn.classList.add('ia-activo');
-        };
         reconocedorWeb.onresult = (e) => {
           const dicho = Array.from(e.results).map(r => r[0].transcript).join(' ');
-          input.value = dicho;
-          if (e.results[0].isFinal) {
-            lbl.innerText = `🗣️ Anotado: "${dicho}"`;
-            setTimeout(procesarTextoDesdeModalVoz, 600);
-          }
+          document.getElementById('input-texto-dictado').value = dicho;
+          if (e.results[0].isFinal) setTimeout(procesarTextoDesdeModalVoz, 500);
         };
-        reconocedorWeb.onerror = () => {
-          lbl.innerText = "Puedes escribirlo abajo si hay ruido 👇";
-          btn.classList.remove('ia-activo');
-        };
-        reconocedorWeb.onend = () => btn.classList.remove('ia-activo');
         reconocedorWeb.start();
-      } catch(e) {
-        lbl.innerText = "Escribe abajo lo que buscas 👇";
-      }
+      } catch(e){}
     }
 
     function procesarTextoDesdeModalVoz() {
       const txt = document.getElementById('input-texto-dictado').value.trim();
-      if (!txt) {
-        mostrarToast("Por favor di o escribe qué deseas pedir.", "Aviso", "info");
-        return;
-      }
+      if (!txt) return;
       cerrarModalVoz();
-      
-      const modalFoto = document.getElementById('modal-foto-resultado');
-      const imgPreview = document.getElementById('img-preview-foto');
-      const loader = document.getElementById('loader-foto-ia');
-      const laser = document.getElementById('laser-scan-anim');
-
-      imgPreview.src = "img/logo.jfif";
-      laser.style.display = 'none';
-      loader.classList.add('hidden');
-      modalFoto.classList.remove('hidden');
-
       analizarTextoYMostrarListaCompleta(txt);
+      document.getElementById('modal-foto-resultado').classList.remove('hidden');
     }
 
     function cerrarModalVoz() {
@@ -2138,28 +1852,26 @@
       document.getElementById('modal-asistente-voz').classList.add('hidden');
     }
 
-    // ================= FUNCIONES DE PRODUCTOS Y CARRITO =================
+    // ================= FUNCIONES DE CARRITO =================
     function actualizarSliderGranel(id) {
       const item = mapaProductos[id];
       if (!item) return;
-      const slider = document.getElementById(`slider-${id}`);
-      const gramos = parseInt(slider.value);
-      const subtotal = (item.precioBase * gramos) / 1000;
+      const gramos = parseInt(document.getElementById(`slider-${id}`).value);
+      const sub = (item.precioBase * gramos) / 1000;
       document.getElementById(`label-gramos-${id}`).innerText = gramos >= 1000 ? `${(gramos/1000).toFixed(1)}kg` : `${gramos}g`;
-      document.getElementById(`precio-granel-${id}`).innerText = `$${subtotal.toFixed(2)}`;
+      document.getElementById(`precio-granel-${id}`).innerText = `$${sub.toFixed(2)}`;
     }
 
     function agregarGranelAlCarrito(id) {
       const item = mapaProductos[id];
       if (!item) return;
-      const slider = document.getElementById(`slider-${id}`);
-      const gramos = parseInt(slider.value);
-      const subtotal = (item.precioBase * gramos) / 1000;
+      const gramos = parseInt(document.getElementById(`slider-${id}`).value);
+      const sub = (item.precioBase * gramos) / 1000;
       const etiqueta = gramos >= 1000 ? `${(gramos/1000).toFixed(1)}kg` : `${gramos}g`;
       const idUnico = `${id}_${gramos}`;
       
       if (!carrito[idUnico]) {
-        carrito[idUnico] = { nombre: `${item.nombre} (${etiqueta})`, precio: subtotal, cantidad: 1 };
+        carrito[idUnico] = { nombre: `${item.nombre} (${etiqueta})`, precio: sub, cantidad: 1, tiendaId: item.tiendaId || item.local };
       } else {
         carrito[idUnico].cantidad += 1;
       }
@@ -2170,13 +1882,17 @@
     function agregarAlCarritoPorId(id, cantidad = 1) {
       const item = mapaProductos[id];
       if (!item) return;
-      agregarAlCarritoDirecto(item.id, item.nombre, item.precioBase, cantidad);
+      agregarAlCarritoDirecto(item.id, item.nombre, item.precioBase, cantidad, item.tiendaId || item.local);
       mostrarToast(`Agregado: ${item.nombre}`, "Canasta", "success");
     }
 
-    function agregarAlCarritoDirecto(id, nombre, precio, cantidad = 1) {
+    function agregarAlCarritoDirecto(id, nombre, precio, cantidad = 1, tiendaId = null) {
+      let tNom = null;
+      if (tiendaId && infoLocales[tiendaId]) {
+        tNom = infoLocales[tiendaId].nombre;
+      }
       if (!carrito[id]) {
-        carrito[id] = { nombre, precio, cantidad };
+        carrito[id] = { nombre, precio, cantidad, tiendaId: tiendaId || null, tiendaNombre: tNom };
       } else {
         carrito[id].cantidad += cantidad;
       }
@@ -2266,10 +1982,15 @@
         const precioTxt = item.esPersonalizado 
           ? `<span class="text-[10px] text-accent-cyan font-bold block">A Pedido (Precio Variable)</span>` 
           : `<span class="text-xs text-accent-yellow font-black">$${(item.cantidad * item.precio).toFixed(2)}</span>`;
+        
+        const tiendaLabel = item.tiendaNombre ? `<span class="text-[9px] text-amber-400 font-bold block">🏪 ${item.tiendaNombre}</span>` : '';
+
         contenedor.innerHTML += `
           <div class="flex items-center justify-between bg-slate-950/85 p-3 rounded-2xl border border-slate-800">
             <div class="flex-1 pr-2">
-              <h5 class="text-xs font-bold text-white line-clamp-1">${item.nombre}</h5>${precioTxt}
+              <h5 class="text-xs font-bold text-white line-clamp-1">${item.nombre}</h5>
+              ${tiendaLabel}
+              ${precioTxt}
             </div>
             <div class="flex items-center gap-1.5 bg-slate-900 p-1 rounded-xl border border-slate-800">
               <button onclick="cambiarCantCarrito('${id}', -1)" type="button" class="btn-tactil w-7 h-7 bg-slate-800 text-white font-black rounded-lg text-xs flex items-center justify-center">-</button>
@@ -2462,6 +2183,7 @@
       );
     }
 
+    // ================= ENVIAR PEDIDO Y ANOTAR A CUENTA DE TIENDA =================
     function enviarPedidoAConductor() {
       const nombre = document.getElementById('nombreCliente').value.trim();
       const telefono = document.getElementById('telefonoCliente').value.trim();
@@ -2485,15 +2207,32 @@
       const montoTotalCalculado = esPagoTransporteDirecto ? precioTransporte : calcularTotal().total;
 
       const listaItemsArray = [];
+      let tiendaDetectadaId = null;
+      let tiendaDetectadaNombre = null;
+      let tiendaPctComision = 8;
+      let totalVentaTienda = 0;
+
       if (!esPagoTransporteDirecto) {
         Object.keys(carrito).forEach(id => {
+          const it = carrito[id];
           listaItemsArray.push({
             id: id,
-            nombre: carrito[id].nombre,
-            precio: carrito[id].precio || 0,
-            cantidad: carrito[id].cantidad,
-            esPersonalizado: carrito[id].esPersonalizado || false
+            nombre: it.nombre,
+            precio: it.precio || 0,
+            cantidad: it.cantidad,
+            esPersonalizado: it.esPersonalizado || false,
+            tiendaId: it.tiendaId || null,
+            tiendaNombre: it.tiendaNombre || null
           });
+
+          if (it.tiendaId) {
+            tiendaDetectadaId = it.tiendaId;
+            tiendaDetectadaNombre = it.tiendaNombre || (infoLocales[it.tiendaId] ? infoLocales[it.tiendaId].nombre : 'Comercio');
+            if (infoLocales[it.tiendaId] && infoLocales[it.tiendaId].porcentajeComision) {
+              tiendaPctComision = parseFloat(infoLocales[it.tiendaId].porcentajeComision);
+            }
+            totalVentaTienda += (it.precio || 0) * it.cantidad;
+          }
         });
       } else {
         listaItemsArray.push({
@@ -2503,6 +2242,21 @@
         });
       }
 
+      // Si no detectó tienda pero algún texto dice Moravos
+      if (!tiendaDetectadaId) {
+        const itemMoravos = listaItemsArray.find(i => i.nombre.toLowerCase().includes('moravo') || i.nombre.toLowerCase().includes('morau'));
+        if (itemMoravos) {
+          tiendaDetectadaId = 'moravos';
+          tiendaDetectadaNombre = 'Moravos Café';
+          tiendaPctComision = (infoLocales.moravos && infoLocales.moravos.porcentajeComision) ? parseFloat(infoLocales.moravos.porcentajeComision) : 8;
+          totalVentaTienda = montoTotalCalculado;
+        }
+      }
+
+      const comisionFlash = (totalVentaTienda * tiendaPctComision) / 100;
+      const netoTienda = totalVentaTienda - comisionFlash;
+
+      // 1. Guardar Pedido en Firebase
       if (firebaseActivo && db) {
         try {
           db.ref('pedidos').push({
@@ -2518,14 +2272,36 @@
             estado: 'pendiente',
             chofer: 'Sin Asignar',
             choferTelefono: '',
+            tiendaId: tiendaDetectadaId || '',
+            tiendaNombre: tiendaDetectadaNombre || '',
+            porcentajeComision: tiendaDetectadaId ? tiendaPctComision : 0,
+            comisionFlash: comisionFlash,
+            netoTienda: netoTienda,
+            anotadoEnCuenta: !!tiendaDetectadaId,
             items: listaItemsArray,
             fecha: new Date().toISOString()
           });
+
+          // 2. Anotar automáticamente en la cuenta de la Tienda (ej. Moravos Café)
+          if (tiendaDetectadaId) {
+            const descItems = listaItemsArray.map(i => `${i.cantidad}x ${i.nombre}`).join(', ');
+            db.ref(`cuentas_tiendas/${tiendaDetectadaId}/movimientos`).push({
+              orden: numOrden,
+              concepto: descItems,
+              montoVenta: totalVentaTienda,
+              porcentajeComision: tiendaPctComision,
+              comisionFlash: comisionFlash,
+              netoTienda: netoTienda,
+              cliente: nombre,
+              fecha: new Date().toISOString()
+            });
+          }
         } catch(e) {
           console.error("Error al registrar en Firebase:", e);
         }
       }
 
+      // Mensaje de WhatsApp
       let msj = "";
       if (esPagoTransporteDirecto) {
         msj += `🚗 *SOLICITUD DE VIAJE: #${numOrden}* 🚗\n`;
@@ -2550,6 +2326,11 @@
         msj += `👥 *Entrega:* ${tipoBeneficiario} ${tipoBeneficiario.includes('otra') ? '('+nombreTercero+')' : ''}\n`;
         msj += `📍 *Dirección:* ${direccion}\n`;
         if (ubicacionGPS) msj += `🗺️ *GPS en Vivo:* ${ubicacionGPS}\n`;
+
+        if (tiendaDetectadaNombre) {
+          msj += `\n🏪 *TIENDA / COMERCIO:* ${tiendaDetectadaNombre} (${tiendaPctComision}% com. Flash)\n`;
+        }
+
         msj += `\n🛒 *LISTA DE ARTÍCULOS:*\n`;
         listaItemsArray.forEach(it => {
           msj += ` • ${it.cantidad}x ${it.nombre} ${it.esPersonalizado ? '(Bajo Pedido)' : '($' + (it.cantidad * it.precio).toFixed(2) + ')'}\n`;
@@ -2583,46 +2364,34 @@
       }, 35);
     }
 
-    // ARRASTRE DEL WIDGET FLOTANTE
-    const widget = document.getElementById('widget-total-flotante');
-    let isDragging = false, hasDragged = false, offsetX = 0, offsetY = 0, startTouchX = 0, startTouchY = 0;
-    
-    const startDrag = (e) => {
-      isDragging = true;
-      hasDragged = false;
-      const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-      const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-      startTouchX = clientX;
-      startTouchY = clientY;
-      const rect = widget.getBoundingClientRect();
-      offsetX = clientX - rect.left; 
-      offsetY = clientY - rect.top;
-    };
-    
-    const doDrag = (e) => {
-      if (!isDragging) return;
-      const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-      const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-      if (Math.hypot(clientX - startTouchX, clientY - startTouchY) > 8) {
-        hasDragged = true;
-        if (e.cancelable) e.preventDefault();
-        widget.style.left = `${clientX - offsetX}px`;
-        widget.style.top = `${clientY - offsetY}px`;
-        widget.style.right = 'auto';
-      }
-    };
-    
-    const stopDrag = () => { isDragging = false; };
-    widget.addEventListener('mousedown', startDrag);
-    document.addEventListener('mousemove', doDrag);
-    document.addEventListener('mouseup', stopDrag);
-    widget.addEventListener('touchstart', startDrag, { passive: false });
-    document.addEventListener('touchmove', doDrag, { passive: false });
-    widget.addEventListener('touchend', stopDrag);
-    widget.addEventListener('click', (e) => { if (hasDragged) e.stopPropagation(); });
+    // SINCRONIZACIÓN EN TIEMPO REAL CON TIENDAS DE FIREBASE
+    function sincronizarTiendasDesdeFirebase() {
+      if (!firebaseActivo || !db) return;
+      
+      // Escuchar Tiendas Registradas por el Admin
+      db.ref('tiendas').on('value', (snapshot) => {
+        const val = snapshot.val();
+        if (val) {
+          Object.keys(val).forEach(k => {
+            infoLocales[k] = val[k];
+          });
+          renderizarLocalesComerciales();
+        }
+      });
+
+      // Escuchar Productos de Tiendas creados por Admin
+      db.ref('productos_tiendas').on('value', (snapshot) => {
+        const val = snapshot.val();
+        if (val) {
+          productosDinamicosTiendas = val;
+          reconstruirMapaProductos();
+        }
+      });
+    }
 
     window.onload = () => { 
       renderizarCatalogo(); 
+      sincronizarTiendasDesdeFirebase();
       
       const vid = document.getElementById('video-logo');
       if (vid) {
