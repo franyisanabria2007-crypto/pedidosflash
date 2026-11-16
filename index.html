@@ -300,7 +300,31 @@
               </div>
             </button>
 
-            <!-- 9. TRANSPORTE (BANNER COMPLETO INFERIOR) -->
+            <!-- 9. FARMACIA Y MEDICINA -->
+            <button onclick="cambiarSeccion('farmacia')" class="btn-tactil group relative bg-slate-900/90 border border-slate-800 hover:border-accent-cyan p-2.5 rounded-[22px] flex flex-col items-center justify-center text-center gap-1.5 shadow-lg overflow-hidden backdrop-blur-md">
+              <div class="w-full h-16 rounded-xl overflow-hidden flex items-center justify-center group-hover:scale-105 transition-transform duration-300 relative bg-slate-950">
+                <span class="absolute top-1.5 right-1.5 bg-accent-cyan text-slate-950 font-black text-[9px] px-1.5 py-0.5 rounded-md shadow-md z-10">SALUD</span>
+                <img src="img/farmacia.webp" alt="Farmacia" class="w-full h-full object-cover rounded-xl" onerror="this.onerror=null; this.src='img/logo.jfif';">
+              </div>
+              <div>
+                <h4 class="font-black text-white text-xs">Farmacia</h4>
+                <p class="text-[10px] text-slate-400 leading-tight">Medicinas y salud</p>
+              </div>
+            </button>
+
+            <!-- 10. FERRETERÍA -->
+            <button onclick="cambiarSeccion('ferreteria')" class="btn-tactil group relative bg-slate-900/90 border border-slate-800 hover:border-accent-orange p-2.5 rounded-[22px] flex flex-col items-center justify-center text-center gap-1.5 shadow-lg overflow-hidden backdrop-blur-md">
+              <div class="w-full h-16 rounded-xl overflow-hidden flex items-center justify-center group-hover:scale-105 transition-transform duration-300 relative bg-slate-950">
+                <span class="absolute top-1.5 right-1.5 bg-accent-orange text-slate-950 font-black text-[9px] px-1.5 py-0.5 rounded-md shadow-md z-10">HOGAR</span>
+                <img src="img/ferreteria.webp" alt="Ferretería" class="w-full h-full object-cover rounded-xl" onerror="this.onerror=null; this.src='img/logo.jfif';">
+              </div>
+              <div>
+                <h4 class="font-black text-white text-xs">Ferretería</h4>
+                <p class="text-[10px] text-slate-400 leading-tight">Herramientas y hogar</p>
+              </div>
+            </button>
+
+            <!-- 11. TRANSPORTE (BANNER COMPLETO INFERIOR) -->
             <button onclick="cambiarSeccion('transporte')" class="btn-tactil group relative bg-slate-900/90 border border-emerald-500/30 hover:border-accent-emerald p-2.5 rounded-[22px] flex items-center justify-between gap-3 shadow-lg overflow-hidden backdrop-blur-md col-span-2">
               <div class="flex items-center gap-3">
                 <div class="w-14 h-14 rounded-xl overflow-hidden flex items-center justify-center group-hover:scale-105 transition-transform duration-300 relative bg-slate-950 shrink-0 border border-emerald-500/30">
@@ -449,6 +473,28 @@
           </div>
 
           <div id="sec-limpieza" class="seccion-target space-y-2 hidden"><div id="grid-limpieza" class="grid grid-cols-2 gap-2.5"></div></div>
+          
+          <!-- SECCIÓN FARMACIA & MEDICINAS -->
+          <div id="sec-farmacia" class="seccion-target space-y-3 hidden">
+            <div class="px-1">
+              <h3 class="text-xs font-black text-accent-cyan uppercase tracking-wider flex items-center gap-1.5">
+                <span>💊 Farmacia & Medicinas</span>
+              </h3>
+              <p class="text-[11px] text-slate-400">Medicamentos, analgésicos y primeros auxilios</p>
+            </div>
+            <div id="grid-farmacia" class="grid grid-cols-2 gap-2.5"></div>
+          </div>
+
+          <!-- SECCIÓN FERRETERÍA -->
+          <div id="sec-ferreteria" class="seccion-target space-y-3 hidden">
+            <div class="px-1">
+              <h3 class="text-xs font-black text-accent-orange uppercase tracking-wider flex items-center gap-1.5">
+                <span>🔨 Ferretería & Materiales</span>
+              </h3>
+              <p class="text-[11px] text-slate-400">Bombillos, herramientas, electricidad y fontanería</p>
+            </div>
+            <div id="grid-ferreteria" class="grid grid-cols-2 gap-2.5"></div>
+          </div>
         </div>
 
       </main>
@@ -607,7 +653,6 @@
             </div>
             <input type="hidden" id="tipoBeneficiario" value="Es para mí">
           </div>
-
           <div id="contenedor-tercero" class="hidden">
             <label class="block text-[11px] text-accent-magenta font-black uppercase mb-1">Nombre y Teléfono de la persona</label>
             <input type="text" id="nombreTercero" placeholder="Ej: María Pérez (0412-1234567)" class="w-full p-2.5 bg-slate-900 border border-slate-700 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none">
@@ -944,6 +989,8 @@
     let tipoTransporteSeleccionado = 'moto';
     let precioTransporte = 1.00;
     let metodoPagoActual = 'Pago Móvil';
+    let clienteLatActual = null;
+    let clienteLngActual = null;
 
     let itemsDetectadosActuales = [];
 
@@ -1190,6 +1237,26 @@
         { id: 'l3', nombre: 'Desinfectante Lavanda 1L', precioBase: 1.21, imagen: 'img/l3.png', badge: 'ASEO' },
         { id: 'l4', nombre: 'Detergente Líquido 1L', precioBase: 2.14, imagen: 'img/l4.png', badge: 'ASEO' },
         { id: 'l5', nombre: 'Lavaplatos Limón 1L', precioBase: 2.14, imagen: 'img/l5.png', badge: 'ASEO' }
+      ],
+      farmacia: [
+        { id: 'far_acetaminofen', nombre: 'Acetaminofén 500mg (Blíster 10 tabletas)', precioBase: 1.00, imagen: 'img/farmacia.webp', badge: 'ESENCIAL' },
+        { id: 'far_ibuprofeno', nombre: 'Ibuprofeno 400mg (Blíster 10 tabletas)', precioBase: 1.20, imagen: 'img/farmacia.webp', badge: 'ANALGÉSICO' },
+        { id: 'far_loratadina', nombre: 'Loratadina 10mg (Blíster 10 tabletas)', precioBase: 1.00, imagen: 'img/farmacia.webp', badge: 'ANTIALÉRGICO' },
+        { id: 'far_omeprazol', nombre: 'Omeprazol 20mg (Blíster 10 cápsulas)', precioBase: 1.50, imagen: 'img/farmacia.webp' },
+        { id: 'far_alcohol', nombre: 'Alcohol Antiséptico 70% (250ml)', precioBase: 1.20, imagen: 'img/farmacia.webp', badge: 'BOTIQUÍN' },
+        { id: 'far_curitas', nombre: 'Curitas Adhesivas (Caja)', precioBase: 0.80, imagen: 'img/farmacia.webp' },
+        { id: 'far_gasa', nombre: 'Gasa Estéril y Adhesivo', precioBase: 1.00, imagen: 'img/farmacia.webp' },
+        { id: 'far_suero_oral', nombre: 'Suero Oral Rehidratante', precioBase: 1.50, imagen: 'img/farmacia.webp', badge: 'SALUD' }
+      ],
+      ferreteria: [
+        { id: 'fer_bombillo_led', nombre: 'Bombillo LED 12W Luz Blanca', precioBase: 1.20, imagen: 'img/ferreteria.webp', badge: 'HOGAR' },
+        { id: 'fer_teflon', nombre: 'Cinta Teflón para Tuberías', precioBase: 0.50, imagen: 'img/ferreteria.webp' },
+        { id: 'fer_tirro_negro', nombre: 'Tirro Aislante Eléctrico Negro', precioBase: 0.80, imagen: 'img/ferreteria.webp' },
+        { id: 'fer_pegaloca', nombre: 'Pega Loca / Cianoacrilato', precioBase: 0.60, imagen: 'img/ferreteria.webp', badge: 'TOP' },
+        { id: 'fer_silicon', nombre: 'Tubo de Silicón Transparente', precioBase: 2.50, imagen: 'img/ferreteria.webp' },
+        { id: 'fer_pilas_aa', nombre: 'Pilas AA / AAA (Par)', precioBase: 1.00, imagen: 'img/ferreteria.webp' },
+        { id: 'fer_candado', nombre: 'Candado Mediano de Seguridad', precioBase: 3.50, imagen: 'img/ferreteria.webp' },
+        { id: 'fer_destornillador', nombre: 'Destornillador Doble Punta (Pala y Cruz)', precioBase: 2.00, imagen: 'img/ferreteria.webp' }
       ]
     };
 
@@ -1246,7 +1313,7 @@
 
     // ================= RENDERIZADO DEL CATÁLOGO & TIENDAS =================
     function renderizarCatalogo() {
-      ['viveres', 'charcuteria', 'carnes', 'verduras', 'bebidas', 'limpieza'].forEach(cat => {
+      ['viveres', 'charcuteria', 'carnes', 'verduras', 'bebidas', 'limpieza', 'farmacia', 'ferreteria'].forEach(cat => {
         const sec = document.getElementById(`grid-${cat}`);
         if (sec && productos[cat]) {
           sec.innerHTML = "";
@@ -2018,6 +2085,9 @@
       document.getElementById('titulo-paso-2').innerText = "Finalizar Pedido";
       document.getElementById('titulo-resumen-paso2').innerText = "Artículos en Canasta";
       prepararPaso2Datos();
+      if (!clienteLatActual) {
+        obtenerUbicacionGPS(true);
+      }
     }
 
     function irAPagarTransporteDirecto() {
@@ -2026,6 +2096,8 @@
         return;
       }
       esPagoTransporteDirecto = true;
+      clienteLatActual = puntoDestino[0];
+      clienteLngActual = puntoDestino[1];
       document.getElementById('titulo-paso-2').innerText = "Pago de Transporte";
       document.getElementById('titulo-resumen-paso2').innerText = "Detalle del Viaje";
       if (textoDestinoStr && textoDestinoStr !== "No seleccionado") {
@@ -2165,27 +2237,35 @@
       });
     }
 
-    function obtenerUbicacionGPS() {
+    function obtenerUbicacionGPS(silencioso = false) {
       const btnGps = document.getElementById('btn-gps');
       const lblGps = document.getElementById('lbl-gps');
       if (!navigator.geolocation) {
-        mostrarToast("Navegador sin geolocalización", "Error", "error");
+        if (!silencioso) mostrarToast("Navegador sin geolocalización", "Error", "error");
         return;
       }
-      lblGps.innerText = "Obteniendo coordenadas...";
-      btnGps.disabled = true;
+      if (lblGps) lblGps.innerText = "Obteniendo coordenadas exactas...";
+      if (btnGps) btnGps.disabled = true;
       navigator.geolocation.getCurrentPosition(
         (pos) => {
-          document.getElementById('ubicacionGPS').value = `https://maps.google.com/?q=${pos.coords.latitude},${pos.coords.longitude}`;
-          lblGps.innerText = "¡Ubicación GPS Adjuntada con Éxito!";
-          btnGps.disabled = false;
-          mostrarToast("Ubicación GPS adjuntada", "Ubicación", "success");
+          clienteLatActual = pos.coords.latitude;
+          clienteLngActual = pos.coords.longitude;
+          const urlMaps = `https://maps.google.com/?q=${clienteLatActual},${clienteLngActual}`;
+          const inputGps = document.getElementById('ubicacionGPS');
+          if (inputGps) inputGps.value = urlMaps;
+          if (lblGps) lblGps.innerHTML = `✅ ¡GPS Adjuntado! (${clienteLatActual.toFixed(4)}, ${clienteLngActual.toFixed(4)})`;
+          if (btnGps) {
+            btnGps.disabled = false;
+            btnGps.className = "btn-tactil w-full bg-emerald-950/80 text-accent-emerald border-2 border-emerald-500/60 font-black py-2.5 px-3 rounded-xl text-xs flex items-center justify-center gap-2 shadow-glow-emerald";
+          }
+          if (!silencioso) mostrarToast("¡Ubicación GPS exacta adjuntada!", "GPS Listo", "success");
         },
-        () => {
-          lblGps.innerText = "Reintentar GPS";
-          btnGps.disabled = false;
-          mostrarToast("No se pudo obtener el GPS", "Error", "error");
-        }
+        (err) => {
+          if (lblGps) lblGps.innerText = "Tocar para adjuntar GPS en vivo";
+          if (btnGps) btnGps.disabled = false;
+          if (!silencioso) mostrarToast("Activa los permisos de ubicación GPS de tu teléfono para ubicarte con exactitud", "Aviso GPS", "info");
+        },
+        { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
       );
     }
 
@@ -2262,15 +2342,53 @@
       const comisionFlash = (totalVentaTienda * tiendaPctComision) / 100;
       const netoTienda = totalVentaTienda - comisionFlash;
 
-      // 1. Guardar Pedido en Firebase
+      // Coordenadas exactas para que el chofer y el admin vean el punto exacto
+      let latDestinoFinal = null;
+      let lngDestinoFinal = null;
+      let latOrigenFinal = 10.1506;
+      let lngOrigenFinal = -68.5668;
+
+      if (esPagoTransporteDirecto) {
+        latOrigenFinal = puntoOrigen ? puntoOrigen[0] : 10.1506;
+        lngOrigenFinal = puntoOrigen ? puntoOrigen[1] : -68.5668;
+        latDestinoFinal = puntoDestino ? puntoDestino[0] : 10.1506;
+        lngDestinoFinal = puntoDestino ? puntoDestino[1] : -68.5668;
+      } else {
+        if (clienteLatActual !== null && clienteLngActual !== null) {
+          latDestinoFinal = clienteLatActual;
+          lngDestinoFinal = clienteLngActual;
+        } else if (ubicacionGPS) {
+          const m = ubicacionGPS.match(/q=(-?\d+\.?\d*),\s*(-?\d+\.?\d*)/) || ubicacionGPS.match(/@(-?\d+\.?\d*),\s*(-?\d+\.?\d*)/);
+          if (m) {
+            latDestinoFinal = parseFloat(m[1]);
+            lngDestinoFinal = parseFloat(m[2]);
+          }
+        }
+        if (latDestinoFinal === null || isNaN(latDestinoFinal)) {
+          latDestinoFinal = 10.1506;
+          lngDestinoFinal = -68.5668;
+        }
+      }
+
+      const ubicacionGPSFinal = ubicacionGPS || `https://maps.google.com/?q=${latDestinoFinal},${lngDestinoFinal}`;
+
+      // 1. Guardar Pedido en Firebase con coordenadas exactas sincronizadas
       if (firebaseActivo && db) {
         try {
           db.ref('pedidos').push({
             orden: numOrden,
+            tipoServicio: esPagoTransporteDirecto ? 'transporte' : 'delivery',
+            vehiculoRequerido: esPagoTransporteDirecto ? (tipoTransporteSeleccionado === 'carro' ? 'Carro' : 'Moto') : 'Cualquiera',
             cliente: nombre,
             telefono: telefono,
             direccion: direccion || textoDestinoStr || 'Ubicación especificada',
-            ubicacionGPS: ubicacionGPS || '',
+            ubicacionGPS: ubicacionGPSFinal,
+            lat: latDestinoFinal,
+            lng: lngDestinoFinal,
+            destinoLat: latDestinoFinal,
+            destinoLng: lngDestinoFinal,
+            origenLat: latOrigenFinal,
+            origenLng: lngOrigenFinal,
             metodoPago: metodoPagoActual,
             referenciaPago: refPago || '',
             pagaCon: montoPaga || '',
@@ -2307,7 +2425,7 @@
         }
       }
 
-      // Mensaje de WhatsApp
+      // Mensaje de WhatsApp con enlace GPS exacto
       let msj = "";
       if (esPagoTransporteDirecto) {
         msj += `🚗 *SOLICITUD DE VIAJE: #${numOrden}* 🚗\n`;
@@ -2316,13 +2434,13 @@
         msj += `📱 *Teléfono:* ${telefono}\n`;
         msj += `👥 *Para:* ${tipoBeneficiario} ${tipoBeneficiario.includes('otra') ? '('+nombreTercero+')' : ''}\n\n`;
         msj += `📍 *Origen:* ${textoOrigenStr}\n`;
-        msj += `🗺️ Link Salida: https://maps.google.com/?q=${puntoOrigen[0]},${puntoOrigen[1]}\n\n`;
+        msj += `🗺️ Link Salida: https://maps.google.com/?q=${latOrigenFinal},${lngOrigenFinal}\n\n`;
         if (puntoDestino) {
           msj += `🏁 *Destino:* ${textoDestinoStr}\n`;
-          msj += `🗺️ Link Destino: https://maps.google.com/?q=${puntoDestino[0]},${puntoDestino[1]}\n\n`;
+          msj += `🗺️ Link Destino: https://maps.google.com/?q=${latDestinoFinal},${lngDestinoFinal}\n\n`;
         }
-        msj += `🚘 *Unidad:* ${tipoTransporteSeleccionado.toUpperCase()}\n`;
-        msj += `💵 *Tarifa:* $${precioTransporte.toFixed(2)}\n`;
+        msj += `🚘 *Unidad Solicitada:* ${tipoTransporteSeleccionado.toUpperCase()}\n`;
+        msj += `💵 *Tarifa de Viaje:* $${precioTransporte.toFixed(2)}\n`;
         msj += `💳 *Método de Pago:* ${metodoPagoActual}\n`;
       } else {
         msj += `🛍️ *ORDEN DE COMPRA: #${numOrden}* 🛍️\n`;
@@ -2331,7 +2449,7 @@
         msj += `📱 *Teléfono:* ${telefono}\n`;
         msj += `👥 *Entrega:* ${tipoBeneficiario} ${tipoBeneficiario.includes('otra') ? '('+nombreTercero+')' : ''}\n`;
         msj += `📍 *Dirección:* ${direccion}\n`;
-        if (ubicacionGPS) msj += `🗺️ *GPS en Vivo:* ${ubicacionGPS}\n`;
+        msj += `🗺️ *GPS Exacto en Vivo:* ${ubicacionGPSFinal}\n`;
 
         if (tiendaDetectadaNombre) {
           msj += `\n🏪 *LOCAL / COMIDA:* ${tiendaDetectadaNombre}\n`;
@@ -2339,9 +2457,9 @@
 
         msj += `\n🛒 *LISTA DE ARTÍCULOS:*\n`;
         listaItemsArray.forEach(it => {
-          msj += ` • ${it.cantidad}x ${it.nombre} ${it.esPersonalizado ? '(Bajo Pedido)' : '($' + (it.cantidad * it.precio).toFixed(2) + ')'}\n`;
+          msj += ` • ${it.cantidad}x ${it.nombre} ${it.esPersonalizado ? '(Bajo Pedido)' : ''}\n`;
         });
-        msj += `\n💰 *TOTAL A PAGAR:* $${montoTotalCalculado.toFixed(2)}\n`;
+        msj += `\n🛵 *Tarifa Delivery Chofer:* $1.00\n`;
         msj += `💳 *Forma de Pago:* ${metodoPagoActual}\n`;
         if (metodoPagoActual === 'Pago Móvil' && refPago) msj += `🔢 *Ref Pago Móvil:* ${refPago}\n`;
         if (metodoPagoActual === 'Efectivo' && montoPaga) msj += `💵 *Paga con:* ${montoPaga} (Llevar vuelto)\n`;
