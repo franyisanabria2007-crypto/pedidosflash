@@ -106,6 +106,28 @@
 
     .safe-top { padding-top: max(env(safe-area-inset-top, 0px), 8px); }
     .safe-bottom { padding-bottom: max(env(safe-area-inset-bottom, 0px), 12px); }
+
+    .pin-jewel-a {
+      width: 28px; height: 28px; background: linear-gradient(135deg, #2563eb, #1d4ed8);
+      border: 2px solid #ffffff; border-radius: 50%; color: white; font-weight: 900;
+      font-size: 11px; display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 0 15px rgba(37,99,235,0.8);
+    }
+    .pin-jewel-b {
+      width: 28px; height: 28px; background: linear-gradient(135deg, #f97316, #ea580c);
+      border: 2px solid #ffffff; border-radius: 50%; color: white; font-weight: 900;
+      font-size: 11px; display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 0 15px rgba(249,115,22,0.8);
+    }
+    .pin-radar-chofer {
+      position: relative; width: 28px; height: 28px; border-radius: 50%;
+      background: #10b981; border: 2px solid #ffffff; box-shadow: 0 0 16px #10b981;
+      display: flex; align-items: center; justify-content: center; color: #05070c; font-weight: 900;
+    }
+    .pin-radar-chofer::after {
+      content: ''; position: absolute; inset: -8px; border-radius: 50%;
+      border: 2px solid #10b981; animation: ping 1.5s cubic-bezier(0, 0, 0.2, 1) infinite;
+    }
   </style>
 </head>
 <body class="bg-slate-950 font-sans text-slate-100 antialiased min-h-[100dvh] flex items-center justify-center p-0 sm:p-4 selection:bg-accent-magenta selection:text-white overflow-x-hidden">
@@ -948,6 +970,74 @@
           </div>
         </div>
         <a id="enlace-directo-wa" href="#" target="_blank" class="hidden text-accent-cyan text-xs underline mt-2 block">¿No abrió WhatsApp? Toca aquí</a>
+        <button onclick="cerrarModalExitoYAbrirRastreo()" type="button" class="mt-2 w-full bg-slate-800 hover:bg-slate-700 text-white font-bold py-2 rounded-xl text-xs flex items-center justify-center gap-1.5 border border-slate-700">
+          <i data-lucide="navigation" class="w-3.5 h-3.5 text-accent-emerald"></i> Ver Chofer en Vivo (GPS)
+        </button>
+      </div>
+    </div>
+
+    <!-- BOTÓN FLOTANTE RASTREO EN VIVO CLIENTE -->
+    <div id="banner-flotante-rastreo" class="fixed top-3 right-3 z-50 hidden">
+      <button onclick="abrirModalRastreoCliente()" class="btn-tactil bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-950 font-black px-3.5 py-2 rounded-2xl text-xs flex items-center gap-2 shadow-glow-emerald border border-white/20 animate-pulse">
+        <span class="w-2.5 h-2.5 rounded-full bg-slate-950 animate-ping"></span>
+        <i data-lucide="navigation-2" class="w-4 h-4"></i>
+        <span>Chofer en Vivo</span>
+      </button>
+    </div>
+
+    <!-- MODAL RASTREO SATELITAL EN VIVO DEL CHOFER -->
+    <div id="modal-rastreo-cliente" class="fixed inset-0 bg-slate-950/90 backdrop-blur-xl z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 hidden">
+      <div class="anim-modal bg-slate-900 border-t sm:border border-indigo-500/40 w-full max-w-sm rounded-t-[32px] sm:rounded-3xl p-5 space-y-3.5 shadow-2xl max-h-[90vh] overflow-y-auto no-scrollbar">
+        <div class="flex justify-between items-center border-b border-slate-800 pb-2.5">
+          <div class="flex items-center gap-2">
+            <div class="w-8 h-8 rounded-xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center justify-center shadow-glow-emerald">
+              <i data-lucide="navigation" class="w-4 h-4"></i>
+            </div>
+            <div>
+              <h3 class="text-sm font-black text-white leading-tight">Rastreo Satelital en Vivo</h3>
+              <span id="rastreo-cliente-num-orden" class="text-[10px] text-accent-cyan font-mono font-bold">#FLASH-0000</span>
+            </div>
+          </div>
+          <button onclick="cerrarModalRastreoCliente()" class="w-8 h-8 rounded-full bg-slate-800 text-slate-400 hover:text-white flex items-center justify-center">
+            <i data-lucide="x" class="w-4 h-4"></i>
+          </button>
+        </div>
+
+        <!-- ESTADO DEL PEDIDO -->
+        <div class="bg-slate-950 p-3 rounded-2xl border border-slate-800 text-center space-y-1">
+          <span id="rastreo-badge-estado" class="inline-block px-3 py-1 rounded-full text-xs font-black bg-amber-500/20 text-amber-300 border border-amber-500/30">
+            Buscando Chofer...
+          </span>
+          <p id="rastreo-texto-estado" class="text-[11px] text-slate-300">Estamos conectando tu orden con los repartidores en Nirgua...</p>
+        </div>
+
+        <!-- MAPA LEAFLET RASTREO -->
+        <div class="space-y-1">
+          <div class="flex justify-between items-center text-[10px] text-slate-400 font-mono font-bold px-1">
+            <span>A: Local • B: Tu Destino</span>
+            <span class="text-emerald-400 flex items-center gap-1 font-bold">
+              <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span> Radar Satelital Activo
+            </span>
+          </div>
+          <div id="mapa-rastreo-cliente-box" style="height: 190px; min-height: 190px; width: 100%;" class="rounded-2xl overflow-hidden border border-slate-800 shadow-inner"></div>
+        </div>
+
+        <!-- INFO DEL CHOFER ASIGNADO -->
+        <div id="rastreo-caja-chofer" class="bg-slate-950 p-3 rounded-2xl border border-slate-800 flex items-center justify-between gap-3 hidden">
+          <div class="flex items-center gap-2.5 min-w-0">
+            <div class="w-10 h-10 rounded-2xl bg-indigo-600/20 text-indigo-400 border border-indigo-500/30 flex items-center justify-center shrink-0 text-lg font-black">
+              🛵
+            </div>
+            <div class="min-w-0">
+              <span class="text-[9px] uppercase tracking-wider text-slate-400 font-bold block">Tu Repartidor Flash</span>
+              <h4 id="rastreo-nombre-chofer" class="text-xs font-black text-white truncate">Chofer Flash</h4>
+              <span id="rastreo-vehiculo-chofer" class="text-[10px] text-accent-cyan font-bold block">Moto</span>
+            </div>
+          </div>
+          <a id="rastreo-btn-wa-chofer" href="#" target="_blank" class="btn-tactil bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black px-3 py-2 rounded-xl text-xs flex items-center gap-1.5 shadow-md shrink-0">
+            <i data-lucide="message-circle" class="w-3.5 h-3.5"></i> WhatsApp
+          </a>
+        </div>
       </div>
     </div>
   </div>
@@ -2375,7 +2465,7 @@
       // 1. Guardar Pedido en Firebase con coordenadas exactas sincronizadas
       if (firebaseActivo && db) {
         try {
-          db.ref('pedidos').push({
+          const nuevoPedidoRef = db.ref('pedidos').push({
             orden: numOrden,
             tipoServicio: esPagoTransporteDirecto ? 'transporte' : 'delivery',
             vehiculoRequerido: esPagoTransporteDirecto ? (tipoTransporteSeleccionado === 'carro' ? 'Carro' : 'Moto') : 'Cualquiera',
@@ -2405,6 +2495,10 @@
             items: listaItemsArray,
             fecha: new Date().toISOString()
           });
+
+          if (nuevoPedidoRef && nuevoPedidoRef.key) {
+            activarRastreoPedidoCliente(nuevoPedidoRef.key);
+          }
 
           // 2. Anotar automáticamente en la cuenta de la Tienda (ej. Moravos Café)
           if (tiendaDetectadaId) {
@@ -2552,11 +2646,165 @@
       });
     }
 
+    // ================= RASTREO SATELITAL EN VIVO CLIENTE =================
+    let pedidoActivoClienteId = localStorage.getItem('pedidosflash_pedido_activo') || null;
+    let mapaRastreoClienteInstance = null;
+    let marcadorClienteOrigRef = null;
+    let marcadorClienteDestRef = null;
+    let marcadorClienteChoferRef = null;
+    let listenerGpsChoferActivo = null;
+
+    function activarRastreoPedidoCliente(pedidoId) {
+      if (!pedidoId || !db) return;
+      pedidoActivoClienteId = pedidoId;
+      localStorage.setItem('pedidosflash_pedido_activo', pedidoId);
+
+      const banner = document.getElementById('banner-flotante-rastreo');
+      if (banner) banner.classList.remove('hidden');
+
+      db.ref(`pedidos/${pedidoId}`).on('value', (snap) => {
+        const p = snap.val();
+        if (!p) return;
+        actualizarVistaRastreoCliente(p);
+      });
+    }
+
+    function cerrarModalExitoYAbrirRastreo() {
+      document.getElementById('modal-exito').classList.add('hidden');
+      abrirModalRastreoCliente();
+    }
+
+    function abrirModalRastreoCliente() {
+      document.getElementById('modal-rastreo-cliente').classList.remove('hidden');
+      setTimeout(() => {
+        if (!mapaRastreoClienteInstance) {
+          mapaRastreoClienteInstance = L.map('mapa-rastreo-cliente-box', { zoomControl: false, attributionControl: false }).setView([10.1506, -68.5668], 15);
+          L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(mapaRastreoClienteInstance);
+        } else {
+          mapaRastreoClienteInstance.invalidateSize();
+        }
+        if (pedidoActivoClienteId && db) {
+          db.ref(`pedidos/${pedidoActivoClienteId}`).once('value').then(snap => {
+            const p = snap.val();
+            if (p) actualizarVistaRastreoCliente(p);
+          });
+        }
+      }, 200);
+      lucide.createIcons();
+    }
+
+    function cerrarModalRastreoCliente() {
+      document.getElementById('modal-rastreo-cliente').classList.add('hidden');
+    }
+
+    function actualizarVistaRastreoCliente(p) {
+      const numOrdEl = document.getElementById('rastreo-cliente-num-orden');
+      const badgeEst = document.getElementById('rastreo-badge-estado');
+      const txtEst = document.getElementById('rastreo-texto-estado');
+      const cajaChofer = document.getElementById('rastreo-caja-chofer');
+
+      if (numOrdEl) numOrdEl.innerText = p.orden || `#FLASH`;
+
+      if (p.estado === 'pendiente') {
+        if (badgeEst) {
+          badgeEst.className = "inline-block px-3 py-1 rounded-full text-xs font-black bg-amber-500/20 text-amber-300 border border-amber-500/30";
+          badgeEst.innerText = "Buscando Chofer...";
+        }
+        if (txtEst) txtEst.innerText = "Tu orden fue enviada. En breve un chofer autorizado la tomará.";
+        if (cajaChofer) cajaChofer.classList.add('hidden');
+      } else if (p.estado === 'aceptado') {
+        if (badgeEst) {
+          badgeEst.className = "inline-block px-3 py-1 rounded-full text-xs font-black bg-blue-500/20 text-blue-300 border border-blue-500/30";
+          badgeEst.innerText = "Chofer Asignado (En Tienda)";
+        }
+        if (txtEst) txtEst.innerText = `${p.chofer || 'El chofer'} está en el comercio verificando los productos.`;
+        if (cajaChofer) cajaChofer.classList.remove('hidden');
+      } else if (p.estado === 'en_camino') {
+        if (badgeEst) {
+          badgeEst.className = "inline-block px-3 py-1 rounded-full text-xs font-black bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 animate-pulse";
+          badgeEst.innerText = "¡Tu pedido va en camino!";
+        }
+        if (txtEst) txtEst.innerText = `${p.chofer || 'El chofer'} ya salió de la tienda hacia tu destino.`;
+        if (cajaChofer) cajaChofer.classList.remove('hidden');
+      } else if (p.estado === 'entregado') {
+        if (badgeEst) {
+          badgeEst.className = "inline-block px-3 py-1 rounded-full text-xs font-black bg-emerald-500 text-slate-950";
+          badgeEst.innerText = "¡Entregado con Éxito!";
+        }
+        if (txtEst) txtEst.innerText = `¡Gracias por tu compra en Pedidos Flash Nirgua! ⭐`;
+      }
+
+      if (p.chofer && p.chofer !== 'Sin Asignar') {
+        const nomCh = document.getElementById('rastreo-nombre-chofer');
+        if (nomCh) nomCh.innerText = p.chofer;
+        const vehCh = document.getElementById('rastreo-vehiculo-chofer');
+        if (vehCh) vehCh.innerText = p.vehiculoRequerido || 'Repartidor';
+        if (p.choferTelefono) {
+          const btnWa = document.getElementById('rastreo-btn-wa-chofer');
+          if (btnWa) btnWa.href = `https://wa.me/${normalizarTelefono(p.choferTelefono)}?text=${encodeURIComponent(`Hola ${p.chofer}, te escribo con respecto a mi pedido ${p.orden || ''}`)}`;
+          escucharGpsChoferEnVivo(p.choferTelefono);
+        }
+      }
+
+      actualizarMapaClienteConPuntos(p);
+    }
+
+    function escucharGpsChoferEnVivo(telefonoChofer) {
+      if (!telefonoChofer || !db) return;
+      const tel = normalizarTelefono(telefonoChofer);
+      if (listenerGpsChoferActivo === tel) return;
+      listenerGpsChoferActivo = tel;
+
+      db.ref(`choferes/${tel}/gps`).on('value', (snap) => {
+        const gps = snap.val();
+        if (gps && gps.lat && gps.lng && mapaRastreoClienteInstance) {
+          const pos = [parseFloat(gps.lat), parseFloat(gps.lng)];
+          if (marcadorClienteChoferRef) {
+            marcadorClienteChoferRef.setLatLng(pos);
+          } else {
+            marcadorClienteChoferRef = L.marker(pos, {
+              icon: L.divIcon({
+                className: 'custom-pin',
+                html: `<div class="pin-radar-chofer"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg></div>`,
+                iconSize: [28, 28]
+              })
+            }).addTo(mapaRastreoClienteInstance).bindPopup("Tu Chofer (GPS en Vivo)").openPopup();
+          }
+        }
+      });
+    }
+
+    function actualizarMapaClienteConPuntos(p) {
+      if (!mapaRastreoClienteInstance) return;
+      const latDest = p.lat ? parseFloat(p.lat) : (p.destinoLat ? parseFloat(p.destinoLat) : 10.1506);
+      const lngDest = p.lng ? parseFloat(p.lng) : (p.destinoLng ? parseFloat(p.destinoLng) : -68.5668);
+      const latOrig = p.origenLat ? parseFloat(p.origenLat) : 10.1506;
+      const lngOrig = p.origenLng ? parseFloat(p.origenLng) : -68.5668;
+
+      if (marcadorClienteOrigRef) mapaRastreoClienteInstance.removeLayer(marcadorClienteOrigRef);
+      if (marcadorClienteDestRef) mapaRastreoClienteInstance.removeLayer(marcadorClienteDestRef);
+
+      marcadorClienteOrigRef = L.marker([latOrig, lngOrig], {
+        icon: L.divIcon({ className: 'custom-pin', html: '<div class="pin-jewel-a">A</div>', iconSize: [28, 28] })
+      }).addTo(mapaRastreoClienteInstance).bindPopup(`🏪 Tienda: ${p.tiendaNombre || 'Comercio'}`);
+
+      marcadorClienteDestRef = L.marker([latDest, lngDest], {
+        icon: L.divIcon({ className: 'custom-pin', html: '<div class="pin-jewel-b">B</div>', iconSize: [28, 28] })
+      }).addTo(mapaRastreoClienteInstance).bindPopup("📍 Tu Ubicación (Destino)");
+
+      const bounds = L.latLngBounds([[latOrig, lngOrig], [latDest, lngDest]]);
+      mapaRastreoClienteInstance.fitBounds(bounds, { padding: [25, 25] });
+    }
+
     window.onload = () => { 
       renderizarCatalogo(); 
       sincronizarTiendasDesdeFirebase();
       sincronizarCatalogoFlashDesdeFirebase();
       
+      if (pedidoActivoClienteId) {
+        activarRastreoPedidoCliente(pedidoActivoClienteId);
+      }
+
       const vid = document.getElementById('video-logo');
       if (vid) {
         vid.muted = true;
