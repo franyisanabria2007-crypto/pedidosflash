@@ -17,6 +17,9 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
+  <!-- Hoja de Estilos Personalizada (Glassmorphism & Login) -->
+  <link rel="stylesheet" href="style.css">
+
   <!-- Tesseract.js (IA para reconocimiento óptico de texto) -->
   <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
 
@@ -81,10 +84,7 @@
       100% { top: 4%; opacity: 0.9; }
     }
     .laser-line {
-      position: absolute;
-      left: 0;
-      right: 0;
-      height: 3px;
+      position: absolute; left: 0; right: 0; height: 3px;
       background: linear-gradient(90deg, transparent, #00f2fe, #ffffff, #00f2fe, transparent);
       box-shadow: 0 0 12px #00f2fe;
       animation: laserScan 2s infinite ease-in-out;
@@ -96,13 +96,8 @@
     }
     .ia-activo { animation: pulseGlow 1.2s infinite ease-in-out; }
 
-    .btn-tactil {
-      transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-    .btn-tactil:active {
-      transform: scale(0.96);
-      filter: brightness(0.92);
-    }
+    .btn-tactil { transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1); }
+    .btn-tactil:active { transform: scale(0.96); filter: brightness(0.92); }
 
     .safe-top { padding-top: max(env(safe-area-inset-top, 0px), 8px); }
     .safe-bottom { padding-bottom: max(env(safe-area-inset-bottom, 0px), 12px); }
@@ -128,6 +123,142 @@
       content: ''; position: absolute; inset: -8px; border-radius: 50%;
       border: 2px solid #10b981; animation: ping 1.5s cubic-bezier(0, 0, 0.2, 1) infinite;
     }
+
+    /* ================= ESTILOS LOGIN GLASSMORHPISM CON VIDEO DE FONDO ================= */
+    .background-video,
+    .background-video-auth {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .video-overlay,
+    .video-overlay-auth {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle at center, rgba(3, 7, 18, 0.65) 0%, rgba(3, 7, 18, 0.90) 100%);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    .login-container {
+      position: relative;
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      max-width: 400px;
+      margin: auto;
+      padding: 12px;
+    }
+
+    .login-card {
+      background: rgba(15, 23, 42, 0.82);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(0, 242, 254, 0.3);
+      padding: 24px 20px;
+      border-radius: 28px;
+      width: 100%;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 30px rgba(0, 242, 254, 0.15);
+      color: #fff;
+    }
+
+    .brand-title {
+      font-size: 26px;
+      font-weight: 900;
+      text-align: center;
+      letter-spacing: -0.5px;
+      margin-bottom: 2px;
+    }
+
+    .brand-title span {
+      background: linear-gradient(135deg, #00f2fe, #ffb800);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .brand-subtitle {
+      text-align: center;
+      font-size: 11px;
+      color: #94a3b8;
+      font-weight: 600;
+      margin-bottom: 16px;
+    }
+
+    .input-group {
+      margin-bottom: 12px;
+    }
+
+    .input-group label {
+      display: block;
+      font-size: 10px;
+      font-weight: 800;
+      margin-bottom: 4px;
+      color: #cbd5e1;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .input-group input {
+      width: 100%;
+      padding: 10px 14px;
+      background: rgba(2, 6, 23, 0.85);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 14px;
+      color: #fff;
+      font-size: 12px;
+      font-weight: 600;
+      outline: none;
+      transition: all 0.25s ease;
+    }
+
+    .input-group input:focus {
+      border-color: #00f2fe;
+      box-shadow: 0 0 15px rgba(0, 242, 254, 0.35);
+      background: rgba(2, 6, 23, 0.95);
+    }
+
+    .btn-login {
+      width: 100%;
+      padding: 13px;
+      background: linear-gradient(135deg, #00f2fe, #6366f1, #ff007a);
+      color: #ffffff;
+      border: none;
+      border-radius: 16px;
+      font-size: 13px;
+      font-weight: 900;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      box-shadow: 0 8px 25px rgba(0, 242, 254, 0.35);
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .btn-login:hover {
+      filter: brightness(1.1);
+      transform: translateY(-2px);
+      box-shadow: 0 12px 30px rgba(0, 242, 254, 0.5);
+    }
+
+    .btn-login:active {
+      transform: scale(0.97);
+    }
   </style>
 </head>
 <body class="bg-slate-950 font-sans text-slate-100 antialiased min-h-[100dvh] flex items-center justify-center p-0 sm:p-4 selection:bg-accent-magenta selection:text-white overflow-x-hidden">
@@ -148,7 +279,6 @@
   <!-- DISPOSITIVO MÓVIL (TAMAÑO IPHONE / ANDROID) -->
   <div class="w-full h-[100dvh] sm:h-[92dvh] sm:max-h-[890px] sm:max-w-[420px] bg-slate-900 sm:rounded-[46px] sm:border-[5px] sm:border-slate-800/90 shadow-[0_20px_70px_rgba(0,0,0,0.8),0_0_50px_rgba(99,102,241,0.2)] overflow-hidden flex flex-col relative bg-[url('img/nirgua.webp')] bg-cover bg-center">
 
-    <!-- CAPA DE SOBREPOSICIÓN OSCURA -->
     <div class="absolute inset-0 bg-slate-950/75 backdrop-blur-[2px] z-0 pointer-events-none"></div>
 
     <!-- NOTCH -->
@@ -157,9 +287,170 @@
       <div class="w-2 h-2 rounded-full bg-indigo-950 border border-indigo-800/40"></div>
     </div>
 
-    <!-- ENCABEZADO CON VIDEO / LOGO -->
+    <!-- ================= PANTALLA DE AUTH CON VIDEO DE FONDO Y GLASSMORPHISM ================= -->
+    <div id="pantalla-auth" class="absolute inset-0 z-50 bg-slate-950 flex flex-col items-center justify-center p-3 sm:p-5 overflow-hidden transition-all duration-500">
+      
+      <!-- Video de fondo cinematográfico -->
+      <video id="video-bg-auth" 
+             autoplay 
+             muted 
+             loop 
+             playsinline 
+             preload="auto" 
+             class="background-video background-video-auth" 
+             onerror="this.style.display='none';">
+        <source src="img/1002084633.mp4" type="video/mp4">
+        <source src="1002084633.mp4" type="video/mp4">
+        <source src="video_1.mp4" type="video/mp4">
+        Tu navegador no soporta videos en HTML5.
+      </video>
+
+      <!-- Capa oscura Glassmorphism para que el formulario resalte -->
+      <div class="video-overlay video-overlay-auth"></div>
+
+      <!-- Luces ambientales de neón -->
+      <div class="absolute -top-12 -left-12 w-48 h-48 bg-accent-cyan/25 rounded-full blur-3xl pointer-events-none z-[2]"></div>
+      <div class="absolute -bottom-12 -right-12 w-48 h-48 bg-accent-magenta/25 rounded-full blur-3xl pointer-events-none z-[2]"></div>
+
+      <!-- Contenedor del Login Glassmorphism -->
+      <div class="login-container overflow-y-auto max-h-full no-scrollbar py-2">
+        <div class="login-card space-y-3">
+          
+          <!-- Encabezado con Logo y Marca -->
+          <div class="text-center space-y-1">
+            <div class="w-16 h-16 mx-auto rounded-2xl bg-slate-900/90 border border-accent-cyan/40 p-2 shadow-glow-cyan flex items-center justify-center mb-1">
+              <img src="img/logo.jfif" alt="Logo" class="w-full h-full object-contain rounded-xl" onerror="this.src='img/logo.jfif';">
+            </div>
+            <div class="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-slate-950/80 border border-accent-cyan/30 shadow-glow-cyan">
+              <span class="w-2 h-2 rounded-full bg-accent-cyan animate-ping"></span>
+              <span class="text-[9px] font-black text-accent-cyan uppercase tracking-wider">Delivery Nirgua</span>
+            </div>
+            <h1 class="brand-title">Pedidos<span>Flash</span> ⚡</h1>
+            <p class="brand-subtitle">Víveres, Comida, Farmacia y Viajes en Nirgua</p>
+          </div>
+
+          <!-- Pestañas Login / Registro -->
+          <div class="grid grid-cols-2 p-1 bg-slate-950/90 rounded-2xl border border-slate-800">
+            <button id="tab-auth-login" onclick="cambiarTabAuth('login')" type="button" class="btn-tactil py-2 text-xs font-black rounded-xl bg-gradient-to-r from-accent-cyan to-brand-600 text-slate-950 shadow-md transition">
+              Iniciar Sesión
+            </button>
+            <button id="tab-auth-registro" onclick="cambiarTabAuth('registro')" type="button" class="btn-tactil py-2 text-xs font-bold text-slate-400 hover:text-white rounded-xl transition">
+              Crear Cuenta
+            </button>
+          </div>
+
+          <!-- FORMULARIO 1: INICIAR SESIÓN -->
+          <form id="form-auth-login" onsubmit="ejecutarLogin(event)" class="space-y-3">
+            <div class="input-group">
+              <label for="auth-login-tel">Teléfono Móvil</label>
+              <div class="relative">
+                <i data-lucide="phone" class="w-4 h-4 text-slate-400 absolute left-3.5 top-3 pointer-events-none"></i>
+                <input type="tel" id="auth-login-tel" placeholder="Ej: 04121234567" required class="!pl-10">
+              </div>
+            </div>
+
+            <div class="input-group">
+              <div class="flex items-center justify-between mb-1">
+                <label for="auth-login-pin" class="!mb-0">PIN de 4 dígitos</label>
+                <span class="text-[9px] text-slate-400">Tu clave secreta</span>
+              </div>
+              <div class="relative">
+                <i data-lucide="lock" class="w-4 h-4 text-slate-400 absolute left-3.5 top-3 pointer-events-none"></i>
+                <input type="password" id="auth-login-pin" maxlength="4" pattern="\d{4}" inputmode="numeric" placeholder="••••" required class="!pl-10 text-center font-black tracking-widest text-base">
+              </div>
+            </div>
+
+            <button type="submit" id="btn-submit-login" class="btn-login btn-tactil">
+              <i data-lucide="log-in" class="w-4 h-4"></i>
+              <span>INGRESAR AHORA</span>
+            </button>
+
+            <div class="text-center pt-1">
+              <p class="text-[10px] text-slate-300">
+                ¿Eres nuevo? <button type="button" onclick="cambiarTabAuth('registro')" class="text-accent-cyan font-bold hover:underline">Crea tu cuenta aquí</button>
+              </p>
+            </div>
+          </form>
+
+          <!-- FORMULARIO 2: CREAR CUENTA -->
+          <form id="form-auth-registro" onsubmit="ejecutarRegistro(event)" class="space-y-2.5 hidden">
+            <div class="input-group !mb-2">
+              <label for="auth-reg-nombre">Nombre Completo</label>
+              <div class="relative">
+                <i data-lucide="user" class="w-4 h-4 text-slate-400 absolute left-3.5 top-3 pointer-events-none"></i>
+                <input type="text" id="auth-reg-nombre" placeholder="Ej: María Rodríguez" required class="!pl-10">
+              </div>
+            </div>
+
+            <div class="input-group !mb-2">
+              <label for="auth-reg-tel">Teléfono Móvil (ID único)</label>
+              <div class="relative">
+                <i data-lucide="phone" class="w-4 h-4 text-slate-400 absolute left-3.5 top-3 pointer-events-none"></i>
+                <input type="tel" id="auth-reg-tel" placeholder="Ej: 04121234567" required class="!pl-10">
+              </div>
+            </div>
+
+            <div class="input-group !mb-2">
+              <label for="auth-reg-direccion">Dirección en Nirgua (Opcional)</label>
+              <div class="relative">
+                <i data-lucide="map-pin" class="w-4 h-4 text-slate-400 absolute left-3.5 top-3 pointer-events-none"></i>
+                <input type="text" id="auth-reg-direccion" placeholder="Ej: Calle Sucre, casa #24, frente a la plaza" class="!pl-10">
+              </div>
+            </div>
+
+            <div class="input-group !mb-2.5">
+              <div class="flex items-center justify-between mb-1">
+                <label for="auth-reg-pin" class="!mb-0">Crea un PIN de 4 dígitos</label>
+                <span class="text-[9px] text-accent-magenta font-semibold">Fácil de recordar</span>
+              </div>
+              <div class="relative">
+                <i data-lucide="lock" class="w-4 h-4 text-slate-400 absolute left-3.5 top-3 pointer-events-none"></i>
+                <input type="password" id="auth-reg-pin" maxlength="4" pattern="\d{4}" inputmode="numeric" placeholder="••••" required class="!pl-10 text-center font-black tracking-widest text-base">
+              </div>
+            </div>
+
+            <button type="submit" id="btn-submit-reg" class="btn-login btn-tactil !bg-gradient-to-r !from-accent-magenta !via-pink-600 !to-indigo-600 !shadow-glow-magenta">
+              <i data-lucide="user-plus" class="w-4 h-4"></i>
+              <span>CREAR CUENTA Y CONTINUAR</span>
+            </button>
+
+            <p class="text-center text-[10px] text-slate-300 pt-0.5">
+              ¿Ya tienes cuenta? <button type="button" onclick="cambiarTabAuth('login')" class="text-accent-cyan font-bold hover:underline">Inicia sesión</button>
+            </p>
+          </form>
+
+          <!-- ACCESO DIRECTO INVITADO -->
+          <button onclick="saltarAuthComoInvitado()" type="button" class="btn-tactil w-full py-1 text-center text-[10px] text-slate-400 hover:text-white transition font-semibold">
+            Continuar como invitado sin registrarme →
+          </button>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- ENCABEZADO CON PERFIL DE USUARIO Y LOGO / VIDEO -->
     <header class="bg-slate-900/95 border-b border-indigo-500/25 p-2.5 sm:p-3 shadow-lg relative shrink-0 z-40 backdrop-blur-xl flex flex-col gap-2 safe-top">
-      <div class="relative w-full h-28 sm:h-36 overflow-hidden rounded-2xl bg-slate-950/70 border border-indigo-500/40 shadow-inner group">
+      <div id="barra-usuario-header" class="flex items-center justify-between px-1">
+        <div class="flex items-center gap-2 min-w-0">
+          <div class="w-6 h-6 rounded-full bg-accent-cyan/20 border border-accent-cyan/50 text-accent-cyan flex items-center justify-center shrink-0">
+            <i data-lucide="user" class="w-3.5 h-3.5"></i>
+          </div>
+          <div class="min-w-0">
+            <span class="text-[9px] text-slate-400 block leading-none">Cliente</span>
+            <span id="txt-header-nombre-usuario" class="font-black text-white text-xs truncate block leading-tight">Invitado</span>
+          </div>
+        </div>
+        <div class="flex items-center gap-1.5">
+          <button onclick="abrirModalHistorialPedidos()" type="button" title="Historial de Pedidos" class="btn-tactil bg-slate-950/80 hover:bg-slate-800 text-indigo-300 hover:text-white border border-indigo-500/30 px-2.5 py-1 rounded-xl text-[10px] font-bold flex items-center gap-1 shadow-sm">
+            <i data-lucide="clock" class="w-3 h-3 text-accent-cyan"></i> <span>Historial</span>
+          </button>
+          <button onclick="cerrarSesionUsuario()" type="button" title="Cerrar Sesión" class="btn-tactil bg-slate-950/80 hover:bg-slate-800 text-slate-400 hover:text-accent-magenta border border-slate-800 px-2.5 py-1 rounded-xl text-[10px] font-bold flex items-center gap-1">
+            <i data-lucide="log-out" class="w-3 h-3"></i> <span>Salir</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="relative w-full h-24 sm:h-32 overflow-hidden rounded-2xl bg-slate-950/70 border border-indigo-500/40 shadow-inner group">
         <video id="video-logo" 
                autoplay 
                loop 
@@ -182,10 +473,9 @@
     <!-- ================= PASO 1: CATÁLOGO Y COMPRAS ================= -->
     <div id="paso-catalogo" class="flex-1 flex flex-col overflow-hidden relative z-10">
       
-      <!-- BARRA DE HERRAMIENTAS: BÚSQUEDA Y BOTONES PRO (VOZ Y CÁMARA/LISTA) -->
+      <!-- BARRA DE BÚSQUEDA, VOZ Y OCR -->
       <div class="p-2.5 sm:p-3 bg-slate-900/90 border-b border-slate-800/80 sticky top-0 z-20 space-y-2 backdrop-blur-xl">
         <div class="flex items-center gap-2">
-          
           <div class="relative flex-1">
             <i data-lucide="search" class="w-4 h-4 text-indigo-400 absolute left-3.5 top-3 pointer-events-none"></i>
             <input type="text" id="inputBusqueda" oninput="filtrarProductos()" placeholder="¿Qué buscas? Harina, café, bebidas..." class="w-full pl-10 pr-3 py-2.5 bg-slate-950/90 border border-slate-700/80 focus:border-accent-cyan rounded-2xl text-xs font-semibold text-white placeholder-slate-400 focus:outline-none transition shadow-inner">
@@ -203,23 +493,11 @@
           <input type="file" id="input-camara-directa" accept="image/*" capture="environment" class="hidden" onchange="procesarFotoIA(event)">
           <input type="file" id="input-galeria-foto" accept="image/*" class="hidden" onchange="procesarFotoIA(event)">
         </div>
-
-        <div id="banner-ia" class="hidden bg-slate-950/95 border border-accent-cyan/50 p-2.5 rounded-2xl flex flex-col gap-1 text-xs shadow-2xl backdrop-blur-md">
-          <div class="flex items-center justify-between">
-            <div class="flex items-center gap-2">
-              <i data-lucide="sparkles" class="w-4 h-4 text-accent-cyan animate-pulse"></i>
-              <span id="txt-estado-ia" class="font-black text-white">Procesando...</span>
-            </div>
-            <button onclick="cerrarBannerIA()" class="text-slate-400 hover:text-white p-0.5"><i data-lucide="x" class="w-4 h-4"></i></button>
-          </div>
-          <div id="txt-detalle-ia" class="text-[11px] text-indigo-200 font-semibold pl-6"></div>
-        </div>
       </div>
 
-      <!-- CATÁLOGO SCROLLABLE -->
       <main class="flex-1 p-3 space-y-3.5 overflow-y-auto no-scrollbar pb-32">
 
-        <!-- MENÚ PRINCIPAL: CUADROS DE SERVICIOS (VÍVERES Y BEBIDAS PRIMERO) -->
+        <!-- MENÚ PRINCIPAL: CUADROS DE CATEGORÍAS -->
         <div id="menu-principal-servicios" class="space-y-2.5 py-1">
           <div class="flex items-center justify-between px-1">
             <h3 class="text-xs font-black text-indigo-200 uppercase tracking-wider flex items-center gap-1.5">
@@ -230,7 +508,6 @@
           </div>
           
           <div class="grid grid-cols-2 gap-2.5">
-            <!-- 1. VÍVERES (DE PRIMERO) -->
             <button onclick="cambiarSeccion('viveres')" class="btn-tactil group relative bg-slate-900/90 border border-slate-800 hover:border-accent-cyan p-2.5 rounded-[22px] flex flex-col items-center justify-center text-center gap-1.5 shadow-lg overflow-hidden backdrop-blur-md">
               <div class="w-full h-16 rounded-xl overflow-hidden flex items-center justify-center group-hover:scale-105 transition-transform duration-300 relative bg-slate-950">
                 <span class="absolute top-1.5 right-1.5 bg-accent-cyan text-slate-950 font-black text-[9px] px-1.5 py-0.5 rounded-md shadow-md z-10">TOP</span>
@@ -242,7 +519,6 @@
               </div>
             </button>
 
-            <!-- 2. BEBIDAS FRÍAS (DE SEGUNDO) -->
             <button onclick="cambiarSeccion('bebidas')" class="btn-tactil group relative bg-slate-900/90 border border-slate-800 hover:border-accent-cyan p-2.5 rounded-[22px] flex flex-col items-center justify-center text-center gap-1.5 shadow-lg overflow-hidden backdrop-blur-md">
               <div class="w-full h-16 rounded-xl overflow-hidden flex items-center justify-center group-hover:scale-105 transition-transform duration-300 relative bg-slate-950">
                 <span class="absolute top-1.5 right-1.5 bg-accent-cyan text-slate-950 font-black text-[9px] px-1.5 py-0.5 rounded-md shadow-md z-10">FRÍAS</span>
@@ -254,7 +530,6 @@
               </div>
             </button>
 
-            <!-- 3. CARNES & POLLO -->
             <button onclick="cambiarSeccion('carnes')" class="btn-tactil group relative bg-slate-900/90 border border-slate-800 hover:border-accent-magenta p-2.5 rounded-[22px] flex flex-col items-center justify-center text-center gap-1.5 shadow-lg overflow-hidden backdrop-blur-md">
               <div class="w-full h-16 rounded-xl overflow-hidden flex items-center justify-center group-hover:scale-105 transition-transform duration-300 bg-slate-950">
                 <img src="img/carniceria.webp" alt="Carnes" class="w-full h-full object-cover rounded-xl" onerror="this.src='img/logo.jfif';">
@@ -265,7 +540,6 @@
               </div>
             </button>
 
-            <!-- 4. CHARCUTERÍA -->
             <button onclick="cambiarSeccion('charcuteria')" class="btn-tactil group relative bg-slate-900/90 border border-slate-800 hover:border-accent-orange p-2.5 rounded-[22px] flex flex-col items-center justify-center text-center gap-1.5 shadow-lg overflow-hidden backdrop-blur-md">
               <div class="w-full h-16 rounded-xl overflow-hidden flex items-center justify-center group-hover:scale-105 transition-transform duration-300 bg-slate-950">
                 <img src="img/charcuteria.webp" alt="Charcutería" class="w-full h-full object-cover rounded-xl" onerror="this.src='img/logo.jfif';">
@@ -276,7 +550,6 @@
               </div>
             </button>
 
-            <!-- 5. COMIDA RÁPIDA (MISMO TAMAÑO QUE LAS OTRAS, DIRECTA) -->
             <button onclick="cambiarSeccion('comida')" class="btn-tactil group relative bg-slate-900/90 border border-slate-800 hover:border-accent-yellow p-2.5 rounded-[22px] flex flex-col items-center justify-center text-center gap-1.5 shadow-lg overflow-hidden backdrop-blur-md">
               <div class="w-full h-16 rounded-xl overflow-hidden flex items-center justify-center group-hover:scale-105 transition-transform duration-300 relative bg-slate-950">
                 <span class="absolute top-1.5 right-1.5 bg-accent-yellow text-slate-950 font-black text-[9px] px-1.5 py-0.5 rounded-md shadow-md z-10">RÁPIDO</span>
@@ -288,7 +561,6 @@
               </div>
             </button>
 
-            <!-- 6. PANADERÍA -->
             <button onclick="cambiarSeccion('panaderia')" class="btn-tactil group relative bg-slate-900/90 border border-slate-800 hover:border-accent-yellow p-2.5 rounded-[22px] flex flex-col items-center justify-center text-center gap-1.5 shadow-lg overflow-hidden backdrop-blur-md">
               <div class="w-full h-16 rounded-xl overflow-hidden flex items-center justify-center group-hover:scale-105 transition-transform duration-300 relative bg-slate-950">
                 <span class="absolute top-1 right-1 bg-accent-yellow text-slate-950 font-black text-[9px] px-1.5 py-0.5 rounded-md z-10">¡FRESCO!</span>
@@ -300,7 +572,6 @@
               </div>
             </button>
 
-            <!-- 7. VERDURAS -->
             <button onclick="cambiarSeccion('verduras')" class="btn-tactil group relative bg-slate-900/90 border border-slate-800 hover:border-accent-emerald p-2.5 rounded-[22px] flex flex-col items-center justify-center text-center gap-1.5 shadow-lg overflow-hidden backdrop-blur-md">
               <div class="w-full h-16 rounded-xl overflow-hidden flex items-center justify-center group-hover:scale-105 transition-transform duration-300 bg-slate-950">
                 <img src="img/verdura.webp" alt="Verduras" class="w-full h-full object-cover rounded-xl" onerror="this.src='img/logo.jfif';">
@@ -311,7 +582,6 @@
               </div>
             </button>
 
-            <!-- 8. LIMPIEZA -->
             <button onclick="cambiarSeccion('limpieza')" class="btn-tactil group relative bg-slate-900/90 border border-slate-800 hover:border-accent-cyan p-2.5 rounded-[22px] flex flex-col items-center justify-center text-center gap-1.5 shadow-lg overflow-hidden backdrop-blur-md">
               <div class="w-full h-16 rounded-xl overflow-hidden flex items-center justify-center group-hover:scale-105 transition-transform duration-300 bg-slate-950">
                 <img src="img/limpieza.jfif" alt="Limpieza" class="w-full h-full object-cover rounded-xl" onerror="this.src='img/logo.jfif';">
@@ -322,11 +592,10 @@
               </div>
             </button>
 
-            <!-- 9. FARMACIA Y MEDICINA -->
             <button onclick="cambiarSeccion('farmacia')" class="btn-tactil group relative bg-slate-900/90 border border-slate-800 hover:border-accent-cyan p-2.5 rounded-[22px] flex flex-col items-center justify-center text-center gap-1.5 shadow-lg overflow-hidden backdrop-blur-md">
               <div class="w-full h-16 rounded-xl overflow-hidden flex items-center justify-center group-hover:scale-105 transition-transform duration-300 relative bg-slate-950">
                 <span class="absolute top-1.5 right-1.5 bg-accent-cyan text-slate-950 font-black text-[9px] px-1.5 py-0.5 rounded-md shadow-md z-10">SALUD</span>
-                <img src="img/farmacia.webp" alt="Farmacia" class="w-full h-full object-cover rounded-xl" onerror="this.onerror=null; this.src='img/logo.jfif';">
+                <img src="img/farmacia.webp" alt="Farmacia" class="w-full h-full object-cover rounded-xl" onerror="this.src='img/logo.jfif';">
               </div>
               <div>
                 <h4 class="font-black text-white text-xs">Farmacia</h4>
@@ -334,11 +603,10 @@
               </div>
             </button>
 
-            <!-- 10. FERRETERÍA -->
             <button onclick="cambiarSeccion('ferreteria')" class="btn-tactil group relative bg-slate-900/90 border border-slate-800 hover:border-accent-orange p-2.5 rounded-[22px] flex flex-col items-center justify-center text-center gap-1.5 shadow-lg overflow-hidden backdrop-blur-md">
               <div class="w-full h-16 rounded-xl overflow-hidden flex items-center justify-center group-hover:scale-105 transition-transform duration-300 relative bg-slate-950">
                 <span class="absolute top-1.5 right-1.5 bg-accent-orange text-slate-950 font-black text-[9px] px-1.5 py-0.5 rounded-md shadow-md z-10">HOGAR</span>
-                <img src="img/ferreteria.webp" alt="Ferretería" class="w-full h-full object-cover rounded-xl" onerror="this.onerror=null; this.src='img/logo.jfif';">
+                <img src="img/ferreteria.webp" alt="Ferretería" class="w-full h-full object-cover rounded-xl" onerror="this.src='img/logo.jfif';">
               </div>
               <div>
                 <h4 class="font-black text-white text-xs">Ferretería</h4>
@@ -346,7 +614,6 @@
               </div>
             </button>
 
-            <!-- 11. TRANSPORTE (BANNER COMPLETO INFERIOR) -->
             <button onclick="cambiarSeccion('transporte')" class="btn-tactil group relative bg-slate-900/90 border border-emerald-500/30 hover:border-accent-emerald p-2.5 rounded-[22px] flex items-center justify-between gap-3 shadow-lg overflow-hidden backdrop-blur-md col-span-2">
               <div class="flex items-center gap-3">
                 <div class="w-14 h-14 rounded-xl overflow-hidden flex items-center justify-center group-hover:scale-105 transition-transform duration-300 relative bg-slate-950 shrink-0 border border-emerald-500/30">
@@ -367,26 +634,22 @@
           </div>
         </div>
        
-        <!-- CONTENEDOR INTERIOR DE SECCIÓN ACTIVA -->
+        <!-- CONTENEDOR SECCIÓN ACTIVA -->
         <div id="contenedor-seccion-activa" class="hidden space-y-3">
           <button onclick="volverAlMenuPrincipal()" class="btn-tactil bg-slate-950/90 hover:bg-slate-800 text-accent-cyan border border-accent-cyan/30 px-3.5 py-2.5 rounded-2xl text-xs font-black flex items-center gap-2 shadow-md">
             <i data-lucide="arrow-left" class="w-4 h-4"></i> Volver a Categorías
           </button>
 
-          <!-- SECCIÓN COMIDA RÁPIDA (RESTAURANTES Y LOCALES) -->
+          <!-- SECCIÓN: COMIDA RÁPIDA (LOCALES) -->
           <div id="sec-comida" class="seccion-target space-y-3 hidden">
             <div class="px-1">
               <h3 class="text-xs font-black text-accent-yellow uppercase tracking-wider">Restaurantes & Comida Rápida</h3>
               <p class="text-[11px] text-slate-400">Toca en el local para ver su menú y ordenar</p>
             </div>
-
-            <!-- CONTENEDOR DINÁMICO DE TIENDAS/LOCALES -->
-            <div id="grid-locales-comerciales" class="grid grid-cols-2 gap-3">
-              <!-- Se puebla dinámicamente -->
-            </div>
+            <div id="grid-locales-comerciales" class="grid grid-cols-2 gap-3"></div>
           </div>
 
-          <!-- VÍVERES Y SUBMENÚ -->
+          <!-- SECCIÓN: VÍVERES -->
           <div id="sec-viveres" class="seccion-target space-y-3 hidden">
             <div class="space-y-1.5">
               <span class="text-[11px] font-black text-indigo-200 uppercase tracking-wider block px-1">Subcategorías de Víveres</span>
@@ -414,7 +677,6 @@
           <div id="sec-charcuteria" class="seccion-target space-y-2 hidden"><div id="grid-charcuteria" class="grid grid-cols-2 gap-2.5"></div></div>
           <div id="sec-carnes" class="seccion-target space-y-2 hidden"><div id="grid-carnes" class="grid grid-cols-2 gap-2.5"></div></div>
           
-          <!-- PANADERÍA CON LA PANAMERICANA -->
           <div id="sec-panaderia" class="seccion-target space-y-4 hidden">
             <div class="bg-slate-900/90 border border-accent-yellow/40 p-3 rounded-2xl space-y-2.5 backdrop-blur-md">
               <div class="flex items-center gap-2.5 border-b border-slate-800 pb-2">
@@ -431,7 +693,7 @@
           <div id="sec-verduras" class="seccion-target space-y-2 hidden"><div id="grid-verduras" class="grid grid-cols-2 gap-2.5"></div></div>
           <div id="sec-bebidas" class="seccion-target space-y-2 hidden"><div id="grid-bebidas" class="grid grid-cols-2 gap-2.5"></div></div>
           
-          <!-- TRANSPORTE CON MAPA -->
+          <!-- SECCIÓN: TRANSPORTE FLASH -->
           <div id="sec-transporte" class="seccion-target space-y-3 hidden">
             <div class="bg-slate-950/90 border border-emerald-500/40 rounded-3xl p-3.5 shadow-xl space-y-3 backdrop-blur-md">
               <div class="flex items-center justify-between border-b border-slate-800 pb-2">
@@ -440,12 +702,17 @@
                     <i data-lucide="navigation" class="w-4 h-4"></i>
                   </div>
                   <div>
-                    <h3 class="font-black text-white text-xs uppercase tracking-wider">Transporte Flash</h3>
+                    <h3 class="font-black text-white text-xs uppercase tracking-wider">Transporte Flash Nirgua</h3>
                     <p id="instruccion-mapa" class="text-[10px] text-accent-yellow font-bold">📍 Toca en el mapa o escribe tu destino</p>
                   </div>
                 </div>
                 <button onclick="reiniciarPuntosRuta()" class="btn-tactil text-[10px] font-bold bg-slate-800 hover:bg-slate-700 text-slate-300 px-2.5 py-1 rounded-lg border border-slate-700">Reiniciar</button>
               </div>
+
+              <button type="button" onclick="usarGpsActualComoOrigen()" class="btn-tactil w-full bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-500 hover:brightness-110 text-slate-950 font-black py-2.5 px-3 rounded-xl text-xs flex items-center justify-center gap-2 shadow-glow-emerald border border-white/20">
+                <i data-lucide="crosshair" class="w-4 h-4 text-slate-950 stroke-[2.5]"></i>
+                <span id="lbl-transporte-gps-rapido">📍 Mi Ubicación Actual (GPS Rápido)</span>
+              </button>
 
               <div class="grid grid-cols-2 gap-2">
                 <button onclick="seleccionarTransporte('moto', 1.00)" id="btn-trans-moto" type="button" class="btn-tactil p-2.5 rounded-2xl border-2 border-accent-cyan bg-accent-cyan/20 text-white text-xs font-black flex flex-col items-center justify-center gap-1 shadow-glow-cyan transition">
@@ -467,11 +734,11 @@
                 <div class="flex items-center justify-between">
                   <label class="block text-[10px] text-emerald-400 font-bold uppercase">📍 ¿De dónde sales?</label>
                   <button type="button" onclick="usarGpsActualComoOrigen()" class="btn-tactil text-[10px] text-accent-cyan font-bold hover:underline flex items-center gap-1">
-                    <span class="w-1.5 h-1.5 rounded-full bg-accent-cyan animate-ping"></span> Activar GPS
+                    <span class="w-1.5 h-1.5 rounded-full bg-accent-cyan animate-ping"></span> Fijar GPS
                   </button>
                 </div>
                 <div class="flex gap-1.5">
-                  <input type="text" id="inputBuscadorOrigen" onkeydown="if(event.key==='Enter') buscarPuntoOrigenPorTexto()" placeholder="Salida o GPS..." class="w-full p-2 bg-slate-950 border border-slate-700 rounded-lg text-xs text-white placeholder-slate-500 focus:outline-none focus:border-accent-cyan">
+                  <input type="text" id="inputBuscadorOrigen" onkeydown="if(event.key==='Enter') buscarPuntoOrigenPorTexto()" placeholder="Salida o GPS actual..." class="w-full p-2 bg-slate-950 border border-slate-700 rounded-lg text-xs text-white placeholder-slate-500 focus:outline-none focus:border-accent-cyan">
                   <button type="button" onclick="buscarPuntoOrigenPorTexto()" class="btn-tactil bg-emerald-500 text-slate-950 font-black px-3 py-1 rounded-lg text-xs shadow-md">Definir</button>
                 </div>
               </div>
@@ -489,14 +756,13 @@
               </div>
 
               <button onclick="irAPagarTransporteDirecto()" type="button" class="btn-tactil w-full bg-gradient-to-r from-accent-emerald via-emerald-500 to-accent-cyan text-slate-950 font-black py-3.5 rounded-2xl text-xs shadow-glow-emerald flex items-center justify-center gap-2 border-t border-white/30">
-                <i data-lucide="arrow-right-circle" class="w-4 h-4 fill-slate-950"></i> ¡PAGAR VIAJE DIRECTO! (<span id="txt-precio-btn-viaje">$1.00</span>)
+                <i data-lucide="arrow-right-circle" class="w-4 h-4 fill-slate-950"></i> ¡SOLICITAR VIAJE FLASH! (<span id="txt-precio-btn-viaje">$1.00</span>)
               </button>
             </div>
           </div>
 
           <div id="sec-limpieza" class="seccion-target space-y-2 hidden"><div id="grid-limpieza" class="grid grid-cols-2 gap-2.5"></div></div>
           
-          <!-- SECCIÓN FARMACIA & MEDICINAS -->
           <div id="sec-farmacia" class="seccion-target space-y-3 hidden">
             <div class="px-1">
               <h3 class="text-xs font-black text-accent-cyan uppercase tracking-wider flex items-center gap-1.5">
@@ -507,7 +773,6 @@
             <div id="grid-farmacia" class="grid grid-cols-2 gap-2.5"></div>
           </div>
 
-          <!-- SECCIÓN FERRETERÍA -->
           <div id="sec-ferreteria" class="seccion-target space-y-3 hidden">
             <div class="px-1">
               <h3 class="text-xs font-black text-accent-orange uppercase tracking-wider flex items-center gap-1.5">
@@ -521,12 +786,12 @@
 
       </main>
 
-      <!-- BOTÓN FLOTANTE: PEDIR PRODUCTO PERSONALIZADO -->
+      <!-- BOTÓN FLOTANTE "NO LO VES? PÍDELO" -->
       <button onclick="abrirModalPersonalizado()" type="button" class="btn-tactil absolute z-30 bottom-16 left-3 bg-gradient-to-r from-accent-cyan to-brand-600 text-slate-950 font-black px-3.5 py-2.5 rounded-2xl shadow-glow-cyan flex items-center gap-1.5 text-xs border-t border-white/30">
         <i data-lucide="plus-circle" class="w-4 h-4 fill-slate-950"></i> <span>¿No lo ves? Pídelo</span>
       </button>
 
-      <!-- WIDGET FLOTANTE DEL CARRITO -->
+      <!-- WIDGET FLOTANTE TOTAL LLEVADO -->
       <div id="widget-total-flotante" onclick="abrirModalCarrito()" class="absolute z-40 transition-all duration-300 opacity-0 pointer-events-none touch-none select-none cursor-pointer active:scale-95" style="top: 130px; right: 12px;">
         <div class="bg-gradient-to-b from-indigo-500/50 to-slate-950 p-[1.5px] rounded-2xl shadow-glow-indigo">
           <div class="bg-slate-950/90 backdrop-blur-md px-3 py-2 rounded-[15px] flex flex-col items-center justify-center text-center">
@@ -540,34 +805,43 @@
         </div>
       </div>
 
-      <!-- BARRA DE NAVEGACIÓN INFERIOR -->
-      <nav class="absolute bottom-0 left-0 right-0 bg-slate-950/90 backdrop-blur-2xl border-t border-slate-800/80 px-3 py-2 z-40 flex items-center justify-around shadow-2xl safe-bottom">
-        <button onclick="volverAlMenuPrincipal()" type="button" class="btn-tactil flex flex-col items-center gap-1 text-accent-cyan py-1 px-3">
-          <i data-lucide="home" class="w-5 h-5"></i>
-          <span class="text-[10px] font-black tracking-tight">Inicio</span>
+      <!-- BARRA DE NAVEGACIÓN INFERIOR (CON "MI PEDIDO" PULSANTE E HISTORIAL) -->
+      <nav class="absolute bottom-0 left-0 right-0 bg-slate-950/95 backdrop-blur-2xl border-t border-slate-800/80 px-2 py-1.5 z-40 flex items-center justify-around shadow-2xl safe-bottom">
+        <button onclick="volverAlMenuPrincipal()" type="button" class="btn-tactil flex flex-col items-center gap-0.5 text-accent-cyan py-1 px-1.5">
+          <i data-lucide="home" class="w-4 h-4 sm:w-5 sm:h-5"></i>
+          <span class="text-[9px] sm:text-[10px] font-black tracking-tight">Inicio</span>
         </button>
 
-        <button onclick="document.getElementById('inputBusqueda').focus()" type="button" class="btn-tactil flex flex-col items-center gap-1 text-slate-400 hover:text-white py-1 px-3">
-          <i data-lucide="search" class="w-5 h-5"></i>
-          <span class="text-[10px] font-bold tracking-tight">Buscar</span>
-        </button>
-
-        <button onclick="cambiarSeccion('transporte')" type="button" class="btn-tactil flex flex-col items-center gap-1 text-slate-400 hover:text-accent-emerald py-1 px-3">
-          <i data-lucide="navigation" class="w-5 h-5"></i>
-          <span class="text-[10px] font-bold tracking-tight">Viajes</span>
-        </button>
-
-        <button onclick="abrirModalCarrito()" type="button" class="btn-tactil relative flex flex-col items-center gap-1 text-slate-400 hover:text-accent-yellow py-1 px-3">
+        <button id="nav-btn-rastreo" onclick="abrirModalRastreoCliente()" type="button" class="btn-tactil relative flex flex-col items-center gap-0.5 text-slate-400 hover:text-accent-emerald py-1 px-1.5 transition">
           <div class="relative">
-            <i data-lucide="shopping-bag" class="w-5 h-5"></i>
+            <i data-lucide="radar" id="nav-icono-rastreo" class="w-4 h-4 sm:w-5 sm:h-5"></i>
+            <span id="nav-pulse-dot" class="hidden absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-accent-emerald animate-ping"></span>
+            <span id="nav-static-dot" class="hidden absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-accent-emerald shadow-glow-emerald"></span>
+          </div>
+          <span id="nav-txt-rastreo" class="text-[9px] sm:text-[10px] font-bold tracking-tight">Mi Pedido</span>
+        </button>
+
+        <button onclick="abrirModalHistorialPedidos()" type="button" class="btn-tactil relative flex flex-col items-center gap-0.5 text-slate-400 hover:text-accent-cyan py-1 px-1.5 transition">
+          <i data-lucide="clock" class="w-4 h-4 sm:w-5 sm:h-5"></i>
+          <span class="text-[9px] sm:text-[10px] font-bold tracking-tight">Historial</span>
+        </button>
+
+        <button onclick="cambiarSeccion('transporte')" type="button" class="btn-tactil flex flex-col items-center gap-0.5 text-slate-400 hover:text-accent-emerald py-1 px-1.5">
+          <i data-lucide="navigation" class="w-4 h-4 sm:w-5 sm:h-5"></i>
+          <span class="text-[9px] sm:text-[10px] font-bold tracking-tight">Viajes</span>
+        </button>
+
+        <button onclick="abrirModalCarrito()" type="button" class="btn-tactil relative flex flex-col items-center gap-0.5 text-slate-400 hover:text-accent-yellow py-1 px-1.5">
+          <div class="relative">
+            <i data-lucide="shopping-bag" class="w-4 h-4 sm:w-5 sm:h-5"></i>
             <span id="badge-nav-cant" class="absolute -top-1.5 -right-2 bg-accent-magenta text-white font-black text-[9px] w-4 h-4 rounded-full flex items-center justify-center shadow-glow-magenta">0</span>
           </div>
-          <span id="badge-nav-monto" class="text-[10px] font-black text-accent-yellow">$0.00</span>
+          <span id="badge-nav-monto" class="text-[9px] sm:text-[10px] font-black text-accent-yellow leading-tight">$0.00</span>
         </button>
       </nav>
     </div>
 
-    <!-- ================= MODAL DESPLEGABLE DE PRODUCTOS DEL LOCAL ================= -->
+    <!-- MODAL PRODUCTOS DEL LOCAL -->
     <div id="modal-productos-local" onclick="if(event.target === this) cerrarModalLocal()" class="fixed inset-0 bg-slate-950/85 backdrop-blur-md z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 hidden">
       <div class="anim-modal bg-slate-900 border-t sm:border border-indigo-500/40 w-full max-w-md rounded-t-[32px] sm:rounded-3xl p-4 space-y-3 shadow-2xl max-h-[85vh] flex flex-col">
         <div class="flex justify-between items-center border-b border-slate-800 pb-3">
@@ -582,9 +856,7 @@
             <i data-lucide="x" class="w-4 h-4"></i>
           </button>
         </div>
-
         <div id="grid-modal-productos-local" class="flex-1 overflow-y-auto no-scrollbar grid grid-cols-2 gap-2.5 pr-1"></div>
-
         <div class="border-t border-slate-800 pt-2.5">
           <button onclick="cerrarModalLocal()" class="btn-tactil w-full bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold py-2.5 rounded-xl text-xs">
             Volver a Selección de Locales
@@ -603,8 +875,6 @@
       </div>
       
       <main class="flex-1 p-3.5 space-y-3.5 overflow-y-auto no-scrollbar pb-28">
-        
-        <!-- RESUMEN DE LA ORDEN -->
         <section class="bg-slate-950/85 p-3.5 rounded-2xl border border-slate-800 shadow-md space-y-2">
           <div class="flex justify-between items-center text-xs font-black text-slate-300 border-b border-slate-800/80 pb-1.5">
             <span id="titulo-resumen-paso2">Resumen de Artículos</span>
@@ -613,19 +883,21 @@
           <div id="resumen-lista-paso2" class="space-y-1.5 text-xs text-slate-300 max-h-36 overflow-y-auto no-scrollbar pr-1"></div>
         </section>
 
-        <!-- SELECCIÓN DE MÉTODO DE PAGO -->
         <section class="bg-slate-950/85 p-3.5 rounded-2xl border border-indigo-500/30 shadow-md space-y-3">
           <div>
-            <label class="block text-[11px] text-accent-cyan font-black uppercase mb-1.5">💳 Selecciona Método de Pago</label>
+            <div class="flex items-center justify-between mb-1.5">
+              <label class="block text-[11px] text-accent-cyan font-black uppercase">💳 Pago Contra Entrega (Al Recibir)</label>
+              <span class="text-[9px] bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-2 py-0.2 rounded-full font-bold">Sin referencias</span>
+            </div>
             <div class="grid grid-cols-3 gap-1.5">
-              <button type="button" onclick="seleccionarMetodoPago('pago_movil')" id="btn-pago-movil" class="btn-tactil p-2.5 rounded-xl border-2 border-accent-cyan bg-accent-cyan/20 text-white text-xs font-black flex flex-col items-center justify-center gap-1">
+              <button type="button" onclick="seleccionarMetodoPago('pago_movil')" id="btn-pago-movil" class="btn-tactil p-2.5 rounded-xl border-2 border-accent-cyan bg-accent-cyan/20 text-white text-xs font-black flex flex-col items-center justify-center gap-1 shadow-glow-cyan">
                 <span>📱 Pago Móvil</span>
               </button>
               <button type="button" onclick="seleccionarMetodoPago('efectivo')" id="btn-pago-efectivo" class="btn-tactil p-2.5 rounded-xl border-2 border-slate-800 bg-slate-900 text-slate-300 text-xs font-bold flex flex-col items-center justify-center gap-1">
                 <span>💵 Efectivo</span>
               </button>
               <button type="button" onclick="seleccionarMetodoPago('divisas')" id="btn-pago-divisas" class="btn-tactil p-2.5 rounded-xl border-2 border-slate-800 bg-slate-900 text-slate-300 text-xs font-bold flex flex-col items-center justify-center gap-1">
-                <span>💲 Zelle/Divisa</span>
+                <span>💲 Divisa/Zelle</span>
               </button>
             </div>
             <input type="hidden" id="metodoPagoElegido" value="Pago Móvil">
@@ -634,14 +906,15 @@
           <div id="caja-pago-movil" class="space-y-2 bg-slate-900 p-2.5 rounded-xl border border-slate-800">
             <div class="flex items-center justify-between">
               <div>
-                <p class="text-[11px] text-slate-300 font-bold">Banesco (0134) • 0426-2566854</p>
-                <p class="text-[11px] text-slate-400">C.I: 28.123.456</p>
+                <p class="text-[11px] text-accent-cyan font-bold">Pago Móvil al Momento de la Entrega</p>
+                <p class="text-[11px] text-slate-300 font-semibold">Banesco (0134) • 0426-2566854</p>
+                <p class="text-[10px] text-slate-400">C.I: 28.123.456</p>
               </div>
               <button type="button" onclick="copiarDatosPagoMovil()" class="btn-tactil bg-indigo-600 hover:bg-indigo-500 text-white font-black px-3 py-1.5 rounded-lg text-[10px] flex items-center gap-1 shadow">
                 <i data-lucide="copy" class="w-3 h-3"></i> Copiar
               </button>
             </div>
-            <input type="text" id="refPagoMovil" placeholder="Ingresa los últimos dígitos de la referencia..." class="w-full p-2.5 bg-slate-950 border border-slate-700 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-accent-cyan">
+            <p class="text-[10px] text-slate-400 leading-tight">💡 Pagas cómodamente cuando el repartidor llegue a tu dirección.</p>
           </div>
 
           <div id="caja-pago-efectivo" class="space-y-2 bg-slate-900 p-2.5 rounded-xl border border-slate-800 hidden">
@@ -657,11 +930,10 @@
 
           <div id="caja-pago-divisas" class="space-y-1.5 bg-slate-900 p-2.5 rounded-xl border border-slate-800 hidden">
             <p class="text-[11px] text-slate-300 font-bold">Pago en Dólares Físicos o Transferencia:</p>
-            <p class="text-[10px] text-slate-400 leading-tight">Aceptamos billetes en buen estado sin roturas al momento de la entrega.</p>
+            <p class="text-[10px] text-slate-400 leading-tight">Aceptamos billetes en buen estado sin roturas al momento de la entrega o transferencia Zelle.</p>
           </div>
         </section>
 
-        <!-- DATOS DEL CLIENTE -->
         <section class="bg-slate-950/85 p-3.5 rounded-2xl border border-slate-800 shadow-md space-y-3">
           <div>
             <label class="block text-[11px] text-indigo-300 font-black uppercase mb-1">¿Para quién es el pedido?</label>
@@ -701,14 +973,15 @@
               <i data-lucide="navigation" class="w-4 h-4 text-accent-cyan"></i> <span id="lbl-gps">Adjuntar Ubicación GPS en Vivo</span>
             </button>
             <input type="hidden" id="ubicacionGPS" value="">
+            <input type="hidden" id="latGPS" value="">
+            <input type="hidden" id="lngGPS" value="">
           </div>
         </section>
       </main>
 
-      <!-- BOTÓN FIJO EN EL CHECKOUT PRO -->
       <div class="absolute bottom-0 left-0 right-0 bg-slate-900/95 backdrop-blur-xl border-t border-slate-800 p-3 z-30 safe-bottom">
         <button onclick="enviarPedidoAConductor()" type="button" class="btn-tactil w-full bg-gradient-to-r from-accent-emerald via-emerald-500 to-accent-cyan text-slate-950 font-black py-3.5 px-4 rounded-2xl flex items-center justify-center gap-2 text-xs shadow-glow-emerald border-t border-white/30">
-          <i data-lucide="send" class="w-4 h-4 fill-slate-950"></i> ENVIAR ORDEN DIRECTA POR WHATSAPP
+          <i data-lucide="send" class="w-4 h-4 fill-slate-950"></i> ENVIAR ORDEN DIRECTA (DISPARO EN VIVO)
         </button>
       </div>
     </div>
@@ -870,7 +1143,7 @@
             <i data-lucide="mic" class="w-7 h-7 stroke-[2.5]"></i>
           </button>
           <p id="lbl-estado-voz-modal" class="text-xs font-black text-white mt-3">Te estoy escuchando...</p>
-          <p class="text-[10px] text-slate-400 mt-0.5">Di lo que necesitas (ej: "un refresco y una harina pan")</p>
+          <p class="text-[10px] text-slate-400 mt-0.5">Di lo que necesitas (ej: "un café y una harina pan")</p>
         </div>
 
         <div class="space-y-1 text-left">
@@ -953,26 +1226,144 @@
       </div>
     </div>
 
-    <!-- MODAL DE ÉXITO -->
-    <div id="modal-exito" class="fixed inset-0 bg-slate-950/85 backdrop-blur-md z-50 flex flex-col items-center justify-center p-4 hidden">
-      <div class="anim-modal bg-slate-900 border border-indigo-500/40 p-6 rounded-[32px] text-center shadow-[0_0_60px_rgba(99,102,241,0.4)] max-w-xs w-full space-y-4">
-        <div class="w-14 h-14 bg-accent-emerald/15 text-accent-emerald rounded-full flex items-center justify-center mx-auto border border-accent-emerald/30">
-          <i data-lucide="check-circle-2" class="w-8 h-8"></i>
+    <!-- MODAL DE ÉXITO (CONFIRMACIÓN IN-APP SIN REDIRECCIÓN FORZADA) -->
+    <div id="modal-exito" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md z-50 flex flex-col items-center justify-center p-4 hidden">
+      <div class="anim-modal bg-slate-900 border border-emerald-500/40 p-5 sm:p-6 rounded-[32px] text-center shadow-[0_0_60px_rgba(0,230,118,0.3)] max-w-sm w-full space-y-3.5 relative overflow-hidden">
+        <div class="absolute -top-16 -right-16 w-32 h-32 bg-emerald-500/15 rounded-full blur-3xl pointer-events-none"></div>
+
+        <div class="w-14 h-14 bg-gradient-to-tr from-accent-emerald to-teal-400 text-slate-950 rounded-2xl flex items-center justify-center mx-auto shadow-glow-emerald border border-white/30 text-2xl animate-bounce">
+          <i data-lucide="check-circle-2" class="w-8 h-8 stroke-[2.5]"></i>
         </div>
+
         <div>
-          <h2 class="text-lg font-black text-white tracking-tight">¡ORDEN GENERADA!</h2>
-          <p id="txt-estado-carga" class="text-xs font-semibold text-indigo-200 mt-1">Conectando con WhatsApp del repartidor...</p>
+          <span class="text-[10px] font-mono font-black text-emerald-400 bg-emerald-500/20 border border-emerald-500/30 px-3 py-0.5 rounded-full uppercase tracking-wider">
+            ¡Orden Registrada!
+          </span>
+          <h2 class="text-base sm:text-lg font-black text-white tracking-tight mt-1.5">¡PEDIDO ENVIADO CON ÉXITO!</h2>
+          <p id="txt-num-orden-exito" class="text-xs font-mono font-bold text-accent-cyan mt-0.5">#FLASH-0000</p>
+          <p id="txt-estado-carga" class="text-xs font-semibold text-slate-300 mt-1">Conectando con la red satelital de choferes en Nirgua...</p>
         </div>
-        <div class="space-y-2 pt-2">
-          <div class="relative w-full h-8 bg-slate-950 rounded-full border border-slate-800 p-1 flex items-center overflow-hidden shadow-inner">
+
+        <div class="space-y-1.5 pt-1">
+          <div class="relative w-full h-7 bg-slate-950 rounded-full border border-slate-800 p-0.5 flex items-center overflow-hidden shadow-inner">
             <div id="barra-progreso-relleno" class="h-full bg-gradient-to-r from-accent-magenta via-indigo-600 to-accent-cyan rounded-full transition-all duration-100 ease-linear" style="width: 0%;"></div>
-            <div id="cohete-desplazable" class="absolute top-1/2 -translate-y-1/2 text-2xl transition-all duration-100 ease-linear pointer-events-none" style="left: 0%;">🚀</div>
+            <div id="cohete-desplazable" class="absolute top-1/2 -translate-y-1/2 text-xl transition-all duration-100 ease-linear pointer-events-none" style="left: 0%;">🚀</div>
+          </div>
+          <span class="text-[9px] font-mono text-slate-400 block text-right">Radar GPS en línea</span>
+        </div>
+
+        <div class="space-y-2 pt-2">
+          <button onclick="cerrarModalExitoYAbrirRastreo()" type="button" class="btn-tactil w-full bg-gradient-to-r from-accent-emerald via-emerald-500 to-accent-cyan text-slate-950 font-black py-3 rounded-2xl text-xs shadow-glow-emerald flex items-center justify-center gap-2 border-t border-white/30">
+            <i data-lucide="navigation-2" class="w-4 h-4 fill-slate-950"></i>
+            <span>SEGUIR MI PEDIDO EN VIVO (GPS)</span>
+          </button>
+
+          <button onclick="cerrarModalExitoYAbrirHistorial()" type="button" class="btn-tactil w-full bg-slate-800 hover:bg-slate-700 text-white font-bold py-2.5 rounded-xl text-xs flex items-center justify-center gap-1.5 border border-slate-700">
+            <i data-lucide="clock" class="w-3.5 h-3.5 text-accent-cyan"></i>
+            <span>Ver en Mis Pedidos</span>
+          </button>
+
+          <a id="enlace-directo-wa" href="#" target="_blank" class="text-[11px] text-slate-400 hover:text-accent-cyan flex items-center justify-center gap-1.5 pt-1 underline">
+            <i data-lucide="message-circle" class="w-3.5 h-3.5 text-emerald-400"></i>
+            <span>Enviar comprobante por WhatsApp (Opcional)</span>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL ALERTA EN VIVO: CHOFER ACEPTÓ EL PEDIDO -->
+    <div id="modal-chofer-acepto" class="fixed inset-0 bg-slate-950/90 backdrop-blur-xl z-[60] flex items-center justify-center p-4 hidden">
+      <div class="anim-modal bg-slate-900 border-2 border-accent-cyan/60 w-full max-w-sm rounded-[32px] p-5 space-y-4 shadow-[0_0_50px_rgba(0,242,254,0.35)] text-center relative overflow-hidden">
+        <div class="absolute -top-12 -right-12 w-28 h-28 bg-accent-cyan/20 rounded-full blur-2xl pointer-events-none"></div>
+        <div class="absolute -bottom-12 -left-12 w-28 h-28 bg-accent-magenta/20 rounded-full blur-2xl pointer-events-none"></div>
+
+        <div class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-accent-cyan to-indigo-600 text-slate-950 flex items-center justify-center mx-auto text-3xl shadow-glow-cyan animate-bounce">
+          🛵
+        </div>
+
+        <div>
+          <span class="text-[10px] font-mono font-black text-accent-cyan bg-accent-cyan/15 border border-accent-cyan/40 px-3 py-0.5 rounded-full uppercase tracking-wider">
+            ¡Carrera Aceptada!
+          </span>
+          <h3 class="text-base font-black text-white mt-1.5">¡Tu Chofer Va en Camino!</h3>
+          <p id="chofer-acepto-mensaje" class="text-xs text-slate-300 mt-1 leading-relaxed">
+            <b id="chofer-acepto-nombre" class="text-accent-cyan">Un chofer</b> ha aceptado tu pedido y se dirige al comercio a retirarlo.
+          </p>
+        </div>
+
+        <div class="bg-slate-950/90 p-3 rounded-2xl border border-slate-800 space-y-2 text-left">
+          <div class="flex items-center justify-between">
+            <span class="text-[10px] text-slate-400 font-bold uppercase">Repartidor Asignado:</span>
+            <span id="chofer-acepto-vehiculo" class="text-[10px] font-black text-accent-emerald bg-emerald-500/15 px-2 py-0.5 rounded-full border border-emerald-500/30">🛵 Moto Flash</span>
+          </div>
+          <div class="flex items-center gap-2.5">
+            <div class="w-9 h-9 rounded-xl bg-indigo-600/20 text-accent-cyan flex items-center justify-center font-black text-sm border border-indigo-500/30">
+              <i data-lucide="user-check" class="w-5 h-5"></i>
+            </div>
+            <div class="min-w-0">
+              <h4 id="chofer-acepto-nombre-card" class="text-xs font-black text-white truncate">Chofer Flash</h4>
+              <p id="chofer-acepto-tel-card" class="text-[10px] text-slate-400 font-mono">0412-1234567</p>
+            </div>
           </div>
         </div>
-        <a id="enlace-directo-wa" href="#" target="_blank" class="hidden text-accent-cyan text-xs underline mt-2 block">¿No abrió WhatsApp? Toca aquí</a>
-        <button onclick="cerrarModalExitoYAbrirRastreo()" type="button" class="mt-2 w-full bg-slate-800 hover:bg-slate-700 text-white font-bold py-2 rounded-xl text-xs flex items-center justify-center gap-1.5 border border-slate-700">
-          <i data-lucide="navigation" class="w-3.5 h-3.5 text-accent-emerald"></i> Ver Chofer en Vivo (GPS)
-        </button>
+
+        <div class="space-y-2 pt-1">
+          <button onclick="verRastreoDesdeAlerta()" type="button" class="btn-tactil w-full bg-gradient-to-r from-accent-emerald via-teal-500 to-accent-cyan text-slate-950 font-black py-3 rounded-2xl text-xs shadow-glow-emerald flex items-center justify-center gap-2 border-t border-white/30">
+            <i data-lucide="navigation-2" class="w-4 h-4 fill-slate-950"></i>
+            <span>VER SEGUIMIENTO EN VIVO (GPS)</span>
+          </button>
+
+          <div class="grid grid-cols-2 gap-2">
+            <a id="chofer-acepto-btn-wa" href="#" target="_blank" class="btn-tactil bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2 rounded-xl text-xs flex items-center justify-center gap-1.5 shadow-sm">
+              <i data-lucide="message-circle" class="w-3.5 h-3.5"></i>
+              <span>WhatsApp</span>
+            </a>
+            <button onclick="cerrarModalChoferAcepto()" type="button" class="btn-tactil bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold py-2 rounded-xl text-xs">
+              Continuar
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL HISTORIAL DE PEDIDOS CLIENTE -->
+    <div id="modal-historial-pedidos" onclick="if(event.target === this) cerrarModalHistorialPedidos()" class="fixed inset-0 bg-slate-950/85 backdrop-blur-md z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 hidden">
+      <div class="anim-modal bg-slate-900 border-t sm:border border-indigo-500/40 w-full max-w-md rounded-t-[32px] sm:rounded-3xl p-4 sm:p-5 space-y-3.5 shadow-2xl max-h-[88vh] flex flex-col">
+        <div class="flex justify-between items-center border-b border-slate-800 pb-2.5 shrink-0">
+          <div class="flex items-center gap-2">
+            <div class="w-8 h-8 rounded-xl bg-accent-cyan/15 text-accent-cyan border border-accent-cyan/30 flex items-center justify-center shadow-glow-cyan">
+              <i data-lucide="clock" class="w-4 h-4"></i>
+            </div>
+            <div>
+              <h3 class="text-sm font-black text-white leading-tight">Mis Pedidos</h3>
+              <p class="text-[10px] text-slate-400">Historial de compras y seguimiento en vivo</p>
+            </div>
+          </div>
+          <button onclick="cerrarModalHistorialPedidos()" class="btn-tactil w-8 h-8 rounded-full bg-slate-800 text-slate-400 hover:text-white flex items-center justify-center">
+            <i data-lucide="x" class="w-4 h-4"></i>
+          </button>
+        </div>
+
+        <!-- FILTRO DE PESTAÑAS HISTORIAL -->
+        <div class="grid grid-cols-2 p-1 bg-slate-950 rounded-2xl border border-slate-800 shrink-0">
+          <button onclick="filtrarTabHistorial('activos')" id="tab-historial-activos" class="btn-tactil py-2 text-center rounded-xl text-xs font-black bg-gradient-to-r from-accent-cyan to-brand-600 text-slate-950 shadow-md">
+            En Curso / Activos
+          </button>
+          <button onclick="filtrarTabHistorial('todos')" id="tab-historial-todos" class="btn-tactil py-2 text-center rounded-xl text-xs font-bold text-slate-400 hover:text-white">
+            Todos / Pasados
+          </button>
+        </div>
+
+        <!-- CONTENEDOR LISTA DE PEDIDOS -->
+        <div id="lista-pedidos-historial-contenedor" class="flex-1 overflow-y-auto no-scrollbar space-y-2.5 pr-1">
+          <!-- Render dinámico -->
+        </div>
+
+        <div class="border-t border-slate-800 pt-2 shrink-0">
+          <button onclick="cerrarModalHistorialPedidos()" type="button" class="btn-tactil w-full bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold py-2.5 rounded-xl text-xs">
+            Cerrar Historial
+          </button>
+        </div>
       </div>
     </div>
 
@@ -985,10 +1376,11 @@
       </button>
     </div>
 
-    <!-- MODAL RASTREO SATELITAL EN VIVO DEL CHOFER -->
+    <!-- MODAL RASTREO SATELITAL EN VIVO DEL CHOFER (CON OSRM Y HUD) -->
     <div id="modal-rastreo-cliente" class="fixed inset-0 bg-slate-950/90 backdrop-blur-xl z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 hidden">
-      <div class="anim-modal bg-slate-900 border-t sm:border border-indigo-500/40 w-full max-w-sm rounded-t-[32px] sm:rounded-3xl p-5 space-y-3.5 shadow-2xl max-h-[90vh] overflow-y-auto no-scrollbar">
-        <div class="flex justify-between items-center border-b border-slate-800 pb-2.5">
+      <div class="anim-modal bg-slate-900 border-t sm:border border-indigo-500/40 w-full max-w-sm rounded-t-[32px] sm:rounded-3xl p-4 sm:p-5 space-y-3 shadow-2xl max-h-[92vh] overflow-y-auto no-scrollbar flex flex-col">
+        
+        <div class="flex justify-between items-center border-b border-slate-800 pb-2.5 shrink-0">
           <div class="flex items-center gap-2">
             <div class="w-8 h-8 rounded-xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center justify-center shadow-glow-emerald">
               <i data-lucide="navigation" class="w-4 h-4"></i>
@@ -1003,46 +1395,136 @@
           </button>
         </div>
 
-        <!-- ESTADO DEL PEDIDO -->
-        <div class="bg-slate-950 p-3 rounded-2xl border border-slate-800 text-center space-y-1">
+        <div class="bg-slate-950 p-3 rounded-2xl border border-slate-800 text-center space-y-1 shrink-0">
           <span id="rastreo-badge-estado" class="inline-block px-3 py-1 rounded-full text-xs font-black bg-amber-500/20 text-amber-300 border border-amber-500/30">
             Buscando Chofer...
           </span>
           <p id="rastreo-texto-estado" class="text-[11px] text-slate-300">Estamos conectando tu orden con los repartidores en Nirgua...</p>
         </div>
 
+        <!-- HUD DE DISTANCIA Y TIEMPO RESTANTE (ETA) -->
+        <div id="rastreo-hud-stats" class="grid grid-cols-2 gap-2 bg-slate-950 p-2.5 rounded-2xl border border-emerald-500/30 shrink-0">
+          <div class="flex items-center gap-2 bg-slate-900/90 p-2 rounded-xl border border-slate-800/80">
+            <div class="w-7 h-7 rounded-lg bg-accent-cyan/15 text-accent-cyan flex items-center justify-center shrink-0">
+              <i data-lucide="map-pin" class="w-3.5 h-3.5"></i>
+            </div>
+            <div class="min-w-0">
+              <span class="text-[9px] text-slate-400 font-bold uppercase block leading-none">Distancia</span>
+              <span id="rastreo-distancia-val" class="text-xs font-black text-accent-cyan truncate block mt-0.5">Calculando...</span>
+            </div>
+          </div>
+          <div class="flex items-center gap-2 bg-slate-900/90 p-2 rounded-xl border border-slate-800/80">
+            <div class="w-7 h-7 rounded-lg bg-accent-yellow/15 text-accent-yellow flex items-center justify-center shrink-0">
+              <i data-lucide="clock" class="w-3.5 h-3.5"></i>
+            </div>
+            <div class="min-w-0">
+              <span class="text-[9px] text-slate-400 font-bold uppercase block leading-none">Llegada (ETA)</span>
+              <span id="rastreo-eta-val" class="text-xs font-black text-accent-yellow truncate block mt-0.5">Calculando...</span>
+            </div>
+          </div>
+        </div>
+
         <!-- MAPA LEAFLET RASTREO -->
-        <div class="space-y-1">
+        <div class="space-y-1.5 shrink-0">
           <div class="flex justify-between items-center text-[10px] text-slate-400 font-mono font-bold px-1">
-            <span>A: Local • B: Tu Destino</span>
+            <span>A: Local • B: Destino</span>
             <span class="text-emerald-400 flex items-center gap-1 font-bold">
               <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span> Radar Satelital Activo
             </span>
           </div>
-          <div id="mapa-rastreo-cliente-box" style="height: 190px; min-height: 190px; width: 100%;" class="rounded-2xl overflow-hidden border border-slate-800 shadow-inner"></div>
+          <div id="mapa-rastreo-cliente-box" style="height: 180px; min-height: 180px; width: 100%;" class="rounded-2xl overflow-hidden border border-slate-800 shadow-inner z-0"></div>
+          
+          <div class="grid grid-cols-2 gap-2 pt-1">
+            <button type="button" onclick="centrarEnChofer()" class="btn-tactil bg-slate-800 hover:bg-slate-700 text-accent-cyan font-bold py-1.5 px-2 rounded-xl text-[11px] flex items-center justify-center gap-1.5 border border-slate-700 shadow-sm">
+              <i data-lucide="crosshair" class="w-3.5 h-3.5"></i> <span>Seguir Chofer</span>
+            </button>
+            <button type="button" onclick="verRutaCompleta()" class="btn-tactil bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold py-1.5 px-2 rounded-xl text-[11px] flex items-center justify-center gap-1.5 border border-slate-700 shadow-sm">
+              <i data-lucide="maximize" class="w-3.5 h-3.5"></i> <span>Ver Ruta</span>
+            </button>
+          </div>
         </div>
 
-        <!-- INFO DEL CHOFER ASIGNADO -->
-        <div id="rastreo-caja-chofer" class="bg-slate-950 p-3 rounded-2xl border border-slate-800 flex items-center justify-between gap-3 hidden">
-          <div class="flex items-center gap-2.5 min-w-0">
-            <div class="w-10 h-10 rounded-2xl bg-indigo-600/20 text-indigo-400 border border-indigo-500/30 flex items-center justify-center shrink-0 text-lg font-black">
-              🛵
+        <!-- INFO DEL CHOFER ASIGNADO (LLAMADA + WHATSAPP) -->
+        <div id="rastreo-caja-chofer" class="bg-slate-950 p-3 rounded-2xl border border-emerald-500/30 space-y-2 shrink-0 hidden">
+          <div class="flex items-center justify-between gap-2.5">
+            <div class="flex items-center gap-2.5 min-w-0">
+              <div class="w-9 h-9 rounded-xl bg-indigo-600/20 text-indigo-400 border border-indigo-500/30 flex items-center justify-center shrink-0 text-base font-black shadow-glow-indigo">
+                🛵
+              </div>
+              <div class="min-w-0">
+                <span class="text-[9px] uppercase tracking-wider text-slate-400 font-bold block">Chofer Asignado</span>
+                <h4 id="rastreo-nombre-chofer" class="text-xs font-black text-white truncate">Chofer Flash</h4>
+                <span id="rastreo-vehiculo-chofer" class="text-[10px] text-accent-cyan font-bold block">Moto</span>
+              </div>
             </div>
-            <div class="min-w-0">
-              <span class="text-[9px] uppercase tracking-wider text-slate-400 font-bold block">Tu Repartidor Flash</span>
-              <h4 id="rastreo-nombre-chofer" class="text-xs font-black text-white truncate">Chofer Flash</h4>
-              <span id="rastreo-vehiculo-chofer" class="text-[10px] text-accent-cyan font-bold block">Moto</span>
-            </div>
+            <span class="text-[9px] bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 font-black px-2 py-0.5 rounded-full">En Carrera</span>
           </div>
-          <a id="rastreo-btn-wa-chofer" href="#" target="_blank" class="btn-tactil bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black px-3 py-2 rounded-xl text-xs flex items-center gap-1.5 shadow-md shrink-0">
-            <i data-lucide="message-circle" class="w-3.5 h-3.5"></i> WhatsApp
-          </a>
+          <div class="grid grid-cols-2 gap-2 pt-1 border-t border-slate-800/80">
+            <a id="rastreo-btn-llamar-chofer" href="#" class="btn-tactil bg-slate-800 hover:bg-slate-700 text-white font-bold py-2 px-3 rounded-xl text-xs flex items-center justify-center gap-1.5 border border-slate-700 shadow-sm">
+              <i data-lucide="phone" class="w-3.5 h-3.5 text-accent-cyan"></i> <span>Llamar</span>
+            </a>
+            <a id="rastreo-btn-wa-chofer" href="#" target="_blank" class="btn-tactil bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black py-2 px-3 rounded-xl text-xs flex items-center justify-center gap-1.5 shadow-md">
+              <i data-lucide="message-circle" class="w-3.5 h-3.5"></i> <span>WhatsApp</span>
+            </a>
+          </div>
         </div>
       </div>
     </div>
+
+    <!-- MODAL DE CALIFICACIÓN DE SERVICIO CON ESTRELLAS -->
+    <div id="modal-calificar-servicio" class="fixed inset-0 bg-slate-950/90 backdrop-blur-xl z-50 flex items-center justify-center p-4 hidden">
+      <div class="anim-modal bg-slate-900 border border-emerald-500/40 w-full max-w-sm rounded-[32px] p-5 space-y-4 shadow-2xl text-center">
+        <div class="w-14 h-14 rounded-full bg-emerald-500/15 border border-emerald-500/40 text-emerald-400 flex items-center justify-center mx-auto text-2xl shadow-glow-emerald">
+          🎉
+        </div>
+        <div>
+          <h3 id="calificar-titulo" class="text-base font-black text-white">¡Pedido Entregado con Éxito!</h3>
+          <p class="text-xs text-slate-300 mt-1">¿Cómo fue tu experiencia con el chofer y el servicio?</p>
+        </div>
+        <div class="flex items-center justify-center gap-2 py-1">
+          <button type="button" onclick="fijarEstrellasCalificacion(1)" class="btn-tactil p-1 text-amber-400 hover:scale-110"><i id="estrella-1" data-lucide="star" class="w-7 h-7 fill-amber-400"></i></button>
+          <button type="button" onclick="fijarEstrellasCalificacion(2)" class="btn-tactil p-1 text-amber-400 hover:scale-110"><i id="estrella-2" data-lucide="star" class="w-7 h-7 fill-amber-400"></i></button>
+          <button type="button" onclick="fijarEstrellasCalificacion(3)" class="btn-tactil p-1 text-amber-400 hover:scale-110"><i id="estrella-3" data-lucide="star" class="w-7 h-7 fill-amber-400"></i></button>
+          <button type="button" onclick="fijarEstrellasCalificacion(4)" class="btn-tactil p-1 text-amber-400 hover:scale-110"><i id="estrella-4" data-lucide="star" class="w-7 h-7 fill-amber-400"></i></button>
+          <button type="button" onclick="fijarEstrellasCalificacion(5)" class="btn-tactil p-1 text-amber-400 hover:scale-110"><i id="estrella-5" data-lucide="star" class="w-7 h-7 fill-amber-400"></i></button>
+        </div>
+        <p id="calificar-lbl-texto" class="text-xs font-bold text-accent-yellow">¡Excelente servicio! (5/5)</p>
+        <div>
+          <input type="text" id="input-comentario-calificacion" placeholder="Comentario opcional para el chofer..." class="w-full p-2.5 bg-slate-950 border border-slate-700 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500">
+        </div>
+        <div class="flex gap-2 pt-1">
+          <button onclick="cerrarModalCalificacion()" class="btn-tactil flex-1 bg-slate-800 text-slate-300 font-bold py-2.5 rounded-xl text-xs">
+            Omitir
+          </button>
+          <button onclick="guardarCalificacionServicio()" class="btn-tactil flex-1 bg-gradient-to-r from-accent-emerald to-teal-500 text-slate-950 font-black py-2.5 rounded-xl text-xs shadow-glow-emerald">
+            Guardar ⭐
+          </button>
+        </div>
+      </div>
+    </div>
+
   </div>
 
   <script>
+    // ================= FUNCIONES GLOBALES DE TELÉFONO =================
+    function normalizarTelefono(tel) {
+      if (!tel) return '';
+      let clean = tel.toString().replace(/\D/g, '');
+      if (clean.startsWith('58')) return clean;
+      if (clean.startsWith('0')) return '58' + clean.substring(1);
+      return '58' + clean;
+    }
+    window.normalizarTelefono = normalizarTelefono;
+
+    function limpiarTelefonoId(tel) {
+      if (!tel) return '';
+      let d = tel.toString().replace(/\D/g, '');
+      if (d.startsWith('58') && d.length === 12) d = '0' + d.substring(2);
+      if (!d.startsWith('0') && d.length === 10) d = '0' + d;
+      return d;
+    }
+    window.limpiarTelefonoId = limpiarTelefonoId;
+
     // ================= CONFIGURACIÓN DE FIREBASE =================
     const firebaseConfig = {
       apiKey: "AIzaSyB19B9jLHPpgKxVvMH97D5VafgTp0CfnOc",
@@ -1068,6 +1550,199 @@
     const NUMERO_WHATSAPP = "584262566854";
     let carrito = {};
     let esPagoTransporteDirecto = false;
+    let usuarioActivo = null;
+
+    // ================= AUTENTICACIÓN Y GESTIÓN DE SESIÓN CLIENTE =================
+    function iniciarFlujoAuth() {
+      const authScreen = document.getElementById('pantalla-auth');
+      if (authScreen) {
+        authScreen.classList.remove('hidden', 'opacity-0', 'pointer-events-none');
+        authScreen.classList.add('opacity-100', 'pointer-events-auto');
+      }
+      const vidAuth = document.getElementById('video-bg-auth');
+      if (vidAuth) {
+        vidAuth.muted = true;
+        vidAuth.play().catch(() => {});
+      }
+    }
+
+    function cambiarTabAuth(tab) {
+      const tabLogin = document.getElementById('tab-auth-login');
+      const tabReg = document.getElementById('tab-auth-registro');
+      const formLogin = document.getElementById('form-auth-login');
+      const formReg = document.getElementById('form-auth-registro');
+
+      if (tab === 'login') {
+        tabLogin.className = "btn-tactil py-2 text-xs font-black rounded-xl bg-gradient-to-r from-accent-cyan to-brand-600 text-slate-950 shadow-md transition";
+        tabReg.className = "btn-tactil py-2 text-xs font-bold text-slate-400 hover:text-white rounded-xl transition";
+        formLogin.classList.remove('hidden');
+        formReg.classList.add('hidden');
+      } else {
+        tabReg.className = "btn-tactil py-2 text-xs font-black rounded-xl bg-gradient-to-r from-accent-magenta to-pink-600 text-white shadow-md transition";
+        tabLogin.className = "btn-tactil py-2 text-xs font-bold text-slate-400 hover:text-white rounded-xl transition";
+        formReg.classList.remove('hidden');
+        formLogin.classList.add('hidden');
+      }
+      lucide.createIcons();
+    }
+
+    function saltarAuthComoInvitado() {
+      const authScreen = document.getElementById('pantalla-auth');
+      if (authScreen) {
+        authScreen.classList.add('opacity-0', 'pointer-events-none');
+        setTimeout(() => {
+          authScreen.classList.add('hidden');
+        }, 400);
+      }
+      mostrarToast("Navegando como Invitado", "Bienvenido", "info");
+    }
+
+    function ejecutarLogin(e) {
+      e.preventDefault();
+      const telRaw = document.getElementById('auth-login-tel').value.trim();
+      const pin = document.getElementById('auth-login-pin').value.trim();
+      const telLimpio = limpiarTelefonoId(telRaw);
+
+      if (!telLimpio || pin.length !== 4) {
+        mostrarToast("Ingresa tu teléfono y PIN de 4 dígitos", "Datos incompletos", "error");
+        return;
+      }
+
+      const btn = document.getElementById('btn-submit-login');
+      const textoOrig = btn.innerHTML;
+      btn.disabled = true;
+      btn.innerHTML = `<span class="animate-spin mr-2">⏳</span> Verificando...`;
+
+      if (!db) {
+        const usuarioLocal = { telefono: telLimpio, telefonoOriginal: telRaw, nombre: "Usuario Flash", direccion: "Nirgua", pin: pin };
+        guardarYAplicarSesion(usuarioLocal);
+        btn.disabled = false;
+        btn.innerHTML = textoOrig;
+        return;
+      }
+
+      db.ref(`usuarios_clientes/${telLimpio}`).once('value')
+        .then(snap => {
+          btn.disabled = false;
+          btn.innerHTML = textoOrig;
+          const user = snap.val();
+          if (!user) {
+            mostrarToast("Usuario no encontrado. Crea tu cuenta", "No registrado", "error");
+            cambiarTabAuth('registro');
+            document.getElementById('auth-reg-tel').value = telRaw;
+            return;
+          }
+          if (user.pin && user.pin !== pin) {
+            mostrarToast("PIN incorrecto. Intenta nuevamente.", "Error de clave", "error");
+            return;
+          }
+          guardarYAplicarSesion(user);
+          mostrarToast(`¡Bienvenido de nuevo, ${user.nombre || 'Cliente'}!`, "Sesión Iniciada", "success");
+        })
+        .catch(err => {
+          btn.disabled = false;
+          btn.innerHTML = textoOrig;
+          console.error("Error al iniciar sesión:", err);
+          mostrarToast("Error de conexión al verificar usuario", "Error", "error");
+        });
+    }
+
+    function ejecutarRegistro(e) {
+      e.preventDefault();
+      const nombre = document.getElementById('auth-reg-nombre').value.trim();
+      const telRaw = document.getElementById('auth-reg-tel').value.trim();
+      const direccion = document.getElementById('auth-reg-direccion').value.trim();
+      const pin = document.getElementById('auth-reg-pin').value.trim();
+      const telLimpio = limpiarTelefonoId(telRaw);
+
+      if (!nombre || !telLimpio || pin.length !== 4) {
+        mostrarToast("Por favor completa tu nombre, teléfono y PIN de 4 dígitos", "Datos incompletos", "error");
+        return;
+      }
+
+      const btn = document.getElementById('btn-submit-reg');
+      const textoOrig = btn.innerHTML;
+      btn.disabled = true;
+      btn.innerHTML = `<span class="animate-spin mr-2">⏳</span> Registrando...`;
+
+      const nuevoUsuario = {
+        telefono: telLimpio,
+        telefonoOriginal: telRaw,
+        nombre: nombre,
+        direccion: direccion || '',
+        pin: pin,
+        fechaRegistro: new Date().toISOString()
+      };
+
+      if (!db) {
+        guardarYAplicarSesion(nuevoUsuario);
+        btn.disabled = false;
+        btn.innerHTML = textoOrig;
+        return;
+      }
+
+      db.ref(`usuarios_clientes/${telLimpio}`).set(nuevoUsuario)
+        .then(() => {
+          btn.disabled = false;
+          btn.innerHTML = textoOrig;
+          guardarYAplicarSesion(nuevoUsuario);
+          mostrarToast(`¡Bienvenido a Pedidos Flash, ${nombre}!`, "Cuenta Creada", "success");
+        })
+        .catch(err => {
+          btn.disabled = false;
+          btn.innerHTML = textoOrig;
+          console.error("Error al registrar:", err);
+          mostrarToast("Error al registrar usuario en Firebase", "Error", "error");
+        });
+    }
+
+    function guardarYAplicarSesion(user) {
+      localStorage.setItem('pedidosflash_usuario', JSON.stringify(user));
+      aplicarSesionUsuario(user);
+      const authScreen = document.getElementById('pantalla-auth');
+      if (authScreen) {
+        authScreen.classList.add('opacity-0', 'pointer-events-none');
+        setTimeout(() => { authScreen.classList.add('hidden'); }, 400);
+      }
+    }
+
+    function aplicarSesionUsuario(user) {
+      if (!user) return;
+      usuarioActivo = user;
+      
+      const txtNombre = document.getElementById('txt-header-nombre-usuario');
+      if (txtNombre) txtNombre.innerText = user.nombre || user.telefono || 'Cliente';
+
+      const inpNombre = document.getElementById('nombreCliente');
+      const inpTel = document.getElementById('telefonoCliente');
+      const inpDir = document.getElementById('direccion');
+
+      if (inpNombre && !inpNombre.value) inpNombre.value = user.nombre || '';
+      if (inpTel && !inpTel.value) inpTel.value = user.telefonoOriginal || user.telefono || '';
+      if (inpDir && !inpDir.value) inpDir.value = user.direccion || '';
+
+      const authScreen = document.getElementById('pantalla-auth');
+      if (authScreen) {
+        authScreen.classList.add('hidden', 'opacity-0', 'pointer-events-none');
+      }
+    }
+
+    function cerrarSesionUsuario() {
+      localStorage.removeItem('pedidosflash_usuario');
+      usuarioActivo = null;
+      const txtNombre = document.getElementById('txt-header-nombre-usuario');
+      if (txtNombre) txtNombre.innerText = 'Invitado';
+      
+      const inpNombre = document.getElementById('nombreCliente');
+      const inpTel = document.getElementById('telefonoCliente');
+      const inpDir = document.getElementById('direccion');
+      if (inpNombre) inpNombre.value = '';
+      if (inpTel) inpTel.value = '';
+      if (inpDir) inpDir.value = '';
+
+      iniciarFlujoAuth();
+      mostrarToast("Has cerrado sesión", "Sesión Finalizada", "info");
+    }
 
     // ESTADO PARA TRANSPORTE
     let mapaRuta = null;
@@ -1081,10 +1756,9 @@
     let metodoPagoActual = 'Pago Móvil';
     let clienteLatActual = null;
     let clienteLngActual = null;
-
     let itemsDetectadosActuales = [];
 
-    // COMERCIOS BASE (Sincronizados en tiempo real con Firebase)
+    // COMERCIOS BASE
     let infoLocales = {
       moravos: { id: 'moravos', nombre: 'Moravos Café', sub: 'Café, Postres & Especialidades', logo: 'img/moravos.jpg', porcentajeComision: 8 },
       fran_chero: { id: 'fran_chero', nombre: 'El Sabor de Fran & Chero', sub: 'Hamburguesas, Pepitos y Perros', logo: 'img/fran y chero.jpg', porcentajeComision: 10 },
@@ -1092,10 +1766,9 @@
       zirus: { id: 'zirus', nombre: 'Zirus Pizza', sub: 'Pizzas Artesanales', logo: 'img/ziruspizza.webp', porcentajeComision: 10 }
     };
 
-    // PRODUCTOS ADICIONALES POR TIENDA DESDE FIREBASE
     let productosDinamicosTiendas = {};
 
-    // ================= CATÁLOGO BASE DE PEDIDOS FLASH =================
+    // ================= CATÁLOGO BASE COMPLETO PEDIDOS FLASH =================
     const productos = {
       viveres: [
         { id: 'v_harina_bellini', nombre: 'Harina de Maíz Bellini 1kg', precioBase: 0.75, imagen: 'img/v_harina_bellini.png', sub: 'harinas' },
@@ -1112,7 +1785,6 @@
         { id: 'v_trigo_dulcemar', nombre: 'Harina de Trigo Leudante Dulce Mar 1kg', precioBase: 1.33, imagen: 'img/v_trigo_dulcemar.png', sub: 'harinas' },
         { id: 'v_levadura_gloripan', nombre: 'Levadura Gloripan 500g', precioBase: 3.75, imagen: 'img/v_levadura_gloripan.png', sub: 'harinas' },
         { id: 'v_trigo_aveiro_kg', nombre: 'Harina de Trigo Aveiro (kg)', precioBase: 1.00, imagen: 'img/v_trigo_aveiro_kg.png', sub: 'harinas' },
-
         { id: 'v_pasta_primavera', nombre: 'Pasata Primavera Larga 1kg', precioBase: 0.78, imagen: 'img/v_pasta_primavera.png', sub: 'pastas' },
         { id: 'v_pasta_veneciana', nombre: 'Pasta Veneciana Corta 1kg', precioBase: 1.32, imagen: 'img/v_pasta_veneciana.png', sub: 'pastas' },
         { id: 'v_pasta_mary_larga', nombre: 'Pasta Mary Larga 1kg', precioBase: 1.40, imagen: 'img/v_pasta_mary_larga.png', sub: 'pastas' },
@@ -1128,7 +1800,6 @@
         { id: 'v_pasta_sindoni_500g', nombre: 'Pasta Corta Sindoni 500g', precioBase: 0.72, imagen: 'img/v_pasta_sindoni_500g.png', sub: 'pastas' },
         { id: 'v_pasata_sindoni', nombre: 'Pasata Sindoni 480g', precioBase: 2.24, imagen: 'img/v_pasata_sindoni.png', sub: 'pastas' },
         { id: 'v_pasta_oba_500g', nombre: 'Pasta Larga Oba 500g', precioBase: 0.77, imagen: 'img/v_pasta_oba_500g.png', sub: 'pastas' },
-
         { id: 'v_arroz_delicia', nombre: 'Arroz Delicia 1kg', precioBase: 0.96, imagen: 'img/v_arroz_delicia.png', sub: 'granos' },
         { id: 'v_arroz_mary_trad', nombre: 'Arroz Blanco Mary Tradicional 1kg', precioBase: 0.95, imagen: 'img/v_arroz_mary_trad.png', sub: 'granos' },
         { id: 'v_arroz_mary_sup', nombre: 'Arroz Blanco Mary Superior 1kg', precioBase: 1.02, imagen: 'img/v_arroz_mary_sup.png', sub: 'granos' },
@@ -1137,19 +1808,16 @@
         { id: 'v_arroz_llano_verde', nombre: 'Arroz Llano Verde 1kg', precioBase: 0.96, imagen: 'img/v_arroz_llano_verde.png', sub: 'granos' },
         { id: 'v_arroz_molienda', nombre: 'Arroz La Molienda 1kg', precioBase: 0.90, imagen: 'img/v_arroz_molienda.png', sub: 'granos' },
         { id: 'v_arroz_emilia', nombre: 'Arroz Doña Emilia 1kg', precioBase: 0.96, imagen: 'img/v_arroz_emilia.png', sub: 'granos' },
-
         { id: 'v_azucar_miangel', nombre: 'Azúcar Mi Ángel 1kg', precioBase: 1.03, imagen: 'img/v_azucar_miangel.png', sub: 'granos' },
         { id: 'v_azucar_montalban', nombre: 'Azúcar Montalbán 1kg', precioBase: 1.18, imagen: 'img/v_azucar_montalban.png', sub: 'granos' },
         { id: 'v_azucar_konfit', nombre: 'Azúcar Blanca Konfit 1kg', precioBase: 1.23, imagen: 'img/v_azucar_konfit.png', sub: 'granos' },
         { id: 'v_azucar_sonora', nombre: 'Azúcar Blanca Sonora 1kg', precioBase: 1.10, imagen: 'img/v_azucar_sonora.png', sub: 'granos' },
         { id: 'v_sal_prosanca_1kg', nombre: 'Sal Blanca Refinada Prosanca 1kg', precioBase: 0.19, imagen: 'img/v_sal_prosanca_1kg.png', sub: 'granos' },
-
         { id: 'v_arvejas_maizalito', nombre: 'Arvejas Verdes Maizalito 400g', precioBase: 0.89, imagen: 'img/v_arvejas_maizalito.png', sub: 'granos' },
         { id: 'v_lentejas_maizalito', nombre: 'Lentejas Maizalito 400g', precioBase: 1.13, imagen: 'img/v_lentejas_maizalito.png', sub: 'granos' },
         { id: 'v_caraotas_m_400g', nombre: 'Caraotas Negras Maizalito 400g', precioBase: 0.96, imagen: 'img/v_caraotas_m_400g.png', sub: 'granos' },
         { id: 'v_caraotas_m_900g', nombre: 'Caraotas Negras Maizalito 900g', precioBase: 2.14, imagen: 'img/v_caraotas_m_900g.png', sub: 'granos' },
         { id: 'v_maiz_cotufa_m', nombre: 'Maíz para Cotufas Maizalito 400g', precioBase: 0.91, imagen: 'img/v_maiz_cotufa_m.png', sub: 'granos' },
-
         { id: 'v_crema_arroz_polly', nombre: 'Crema de Arroz Polly Bolsa 450g', precioBase: 2.37, imagen: 'img/v_crema_arroz_polly.png', sub: 'lacteos' },
         { id: 'v_villa_lactea_400g', nombre: 'Alimento en Polvo Villa Láctea 400g', precioBase: 2.67, imagen: 'img/v_villa_lactea_400g.png', sub: 'lacteos' },
         { id: 'v_lactovisoy_200g', nombre: 'Lactovisoy Sachet 200g', precioBase: 11.98, imagen: 'img/v_lactovisoy_200g.png', sub: 'lacteos' },
@@ -1167,7 +1835,6 @@
         { id: 'v_induleche_360g', nombre: 'Leche en Polvo Induleche 360g', precioBase: 4.00, imagen: 'img/v_induleche_360g.png', sub: 'lacteos' },
         { id: 'v_campestre_900g', nombre: 'Leche en Polvo Campestre 900g', precioBase: 8.29, imagen: 'img/v_campestre_900g.png', sub: 'lacteos' },
         { id: 'v_campestre_500g', nombre: 'Leche en Polvo Campestre 500g', precioBase: 4.43, imagen: 'img/v_campestre_500g.png', sub: 'lacteos' },
-
         { id: 'v_sardina_aceite', nombre: 'Sardina Misión Mar Aceite', precioBase: 0.55, imagen: 'img/v_sardina_aceite.png', sub: 'lacteos' },
         { id: 'v_sardina_tomate', nombre: 'Sardina Misión Mar Tomate', precioBase: 0.56, imagen: 'img/v_sardina_tomate.png', sub: 'lacteos' },
         { id: 'v_atun_margarita_140g', nombre: 'Atún en Aceite Margarita 140g', precioBase: 2.09, imagen: 'img/v_atun_margarita_140g.png', sub: 'lacteos' },
@@ -1177,7 +1844,6 @@
         { id: 'v_diablito_54g', nombre: 'Diablito Underwood 54g', precioBase: 1.25, imagen: 'img/v_diablito_54g.png', sub: 'lacteos' },
         { id: 'v_twisty_keso_200g', nombre: 'Twisty Keso 200g', precioBase: 2.19, imagen: 'img/v_twisty_keso_200g.png', sub: 'lacteos' },
         { id: 'v_dalvito_200g', nombre: 'Dalvito 200g', precioBase: 2.56, imagen: 'img/v_dalvito_200g.png', sub: 'lacteos' },
-
         { id: 'v_margarina_delicia_500g', nombre: 'Margarina Delicia (500g)', precioBase: 0.73, imagen: 'img/v_margarina_delicia_500g.png', sub: 'lacteos' },
         { id: 'v_margarina_deline_250g', nombre: 'Margarina Deline 250g', precioBase: 0.85, imagen: 'img/v_margarina_deline_250g.png', sub: 'lacteos' },
         { id: 'v_margarina_albeca_400g', nombre: 'Margarina La Rendidora Albeca 400g', precioBase: 1.73, imagen: 'img/v_margarina_albeca_400g.png', sub: 'lacteos' },
@@ -1296,7 +1962,6 @@
         { id: 'b5', nombre: 'Agua Mineral 5L', precioBase: 2.50, imagen: 'img/b5.png' },
         { id: 'b6', nombre: 'Energizante Monster', precioBase: 2.80, imagen: 'img/b6.png' }
       ],
-      // COMIDA RÁPIDA (RESTAURANTES, HAMBURGUESAS, CAFÉ)
       comida: [
         { id: 'mc_cafe_capuchino', nombre: 'Café Capuchino Especial ☕', precioBase: 2.00, imagen: 'img/b6.png', badge: 'CAFÉ', local: 'moravos', tiendaId: 'moravos' },
         { id: 'mc_postre_chocolate', nombre: 'Torta de Chocolate Moravos 🍰', precioBase: 3.00, imagen: 'img/p_quesillo.png', badge: 'POSTRE', local: 'moravos', tiendaId: 'moravos' },
@@ -1358,13 +2023,23 @@
           mapaProductos[item.id] = item;
         });
       });
+      Object.keys(productosDinamicosTiendas).forEach(tId => {
+        const prods = productosDinamicosTiendas[tId];
+        if (prods && typeof prods === 'object') {
+          Object.keys(prods).forEach(pKey => {
+            const p = prods[pKey];
+            p.id = pKey;
+            p.tiendaId = tId;
+            mapaProductos[pKey] = p;
+          });
+        }
+      });
     }
     reconstruirMapaProductos();
 
     function normalizarTexto(txt) {
       return (txt || '').normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim();
     }
-
     // ================= TOAST PROFESIONAL =================
     let toastTimeout = null;
     function mostrarToast(mensaje, titulo = "Pedidos Flash", tipo = "info") {
@@ -1401,6 +2076,144 @@
       }, 3000);
     }
 
+    // ================= SISTEMA DE AUTH (FIREBASE + LOCALSTORAGE) =================
+    function iniciarFlujoAuth() {
+      const authScreen = document.getElementById('pantalla-auth');
+      if (authScreen) authScreen.classList.remove('hidden', 'opacity-0', 'pointer-events-none');
+    }
+
+    function cambiarTabAuth(tab) {
+      const tabLogin = document.getElementById('tab-auth-login');
+      const tabReg = document.getElementById('tab-auth-registro');
+      const formLogin = document.getElementById('form-auth-login');
+      const formReg = document.getElementById('form-auth-registro');
+
+      if (tab === 'login') {
+        tabLogin.className = "btn-tactil py-2.5 text-xs font-black rounded-xl bg-gradient-to-r from-accent-cyan to-brand-600 text-slate-950 shadow-md transition";
+        tabReg.className = "btn-tactil py-2.5 text-xs font-bold text-slate-400 hover:text-white rounded-xl transition";
+        formLogin.classList.remove('hidden');
+        formReg.classList.add('hidden');
+      } else {
+        tabReg.className = "btn-tactil py-2.5 text-xs font-black rounded-xl bg-gradient-to-r from-accent-magenta to-indigo-600 text-white shadow-md transition";
+        tabLogin.className = "btn-tactil py-2.5 text-xs font-bold text-slate-400 hover:text-white rounded-xl transition";
+        formReg.classList.remove('hidden');
+        formLogin.classList.add('hidden');
+      }
+      lucide.createIcons();
+    }
+
+    async function ejecutarRegistro(e) {
+      e.preventDefault();
+      const nombre = document.getElementById('auth-reg-nombre').value.trim();
+      const tel = document.getElementById('auth-reg-tel').value.trim();
+      const dir = document.getElementById('auth-reg-direccion').value.trim();
+      const pin = document.getElementById('auth-reg-pin').value.trim();
+
+      if (!nombre || !tel || pin.length !== 4) {
+        mostrarToast("Completa nombre, teléfono y PIN de 4 dígitos.", "Campos Requeridos", "error");
+        return;
+      }
+
+      const telId = limpiarTelefonoId(tel);
+      const btnReg = document.getElementById('btn-submit-reg');
+      btnReg.disabled = true;
+      btnReg.innerText = "Registrando...";
+
+      const nuevoUsuario = { nombre, telefono: telId, direccion: dir, pin };
+
+      if (firebaseActivo && db) {
+        try {
+          await db.ref(`usuarios_clientes/${telId}`).set(nuevoUsuario);
+        } catch(err) {
+          console.warn("Respaldo local para registro:", err);
+        }
+      }
+      localStorage.setItem('pedidosflash_usuario', JSON.stringify(nuevoUsuario));
+      mostrarToast(`¡Bienvenido ${nombre.split(' ')[0]}! Cuenta lista.`, "Éxito", "success");
+      aplicarSesionUsuario(nuevoUsuario);
+      btnReg.disabled = false;
+      btnReg.innerText = "CREAR CUENTA Y CONTINUAR";
+    }
+
+    async function ejecutarLogin(e) {
+      e.preventDefault();
+      const tel = document.getElementById('auth-login-tel').value.trim();
+      const pin = document.getElementById('auth-login-pin').value.trim();
+
+      if (!tel || pin.length !== 4) {
+        mostrarToast("Ingresa tu teléfono y PIN de 4 dígitos.", "Datos Incompletos", "error");
+        return;
+      }
+
+      const telId = limpiarTelefonoId(tel);
+      const btnSub = document.getElementById('btn-submit-login');
+      btnSub.disabled = true;
+      btnSub.innerText = "Verificando...";
+
+      if (firebaseActivo && db) {
+        try {
+          const snap = await db.ref(`usuarios_clientes/${telId}`).once('value');
+          if (snap.exists()) {
+            const u = snap.val();
+            if (u.pin === pin) {
+              localStorage.setItem('pedidosflash_usuario', JSON.stringify(u));
+              mostrarToast(`¡Hola de nuevo, ${u.nombre.split(' ')[0]}!`, "Sesión Iniciada", "success");
+              aplicarSesionUsuario(u);
+            } else {
+              mostrarToast("PIN de 4 dígitos incorrecto.", "Error", "error");
+            }
+          } else {
+            const local = JSON.parse(localStorage.getItem('pedidosflash_usuario') || '{}');
+            if (local.telefono === telId && local.pin === pin) {
+              aplicarSesionUsuario(local);
+            } else {
+              mostrarToast("Usuario no encontrado. Crea tu cuenta.", "Aviso", "info");
+              cambiarTabAuth('registro');
+              document.getElementById('auth-reg-tel').value = tel;
+            }
+          }
+        } catch(err) {
+          const local = JSON.parse(localStorage.getItem('pedidosflash_usuario') || '{}');
+          if (local.telefono === telId) {
+            aplicarSesionUsuario(local);
+          } else {
+            const uMock = { nombre: "Cliente Flash", telefono: telId, direccion: "" };
+            localStorage.setItem('pedidosflash_usuario', JSON.stringify(uMock));
+            aplicarSesionUsuario(uMock);
+          }
+        }
+      } else {
+        const uMock = { nombre: "Cliente Flash", telefono: telId, direccion: "" };
+        localStorage.setItem('pedidosflash_usuario', JSON.stringify(uMock));
+        aplicarSesionUsuario(uMock);
+      }
+      btnSub.disabled = false;
+      btnSub.innerText = "INGRESAR AHORA";
+    }
+
+    function aplicarSesionUsuario(u) {
+      if (!u) return;
+      usuarioActivo = u;
+      document.getElementById('txt-header-nombre-usuario').innerText = u.nombre || 'Cliente';
+
+      if (document.getElementById('nombreCliente')) document.getElementById('nombreCliente').value = u.nombre || '';
+      if (document.getElementById('telefonoCliente')) document.getElementById('telefonoCliente').value = u.telefono || '';
+      if (document.getElementById('direccion') && u.direccion) document.getElementById('direccion').value = u.direccion || '';
+
+      const authScreen = document.getElementById('pantalla-auth');
+      if (authScreen) {
+        authScreen.classList.add('opacity-0', 'pointer-events-none');
+        setTimeout(() => { authScreen.classList.add('hidden'); }, 400);
+      }
+    }
+
+    function cerrarSesionUsuario() {
+      localStorage.removeItem('pedidosflash_usuario');
+      usuarioActivo = null;
+      document.getElementById('pantalla-auth').classList.remove('hidden', 'opacity-0', 'pointer-events-none');
+      mostrarToast("Sesión cerrada", "Hasta pronto", "info");
+    }
+
     // ================= RENDERIZADO DEL CATÁLOGO & TIENDAS =================
     function renderizarCatalogo() {
       ['viveres', 'charcuteria', 'carnes', 'verduras', 'bebidas', 'limpieza', 'farmacia', 'ferreteria'].forEach(cat => {
@@ -1418,9 +2231,7 @@
         if (gridPanaderia) {
           gridPanaderia.innerHTML = "";
           productos.panaderia.forEach(item => {
-            if (item.local === 'panamericana') {
-              gridPanaderia.innerHTML += crearTarjetaProductoHTML(item);
-            }
+            gridPanaderia.innerHTML += crearTarjetaProductoHTML(item);
           });
         }
       }
@@ -1429,56 +2240,51 @@
       lucide.createIcons();
     }
 
-    // Renderizar tarjetas de locales de comida rápida
     function renderizarLocalesComerciales() {
       const grid = document.getElementById('grid-locales-comerciales');
       if (!grid) return;
       grid.innerHTML = "";
 
-      Object.keys(infoLocales).forEach(idLocal => {
-        const info = infoLocales[idLocal];
+      Object.keys(infoLocales).forEach(tid => {
+        const loc = infoLocales[tid];
         grid.innerHTML += `
-          <button onclick="abrirMenuLocal('${idLocal}')" class="btn-tactil group relative bg-slate-900/90 border border-amber-500/30 hover:border-accent-yellow p-3 rounded-2xl flex flex-col items-center text-center gap-2 shadow-lg backdrop-blur-md">
-            <div class="w-16 h-16 rounded-full overflow-hidden border-2 border-accent-yellow shadow-md group-hover:scale-105 transition-transform bg-slate-950">
-              <img src="${info.logo || 'img/logo.jfif'}" alt="${info.nombre}" class="w-full h-full object-cover" onerror="this.src='img/logo.jfif';">
+          <button onclick="abrirModalLocal('${loc.id}')" class="btn-tactil group bg-slate-900/90 border border-slate-800 hover:border-accent-yellow p-3 rounded-[24px] flex flex-col items-center text-center gap-2 shadow-lg backdrop-blur-md transition-all">
+            <div class="w-16 h-16 rounded-2xl overflow-hidden bg-slate-950 border border-slate-700 p-1 flex items-center justify-center group-hover:scale-105 transition-transform duration-300">
+              <img src="${loc.logo}" alt="${loc.nombre}" class="w-full h-full object-cover rounded-xl" onerror="this.src='img/logo.jfif';">
             </div>
-            <div class="w-full min-w-0">
-              <h4 class="font-black text-white text-xs uppercase tracking-wider truncate">${info.nombre}</h4>
-              <p class="text-[10px] text-accent-yellow font-semibold truncate leading-tight">${info.sub || 'Menú Disponible'}</p>
-              <span class="inline-block mt-1 bg-amber-500/20 text-accent-yellow border border-amber-500/30 text-[9px] font-black px-2 py-0.5 rounded-full">Ver Menú</span>
+            <div>
+              <h4 class="text-xs font-black text-white leading-tight line-clamp-1">${loc.nombre}</h4>
+              <p class="text-[10px] text-accent-yellow font-bold leading-tight mt-0.5 line-clamp-1">${loc.sub || 'Comercio Asociado'}</p>
             </div>
+            <span class="text-[9px] font-mono text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">Ver Menú ↗</span>
           </button>
         `;
       });
       lucide.createIcons();
     }
 
-    function abrirMenuLocal(idLocal) {
-      const info = infoLocales[idLocal];
-      if (!info) return;
+    function abrirModalLocal(localId) {
+      const loc = infoLocales[localId];
+      if (!loc) return;
 
-      document.getElementById('titulo-modal-local').innerText = info.nombre;
-      document.getElementById('sub-modal-local').innerText = info.sub || 'Menú Oficial';
-      document.getElementById('img-modal-local').src = info.logo || 'img/logo.jfif';
+      document.getElementById('titulo-modal-local').innerText = loc.nombre;
+      document.getElementById('sub-modal-local').innerText = loc.sub || 'Menú Especial';
+      document.getElementById('img-modal-local').src = loc.logo || 'img/logo.jfif';
 
-      const gridModal = document.getElementById('grid-modal-productos-local');
-      gridModal.innerHTML = "";
+      const contenedor = document.getElementById('grid-modal-productos-local');
+      contenedor.innerHTML = "";
 
-      // Combinar productos base de comida con productos dinámicos de Firebase para este local
-      const prodsBase = productos.comida.filter(p => p.local === idLocal || p.tiendaId === idLocal);
-      const prodsDinamicos = productosDinamicosTiendas[idLocal] ? Object.values(productosDinamicosTiendas[idLocal]) : [];
+      const itemsComida = productos.comida.filter(p => p.local === localId || p.tiendaId === localId);
+      itemsComida.forEach(item => {
+        contenedor.innerHTML += crearTarjetaProductoHTML(item);
+      });
 
-      const todos = [...prodsBase, ...prodsDinamicos];
-
-      if (todos.length === 0) {
-        gridModal.innerHTML = `<p class="col-span-2 text-center text-slate-500 text-xs py-6">No hay productos cargados aún para este local.</p>`;
-      } else {
-        todos.forEach(item => {
-          item.tiendaId = idLocal;
-          item.tiendaNombre = info.nombre;
-          item.porcentajeComision = info.porcentajeComision || 8;
-          mapaProductos[item.id] = item;
-          gridModal.innerHTML += crearTarjetaProductoHTML(item);
+      if (productosDinamicosTiendas[localId]) {
+        Object.keys(productosDinamicosTiendas[localId]).forEach(pid => {
+          const itemD = productosDinamicosTiendas[localId][pid];
+          itemD.id = pid;
+          itemD.tiendaId = localId;
+          contenedor.innerHTML += crearTarjetaProductoHTML(itemD);
         });
       }
 
@@ -1491,108 +2297,46 @@
     }
 
     function crearTarjetaProductoHTML(item) {
-      const contenidoImagen = item.imagen 
-        ? `<img src="${item.imagen}" alt="${item.nombre}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300 rounded-xl" onerror="this.onerror=null; this.src='img/logo.jfif';">`
-        : `<span class="text-3xl group-hover:scale-110 transition-transform duration-300">📦</span>`;
+      const precioMostrar = item.precioBase !== undefined ? `$${parseFloat(item.precioBase).toFixed(2)}` : '$1.00';
+      const badgeHTML = item.badge ? `<span class="absolute top-1.5 right-1.5 bg-accent-magenta text-white font-black text-[8px] px-1.5 py-0.5 rounded-md shadow-md z-10">${item.badge}</span>` : '';
       
+      let bloqueControl = '';
       if (item.esGranel) {
-        const gramosIniciales = item.defGranel;
-        const precioInicial = (item.precioBase * gramosIniciales) / 1000;
-        return `
-          <div class="item-producto group bg-slate-900/90 backdrop-blur-md p-3 rounded-2xl border border-slate-800 shadow-lg flex flex-col justify-between select-none" data-nombre="${item.nombre.toLowerCase()}" data-sub="${item.sub || 'varios'}">
-            <div>
-              <div class="flex items-center justify-between gap-1 mb-1.5">
-                <span class="bg-gradient-to-r from-accent-cyan to-brand-500 text-slate-950 text-[9px] font-black px-2 py-0.5 rounded-md uppercase">Granel</span>
-                <span class="text-[9px] font-black text-indigo-300 bg-indigo-950/60 px-1.5 py-0.5 rounded border border-indigo-800/40">Por Peso</span>
-              </div>
-              <div class="bg-transparent h-20 rounded-xl flex items-center justify-center mb-1.5 overflow-hidden relative">
-                ${contenidoImagen}
-              </div>
-              <h4 class="font-bold text-white text-xs leading-snug line-clamp-2 mb-1">${item.nombre}</h4>
-              <p class="text-[10px] text-indigo-300 font-semibold mb-1.5">Kilo: <span class="text-accent-yellow font-bold">$${item.precioBase.toFixed(2)}</span></p>
+        bloqueControl = `
+          <div class="w-full space-y-1.5 pt-1">
+            <div class="flex justify-between items-center text-[10px] text-slate-300 font-bold px-0.5">
+              <span>Peso: <b id="label-gramos-${item.id}" class="text-accent-cyan">${item.defGranel >= 1000 ? (item.defGranel/1000).toFixed(1)+'kg' : item.defGranel+'g'}</b></span>
+              <span id="precio-granel-${item.id}" class="text-accent-yellow font-black">${precioMostrar}</span>
             </div>
-            
-            <div class="space-y-1.5 pt-1.5 border-t border-slate-800" onclick="event.stopPropagation()">
-              <div>
-                <div class="flex justify-between items-center text-[10px] font-bold text-slate-300 mb-0.5">
-                  <span>Cantidad:</span>
-                  <span id="label-gramos-${item.id}" class="text-accent-cyan font-black">${gramosIniciales >= 1000 ? (gramosIniciales/1000).toFixed(1)+'kg' : gramosIniciales+'g'}</span>
-                </div>
-                <input type="range" min="${item.minGranel}" max="${item.maxGranel}" step="${item.pasoGranel}" value="${gramosIniciales}" oninput="actualizarSliderGranel('${item.id}')" id="slider-${item.id}" class="w-full accent-accent-cyan cursor-pointer h-1.5 bg-slate-950 rounded-lg">
-              </div>
-              
-              <div class="flex items-center justify-between pt-0.5">
-                <span id="precio-granel-${item.id}" class="text-xs font-black text-accent-yellow">$${precioInicial.toFixed(2)}</span>
-                <button onclick="agregarGranelAlCarrito('${item.id}')" type="button" class="btn-tactil bg-gradient-to-r from-accent-cyan to-brand-600 hover:brightness-110 text-slate-950 font-black px-3 py-1.5 rounded-xl text-[10px] shadow-md border-t border-white/20">
-                  Agregar
-                </button>
-              </div>
-            </div>
+            <input type="range" id="slider-${item.id}" min="${item.minGranel || 200}" max="${item.maxGranel || 3000}" step="${item.pasoGranel || 100}" value="${item.defGranel || 500}" oninput="actualizarSliderGranel('${item.id}')" class="w-full accent-accent-cyan h-1.5 bg-slate-800 rounded-lg cursor-pointer">
+            <button onclick="agregarGranelAlCarrito('${item.id}')" class="btn-tactil w-full bg-gradient-to-r from-accent-cyan to-brand-600 text-slate-950 font-black py-1.5 rounded-xl text-[10px] flex items-center justify-center gap-1 shadow-md">
+              <i data-lucide="plus" class="w-3.5 h-3.5"></i> Agregar
+            </button>
+          </div>
+        `;
+      } else {
+        bloqueControl = `
+          <div class="flex items-center justify-between w-full pt-1">
+            <span class="text-xs font-black text-accent-yellow">${precioMostrar}</span>
+            <button onclick="agregarAlCarritoPorId('${item.id}')" class="btn-tactil bg-accent-cyan hover:bg-cyan-400 text-slate-950 font-black px-3 py-1.5 rounded-xl text-[10px] flex items-center gap-1 shadow-md">
+              <i data-lucide="plus" class="w-3.5 h-3.5 stroke-[3]"></i> Pedir
+            </button>
           </div>
         `;
       }
 
       return `
-        <div onclick="agregarAlCarritoPorId('${item.id}', 1)" class="item-producto group bg-slate-900/90 backdrop-blur-md p-3 rounded-2xl border border-slate-800 shadow-lg flex flex-col justify-between select-none cursor-pointer transition active:scale-95 hover:border-accent-magenta/60" data-nombre="${item.nombre.toLowerCase()}" data-sub="${item.sub || 'varios'}">
-          <div>
-            <div class="flex items-center justify-between gap-1 mb-1.5">
-              ${item.badge 
-                ? `<span class="bg-gradient-to-r from-accent-orange to-accent-magenta text-white text-[9px] font-black px-2 py-0.5 rounded-md uppercase">${item.badge}</span>`
-                : `<span></span>`
-              }
-              <span class="text-[9px] font-black text-indigo-300 bg-indigo-950/60 px-1.5 py-0.5 rounded border border-indigo-800/40">+</span>
-            </div>
-            <div class="bg-transparent h-20 rounded-xl flex items-center justify-center mb-1.5 overflow-hidden relative">
-              ${contenidoImagen}
-            </div>
-            <h4 class="font-bold text-white text-xs leading-snug line-clamp-2 mb-1">${item.nombre}</h4>
+        <div class="item-producto bg-slate-950/80 border border-slate-800/80 hover:border-slate-700 p-2.5 rounded-[22px] flex flex-col justify-between relative group backdrop-blur-sm" data-nombre="${normalizarTexto(item.nombre)}" data-sub="${item.sub || ''}">
+          ${badgeHTML}
+          <div class="w-full h-20 rounded-xl overflow-hidden bg-slate-900/60 flex items-center justify-center p-1 relative mb-1.5">
+            <img src="${item.imagen || 'img/logo.jfif'}" alt="${item.nombre}" class="w-full h-full object-contain group-hover:scale-105 transition-transform duration-300" onerror="this.src='img/logo.jfif';">
           </div>
-          <div class="pt-1.5 border-t border-slate-800 flex items-center justify-between">
-            <span class="text-xs font-black text-accent-yellow">$${item.precioBase.toFixed(2)}</span>
-            <span class="btn-tactil bg-brand-500/30 text-accent-cyan font-bold text-[10px] px-2.5 py-1.5 rounded-xl border border-accent-cyan/30">
-              Agregar
-            </span>
+          <div class="flex-1 flex flex-col justify-between">
+            <h5 class="text-xs font-bold text-white leading-tight line-clamp-2 mb-1">${item.nombre}</h5>
+            ${bloqueControl}
           </div>
         </div>
       `;
-    }
-
-    function abrirModalPersonalizado() {
-      document.getElementById('modal-personalizado').classList.remove('hidden');
-    }
-
-    function cerrarModalPersonalizado() {
-      document.getElementById('modal-personalizado').classList.add('hidden');
-      document.getElementById('input-nombre-personalizado').value = "";
-    }
-
-    function guardarProductoPersonalizadoFlotante() {
-      const texto = document.getElementById('input-nombre-personalizado').value.trim();
-      if (!texto) {
-        mostrarToast("Escribe el nombre del producto", "Campo vacío", "info");
-        return;
-      }
-      const idUnico = `pers_${Date.now()}`;
-      
-      // Chequear si menciona local conocido
-      let tId = null, tNom = null;
-      if (texto.toLowerCase().includes('moravo') || texto.toLowerCase().includes('morau')) {
-        tId = 'moravos';
-        tNom = 'Moravos Café';
-      }
-
-      carrito[idUnico] = {
-        nombre: `${texto} (A Pedido)`,
-        precio: 0.00,
-        esPersonalizado: true,
-        cantidad: 1,
-        tiendaId: tId,
-        tiendaNombre: tNom
-      };
-      cerrarModalPersonalizado();
-      actualizarTotales();
-      renderizarModalCarrito();
-      mostrarToast(`¡"${texto}" agregado a pedido!`, "Agregado", "success");
     }
 
     function cambiarSeccion(seccion) {
@@ -1661,15 +2405,21 @@
         mostrarToast("Geolocalización no soportada", "Aviso", "error");
         return;
       }
+      const lblBtn = document.getElementById('lbl-transporte-gps-rapido');
+      if (lblBtn) lblBtn.innerText = "Conectando al GPS...";
+      
       navigator.geolocation.getCurrentPosition((pos) => {
         puntoOrigen = [pos.coords.latitude, pos.coords.longitude];
-        textoOrigenStr = "Mi Ubicación (GPS)";
-        document.getElementById('inputBuscadorOrigen').value = "Mi ubicación GPS actual";
+        textoOrigenStr = "📍 Mi Ubicación Actual (GPS)";
+        document.getElementById('inputBuscadorOrigen').value = "📍 Mi Ubicación Actual";
+        if (lblBtn) lblBtn.innerText = "✓ GPS Actual Fijado";
         actualizarMarcadorOrigen();
-        mapaRuta.setView(puntoOrigen, 16);
+        if (mapaRuta) mapaRuta.setView(puntoOrigen, 16);
         if (puntoDestino) trazarLineaRuta();
-        mostrarToast("Origen fijado por GPS", "Ubicación", "success");
+        document.getElementById('instruccion-mapa').innerText = "🏁 Ahora toca en el mapa o escribe tu destino";
+        mostrarToast("📍 Origen fijado por GPS con éxito", "Ubicación Lista", "success");
       }, () => {
+        if (lblBtn) lblBtn.innerText = "📍 Mi Ubicación Actual (GPS Rápido)";
         mostrarToast("No se pudo obtener el GPS", "Error", "error");
       });
     }
@@ -1681,7 +2431,7 @@
       buscarUbicacionNirguaPrecisa(texto, (lat, lon) => {
         puntoOrigen = [lat, lon];
         actualizarMarcadorOrigen();
-        mapaRuta.setView(puntoOrigen, 16);
+        if (mapaRuta) mapaRuta.setView(puntoOrigen, 16);
         if (puntoDestino) trazarLineaRuta();
       });
     }
@@ -1702,7 +2452,7 @@
           })
         }).addTo(mapaRuta).bindPopup(`🏁 ${texto}`).openPopup();
         lucide.createIcons();
-        mapaRuta.setView(puntoDestino, 16);
+        if (mapaRuta) mapaRuta.setView(puntoDestino, 16);
         trazarLineaRuta();
       });
     }
@@ -1722,7 +2472,7 @@
     }
 
     function trazarLineaRuta() {
-      if (!puntoDestino || !puntoOrigen) return;
+      if (!puntoDestino || !puntoOrigen || !mapaRuta) return;
       if (lineaTrayecto) mapaRuta.removeLayer(lineaTrayecto);
       fetch(`https://router.project-osrm.org/route/v1/driving/${puntoOrigen[1]},${puntoOrigen[0]};${puntoDestino[1]},${puntoDestino[0]}?overview=full&geometries=geojson`)
         .then(res => res.json())
@@ -1738,6 +2488,7 @@
     }
 
     function trazarLineaDirecta() {
+      if (!mapaRuta) return;
       if (lineaTrayecto) mapaRuta.removeLayer(lineaTrayecto);
       lineaTrayecto = L.polyline([puntoOrigen, puntoDestino], { color: '#00f2fe', weight: 4, dashArray: '6, 8', opacity: 0.85 }).addTo(mapaRuta);
       mapaRuta.fitBounds(lineaTrayecto.getBounds(), { padding: [30, 30] });
@@ -1779,16 +2530,10 @@
       const stopWords = new Set(['de', 'la', 'el', 'los', 'las', 'un', 'una', 'paquete', 'bolsa', 'kilo', 'quiero', 'dame', 'traeme', 'por', 'favor']);
       const tokens = palabras.filter(p => !stopWords.has(p) && p.length > 1);
 
-      // Si menciona Moravos (ej: cafe de moravos)
       if (limpio.includes('moravo') || limpio.includes('morau')) {
         const prodMoravos = productos.comida.find(p => p.local === 'moravos' && (limpio.includes('cafe') || limpio.includes('capuchino')));
         if (prodMoravos) {
-          return {
-            tipo: 'producto',
-            producto: prodMoravos,
-            cantidad,
-            nota: 'Detectado en Moravos'
-          };
+          return { tipo: 'producto', producto: prodMoravos, cantidad, nota: 'Detectado en Moravos' };
         }
       }
 
@@ -1812,13 +2557,7 @@
         }
       }
 
-      return { 
-        tipo: 'personalizado', 
-        nombre: terminoBruto.trim(), 
-        cantidad, 
-        precioBase: 0,
-        nota: 'Bajo Pedido' 
-      };
+      return { tipo: 'personalizado', nombre: terminoBruto.trim(), cantidad, precioBase: 0, nota: 'Bajo Pedido' };
     }
 
     // ================= OCR Y VOZ =================
@@ -1849,54 +2588,53 @@
 
       const modalFoto = document.getElementById('modal-foto-resultado');
       const imgPreview = document.getElementById('img-preview-foto');
-      const loader = document.getElementById('loader-foto-ia');
-      const laser = document.getElementById('laser-scan-anim');
+      const loaderFoto = document.getElementById('loader-foto-ia');
+      const txtLoader = document.getElementById('txt-loader-foto');
+      const txtModalSub = document.getElementById('txt-modal-foto-sub');
+      const laserScan = document.getElementById('laser-scan-anim');
 
-      imgPreview.src = URL.createObjectURL(archivo);
-      laser.style.display = 'block';
-      loader.classList.remove('hidden');
-      document.getElementById('caja-resultado-lista').classList.add('hidden');
-      document.getElementById('pie-acciones-lista-ia').classList.add('hidden');
+      const urlObj = URL.createObjectURL(archivo);
+      imgPreview.src = urlObj;
+
       modalFoto.classList.remove('hidden');
+      loaderFoto.classList.remove('hidden');
+      laserScan.style.display = 'block';
+      txtLoader.innerText = "Leyendo renglones de tu foto...";
+      txtModalSub.innerText = "Iniciando motor de IA...";
 
-      let pistaNombre = archivo.name ? archivo.name.replace(/[_-]/g, ' ').replace(/\.[^/.]+$/, "") : "";
-
-      if (typeof Tesseract !== 'undefined') {
-        Tesseract.recognize(archivo, 'spa').then(({ data: { text } }) => {
-          laser.style.display = 'none';
-          loader.classList.add('hidden');
-          analizarTextoYMostrarListaCompleta((text && text.trim().length > 3) ? text : pistaNombre);
-        }).catch(() => {
-          laser.style.display = 'none';
-          loader.classList.add('hidden');
-          analizarTextoYMostrarListaCompleta(pistaNombre || "1 Café");
-        });
-      } else {
-        setTimeout(() => {
-          laser.style.display = 'none';
-          loader.classList.add('hidden');
-          analizarTextoYMostrarListaCompleta(pistaNombre || "1 Harina pan");
-        }, 800);
-      }
+      Tesseract.recognize(archivo, 'spa', {
+        logger: m => {
+          if (m.status === 'recognizing text') {
+            const pct = Math.round(m.progress * 100);
+            txtLoader.innerText = `Escaneando texto: ${pct}%`;
+          }
+        }
+      }).then(({ data: { text } }) => {
+        loaderFoto.classList.add('hidden');
+        laserScan.style.display = 'none';
+        txtModalSub.innerText = "Texto identificado con éxito";
+        analizarTextoYMostrarListaCompleta(text);
+      }).catch(() => {
+        loaderFoto.classList.add('hidden');
+        laserScan.style.display = 'none';
+        txtModalSub.innerText = "No se pudo leer la foto";
+        mostrarToast("No se pudo leer el texto de la foto", "Error", "error");
+      });
     }
 
     function analizarTextoYMostrarListaCompleta(textoBruto) {
+      const lineas = textoBruto.split(/[\r\n,]+/).map(l => l.trim()).filter(l => l.length > 2);
+      const itemsProcesados = [];
       const cajaResultado = document.getElementById('caja-resultado-lista');
       const pieAcciones = document.getElementById('pie-acciones-lista-ia');
 
-      const lineas = textoBruto.split(/\r?\n|;|\s*,\s*|\s+y\s+/i).map(l => l.trim()).filter(l => l.length > 1);
-      const itemsProcesados = [];
-
-      lineas.forEach((linea, idx) => {
+      lineas.forEach(linea => {
         const res = resolverProductoInteligente(linea);
         if (res) {
           itemsProcesados.push({
-            id: `scan_${Date.now()}_${idx}`,
-            textoOriginal: linea,
             resultado: res,
-            seleccionado: true,
             cantidad: res.cantidad || 1,
-            gramos: res.gramos || null
+            seleccionado: true
           });
         }
       });
@@ -1949,6 +2687,12 @@
         itemsDetectadosActuales[idx].seleccionado = !itemsDetectadosActuales[idx].seleccionado;
         renderizarListaDetectadaModal();
       }
+    }
+
+    function toggleSeleccionarTodos() {
+      const algunDesmarcado = itemsDetectadosActuales.some(i => !i.seleccionado);
+      itemsDetectadosActuales.forEach(i => i.seleccionado = algunDesmarcado);
+      renderizarListaDetectadaModal();
     }
 
     function ajustarCantItemScan(idx, delta) {
@@ -2062,6 +2806,26 @@
       actualizarTotales();
     }
 
+    function abrirModalPersonalizado() {
+      document.getElementById('modal-personalizado').classList.remove('hidden');
+      document.getElementById('input-nombre-personalizado').focus();
+    }
+
+    function cerrarModalPersonalizado() {
+      document.getElementById('modal-personalizado').classList.add('hidden');
+      document.getElementById('input-nombre-personalizado').value = "";
+    }
+
+    function guardarProductoPersonalizadoFlotante() {
+      const txt = document.getElementById('input-nombre-personalizado').value.trim();
+      if (!txt) return;
+      const idU = `pers_${Date.now()}`;
+      carrito[idU] = { nombre: `${txt} (A Pedido)`, precio: 0, esPersonalizado: true, cantidad: 1 };
+      actualizarTotales();
+      cerrarModalPersonalizado();
+      mostrarToast("Producto agregado a tu lista", "Añadido", "success");
+    }
+
     function filtrarSubViveres(subTipo) {
       document.querySelectorAll('.btn-sub-viveres').forEach(btn => {
         btn.classList.remove('bg-accent-magenta', 'text-white', 'border-accent-magenta/50', 'font-black');
@@ -2090,7 +2854,7 @@
     function calcularTotal() {
       let total = 0, cant = 0;
       Object.keys(carrito).forEach(id => {
-        if (!carrito[id].esPersonalizado) total += carrito[id].cantidad * carrito[id].precio;
+        if (!carrito[id].esPersonalizado) total += carrito[id].cantidad * (carrito[id].precio || 0);
         cant += carrito[id].cantidad;
       });
       return { total, cant };
@@ -2188,7 +2952,7 @@
       esPagoTransporteDirecto = true;
       clienteLatActual = puntoDestino[0];
       clienteLngActual = puntoDestino[1];
-      document.getElementById('titulo-paso-2').innerText = "Pago de Transporte";
+      document.getElementById('titulo-paso-2').innerText = "Solicitud de Transporte";
       document.getElementById('titulo-resumen-paso2').innerText = "Detalle del Viaje";
       if (textoDestinoStr && textoDestinoStr !== "No seleccionado") {
         document.getElementById('direccion').value = textoDestinoStr;
@@ -2212,6 +2976,19 @@
         });
         const { total } = calcularTotal();
         document.getElementById('total-precio-resumen').innerText = `$${total.toFixed(2)}`;
+      }
+
+      // Autocompletar con usuario activo si existe
+      if (usuarioActivo) {
+        if (usuarioActivo.nombre && !document.getElementById('nombreCliente').value) {
+          document.getElementById('nombreCliente').value = usuarioActivo.nombre;
+        }
+        if (usuarioActivo.telefono && !document.getElementById('telefonoCliente').value) {
+          document.getElementById('telefonoCliente').value = usuarioActivo.telefono;
+        }
+        if (usuarioActivo.direccion && !document.getElementById('direccion').value) {
+          document.getElementById('direccion').value = usuarioActivo.direccion;
+        }
       }
 
       document.getElementById('paso-catalogo').classList.add('hidden');
@@ -2250,7 +3027,7 @@
         cajaDiv.classList.remove('hidden');
         metodoPagoActual = 'Zelle / Divisas';
       }
-      document.getElementById('metodoPagoElegido').value = metodoPagoActual;
+      document.getElementById('metodoPagoElegido').value = `${metodoPagoActual} (Al Recibir)`;
     }
 
     function fijarMontoPaga(monto) {
@@ -2306,8 +3083,8 @@
       document.getElementById('inputBuscadorOrigen').value = "";
       document.getElementById('inputBuscadorDestino').value = "";
       document.getElementById('instruccion-mapa').innerText = "📍 Toca en el mapa o escribe tu destino";
-      if (window.marcadorDestRef) mapaRuta.removeLayer(window.marcadorDestRef);
-      if (lineaTrayecto) mapaRuta.removeLayer(lineaTrayecto);
+      if (window.marcadorDestRef && mapaRuta) mapaRuta.removeLayer(window.marcadorDestRef);
+      if (lineaTrayecto && mapaRuta) mapaRuta.removeLayer(lineaTrayecto);
       mostrarToast("Puntos de ruta reiniciados", "Mapa", "info");
     }
 
@@ -2327,6 +3104,7 @@
       });
     }
 
+    // ================= OBTENER UBICACIÓN GPS LIMPIA =================
     function obtenerUbicacionGPS(silencioso = false) {
       const btnGps = document.getElementById('btn-gps');
       const lblGps = document.getElementById('lbl-gps');
@@ -2334,32 +3112,39 @@
         if (!silencioso) mostrarToast("Navegador sin geolocalización", "Error", "error");
         return;
       }
-      if (lblGps) lblGps.innerText = "Obteniendo coordenadas exactas...";
+      if (lblGps) lblGps.innerText = "Conectando al satélite GPS...";
       if (btnGps) btnGps.disabled = true;
+
       navigator.geolocation.getCurrentPosition(
         (pos) => {
           clienteLatActual = pos.coords.latitude;
           clienteLngActual = pos.coords.longitude;
           const urlMaps = `https://maps.google.com/?q=${clienteLatActual},${clienteLngActual}`;
+          
           const inputGps = document.getElementById('ubicacionGPS');
           if (inputGps) inputGps.value = urlMaps;
-          if (lblGps) lblGps.innerHTML = `✅ ¡GPS Adjuntado! (${clienteLatActual.toFixed(4)}, ${clienteLngActual.toFixed(4)})`;
+          const latInput = document.getElementById('latGPS');
+          if (latInput) latInput.value = clienteLatActual;
+          const lngInput = document.getElementById('lngGPS');
+          if (lngInput) lngInput.value = clienteLngActual;
+
+          if (lblGps) lblGps.innerHTML = `📍 Ubicación GPS detectada con éxito`;
           if (btnGps) {
             btnGps.disabled = false;
             btnGps.className = "btn-tactil w-full bg-emerald-950/80 text-accent-emerald border-2 border-emerald-500/60 font-black py-2.5 px-3 rounded-xl text-xs flex items-center justify-center gap-2 shadow-glow-emerald";
           }
-          if (!silencioso) mostrarToast("¡Ubicación GPS exacta adjuntada!", "GPS Listo", "success");
+          if (!silencioso) mostrarToast("📍 Ubicación GPS detectada con éxito", "GPS Listo", "success");
         },
         (err) => {
           if (lblGps) lblGps.innerText = "Tocar para adjuntar GPS en vivo";
           if (btnGps) btnGps.disabled = false;
-          if (!silencioso) mostrarToast("Activa los permisos de ubicación GPS de tu teléfono para ubicarte con exactitud", "Aviso GPS", "info");
+          if (!silencioso) mostrarToast("Activa los permisos GPS de tu teléfono", "Aviso GPS", "info");
         },
         { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
       );
     }
 
-    // ================= ENVIAR PEDIDO Y ANOTAR A CUENTA DE TIENDA =================
+    // ================= ENVIAR PEDIDO CON DISPARO DUAL =================
     function enviarPedidoAConductor() {
       const nombre = document.getElementById('nombreCliente').value.trim();
       const telefono = document.getElementById('telefonoCliente').value.trim();
@@ -2367,7 +3152,6 @@
       const tipoBeneficiario = document.getElementById('tipoBeneficiario').value;
       const nombreTercero = document.getElementById('nombreTercero').value.trim();
       const ubicacionGPS = document.getElementById('ubicacionGPS').value;
-      const refPago = document.getElementById('refPagoMovil').value.trim();
       const montoPaga = document.getElementById('montoPagaCliente').value.trim();
 
       if (!nombre || !telefono) {
@@ -2418,7 +3202,6 @@
         });
       }
 
-      // Si no detectó tienda pero algún texto dice Moravos
       if (!tiendaDetectadaId) {
         const itemMoravos = listaItemsArray.find(i => i.nombre.toLowerCase().includes('moravo') || i.nombre.toLowerCase().includes('morau'));
         if (itemMoravos) {
@@ -2432,7 +3215,6 @@
       const comisionFlash = (totalVentaTienda * tiendaPctComision) / 100;
       const netoTienda = totalVentaTienda - comisionFlash;
 
-      // Coordenadas exactas para que el chofer y el admin vean el punto exacto
       let latDestinoFinal = null;
       let lngDestinoFinal = null;
       let latOrigenFinal = 10.1506;
@@ -2462,7 +3244,6 @@
 
       const ubicacionGPSFinal = ubicacionGPS || `https://maps.google.com/?q=${latDestinoFinal},${lngDestinoFinal}`;
 
-      // 1. Guardar Pedido en Firebase con coordenadas exactas sincronizadas
       if (firebaseActivo && db) {
         try {
           const nuevoPedidoRef = db.ref('pedidos').push({
@@ -2479,8 +3260,8 @@
             destinoLng: lngDestinoFinal,
             origenLat: latOrigenFinal,
             origenLng: lngOrigenFinal,
-            metodoPago: metodoPagoActual,
-            referenciaPago: refPago || '',
+            metodoPago: `${metodoPagoActual} (Pago Contra Entrega)`,
+            pagoContraEntrega: true,
             pagaCon: montoPaga || '',
             total: montoTotalCalculado,
             estado: 'pendiente',
@@ -2496,11 +3277,26 @@
             fecha: new Date().toISOString()
           });
 
-          if (nuevoPedidoRef && nuevoPedidoRef.key) {
-            activarRastreoPedidoCliente(nuevoPedidoRef.key);
+          const nuevoPedidoId = nuevoPedidoRef ? nuevoPedidoRef.key : `ped_${Date.now()}`;
+
+          // Guardar orden en el Historial del Cliente
+          const registroHistorial = {
+            id: nuevoPedidoId,
+            orden: numOrden,
+            tipoServicio: esPagoTransporteDirecto ? 'transporte' : 'delivery',
+            fecha: new Date().toISOString(),
+            total: montoTotalCalculado,
+            direccion: direccion || textoDestinoStr || 'Ubicación especificada',
+            estado: 'pendiente',
+            tiendaNombre: tiendaDetectadaNombre || (esPagoTransporteDirecto ? 'Transporte Flash' : 'Supermercado Flash'),
+            items: listaItemsArray
+          };
+          guardarEnHistorialCliente(registroHistorial);
+
+          if (nuevoPedidoId) {
+            activarRastreoPedidoCliente(nuevoPedidoId);
           }
 
-          // 2. Anotar automáticamente en la cuenta de la Tienda (ej. Moravos Café)
           if (tiendaDetectadaId) {
             const descItems = listaItemsArray.map(i => `${i.cantidad}x ${i.nombre}`).join(', ');
             db.ref(`cuentas_tiendas/${tiendaDetectadaId}/movimientos`).push({
@@ -2517,9 +3313,29 @@
         } catch(e) {
           console.error("Error al registrar en Firebase:", e);
         }
+      } else {
+        const nuevoPedidoId = `offline_${Date.now()}`;
+        const registroHistorial = {
+          id: nuevoPedidoId,
+          orden: numOrden,
+          tipoServicio: esPagoTransporteDirecto ? 'transporte' : 'delivery',
+          fecha: new Date().toISOString(),
+          total: montoTotalCalculado,
+          direccion: direccion || textoDestinoStr || 'Ubicación especificada',
+          estado: 'pendiente',
+          tiendaNombre: tiendaDetectadaNombre || 'Comercio Flash',
+          items: listaItemsArray
+        };
+        guardarEnHistorialCliente(registroHistorial);
+        activarRastreoPedidoCliente(nuevoPedidoId);
       }
 
-      // Mensaje de WhatsApp con enlace GPS exacto
+      // Limpiar la canasta y volver a la vista principal sin perder estado
+      carrito = {};
+      actualizarTotales();
+      volverAPaso1();
+
+      // Preparar Mensaje para canal de WhatsApp (opcional, sin redirección forzada)
       let msj = "";
       if (esPagoTransporteDirecto) {
         msj += `🚗 *SOLICITUD DE VIAJE: #${numOrden}* 🚗\n`;
@@ -2535,7 +3351,7 @@
         }
         msj += `🚘 *Unidad Solicitada:* ${tipoTransporteSeleccionado.toUpperCase()}\n`;
         msj += `💵 *Tarifa de Viaje:* $${precioTransporte.toFixed(2)}\n`;
-        msj += `💳 *Método de Pago:* ${metodoPagoActual}\n`;
+        msj += `💳 *Método de Pago:* ${metodoPagoActual} (Al Recibir)\n`;
       } else {
         msj += `🛍️ *ORDEN DE COMPRA: #${numOrden}* 🛍️\n`;
         msj += `_Pedidos Flash Nirgua_\n\n`;
@@ -2554,8 +3370,7 @@
           msj += ` • ${it.cantidad}x ${it.nombre} ${it.esPersonalizado ? '(Bajo Pedido)' : ''}\n`;
         });
         msj += `\n🛵 *Tarifa Delivery Chofer:* $1.00\n`;
-        msj += `💳 *Forma de Pago:* ${metodoPagoActual}\n`;
-        if (metodoPagoActual === 'Pago Móvil' && refPago) msj += `🔢 *Ref Pago Móvil:* ${refPago}\n`;
+        msj += `💳 *Forma de Pago:* ${metodoPagoActual} (Pago Contra Entrega)\n`;
         if (metodoPagoActual === 'Efectivo' && montoPaga) msj += `💵 *Paga con:* ${montoPaga} (Llevar vuelto)\n`;
       }
 
@@ -2564,40 +3379,48 @@
       const barra = document.getElementById('barra-progreso-relleno');
       const cohete = document.getElementById('cohete-desplazable');
       const enlaceDirecto = document.getElementById('enlace-directo-wa');
+      const txtNumOrd = document.getElementById('txt-num-orden-exito');
+      const txtEstadoCarga = document.getElementById('txt-estado-carga');
 
-      enlaceDirecto.href = urlWA;
+      if (txtNumOrd) txtNumOrd.innerText = numOrden;
+      if (txtEstadoCarga) txtEstadoCarga.innerText = "Registrando tu orden con los choferes...";
+      if (enlaceDirecto) enlaceDirecto.href = urlWA;
       modal.classList.remove('hidden');
 
       let progreso = 0;
       const intervalo = setInterval(() => {
         progreso += 5;
         if (progreso > 100) progreso = 100;
-        barra.style.width = `${progreso}%`;
-        cohete.style.left = `calc(${Math.min(progreso, 88)}% - 5px)`;
+        if (barra) barra.style.width = `${progreso}%`;
+        if (cohete) cohete.style.left = `calc(${Math.min(progreso, 88)}% - 5px)`;
         if (progreso === 100) {
           clearInterval(intervalo);
-          enlaceDirecto.classList.remove('hidden');
-          setTimeout(() => { window.location.href = urlWA; }, 300);
+          if (txtEstadoCarga) txtEstadoCarga.innerText = "✓ ¡Orden registrada! Choferes de Nirgua alertados.";
+          if (enlaceDirecto) enlaceDirecto.classList.remove('hidden');
+          reproducirSonidoAlerta('exito');
+
+          // Abrir automáticamente el rastreo en vivo sin salir de la app
+          setTimeout(() => {
+            const modExito = document.getElementById('modal-exito');
+            if (modExito && !modExito.classList.contains('hidden')) {
+              cerrarModalExitoYAbrirRastreo();
+            }
+          }, 2200);
         }
       }, 35);
     }
 
-    // SINCRONIZACIÓN EN TIEMPO REAL CON FIREBASE
+    // ================= SINCRONIZACIÓN FIREBASE =================
     function sincronizarTiendasDesdeFirebase() {
       if (!firebaseActivo || !db) return;
-      
-      // Escuchar Tiendas Registradas por el Admin
       db.ref('tiendas').on('value', (snapshot) => {
         const val = snapshot.val();
         if (val) {
-          Object.keys(val).forEach(k => {
-            infoLocales[k] = val[k];
-          });
+          Object.keys(val).forEach(k => { infoLocales[k] = val[k]; });
           renderizarLocalesComerciales();
         }
       });
 
-      // Escuchar Productos de Tiendas creados por Admin
       db.ref('productos_tiendas').on('value', (snapshot) => {
         const val = snapshot.val();
         if (val) {
@@ -2607,10 +3430,8 @@
       });
     }
 
-    // SINCRONIZACIÓN EN TIEMPO REAL DE PRECIOS DEL ADMIN PARA PRODUCTOS PROPIOS FLASH
     function sincronizarCatalogoFlashDesdeFirebase() {
       if (!firebaseActivo || !db) return;
-
       db.ref('catalogo_flash').on('value', (snapshot) => {
         const val = snapshot.val();
         if (val) {
@@ -2629,7 +3450,6 @@
                 cambio = true;
               }
             } else {
-              // Producto nuevo añadido por el Admin
               const cat = itemFB.categoria || 'viveres';
               if (!productos[cat]) productos[cat] = [];
               itemFB.id = id;
@@ -2639,20 +3459,22 @@
               cambio = true;
             }
           });
-          if (cambio) {
-            renderizarCatalogo();
-          }
+          if (cambio) renderizarCatalogo();
         }
       });
     }
 
-    // ================= RASTREO SATELITAL EN VIVO CLIENTE =================
+    // ================= RASTREO SATELITAL EN VIVO CLIENTE (CON OSRM Y HUD) =================
     let pedidoActivoClienteId = localStorage.getItem('pedidosflash_pedido_activo') || null;
     let mapaRastreoClienteInstance = null;
     let marcadorClienteOrigRef = null;
     let marcadorClienteDestRef = null;
     let marcadorClienteChoferRef = null;
+    let lineaRutaChoferOSRM = null;
     let listenerGpsChoferActivo = null;
+    let listenerPedidoActivoRef = null;
+    let datosUltimoPedido = null;
+    let datosUltimoGpsChofer = null;
 
     function activarRastreoPedidoCliente(pedidoId) {
       if (!pedidoId || !db) return;
@@ -2662,7 +3484,16 @@
       const banner = document.getElementById('banner-flotante-rastreo');
       if (banner) banner.classList.remove('hidden');
 
-      db.ref(`pedidos/${pedidoId}`).on('value', (snap) => {
+      const dotP = document.getElementById('nav-pulse-dot');
+      const dotS = document.getElementById('nav-static-dot');
+      const btnR = document.getElementById('nav-btn-rastreo');
+      if (dotP) dotP.classList.remove('hidden');
+      if (dotS) dotS.classList.remove('hidden');
+      if (btnR) btnR.classList.add('text-accent-emerald');
+
+      if (listenerPedidoActivoRef) listenerPedidoActivoRef.off();
+      listenerPedidoActivoRef = db.ref(`pedidos/${pedidoId}`);
+      listenerPedidoActivoRef.on('value', (snap) => {
         const p = snap.val();
         if (!p) return;
         actualizarVistaRastreoCliente(p);
@@ -2697,7 +3528,14 @@
       document.getElementById('modal-rastreo-cliente').classList.add('hidden');
     }
 
+    let ultimoEstadoConocidoPedido = null;
+    let ultimoChoferNotificado = null;
+
     function actualizarVistaRastreoCliente(p) {
+      datosUltimoPedido = p;
+      const estadoAnterior = ultimoEstadoConocidoPedido;
+      ultimoEstadoConocidoPedido = p.estado;
+
       const numOrdEl = document.getElementById('rastreo-cliente-num-orden');
       const badgeEst = document.getElementById('rastreo-badge-estado');
       const txtEst = document.getElementById('rastreo-texto-estado');
@@ -2719,34 +3557,74 @@
         }
         if (txtEst) txtEst.innerText = `${p.chofer || 'El chofer'} está en el comercio verificando los productos.`;
         if (cajaChofer) cajaChofer.classList.remove('hidden');
+
+        // Notificación en vivo si es la primera vez que se asigna o cambia de chofer
+        if (p.chofer && p.chofer !== 'Sin Asignar' && (estadoAnterior === 'pendiente' || ultimoChoferNotificado !== p.chofer)) {
+          ultimoChoferNotificado = p.chofer;
+          dispararAlertaChoferAcepto(p);
+        }
+      } else if (p.estado === 'en_local') {
+        if (badgeEst) {
+          badgeEst.className = "inline-block px-3 py-1 rounded-full text-xs font-black bg-purple-500/20 text-purple-300 border border-purple-500/30";
+          badgeEst.innerText = "Chofer en el Comercio";
+        }
+        if (txtEst) txtEst.innerText = `${p.chofer || 'El chofer'} ya llegó a ${p.tiendaNombre || 'la tienda'} y está retirando tus artículos.`;
+        if (cajaChofer) cajaChofer.classList.remove('hidden');
+
+        if (estadoAnterior === 'aceptado') {
+          reproducirSonidoAlerta('info');
+          mostrarToast(`🏪 ${p.chofer || 'Tu chofer'} llegó al comercio a retirar tus productos`, "En Comercio", "info");
+        }
       } else if (p.estado === 'en_camino') {
         if (badgeEst) {
           badgeEst.className = "inline-block px-3 py-1 rounded-full text-xs font-black bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 animate-pulse";
           badgeEst.innerText = "¡Tu pedido va en camino!";
         }
-        if (txtEst) txtEst.innerText = `${p.chofer || 'El chofer'} ya salió de la tienda hacia tu destino.`;
+        if (txtEst) txtEst.innerText = `${p.chofer || 'El chofer'} ya salió hacia tu destino.`;
         if (cajaChofer) cajaChofer.classList.remove('hidden');
+
+        if (estadoAnterior !== 'en_camino') {
+          reproducirSonidoAlerta('chofer_acepto');
+          if (navigator.vibrate) navigator.vibrate([300, 100, 300]);
+          mostrarToast(`🚀 ¡${p.chofer || 'Tu chofer'} va en camino a tu dirección!`, "En Camino", "success");
+        }
       } else if (p.estado === 'entregado') {
         if (badgeEst) {
           badgeEst.className = "inline-block px-3 py-1 rounded-full text-xs font-black bg-emerald-500 text-slate-950";
           badgeEst.innerText = "¡Entregado con Éxito!";
         }
         if (txtEst) txtEst.innerText = `¡Gracias por tu compra en Pedidos Flash Nirgua! ⭐`;
+        
+        // Quitar pulsos y abrir calificación
+        const dotP = document.getElementById('nav-pulse-dot');
+        const dotS = document.getElementById('nav-static-dot');
+        if (dotP) dotP.classList.add('hidden');
+        if (dotS) dotS.classList.add('hidden');
+        const banner = document.getElementById('banner-flotante-rastreo');
+        if (banner) banner.classList.add('hidden');
+
+        if (!p.calificacionRegistrada) {
+          setTimeout(abrirModalCalificacion, 600);
+        }
       }
 
+      // Habilitar comunicación directa con el chofer
       if (p.chofer && p.chofer !== 'Sin Asignar') {
         const nomCh = document.getElementById('rastreo-nombre-chofer');
         if (nomCh) nomCh.innerText = p.chofer;
         const vehCh = document.getElementById('rastreo-vehiculo-chofer');
         if (vehCh) vehCh.innerText = p.vehiculoRequerido || 'Repartidor';
         if (p.choferTelefono) {
+          const btnLlamar = document.getElementById('rastreo-btn-llamar-chofer');
+          if (btnLlamar) btnLlamar.href = `tel:${p.choferTelefono}`;
           const btnWa = document.getElementById('rastreo-btn-wa-chofer');
-          if (btnWa) btnWa.href = `https://wa.me/${normalizarTelefono(p.choferTelefono)}?text=${encodeURIComponent(`Hola ${p.chofer}, te escribo con respecto a mi pedido ${p.orden || ''}`)}`;
+          if (btnWa) btnWa.href = `https://wa.me/${normalizarTelefono(p.choferTelefono)}?text=${encodeURIComponent(`Hola ${p.chofer}, te escribo con respecto a mi pedido/viaje ${p.orden || ''}`)}`;
           escucharGpsChoferEnVivo(p.choferTelefono);
         }
       }
 
       actualizarMapaClienteConPuntos(p);
+      lucide.createIcons();
     }
 
     function escucharGpsChoferEnVivo(telefonoChofer) {
@@ -2757,21 +3635,85 @@
 
       db.ref(`choferes/${tel}/gps`).on('value', (snap) => {
         const gps = snap.val();
-        if (gps && gps.lat && gps.lng && mapaRastreoClienteInstance) {
-          const pos = [parseFloat(gps.lat), parseFloat(gps.lng)];
-          if (marcadorClienteChoferRef) {
-            marcadorClienteChoferRef.setLatLng(pos);
-          } else {
-            marcadorClienteChoferRef = L.marker(pos, {
-              icon: L.divIcon({
-                className: 'custom-pin',
-                html: `<div class="pin-radar-chofer"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg></div>`,
-                iconSize: [28, 28]
-              })
-            }).addTo(mapaRastreoClienteInstance).bindPopup("Tu Chofer (GPS en Vivo)").openPopup();
+        if (gps && gps.lat && gps.lng) {
+          datosUltimoGpsChofer = { lat: parseFloat(gps.lat), lng: parseFloat(gps.lng) };
+          if (mapaRastreoClienteInstance) {
+            const pos = [datosUltimoGpsChofer.lat, datosUltimoGpsChofer.lng];
+            if (marcadorClienteChoferRef) {
+              marcadorClienteChoferRef.setLatLng(pos);
+            } else {
+              marcadorClienteChoferRef = L.marker(pos, {
+                icon: L.divIcon({
+                  className: 'custom-pin',
+                  html: `<div class="pin-radar-chofer"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg></div>`,
+                  iconSize: [28, 28]
+                })
+              }).addTo(mapaRastreoClienteInstance).bindPopup("Tu Chofer (GPS en Vivo)").openPopup();
+            }
+
+            if (datosUltimoPedido) {
+              const destLat = datosUltimoPedido.lat || datosUltimoPedido.destinoLat || 10.1506;
+              const destLng = datosUltimoPedido.lng || datosUltimoPedido.destinoLng || -68.5668;
+              calcularYRutaChoferOSRM(datosUltimoGpsChofer.lat, datosUltimoGpsChofer.lng, destLat, destLng);
+            }
           }
         }
       });
+    }
+
+    function calcularYRutaChoferOSRM(cLat, cLng, dLat, dLng) {
+      const url = `https://router.project-osrm.org/route/v1/driving/${cLng},${cLat};${dLng},${dLat}?overview=full&geometries=geojson`;
+      fetch(url)
+        .then(res => res.json())
+        .then(data => {
+          if (data && data.routes && data.routes.length > 0) {
+            const r = data.routes[0];
+            const coords = r.geometry.coordinates.map(c => [c[1], c[0]]);
+
+            if (lineaRutaChoferOSRM && mapaRastreoClienteInstance) {
+              mapaRastreoClienteInstance.removeLayer(lineaRutaChoferOSRM);
+            }
+
+            if (mapaRastreoClienteInstance) {
+              lineaRutaChoferOSRM = L.polyline(coords, {
+                color: '#00e676',
+                weight: 5,
+                opacity: 0.9,
+                dashArray: null
+              }).addTo(mapaRastreoClienteInstance);
+            }
+
+            const distMetros = r.distance;
+            const distTxt = distMetros >= 1000 ? `${(distMetros / 1000).toFixed(1)} km` : `${Math.round(distMetros)} m`;
+            const durSegundos = r.duration;
+            const etaMinutos = Math.max(1, Math.round(durSegundos / 60));
+
+            const distEl = document.getElementById('rastreo-distancia-val');
+            const etaEl = document.getElementById('rastreo-eta-val');
+            if (distEl) distEl.innerText = distTxt;
+            if (etaEl) etaEl.innerText = `${etaMinutos} min aprox`;
+          }
+        })
+        .catch(() => {});
+    }
+
+    function centrarEnChofer() {
+      if (marcadorClienteChoferRef && mapaRastreoClienteInstance) {
+        mapaRastreoClienteInstance.setView(marcadorClienteChoferRef.getLatLng(), 16);
+      } else if (marcadorClienteDestRef && mapaRastreoClienteInstance) {
+        mapaRastreoClienteInstance.setView(marcadorClienteDestRef.getLatLng(), 15);
+      }
+    }
+
+    function verRutaCompleta() {
+      if (!mapaRastreoClienteInstance) return;
+      const puntos = [];
+      if (marcadorClienteChoferRef) puntos.push(marcadorClienteChoferRef.getLatLng());
+      if (marcadorClienteOrigRef) puntos.push(marcadorClienteOrigRef.getLatLng());
+      if (marcadorClienteDestRef) puntos.push(marcadorClienteDestRef.getLatLng());
+      if (puntos.length >= 2) {
+        mapaRastreoClienteInstance.fitBounds(L.latLngBounds(puntos), { padding: [35, 35] });
+      }
     }
 
     function actualizarMapaClienteConPuntos(p) {
@@ -2796,13 +3738,425 @@
       mapaRastreoClienteInstance.fitBounds(bounds, { padding: [25, 25] });
     }
 
+    // ================= SISTEMA DE CALIFICACIÓN =================
+    let estrellasCalificacionActual = 5;
+    function abrirModalCalificacion() {
+      document.getElementById('modal-calificar-servicio').classList.remove('hidden');
+      fijarEstrellasCalificacion(5);
+      lucide.createIcons();
+    }
+
+    function cerrarModalCalificacion() {
+      document.getElementById('modal-calificar-servicio').classList.add('hidden');
+      localStorage.removeItem('pedidosflash_pedido_activo');
+      pedidoActivoClienteId = null;
+    }
+
+    function fijarEstrellasCalificacion(n) {
+      estrellasCalificacionActual = n;
+      for (let i = 1; i <= 5; i++) {
+        const star = document.getElementById(`estrella-${i}`);
+        if (star) {
+          if (i <= n) {
+            star.classList.add('fill-amber-400');
+            star.classList.remove('text-slate-600');
+          } else {
+            star.classList.remove('fill-amber-400');
+            star.classList.add('text-slate-600');
+          }
+        }
+      }
+      const desc = { 1: "Muy deficiente (1/5)", 2: "Regular (2/5)", 3: "Aceptable (3/5)", 4: "Buen servicio (4/5)", 5: "¡Excelente servicio! (5/5)" };
+      document.getElementById('calificar-lbl-texto').innerText = desc[n] || `${n}/5`;
+    }
+
+    function guardarCalificacionServicio() {
+      const comentario = document.getElementById('input-comentario-calificacion').value.trim();
+      if (pedidoActivoClienteId && db) {
+        db.ref(`pedidos/${pedidoActivoClienteId}`).update({
+          calificacion: estrellasCalificacionActual,
+          comentarioCalificacion: comentario,
+          calificacionRegistrada: true
+        });
+      }
+      mostrarToast("¡Muchas gracias por calificar a nuestro chofer!", "Gracias", "success");
+      cerrarModalCalificacion();
+    }
+
+    // ================= SÍNTESIS DE AUDIO PARA ALERTAS IN-APP =================
+    function reproducirSonidoAlerta(tipo = 'exito') {
+      try {
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        if (!AudioCtx) return;
+        const ctx = new AudioCtx();
+        if (ctx.state === 'suspended') ctx.resume();
+
+        const t = ctx.currentTime;
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+
+        if (tipo === 'chofer_acepto') {
+          // Melodía alegre y triunfal: Do5 -> Mi5 -> Sol5 -> Do6
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(523.25, t);
+          osc.frequency.setValueAtTime(659.25, t + 0.12);
+          osc.frequency.setValueAtTime(783.99, t + 0.24);
+          osc.frequency.setValueAtTime(1046.50, t + 0.36);
+          gain.gain.setValueAtTime(0.35, t);
+          gain.gain.exponentialRampToValueAtTime(0.001, t + 0.75);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(t);
+          osc.stop(t + 0.8);
+        } else {
+          // Chime suave de notificación
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(659.25, t);
+          osc.frequency.setValueAtTime(880.00, t + 0.14);
+          gain.gain.setValueAtTime(0.25, t);
+          gain.gain.exponentialRampToValueAtTime(0.001, t + 0.5);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(t);
+          osc.stop(t + 0.55);
+        }
+      } catch (e) {
+        console.warn("Audio Context alert:", e);
+      }
+    }
+
+    // ================= ALERTA IN-APP: CHOFER ACEPTÓ EL PEDIDO =================
+    function dispararAlertaChoferAcepto(p) {
+      reproducirSonidoAlerta('chofer_acepto');
+      if (navigator.vibrate) navigator.vibrate([200, 100, 200, 100, 300]);
+
+      const modalAlert = document.getElementById('modal-chofer-acepto');
+      if (modalAlert) {
+        const nomEl = document.getElementById('chofer-acepto-nombre');
+        const nomCard = document.getElementById('chofer-acepto-nombre-card');
+        const telCard = document.getElementById('chofer-acepto-tel-card');
+        const vehEl = document.getElementById('chofer-acepto-vehiculo');
+        const btnWa = document.getElementById('chofer-acepto-btn-wa');
+
+        const nombreCh = p.chofer || 'Chofer Flash';
+        if (nomEl) nomEl.innerText = nombreCh;
+        if (nomCard) nomCard.innerText = nombreCh;
+        if (telCard) telCard.innerText = p.choferTelefono || 'Asignado en Vivo';
+        if (vehEl) vehEl.innerText = p.vehiculoRequerido || '🛵 Moto Flash';
+        if (btnWa && p.choferTelefono) {
+          btnWa.href = `https://wa.me/${normalizarTelefono(p.choferTelefono)}?text=${encodeURIComponent(`Hola ${nombreCh}, te escribo con respecto a mi pedido ${p.orden || ''}`)}`;
+        }
+
+        modalAlert.classList.remove('hidden');
+        lucide.createIcons();
+      }
+
+      mostrarToast(`🎉 ¡Tu chofer ${p.chofer} ha aceptado tu pedido!`, "Chofer Asignado", "success");
+    }
+
+    function verRastreoDesdeAlerta() {
+      cerrarModalChoferAcepto();
+      abrirModalRastreoCliente();
+    }
+
+    function cerrarModalChoferAcepto() {
+      const modal = document.getElementById('modal-chofer-acepto');
+      if (modal) modal.classList.add('hidden');
+    }
+
+    // ================= GESTIÓN DEL HISTORIAL DE PEDIDOS CLIENTE =================
+    let tabHistorialActiva = 'activos'; // 'activos' o 'todos'
+
+    function guardarEnHistorialCliente(pedido) {
+      try {
+        let historial = JSON.parse(localStorage.getItem('pedidosflash_historial') || '[]');
+        historial = historial.filter(h => h.id !== pedido.id && h.orden !== pedido.orden);
+        historial.unshift(pedido);
+        if (historial.length > 40) historial = historial.slice(0, 40);
+        localStorage.setItem('pedidosflash_historial', JSON.stringify(historial));
+      } catch(e) {
+        console.error("Error al guardar historial local:", e);
+      }
+    }
+
+    function abrirModalHistorialPedidos() {
+      const modal = document.getElementById('modal-historial-pedidos');
+      if (modal) modal.classList.remove('hidden');
+      cargarYRenderizarHistorial();
+      lucide.createIcons();
+    }
+
+    function cerrarModalHistorialPedidos() {
+      const modal = document.getElementById('modal-historial-pedidos');
+      if (modal) modal.classList.add('hidden');
+    }
+
+    function cerrarModalExitoYAbrirHistorial() {
+      const modal = document.getElementById('modal-exito');
+      if (modal) modal.classList.add('hidden');
+      abrirModalHistorialPedidos();
+    }
+
+    function filtrarTabHistorial(tab) {
+      tabHistorialActiva = tab;
+      const btnActivos = document.getElementById('tab-historial-activos');
+      const btnTodos = document.getElementById('tab-historial-todos');
+      if (tab === 'activos') {
+        if (btnActivos) btnActivos.className = "btn-tactil py-2 text-center rounded-xl text-xs font-black bg-gradient-to-r from-accent-cyan to-brand-600 text-slate-950 shadow-md";
+        if (btnTodos) btnTodos.className = "btn-tactil py-2 text-center rounded-xl text-xs font-bold text-slate-400 hover:text-white";
+      } else {
+        if (btnTodos) btnTodos.className = "btn-tactil py-2 text-center rounded-xl text-xs font-black bg-gradient-to-r from-accent-cyan to-brand-600 text-slate-950 shadow-md";
+        if (btnActivos) btnActivos.className = "btn-tactil py-2 text-center rounded-xl text-xs font-bold text-slate-400 hover:text-white";
+      }
+      let historial = [];
+      try {
+        historial = JSON.parse(localStorage.getItem('pedidosflash_historial') || '[]');
+      } catch(e) {}
+      renderizarTarjetasHistorial(historial);
+    }
+
+    function cargarYRenderizarHistorial() {
+      const contenedor = document.getElementById('lista-pedidos-historial-contenedor');
+      if (!contenedor) return;
+
+      let historialLocal = [];
+      try {
+        historialLocal = JSON.parse(localStorage.getItem('pedidosflash_historial') || '[]');
+      } catch(e) {
+        historialLocal = [];
+      }
+
+      renderizarTarjetasHistorial(historialLocal);
+
+      // Si Firebase está activo, sincronizar con el nodo remoto
+      if (firebaseActivo && db) {
+        const telUsuario = usuarioActivo ? (usuarioActivo.telefonoOriginal || usuarioActivo.telefono) : null;
+        db.ref('pedidos').once('value').then(snap => {
+          const todos = snap.val() || {};
+          const combinadosMap = {};
+
+          historialLocal.forEach(h => { if (h.id) combinadosMap[h.id] = h; });
+
+          Object.keys(todos).forEach(k => {
+            const p = todos[k];
+            if (!p) return;
+            const coincideId = combinadosMap[k] !== undefined || historialLocal.some(h => h.id === k || h.orden === p.orden);
+            const coincideTel = telUsuario && p.telefono && (
+              limpiarTelefonoId(p.telefono) === limpiarTelefonoId(telUsuario) ||
+              normalizarTelefono(p.telefono) === normalizarTelefono(telUsuario)
+            );
+
+            if (coincideId || coincideTel) {
+              combinadosMap[k] = {
+                id: k,
+                orden: p.orden || `#FLASH-${k.substring(k.length - 4)}`,
+                tipoServicio: p.tipoServicio || 'delivery',
+                fecha: p.fecha || (combinadosMap[k] ? combinadosMap[k].fecha : new Date().toISOString()),
+                total: p.total || p.totalFinalCliente || 0,
+                direccion: p.direccion || '',
+                estado: p.estado || 'pendiente',
+                tiendaNombre: p.tiendaNombre || (p.tipoServicio === 'transporte' ? 'Transporte Flash' : 'Supermercado Flash'),
+                chofer: p.chofer || '',
+                choferTelefono: p.choferTelefono || '',
+                items: p.items || []
+              };
+            }
+          });
+
+          const listaFinal = Object.values(combinadosMap);
+          listaFinal.sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
+          localStorage.setItem('pedidosflash_historial', JSON.stringify(listaFinal));
+          renderizarTarjetasHistorial(listaFinal);
+        }).catch(() => {
+          renderizarTarjetasHistorial(historialLocal);
+        });
+      }
+    }
+
+    function renderizarTarjetasHistorial(pedidos) {
+      const contenedor = document.getElementById('lista-pedidos-historial-contenedor');
+      if (!contenedor) return;
+      contenedor.innerHTML = "";
+
+      const pedidosFiltrados = (pedidos || []).filter(p => {
+        if (!p) return false;
+        const esActivo = p.estado === 'pendiente' || p.estado === 'aceptado' || p.estado === 'en_local' || p.estado === 'en_camino';
+        if (tabHistorialActiva === 'activos') return esActivo;
+        return true;
+      });
+
+      if (pedidosFiltrados.length === 0) {
+        contenedor.innerHTML = `
+          <div class="text-center py-8 bg-slate-950/80 rounded-2xl border border-slate-800 p-4 space-y-2">
+            <div class="w-10 h-10 rounded-2xl bg-indigo-500/10 text-accent-cyan flex items-center justify-center mx-auto border border-indigo-500/20">
+              <i data-lucide="${tabHistorialActiva === 'activos' ? 'radar' : 'package-search'}" class="w-5 h-5"></i>
+            </div>
+            <h4 class="text-xs font-bold text-white">${tabHistorialActiva === 'activos' ? 'No tienes pedidos activos' : 'Aún no tienes historial'}</h4>
+            <p class="text-[10px] text-slate-400">Tus pedidos aparecerán aquí para que puedas rastrearlos en tiempo real.</p>
+          </div>
+        `;
+        lucide.createIcons();
+        return;
+      }
+
+      pedidosFiltrados.forEach(p => {
+        const esActivo = p.estado === 'pendiente' || p.estado === 'aceptado' || p.estado === 'en_local' || p.estado === 'en_camino';
+        const badge = obtenerBadgeEstadoPedido(p.estado);
+        const fechaTxt = formatearFechaHistorial(p.fecha);
+        let resumenItems = "";
+        if (p.items && Array.isArray(p.items) && p.items.length > 0) {
+          resumenItems = p.items.map(i => `${i.cantidad || 1}x ${i.nombre}`).join(', ');
+        } else {
+          resumenItems = p.tipoServicio === 'transporte' ? 'Servicio de Transporte Flash' : 'Pedido de Artículos';
+        }
+
+        contenedor.innerHTML += `
+          <div class="bg-slate-950/90 border ${esActivo ? 'border-accent-cyan/50 shadow-[0_0_15px_rgba(0,242,254,0.15)]' : 'border-slate-800'} rounded-2xl p-3 space-y-2">
+            <div class="flex items-center justify-between border-b border-slate-800/80 pb-2">
+              <div>
+                <span class="text-[10px] font-mono font-bold text-accent-cyan block">${p.orden || '#FLASH'}</span>
+                <span class="text-[9px] text-slate-400">${fechaTxt}</span>
+              </div>
+              <span class="text-[10px] font-black px-2.5 py-0.5 rounded-full border ${badge.clase}">${badge.texto}</span>
+            </div>
+
+            <div class="space-y-1">
+              <div class="flex items-center justify-between text-xs">
+                <span class="font-bold text-white truncate">${p.tiendaNombre || 'Comercio Flash'}</span>
+                <span class="font-black text-accent-yellow font-mono">$${parseFloat(p.total || 0).toFixed(2)}</span>
+              </div>
+              <p class="text-[10px] text-slate-300 truncate">${resumenItems}</p>
+              ${p.direccion ? `<p class="text-[9px] text-slate-400 truncate">📍 ${p.direccion}</p>` : ''}
+              ${p.chofer && p.chofer !== 'Sin Asignar' ? `
+                <div class="flex items-center gap-1.5 text-[10px] text-accent-cyan font-semibold pt-0.5">
+                  <i data-lucide="user" class="w-3.5 h-3.5"></i> <span>Chofer: ${p.chofer}</span>
+                </div>
+              ` : ''}
+            </div>
+
+            <div class="pt-1 flex gap-2">
+              ${esActivo ? `
+                <button onclick="cerrarModalHistorialPedidos(); activarRastreoPedidoCliente('${p.id}'); abrirModalRastreoCliente();" class="btn-tactil flex-1 bg-gradient-to-r from-accent-emerald to-accent-cyan text-slate-950 font-black py-2 rounded-xl text-xs flex items-center justify-center gap-1.5 shadow-glow-emerald">
+                  <i data-lucide="navigation-2" class="w-3.5 h-3.5 fill-slate-950"></i>
+                  <span>SEGUIR EN VIVO (GPS)</span>
+                </button>
+              ` : `
+                <button onclick="cerrarModalHistorialPedidos(); activarRastreoPedidoCliente('${p.id}'); abrirModalRastreoCliente();" class="btn-tactil flex-1 bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold py-1.5 rounded-xl text-xs flex items-center justify-center gap-1">
+                  <i data-lucide="eye" class="w-3.5 h-3.5 text-accent-cyan"></i>
+                  <span>Ver Hoja</span>
+                </button>
+                <button onclick="repetirPedidoDesdeHistorial('${p.id}')" class="btn-tactil bg-accent-magenta/20 hover:bg-accent-magenta/30 text-accent-magenta border border-accent-magenta/40 font-bold py-1.5 px-3 rounded-xl text-xs flex items-center justify-center gap-1">
+                  <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
+                  <span>Repetir</span>
+                </button>
+              `}
+            </div>
+          </div>
+        `;
+      });
+
+      lucide.createIcons();
+    }
+
+    function formatearFechaHistorial(fechaIso) {
+      if (!fechaIso) return '';
+      try {
+        const d = new Date(fechaIso);
+        if (isNaN(d.getTime())) return '';
+        const ahora = new Date();
+        const esHoy = d.getDate() === ahora.getDate() && d.getMonth() === ahora.getMonth() && d.getFullYear() === ahora.getFullYear();
+        const opcionesHora = { hour: '2-digit', minute: '2-digit', hour12: true };
+        const horaStr = d.toLocaleTimeString('es-VE', opcionesHora);
+        if (esHoy) return `Hoy, ${horaStr}`;
+        const opcionesFecha = { day: 'numeric', month: 'short' };
+        return `${d.toLocaleDateString('es-VE', opcionesFecha)}, ${horaStr}`;
+      } catch(e) {
+        return '';
+      }
+    }
+
+    function obtenerBadgeEstadoPedido(estado) {
+      switch (estado) {
+        case 'pendiente':
+          return { texto: 'Buscando Chofer ⏳', clase: 'bg-amber-500/20 text-amber-300 border-amber-500/30' };
+        case 'aceptado':
+          return { texto: 'Chofer Asignado 🛵', clase: 'bg-blue-500/20 text-blue-300 border-blue-500/30' };
+        case 'en_local':
+          return { texto: 'Chofer en Comercio 🏪', clase: 'bg-purple-500/20 text-purple-300 border-purple-500/30' };
+        case 'en_camino':
+          return { texto: 'En Camino a Casa 🚀', clase: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30 animate-pulse' };
+        case 'entregado':
+          return { texto: 'Entregado ✓', clase: 'bg-emerald-500/15 text-emerald-400 border-emerald-500/20' };
+        case 'cancelado':
+          return { texto: 'Cancelado ✖', clase: 'bg-rose-500/20 text-rose-300 border-rose-500/30' };
+        default:
+          return { texto: estado || 'Procesando', clase: 'bg-slate-800 text-slate-300 border-slate-700' };
+      }
+    }
+
+    function repetirPedidoDesdeHistorial(id) {
+      let historial = [];
+      try {
+        historial = JSON.parse(localStorage.getItem('pedidosflash_historial') || '[]');
+      } catch(e) {}
+      const p = historial.find(h => h.id === id);
+      if (!p || !p.items || !Array.isArray(p.items) || p.items.length === 0) {
+        mostrarToast("No hay artículos para repetir en este pedido", "Aviso", "error");
+        return;
+      }
+
+      p.items.forEach(it => {
+        if (it.id && mapaProductos[it.id]) {
+          const prod = mapaProductos[it.id];
+          agregarAlCarritoDirecto(prod.id, prod.nombre, prod.precioBase, it.cantidad || 1, prod.tiendaId || prod.local);
+        } else {
+          const idTemp = it.id || `rep_${Date.now()}_${Math.random()}`;
+          carrito[idTemp] = {
+            nombre: it.nombre,
+            precio: it.precio || 0,
+            cantidad: it.cantidad || 1,
+            esPersonalizado: it.esPersonalizado || false,
+            tiendaId: it.tiendaId || null,
+            tiendaNombre: it.tiendaNombre || null
+          };
+        }
+      });
+
+      actualizarTotales();
+      cerrarModalHistorialPedidos();
+      abrirModalCarrito();
+      mostrarToast("¡Artículos agregados a tu canasta!", "Pedido Repetido", "success");
+    }
+
+    // ================= INICIALIZACIÓN GLOBAL =================
     window.onload = () => { 
       renderizarCatalogo(); 
       sincronizarTiendasDesdeFirebase();
       sincronizarCatalogoFlashDesdeFirebase();
-      
+
+      // Comprobar sesión de usuario guardada
+      const usuarioGuardado = localStorage.getItem('pedidosflash_usuario');
+      if (usuarioGuardado) {
+        try {
+          aplicarSesionUsuario(JSON.parse(usuarioGuardado));
+        } catch(e) {
+          iniciarFlujoAuth();
+        }
+      } else {
+        iniciarFlujoAuth();
+      }
+
+      // Comprobar si hay pedido activo
       if (pedidoActivoClienteId) {
         activarRastreoPedidoCliente(pedidoActivoClienteId);
+      } else {
+        try {
+          const historial = JSON.parse(localStorage.getItem('pedidosflash_historial') || '[]');
+          const enCurso = historial.find(h => h.estado === 'pendiente' || h.estado === 'aceptado' || h.estado === 'en_local' || h.estado === 'en_camino');
+          if (enCurso && enCurso.id) {
+            activarRastreoPedidoCliente(enCurso.id);
+          }
+        } catch(e) {}
       }
 
       const vid = document.getElementById('video-logo');
@@ -2811,6 +4165,15 @@
         vid.play().catch(() => {
           document.addEventListener('touchstart', () => vid.play(), { once: true });
           document.addEventListener('click', () => vid.play(), { once: true });
+        });
+      }
+
+      const vidAuth = document.getElementById('video-bg-auth');
+      if (vidAuth) {
+        vidAuth.muted = true;
+        vidAuth.play().catch(() => {
+          document.addEventListener('touchstart', () => vidAuth.play(), { once: true });
+          document.addEventListener('click', () => vidAuth.play(), { once: true });
         });
       }
     };
