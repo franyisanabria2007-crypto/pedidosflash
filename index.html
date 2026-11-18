@@ -18,7 +18,7 @@
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
   <!-- Hoja de Estilos Personalizada (Glassmorphism & Login) -->
-  <link rel="stylesheet" href="style.css?v=2">
+  <link rel="stylesheet" href="style.css?v=3">
 
   <!-- Tesseract.js (IA para reconocimiento óptico de texto) -->
   <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
@@ -67,6 +67,199 @@
     }
   </script>
   
+  <style>
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    * { -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
+
+    @keyframes entradaModal {
+      0% { transform: translateY(24px) scale(0.97); opacity: 0; }
+      100% { transform: translateY(0) scale(1); opacity: 1; }
+    }
+    .anim-modal { animation: entradaModal 0.24s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+
+    @keyframes laserScan {
+      0% { top: 4%; opacity: 0.9; }
+      50% { top: 92%; opacity: 1; box-shadow: 0 0 16px #00f2fe; }
+      100% { top: 4%; opacity: 0.9; }
+    }
+    .laser-line {
+      position: absolute; left: 0; right: 0; height: 3px;
+      background: linear-gradient(90deg, transparent, #00f2fe, #ffffff, #00f2fe, transparent);
+      box-shadow: 0 0 12px #00f2fe;
+      animation: laserScan 2s infinite ease-in-out;
+    }
+
+    @keyframes pulseGlow {
+      0%, 100% { transform: scale(1); opacity: 0.9; }
+      50% { transform: scale(1.05); opacity: 1; filter: drop-shadow(0 0 12px rgba(0,242,254,0.6)); }
+    }
+    .ia-activo { animation: pulseGlow 1.2s infinite ease-in-out; }
+
+    .btn-tactil { transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1); }
+    .btn-tactil:active { transform: scale(0.96); filter: brightness(0.92); }
+
+    .safe-top { padding-top: max(env(safe-area-inset-top, 0px), 8px); }
+    .safe-bottom { padding-bottom: max(env(safe-area-inset-bottom, 0px), 12px); }
+
+    .pin-jewel-a {
+      width: 28px; height: 28px; background: linear-gradient(135deg, #2563eb, #1d4ed8);
+      border: 2px solid #ffffff; border-radius: 50%; color: white; font-weight: 900;
+      font-size: 11px; display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 0 15px rgba(37,99,235,0.8);
+    }
+    .pin-jewel-b {
+      width: 28px; height: 28px; background: linear-gradient(135deg, #f97316, #ea580c);
+      border: 2px solid #ffffff; border-radius: 50%; color: white; font-weight: 900;
+      font-size: 11px; display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 0 15px rgba(249,115,22,0.8);
+    }
+    .pin-radar-chofer {
+      position: relative; width: 28px; height: 28px; border-radius: 50%;
+      background: #10b981; border: 2px solid #ffffff; box-shadow: 0 0 16px #10b981;
+      display: flex; align-items: center; justify-content: center; color: #05070c; font-weight: 900;
+    }
+    .pin-radar-chofer::after {
+      content: ''; position: absolute; inset: -8px; border-radius: 50%;
+      border: 2px solid #10b981; animation: ping 1.5s cubic-bezier(0, 0, 0.2, 1) infinite;
+    }
+
+    /* ================= ESTILOS LOGIN GLASSMORHPISM CON VIDEO DE FONDO ================= */
+    .background-video,
+    .background-video-auth {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .video-overlay,
+    .video-overlay-auth {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle at center, rgba(3, 7, 18, 0.65) 0%, rgba(3, 7, 18, 0.90) 100%);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    .login-container {
+      position: relative;
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      max-width: 400px;
+      margin: auto;
+      padding: 12px;
+    }
+
+    .login-card {
+      background: rgba(15, 23, 42, 0.82);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(0, 242, 254, 0.3);
+      padding: 24px 20px;
+      border-radius: 28px;
+      width: 100%;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 30px rgba(0, 242, 254, 0.15);
+      color: #fff;
+    }
+
+    .brand-title {
+      font-size: 26px;
+      font-weight: 900;
+      text-align: center;
+      letter-spacing: -0.5px;
+      margin-bottom: 2px;
+    }
+
+    .brand-title span {
+      background: linear-gradient(135deg, #00f2fe, #ffb800);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .brand-subtitle {
+      text-align: center;
+      font-size: 11px;
+      color: #94a3b8;
+      font-weight: 600;
+      margin-bottom: 16px;
+    }
+
+    .input-group {
+      margin-bottom: 12px;
+    }
+
+    .input-group label {
+      display: block;
+      font-size: 10px;
+      font-weight: 800;
+      margin-bottom: 4px;
+      color: #cbd5e1;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .input-group input {
+      width: 100%;
+      padding: 10px 14px;
+      background: rgba(2, 6, 23, 0.85);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 14px;
+      color: #fff;
+      font-size: 12px;
+      font-weight: 600;
+      outline: none;
+      transition: all 0.25s ease;
+    }
+
+    .input-group input:focus {
+      border-color: #00f2fe;
+      box-shadow: 0 0 15px rgba(0, 242, 254, 0.35);
+      background: rgba(2, 6, 23, 0.95);
+    }
+
+    .btn-login {
+      width: 100%;
+      padding: 13px;
+      background: linear-gradient(135deg, #00f2fe, #6366f1, #ff007a);
+      color: #ffffff;
+      border: none;
+      border-radius: 16px;
+      font-size: 13px;
+      font-weight: 900;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      box-shadow: 0 8px 25px rgba(0, 242, 254, 0.35);
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .btn-login:hover {
+      filter: brightness(1.1);
+      transform: translateY(-2px);
+      box-shadow: 0 12px 30px rgba(0, 242, 254, 0.5);
+    }
+
+    .btn-login:active {
+      transform: scale(0.97);
+    }
+  </style>
 </head>
 <body class="bg-slate-950 font-sans text-slate-100 antialiased min-h-[100dvh] flex items-center justify-center p-0 sm:p-4 selection:bg-accent-magenta selection:text-white overflow-x-hidden">
   
@@ -132,7 +325,7 @@
               <span class="w-2 h-2 rounded-full bg-accent-cyan animate-ping"></span>
               <span class="text-[9px] font-black text-accent-cyan uppercase tracking-wider">Delivery Nirgua</span>
             </div>
-            <h1 class="brand-title">Pedidos<span>Flash</span> ⚡</h1>
+            <h1 class="brand-title">Pedidos<span class="texto-rayo">Flash</span> <span class="icono-rayo text-xl">⚡</span></h1>
             <p class="brand-subtitle">Víveres, Comida, Farmacia y Viajes en Nirgua</p>
           </div>
 
@@ -167,9 +360,9 @@
               </div>
             </div>
 
-            <button type="submit" id="btn-submit-login" class="btn-login btn-tactil">
-              <i data-lucide="log-in" class="w-4 h-4"></i>
-              <span>INGRESAR AHORA</span>
+            <button type="submit" id="btn-submit-login" class="btn-login btn-medio-lleno btn-tactil">
+              <i data-lucide="zap" class="w-4 h-4 text-accent-yellow fill-accent-yellow icono-rayo"></i>
+              <span class="texto-rayo">INGRESAR AHORA</span>
             </button>
 
             <div class="text-center pt-1">
@@ -216,9 +409,9 @@
               </div>
             </div>
 
-            <button type="submit" id="btn-submit-reg" class="btn-login btn-tactil !bg-gradient-to-r !from-accent-magenta !via-pink-600 !to-indigo-600 !shadow-glow-magenta">
+            <button type="submit" id="btn-submit-reg" class="btn-login btn-medio-lleno btn-tactil">
               <i data-lucide="user-plus" class="w-4 h-4"></i>
-              <span>CREAR CUENTA Y CONTINUAR</span>
+              <span class="texto-rayo">CREAR CUENTA Y CONTINUAR</span>
             </button>
 
             <p class="text-center text-[10px] text-slate-300 pt-0.5">
@@ -500,70 +693,154 @@
           <div id="sec-verduras" class="seccion-target space-y-2 hidden"><div id="grid-verduras" class="grid grid-cols-2 gap-2.5"></div></div>
           <div id="sec-bebidas" class="seccion-target space-y-2 hidden"><div id="grid-bebidas" class="grid grid-cols-2 gap-2.5"></div></div>
           
-          <!-- SECCIÓN: TRANSPORTE FLASH -->
+          <!-- SECCIÓN: TRANSPORTE FLASH (REDISEÑADA & ULTRA-ORDENADA) -->
           <div id="sec-transporte" class="seccion-target space-y-3 hidden">
-            <div class="bg-slate-950/90 border border-emerald-500/40 rounded-3xl p-3.5 shadow-xl space-y-3 backdrop-blur-md">
-              <div class="flex items-center justify-between border-b border-slate-800 pb-2">
+            <div class="bg-slate-950/95 border border-emerald-500/40 rounded-[28px] p-3.5 shadow-2xl space-y-3.5 backdrop-blur-xl">
+              
+              <!-- ENCABEZADO CON EFECTO DE RAYO -->
+              <div class="flex items-center justify-between border-b border-slate-800/80 pb-2.5">
                 <div class="flex items-center gap-2">
-                  <div class="p-2 bg-accent-emerald/15 text-accent-emerald rounded-xl border border-accent-emerald/30">
-                    <i data-lucide="navigation" class="w-4 h-4"></i>
+                  <div class="p-2 bg-emerald-500/20 text-accent-emerald rounded-xl border border-emerald-500/40 shadow-glow-emerald">
+                    <i data-lucide="zap" class="w-4 h-4 fill-accent-emerald text-accent-emerald icono-rayo"></i>
                   </div>
                   <div>
-                    <h3 class="font-black text-white text-xs uppercase tracking-wider">Transporte Flash Nirgua</h3>
-                    <p id="instruccion-mapa" class="text-[10px] text-accent-yellow font-bold">📍 Toca en el mapa o escribe tu destino</p>
+                    <h3 class="text-xs font-black uppercase tracking-wider flex items-center gap-1.5 leading-tight">
+                      <span class="texto-rayo">TRANSPORTE FLASH NIRGUA</span>
+                    </h3>
+                    <p class="text-[10px] text-emerald-400 font-bold leading-tight">Motos y Carros en Nirgua al instante</p>
                   </div>
                 </div>
-                <button onclick="reiniciarPuntosRuta()" class="btn-tactil text-[10px] font-bold bg-slate-800 hover:bg-slate-700 text-slate-300 px-2.5 py-1 rounded-lg border border-slate-700">Reiniciar</button>
-              </div>
-
-              <button type="button" onclick="usarGpsActualComoOrigen()" class="btn-tactil w-full bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-500 hover:brightness-110 text-slate-950 font-black py-2.5 px-3 rounded-xl text-xs flex items-center justify-center gap-2 shadow-glow-emerald border border-white/20">
-                <i data-lucide="crosshair" class="w-4 h-4 text-slate-950 stroke-[2.5]"></i>
-                <span id="lbl-transporte-gps-rapido">📍 Mi Ubicación Actual (GPS Rápido)</span>
-              </button>
-
-              <div class="grid grid-cols-2 gap-2">
-                <button onclick="seleccionarTransporte('moto', 1.00)" id="btn-trans-moto" type="button" class="btn-tactil p-2.5 rounded-2xl border-2 border-accent-cyan bg-accent-cyan/20 text-white text-xs font-black flex flex-col items-center justify-center gap-1 shadow-glow-cyan transition">
-                  <div class="w-full h-11 rounded-xl overflow-hidden flex items-center justify-center">
-                    <img src="img/moto.webp" alt="Moto" class="w-full h-full object-contain" onerror="this.src='img/logo.jfif';">
-                  </div>
-                  <span>🛵 Moto ($1.00)</span>
-                </button>
-
-                <button onclick="seleccionarTransporte('carro', 2.00)" id="btn-trans-carro" type="button" class="btn-tactil p-2.5 rounded-2xl border-2 border-slate-800 bg-slate-900 text-slate-300 text-xs font-bold flex flex-col items-center justify-center gap-1 transition">
-                  <div class="w-full h-11 rounded-xl overflow-hidden flex items-center justify-center">
-                    <img src="img/taxi icon.webp" alt="Carro" class="w-full h-full object-contain" onerror="this.src='img/logo.jfif';">
-                  </div>
-                  <span>🚗 Carro ($2.00)</span>
+                <button onclick="reiniciarPuntosRuta()" type="button" class="btn-tactil text-[10px] font-bold bg-slate-900 hover:bg-slate-800 text-slate-300 hover:text-white px-2.5 py-1 rounded-xl border border-slate-700/80 flex items-center gap-1">
+                  <i data-lucide="rotate-ccw" class="w-3 h-3"></i> <span>Limpiar</span>
                 </button>
               </div>
 
-              <div class="space-y-1 bg-slate-900/90 p-2.5 rounded-xl border border-emerald-500/30">
-                <div class="flex items-center justify-between">
-                  <label class="block text-[10px] text-emerald-400 font-bold uppercase">📍 ¿De dónde sales?</label>
-                  <button type="button" onclick="usarGpsActualComoOrigen()" class="btn-tactil text-[10px] text-accent-cyan font-bold hover:underline flex items-center gap-1">
-                    <span class="w-1.5 h-1.5 rounded-full bg-accent-cyan animate-ping"></span> Fijar GPS
+              <!-- PASO 1: SELECCIÓN DE UNIDAD (VEHÍCULO) -->
+              <div class="space-y-1.5">
+                <div class="flex items-center justify-between px-0.5">
+                  <span class="text-[11px] font-black text-indigo-200 uppercase tracking-wider flex items-center gap-1">
+                    <span class="w-4 h-4 rounded-full bg-accent-cyan/20 text-accent-cyan text-[10px] flex items-center justify-center font-black">1</span>
+                    Elige tu Unidad
+                  </span>
+                  <span class="text-[9px] font-mono text-accent-yellow bg-accent-yellow/10 px-2 py-0.5 rounded-full border border-accent-yellow/30 font-bold">⚡ Tarifa fija</span>
+                </div>
+
+                <div class="grid grid-cols-2 gap-2">
+                  <button onclick="seleccionarTransporte('moto', 1.00)" id="btn-trans-moto" type="button" class="btn-tactil p-2.5 rounded-2xl border-2 border-accent-cyan bg-accent-cyan/20 text-white text-xs font-black flex flex-col items-center justify-center gap-1 shadow-glow-cyan transition relative">
+                    <span class="absolute top-1.5 right-1.5 bg-accent-cyan text-slate-950 font-black text-[8px] px-1.5 py-0.2 rounded-md shadow">RÁPIDO</span>
+                    <div class="w-full h-11 rounded-xl overflow-hidden flex items-center justify-center">
+                      <img src="img/moto.webp" alt="Moto" class="w-full h-full object-contain" onerror="this.src='img/logo.jfif';">
+                    </div>
+                    <span class="font-black text-xs">🛵 Moto Flash</span>
+                    <span class="text-accent-yellow font-black text-xs leading-none">$1.00</span>
+                    <span class="text-[9px] text-slate-300 font-semibold leading-tight">Llega en ~2-4 min</span>
+                  </button>
+
+                  <button onclick="seleccionarTransporte('carro', 2.00)" id="btn-trans-carro" type="button" class="btn-tactil p-2.5 rounded-2xl border-2 border-slate-800 bg-slate-900 text-slate-300 text-xs font-bold flex flex-col items-center justify-center gap-1 transition relative">
+                    <span class="absolute top-1.5 right-1.5 bg-indigo-500 text-white font-black text-[8px] px-1.5 py-0.2 rounded-md shadow">CONFORT</span>
+                    <div class="w-full h-11 rounded-xl overflow-hidden flex items-center justify-center">
+                      <img src="img/taxi icon.webp" alt="Carro" class="w-full h-full object-contain" onerror="this.src='img/logo.jfif';">
+                    </div>
+                    <span class="font-black text-xs text-white">🚗 Carro Flash</span>
+                    <span class="text-accent-yellow font-black text-xs leading-none">$2.00</span>
+                    <span class="text-[9px] text-slate-400 font-semibold leading-tight">Hasta 4 pasajeros</span>
                   </button>
                 </div>
-                <div class="flex gap-1.5">
-                  <input type="text" id="inputBuscadorOrigen" onkeydown="if(event.key==='Enter') buscarPuntoOrigenPorTexto()" placeholder="Salida o GPS actual..." class="w-full p-2 bg-slate-950 border border-slate-700 rounded-lg text-xs text-white placeholder-slate-500 focus:outline-none focus:border-accent-cyan">
-                  <button type="button" onclick="buscarPuntoOrigenPorTexto()" class="btn-tactil bg-emerald-500 text-slate-950 font-black px-3 py-1 rounded-lg text-xs shadow-md">Definir</button>
+              </div>
+
+              <!-- PASO 2: RUTA CONECTADA (ORIGEN -> DESTINO) -->
+              <div class="space-y-1.5">
+                <div class="flex items-center justify-between px-0.5">
+                  <span class="text-[11px] font-black text-indigo-200 uppercase tracking-wider flex items-center gap-1">
+                    <span class="w-4 h-4 rounded-full bg-accent-cyan/20 text-accent-cyan text-[10px] flex items-center justify-center font-black">2</span>
+                    Planifica tu Ruta
+                  </span>
+                  <span id="instruccion-mapa" class="text-[10px] text-accent-cyan font-bold">📍 Toca mapa o escribe</span>
+                </div>
+
+                <!-- Tarjeta contenedora de la ruta -->
+                <div class="bg-slate-900/90 p-3 rounded-2xl border border-slate-800 space-y-2.5 relative">
+                  
+                  <!-- Punto Origen (Tú) -->
+                  <div class="space-y-1">
+                    <div class="flex items-center justify-between">
+                      <label class="text-[10px] text-accent-emerald font-black uppercase flex items-center gap-1">
+                        <span class="w-2 h-2 rounded-full bg-accent-emerald shadow-glow-emerald"></span>
+                        Origen (Tu Salida)
+                      </label>
+                      <button type="button" onclick="usarGpsActualComoOrigen()" class="btn-tactil text-[10px] text-accent-cyan hover:text-white font-black flex items-center gap-1 bg-accent-cyan/10 hover:bg-accent-cyan/20 border border-accent-cyan/30 px-2 py-0.5 rounded-lg">
+                        <i data-lucide="crosshair" class="w-3 h-3"></i> <span id="lbl-transporte-gps-rapido">Mi GPS</span>
+                      </button>
+                    </div>
+                    <div class="flex gap-1.5">
+                      <input type="text" id="inputBuscadorOrigen" onkeydown="if(event.key==='Enter') buscarPuntoOrigenPorTexto()" placeholder="📍 Mi Ubicación Actual..." class="w-full p-2 bg-slate-950 border border-slate-700/80 rounded-xl text-xs text-white placeholder-slate-400 focus:outline-none focus:border-accent-emerald">
+                      <button type="button" onclick="buscarPuntoOrigenPorTexto()" class="btn-tactil bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-black px-3 py-1 rounded-xl text-xs shadow-md">Fijar</button>
+                    </div>
+                  </div>
+
+                  <!-- Separador sutil -->
+                  <div class="flex items-center gap-2 px-1">
+                    <div class="h-px bg-slate-800 flex-1"></div>
+                    <span class="text-[10px] text-slate-500 font-bold">↓ hacia</span>
+                    <div class="h-px bg-slate-800 flex-1"></div>
+                  </div>
+
+                  <!-- Punto Destino (Llegada) -->
+                  <div class="space-y-1">
+                    <label class="text-[10px] text-accent-magenta font-black uppercase flex items-center gap-1">
+                      <span class="w-2 h-2 rounded-full bg-accent-magenta shadow-glow-magenta"></span>
+                      Destino (¿A dónde vas?)
+                    </label>
+                    <div class="flex gap-1.5">
+                      <input type="text" id="inputBuscadorDestino" onkeydown="if(event.key==='Enter') buscarPuntoDestinoPorTexto()" placeholder="Escribe o toca en el mapa..." class="w-full p-2 bg-slate-950 border border-slate-700/80 rounded-xl text-xs text-white placeholder-slate-400 focus:outline-none focus:border-accent-magenta">
+                      <button type="button" onclick="buscarPuntoDestinoPorTexto()" class="btn-tactil bg-accent-magenta hover:bg-pink-600 text-white font-black px-3 py-1 rounded-xl text-xs shadow-md">Fijar</button>
+                    </div>
+                  </div>
+
+                  <!-- Atajos de Destinos Frecuentes en Nirgua -->
+                  <div class="pt-1">
+                    <span class="text-[9px] text-slate-400 font-bold block mb-1">Destinos Frecuentes en Nirgua:</span>
+                    <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5">
+                      <button type="button" onclick="fijarDestinoRapido('Plaza Bolívar Nirgua')" class="btn-tactil shrink-0 text-[10px] font-bold bg-slate-950 hover:bg-slate-800 text-slate-300 hover:text-white px-2.5 py-1 rounded-xl border border-slate-800">
+                        🏛️ Plaza Bolívar
+                      </button>
+                      <button type="button" onclick="fijarDestinoRapido('Hospital de Nirgua')" class="btn-tactil shrink-0 text-[10px] font-bold bg-slate-950 hover:bg-slate-800 text-slate-300 hover:text-white px-2.5 py-1 rounded-xl border border-slate-800">
+                        🏥 Hospital
+                      </button>
+                      <button type="button" onclick="fijarDestinoRapido('Terminal de Nirgua')" class="btn-tactil shrink-0 text-[10px] font-bold bg-slate-950 hover:bg-slate-800 text-slate-300 hover:text-white px-2.5 py-1 rounded-xl border border-slate-800">
+                        🚌 Terminal
+                      </button>
+                      <button type="button" onclick="fijarDestinoRapido('Mercado Municipal Nirgua')" class="btn-tactil shrink-0 text-[10px] font-bold bg-slate-950 hover:bg-slate-800 text-slate-300 hover:text-white px-2.5 py-1 rounded-xl border border-slate-800">
+                        🥩 Mercado
+                      </button>
+                      <button type="button" onclick="fijarDestinoRapido('El Calvario Nirgua')" class="btn-tactil shrink-0 text-[10px] font-bold bg-slate-950 hover:bg-slate-800 text-slate-300 hover:text-white px-2.5 py-1 rounded-xl border border-slate-800">
+                        ⛪ El Calvario
+                      </button>
+                    </div>
+                  </div>
                 </div>
               </div>
 
-              <div class="space-y-1 bg-slate-900/90 p-2.5 rounded-xl border border-accent-magenta/30">
-                <label class="block text-[10px] text-accent-magenta font-bold uppercase">🏁 ¿A dónde vas?</label>
-                <div class="flex gap-1.5">
-                  <input type="text" id="inputBuscadorDestino" onkeydown="if(event.key==='Enter') buscarPuntoDestinoPorTexto()" placeholder="Destino o toca en el mapa..." class="w-full p-2 bg-slate-950 border border-slate-700 rounded-lg text-xs text-white placeholder-slate-500 focus:outline-none focus:border-accent-magenta">
-                  <button type="button" onclick="buscarPuntoDestinoPorTexto()" class="btn-tactil bg-accent-magenta text-white font-black px-3 py-1 rounded-lg text-xs shadow-md">Definir</button>
+              <!-- PASO 3: MAPA SATELITAL CON VISOR DE RUTA -->
+              <div class="space-y-1">
+                <div class="relative w-full h-[180px] rounded-2xl border border-emerald-500/40 overflow-hidden shadow-inner z-0">
+                  <div id="mapa-interactivo-ruta" style="height: 100%; width: 100%;"></div>
+                  
+                  <!-- HUD Flotante con Estadísticas de Ruta -->
+                  <div id="hud-ruta-transporte" class="absolute bottom-2 left-2 right-2 bg-slate-950/90 backdrop-blur-md border border-emerald-500/40 rounded-xl px-2.5 py-1.5 flex items-center justify-between text-[10px] z-[400] shadow-lg pointer-events-none">
+                    <span class="text-white font-bold flex items-center gap-1">
+                      <i data-lucide="navigation" class="w-3.5 h-3.5 text-accent-cyan"></i>
+                      <span id="lbl-hud-distancia">Toca mapa para fijar ruta</span>
+                    </span>
+                    <span id="lbl-hud-tiempo" class="text-accent-yellow font-black">~3 min</span>
+                  </div>
                 </div>
               </div>
 
-              <div class="relative w-full h-[160px] rounded-2xl border border-emerald-500/30 overflow-hidden shadow-inner z-0">
-                <div id="mapa-interactivo-ruta" style="height: 100%; width: 100%;"></div>
-              </div>
-
-              <button onclick="irAPagarTransporteDirecto()" type="button" class="btn-tactil w-full bg-gradient-to-r from-accent-emerald via-emerald-500 to-accent-cyan text-slate-950 font-black py-3.5 rounded-2xl text-xs shadow-glow-emerald flex items-center justify-center gap-2 border-t border-white/30">
-                <i data-lucide="arrow-right-circle" class="w-4 h-4 fill-slate-950"></i> ¡SOLICITAR VIAJE FLASH! (<span id="txt-precio-btn-viaje">$1.00</span>)
+              <!-- PASO 4: BOTÓN DE SOLICITUD CON EFECTO LÍQUIDO MEDIO LLENO Y LLENADO AL 100% -->
+              <button onclick="irAPagarTransporteDirecto()" type="button" id="btn-solicitar-viaje" class="btn-tactil btn-medio-lleno btn-liquid-emerald w-full py-3.5 rounded-2xl text-xs font-black shadow-glow-emerald flex items-center justify-center gap-2 border-t border-white/40">
+                <i data-lucide="zap" class="w-4 h-4 text-accent-yellow fill-accent-yellow icono-rayo"></i>
+                <span class="texto-rayo">¡SOLICITAR VIAJE FLASH! (<span id="txt-precio-btn-viaje">$1.00</span>)</span>
               </button>
             </div>
           </div>
@@ -594,8 +871,8 @@
       </main>
 
       <!-- BOTÓN FLOTANTE "NO LO VES? PÍDELO" -->
-      <button onclick="abrirModalPersonalizado()" type="button" class="btn-tactil absolute z-30 bottom-16 left-3 bg-gradient-to-r from-accent-cyan to-brand-600 text-slate-950 font-black px-3.5 py-2.5 rounded-2xl shadow-glow-cyan flex items-center gap-1.5 text-xs border-t border-white/30">
-        <i data-lucide="plus-circle" class="w-4 h-4 fill-slate-950"></i> <span>¿No lo ves? Pídelo</span>
+      <button onclick="abrirModalPersonalizado()" type="button" class="btn-tactil btn-medio-lleno absolute z-30 bottom-16 left-3 font-black px-3.5 py-2.5 rounded-2xl flex items-center gap-1.5 text-xs">
+        <i data-lucide="sparkles" class="w-4 h-4 text-accent-yellow icono-rayo"></i> <span>¿No lo ves? Pídelo</span>
       </button>
 
       <!-- WIDGET FLOTANTE TOTAL LLEVADO -->
@@ -787,8 +1064,9 @@
       </main>
 
       <div class="absolute bottom-0 left-0 right-0 bg-slate-900/95 backdrop-blur-xl border-t border-slate-800 p-3 z-30 safe-bottom">
-        <button onclick="enviarPedidoAConductor()" type="button" class="btn-tactil w-full bg-gradient-to-r from-accent-emerald via-emerald-500 to-accent-cyan text-slate-950 font-black py-3.5 px-4 rounded-2xl flex items-center justify-center gap-2 text-xs shadow-glow-emerald border-t border-white/30">
-          <i data-lucide="send" class="w-4 h-4 fill-slate-950"></i> ENVIAR ORDEN DIRECTA (DISPARO EN VIVO)
+        <button onclick="enviarPedidoAConductor()" type="button" class="btn-tactil btn-medio-lleno btn-liquid-emerald w-full py-3.5 px-4 rounded-2xl flex items-center justify-center gap-2 text-xs shadow-glow-emerald border-t border-white/30">
+          <i data-lucide="zap" class="w-4 h-4 text-accent-yellow fill-accent-yellow icono-rayo"></i>
+          <span class="texto-rayo">ENVIAR ORDEN DIRECTA (DISPARO EN VIVO)</span>
         </button>
       </div>
     </div>
@@ -1025,8 +1303,8 @@
             <button onclick="cerrarModalCarrito()" class="btn-tactil flex-1 bg-slate-800 text-slate-200 font-bold py-3 rounded-2xl text-xs transition border border-slate-700/50">
               Seguir Viendo
             </button>
-            <button onclick="cerrarModalCarrito(); irAPaso2();" class="btn-tactil flex-1 bg-gradient-to-r from-accent-magenta to-indigo-600 text-white font-black py-3 rounded-2xl text-xs flex items-center justify-center gap-1 shadow-glow-magenta">
-              <span>Finalizar Orden</span> <i data-lucide="arrow-right" class="w-4 h-4"></i>
+            <button onclick="cerrarModalCarrito(); irAPaso2();" class="btn-tactil btn-medio-lleno flex-1 py-3 rounded-2xl text-xs flex items-center justify-center gap-1.5 shadow-glow-magenta font-black">
+              <span class="texto-rayo">Finalizar Orden</span> <i data-lucide="arrow-right" class="w-4 h-4"></i>
             </button>
           </div>
         </div>
@@ -2169,9 +2447,10 @@
               if (window.marcadorDestRef) mapaRuta.removeLayer(window.marcadorDestRef);
               window.marcadorDestRef = L.marker(puntoDestino, {
                 icon: L.divIcon({ 
-                  html: '<div style="background:#ff007a; width:28px; height:28px; border-radius:50%; border:2px solid white; display:flex; align-items:center; justify-content:center; box-shadow: 0 0 12px #ff007a;"><i data-lucide="flag" style="width:14px; height:14px; color:#ffffff;"></i></div>', 
-                  iconSize: [28, 28],
-                  iconAnchor: [14, 14]
+                  className: 'custom-pin',
+                  html: '<div style="background:linear-gradient(135deg, #ff007a, #d946ef); width:32px; height:32px; border-radius:50%; border:2px solid white; display:flex; align-items:center; justify-content:center; box-shadow: 0 0 16px #ff007a;"><i data-lucide="flag" style="width:16px; height:16px; color:#ffffff;"></i></div>', 
+                  iconSize: [32, 32],
+                  iconAnchor: [16, 16]
                 })
               }).addTo(mapaRuta).bindPopup(`🏁 ${textoDestinoStr}`).openPopup();
               lucide.createIcons();
@@ -2199,11 +2478,18 @@
       if (window.marcadorOrigRef) mapaRuta.removeLayer(window.marcadorOrigRef);
       window.marcadorOrigRef = L.marker(puntoOrigen, {
         icon: L.divIcon({ 
-          html: '<div style="background:#00e676; width:28px; height:28px; border-radius:50%; border:2px solid white; display:flex; align-items:center; justify-content:center; box-shadow: 0 0 12px #00e676;"><i data-lucide="map-pin" style="width:14px; height:14px; color:#022c22;"></i></div>', 
-          iconSize: [28, 28],
-          iconAnchor: [14, 14]
+          className: 'custom-pin',
+          html: `<div class="pin-persona-cliente">
+                   <div class="pin-persona-onda" style="border-color:#00e676; background:rgba(0,230,118,0.25);"></div>
+                   <div class="pin-persona-cuerpo" style="background: linear-gradient(135deg, #00e676, #059669);">
+                     <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+                   </div>
+                   <span class="pin-persona-badge-tu" style="border-color:#00e676; color:#00e676;">TÚ</span>
+                 </div>`, 
+          iconSize: [38, 38],
+          iconAnchor: [19, 19]
         })
-      }).addTo(mapaRuta).bindPopup('🟢 Origen (Tú)').openPopup();
+      }).addTo(mapaRuta).bindPopup('👤 Tu Ubicación (Origen)').openPopup();
       lucide.createIcons();
     }
 
@@ -2219,16 +2505,21 @@
         puntoOrigen = [pos.coords.latitude, pos.coords.longitude];
         textoOrigenStr = "📍 Mi Ubicación Actual (GPS)";
         document.getElementById('inputBuscadorOrigen').value = "📍 Mi Ubicación Actual";
-        if (lblBtn) lblBtn.innerText = "✓ GPS Actual Fijado";
+        if (lblBtn) lblBtn.innerText = "✓ GPS Actual";
         actualizarMarcadorOrigen();
         if (mapaRuta) mapaRuta.setView(puntoOrigen, 16);
         if (puntoDestino) trazarLineaRuta();
-        document.getElementById('instruccion-mapa').innerText = "🏁 Ahora toca en el mapa o escribe tu destino";
+        document.getElementById('instruccion-mapa').innerText = "🏁 Destino o toca en el mapa";
         mostrarToast("📍 Origen fijado por GPS con éxito", "Ubicación Lista", "success");
       }, () => {
-        if (lblBtn) lblBtn.innerText = "📍 Mi Ubicación Actual (GPS Rápido)";
+        if (lblBtn) lblBtn.innerText = "Mi GPS";
         mostrarToast("No se pudo obtener el GPS", "Error", "error");
       });
+    }
+
+    function fijarDestinoRapido(nombre) {
+      document.getElementById('inputBuscadorDestino').value = nombre;
+      buscarPuntoDestinoPorTexto();
     }
 
     function buscarPuntoOrigenPorTexto() {
@@ -2253,9 +2544,10 @@
         if (window.marcadorDestRef) mapaRuta.removeLayer(window.marcadorDestRef);
         window.marcadorDestRef = L.marker(puntoDestino, {
           icon: L.divIcon({ 
-            html: '<div style="background:#ff007a; width:28px; height:28px; border-radius:50%; border:2px solid white; display:flex; align-items:center; justify-content:center; box-shadow: 0 0 12px #ff007a;"><i data-lucide="flag" style="width:14px; height:14px; color:#ffffff;"></i></div>', 
-            iconSize: [28, 28],
-            iconAnchor: [14, 14]
+            className: 'custom-pin',
+            html: '<div style="background:linear-gradient(135deg, #ff007a, #d946ef); width:32px; height:32px; border-radius:50%; border:2px solid white; display:flex; align-items:center; justify-content:center; box-shadow: 0 0 16px #ff007a;"><i data-lucide="flag" style="width:16px; height:16px; color:#ffffff;"></i></div>', 
+            iconSize: [32, 32],
+            iconAnchor: [16, 16]
           })
         }).addTo(mapaRuta).bindPopup(`🏁 ${texto}`).openPopup();
         lucide.createIcons();
@@ -2288,6 +2580,13 @@
             const latLngs = data.routes[0].geometry.coordinates.map(c => [c[1], c[0]]);
             lineaTrayecto = L.polyline(latLngs, { color: '#00f2fe', weight: 5, opacity: 0.9 }).addTo(mapaRuta);
             mapaRuta.fitBounds(lineaTrayecto.getBounds(), { padding: [30, 30] });
+
+            const distKm = (data.routes[0].distance / 1000).toFixed(1);
+            const durMin = Math.max(1, Math.round(data.routes[0].duration / 60));
+            const distEl = document.getElementById('lbl-hud-distancia');
+            const durEl = document.getElementById('lbl-hud-tiempo');
+            if (distEl) distEl.innerText = `${distKm} km • Ruta trazada`;
+            if (durEl) durEl.innerText = `~${durMin} min aprox`;
           } else {
             trazarLineaDirecta();
           }
@@ -2889,7 +3188,11 @@
       textoDestinoStr = "No seleccionado";
       document.getElementById('inputBuscadorOrigen').value = "";
       document.getElementById('inputBuscadorDestino').value = "";
-      document.getElementById('instruccion-mapa').innerText = "📍 Toca en el mapa o escribe tu destino";
+      document.getElementById('instruccion-mapa').innerText = "📍 Toca mapa o escribe";
+      const distEl = document.getElementById('lbl-hud-distancia');
+      const durEl = document.getElementById('lbl-hud-tiempo');
+      if (distEl) distEl.innerText = "Toca mapa para fijar ruta";
+      if (durEl) durEl.innerText = "~3 min";
       if (window.marcadorDestRef && mapaRuta) mapaRuta.removeLayer(window.marcadorDestRef);
       if (lineaTrayecto && mapaRuta) mapaRuta.removeLayer(lineaTrayecto);
       mostrarToast("Puntos de ruta reiniciados", "Mapa", "info");
@@ -3538,8 +3841,19 @@
       }).addTo(mapaRastreoClienteInstance).bindPopup(`🏪 Tienda: ${p.tiendaNombre || 'Comercio'}`);
 
       marcadorClienteDestRef = L.marker([latDest, lngDest], {
-        icon: L.divIcon({ className: 'custom-pin', html: '<div class="pin-jewel-b">B</div>', iconSize: [28, 28] })
-      }).addTo(mapaRastreoClienteInstance).bindPopup("📍 Tu Ubicación (Destino)");
+        icon: L.divIcon({ 
+          className: 'custom-pin', 
+          html: `<div class="pin-persona-cliente">
+                   <div class="pin-persona-onda"></div>
+                   <div class="pin-persona-cuerpo">
+                     <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+                   </div>
+                   <span class="pin-persona-badge-tu">TÚ</span>
+                 </div>`, 
+          iconSize: [38, 38],
+          iconAnchor: [19, 19]
+        })
+      }).addTo(mapaRastreoClienteInstance).bindPopup("👤 ¡Tu Ubicación Exacta!");
 
       const bounds = L.latLngBounds([[latOrig, lngOrig], [latDest, lngDest]]);
       mapaRastreoClienteInstance.fitBounds(bounds, { padding: [25, 25] });

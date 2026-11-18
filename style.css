@@ -1,5 +1,5 @@
 /* ========================================================
-   PEDIDOS FLASH NIRGUA - ESTILOS INTERACTIVOS & NEÓN
+   PEDIDOS FLASH NIRGUA - ESTILOS GLOBALES Y GLASSMORPHISM
    ======================================================== */
 
 /* Reset y optimización táctil */
@@ -18,34 +18,13 @@
   scrollbar-width: none;
 }
 
-/* ================= KEYFRAMES DE ANIMACIÓN ================= */
+/* Animaciones de interfaz */
 @keyframes entradaModal {
-  0% { transform: translateY(28px) scale(0.95); opacity: 0; }
+  0% { transform: translateY(24px) scale(0.97); opacity: 0; }
   100% { transform: translateY(0) scale(1); opacity: 1; }
 }
 .anim-modal {
-  animation: entradaModal 0.28s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-
-/* Brillo deslizante continuo para botones principales */
-@keyframes shimmerSlide {
-  0% { transform: translateX(-150%) skewX(-25deg); }
-  50%, 100% { transform: translateX(250%) skewX(-25deg); }
-}
-
-/* Flotación suave para iconos o insignias */
-@keyframes floatSubtle {
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-3px); }
-}
-
-/* Pulso neón para botones de acción urgente o micrófono */
-@keyframes pulseGlow {
-  0%, 100% { transform: scale(1); box-shadow: 0 0 12px rgba(0, 242, 254, 0.4); }
-  50% { transform: scale(1.04); box-shadow: 0 0 24px rgba(0, 242, 254, 0.85); }
-}
-.ia-activo {
-  animation: pulseGlow 1.3s infinite ease-in-out;
+  animation: entradaModal 0.24s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 @keyframes laserScan {
@@ -63,289 +42,23 @@
   animation: laserScan 2s infinite ease-in-out;
 }
 
-/* ================= BOTONES ULTRA INTERACTIVOS (.btn-tactil) ================= */
+@keyframes pulseGlow {
+  0%, 100% { transform: scale(1); opacity: 0.9; }
+  50% { transform: scale(1.05); opacity: 1; filter: drop-shadow(0 0 12px rgba(0, 242, 254, 0.6)); }
+}
+.ia-activo {
+  animation: pulseGlow 1.2s infinite ease-in-out;
+}
+
+/* Botones con respuesta háptica y micro-interacción */
 .btn-tactil {
-  position: relative;
-  overflow: hidden;
-  cursor: pointer;
-  user-select: none;
-  transition: 
-    transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1),
-    box-shadow 0.25s ease,
-    border-color 0.25s ease,
-    background-color 0.2s ease,
-    filter 0.2s ease;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
-
-/* Destello de luz al pasar el dedo o cursor */
-.btn-tactil::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 45%;
-  height: 100%;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(255, 255, 255, 0.22),
-    transparent
-  );
-  transform: translateX(-180%) skewX(-25deg);
-  transition: transform 0.55s ease;
-  pointer-events: none;
-  z-index: 2;
-}
-
-.btn-tactil:hover::before {
-  transform: translateX(320%) skewX(-25deg);
-}
-
-/* Onda expansiva desde el centro al tocar */
-.btn-tactil::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(circle, rgba(255, 255, 255, 0.35) 10%, transparent 70%);
-  opacity: 0;
-  transform: scale(0.3);
-  transition: transform 0.35s ease, opacity 0.35s ease;
-  pointer-events: none;
-  z-index: 1;
-}
-
-.btn-tactil:active::after {
-  opacity: 1;
-  transform: scale(1.6);
-  transition: 0s;
-}
-
-/* Elevación en Hover (PC / Tablet) */
-@media (hover: hover) {
-  .btn-tactil:hover {
-    transform: translateY(-2.5px) scale(1.015);
-    filter: brightness(1.08);
-  }
-}
-
-/* Efecto resorte al presionar (Móvil y PC) */
 .btn-tactil:active {
-  transform: scale(0.93) translateY(1px) !important;
-  filter: brightness(0.95);
+  transform: scale(0.96);
+  filter: brightness(0.92);
 }
 
-/* ================= TARJETAS DE CATEGORÍAS INTERACTIVAS ================= */
-#menu-principal-servicios .btn-tactil {
-  background: linear-gradient(145deg, rgba(15, 23, 42, 0.92), rgba(2, 6, 23, 0.96));
-  box-shadow: 0 8px 20px -4px rgba(0, 0, 0, 0.6);
-}
-
-#menu-principal-servicios .btn-tactil:hover {
-  box-shadow: 0 12px 28px -4px rgba(0, 242, 254, 0.28), 0 0 15px rgba(99, 102, 241, 0.2);
-}
-
-#menu-principal-servicios .btn-tactil:active {
-  border-color: #00f2fe !important;
-  box-shadow: 0 0 22px rgba(0, 242, 254, 0.55);
-}
-
-/* ================= TARJETAS DE PRODUCTOS ================= */
-.item-producto {
-  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), border-color 0.25s ease, box-shadow 0.25s ease;
-}
-
-.item-producto:hover {
-  transform: translateY(-3px);
-  border-color: rgba(0, 242, 254, 0.45);
-  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.7), 0 0 15px rgba(0, 242, 254, 0.15);
-}
-
-/* Botón "+ Pedir" dentro de productos */
-.item-producto button {
-  box-shadow: 0 4px 12px rgba(0, 242, 254, 0.3);
-}
-.item-producto button:hover {
-  box-shadow: 0 6px 18px rgba(0, 242, 254, 0.6);
-}
-
-/* ================= BARRA DE NAVEGACIÓN INFERIOR ================= */
-nav button {
-  position: relative;
-  border-radius: 14px;
-}
-
-nav button:hover svg,
-nav button:active svg {
-  transform: translateY(-2px) scale(1.12);
-  filter: drop-shadow(0 0 8px currentColor);
-  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
-/* ================= BOTONES FLOTANTES (PÍDELO Y CARRITO) ================= */
-button[onclick="abrirModalPersonalizado()"] {
-  animation: floatSubtle 3s ease-in-out infinite;
-}
-button[onclick="abrirModalPersonalizado()"]:active {
-  animation: none;
-}
-
-#widget-total-flotante {
-  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease;
-}
-#widget-total-flotante:hover {
-  transform: scale(1.06);
-}
-
-/* ================= ESTILOS DE LOGIN Y REGISTRO GLASSMORPHISM ================= */
-.background-video,
-.background-video-auth {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  z-index: 0;
-  pointer-events: none;
-}
-
-.video-overlay,
-.video-overlay-auth {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: radial-gradient(circle at center, rgba(3, 7, 18, 0.65) 0%, rgba(3, 7, 18, 0.90) 100%);
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
-  z-index: 1;
-  pointer-events: none;
-}
-
-.login-container {
-  position: relative;
-  z-index: 10;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  max-width: 400px;
-  margin: auto;
-  padding: 14px;
-}
-
-.login-card {
-  background: rgba(15, 23, 42, 0.82);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(0, 242, 254, 0.3);
-  padding: 24px 20px;
-  border-radius: 28px;
-  width: 100%;
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 30px rgba(0, 242, 254, 0.15);
-  color: #ffffff;
-}
-
-.brand-title {
-  font-size: 26px;
-  font-weight: 900;
-  text-align: center;
-  letter-spacing: -0.5px;
-  margin-bottom: 2px;
-}
-.brand-title span {
-  background: linear-gradient(135deg, #00f2fe, #ffb800);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-.brand-subtitle {
-  text-align: center;
-  font-size: 11px;
-  color: #94a3b8;
-  font-weight: 600;
-  margin-bottom: 16px;
-}
-
-.input-group {
-  margin-bottom: 12px;
-}
-.input-group label {
-  display: block;
-  font-size: 10px;
-  font-weight: 800;
-  margin-bottom: 4px;
-  color: #cbd5e1;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-.input-group input {
-  width: 100%;
-  padding: 10px 14px;
-  background: rgba(2, 6, 23, 0.85);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: 14px;
-  color: #ffffff;
-  font-size: 12px;
-  font-weight: 600;
-  outline: none;
-  transition: all 0.25s ease;
-}
-.input-group input:focus {
-  border-color: #00f2fe;
-  box-shadow: 0 0 15px rgba(0, 242, 254, 0.35);
-  background: rgba(2, 6, 23, 0.95);
-  transform: translateY(-1px);
-}
-
-/* Botón principal de Login con animación de destello automático */
-.btn-login {
-  position: relative;
-  overflow: hidden;
-  width: 100%;
-  padding: 13px;
-  background: linear-gradient(135deg, #00f2fe, #6366f1, #ff007a);
-  background-size: 200% 200%;
-  color: #ffffff;
-  border: none;
-  border-radius: 16px;
-  font-size: 13px;
-  font-weight: 900;
-  letter-spacing: 0.5px;
-  cursor: pointer;
-  box-shadow: 0 8px 25px rgba(0, 242, 254, 0.35);
-  transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-}
-
-.btn-login::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 50%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.35), transparent);
-  animation: shimmerSlide 3.2s infinite ease-in-out;
-  pointer-events: none;
-}
-
-.btn-login:hover {
-  filter: brightness(1.12);
-  transform: translateY(-2.5px) scale(1.01);
-  box-shadow: 0 12px 32px rgba(0, 242, 254, 0.55);
-}
-
-.btn-login:active {
-  transform: scale(0.95);
-}
-
-/* Safe areas y Pines de Mapa */
 .safe-top {
   padding-top: max(env(safe-area-inset-top, 0px), 8px);
 }
@@ -353,6 +66,295 @@ button[onclick="abrirModalPersonalizado()"]:active {
   padding-bottom: max(env(safe-area-inset-bottom, 0px), 12px);
 }
 
+/* ========================================================
+   EFECTO DE BOTONES MEDIO LLENOS Y QUE SE LLENAN AL 100% ⚡
+   ======================================================== */
+.btn-medio-lleno,
+.btn-liquid-fill {
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+  background: rgba(15, 23, 42, 0.9);
+  border: 1.5px solid rgba(0, 242, 254, 0.45);
+  color: #ffffff;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.2);
+}
+
+/* Capa líquida que inicia medio llena (50% de altura) */
+.btn-medio-lleno::before,
+.btn-liquid-fill::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 50%; /* Nivel medio lleno */
+  background: linear-gradient(180deg, rgba(0, 242, 254, 0.85) 0%, rgba(99, 102, 241, 0.9) 60%, rgba(255, 0, 122, 0.9) 100%);
+  z-index: -1;
+  transition: height 0.4s cubic-bezier(0.16, 1, 0.3, 1), background 0.3s ease, filter 0.3s ease;
+  box-shadow: 0 -3px 12px rgba(0, 242, 254, 0.8);
+}
+
+/* Línea superficial brillante que delimita el líquido al 50% */
+.btn-medio-lleno::after,
+.btn-liquid-fill::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 50%;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, rgba(255,255,255,0.4), #ffffff, #00f2fe, #ffffff, rgba(255,255,255,0.4));
+  box-shadow: 0 0 8px #00f2fe, 0 0 14px #ffffff;
+  z-index: -1;
+  opacity: 0.95;
+  transition: bottom 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
+  animation: olaLiquidaSuperficie 2.2s infinite ease-in-out;
+}
+
+@keyframes olaLiquidaSuperficie {
+  0%, 100% { opacity: 0.8; transform: scaleX(0.97); }
+  50% { opacity: 1; transform: scaleX(1.01); box-shadow: 0 0 14px #00f2fe, 0 0 20px #ffffff; }
+}
+
+/* AL HACER HOVER, FOCUS, TOQUE O CLASE LLENO: SE LLENA AL 100% */
+.btn-medio-lleno:hover::before,
+.btn-medio-lleno:active::before,
+.btn-medio-lleno:focus::before,
+.btn-medio-lleno.lleno::before,
+.btn-liquid-fill:hover::before,
+.btn-liquid-fill:active::before,
+.btn-liquid-fill:focus::before,
+.btn-liquid-fill.lleno::before {
+  height: 100%;
+  background: linear-gradient(180deg, #00f2fe 0%, #6366f1 50%, #ff007a 100%);
+  filter: brightness(1.2);
+}
+
+.btn-medio-lleno:hover::after,
+.btn-medio-lleno:active::after,
+.btn-medio-lleno:focus::after,
+.btn-medio-lleno.lleno::after,
+.btn-liquid-fill:hover::after,
+.btn-liquid-fill:active::after,
+.btn-liquid-fill:focus::after,
+.btn-liquid-fill.lleno::after {
+  bottom: 100%;
+  opacity: 0;
+}
+
+.btn-medio-lleno:hover,
+.btn-medio-lleno:active,
+.btn-liquid-fill:hover,
+.btn-liquid-fill:active {
+  box-shadow: 0 0 25px rgba(0, 242, 254, 0.7), 0 0 45px rgba(255, 0, 122, 0.5);
+  transform: translateY(-2px) scale(1.02);
+  border-color: #00f2fe;
+}
+
+/* Variante Líquida Esmeralda (Para Transporte Flash & Aceptación) */
+.btn-liquid-emerald {
+  border-color: rgba(0, 230, 118, 0.5) !important;
+}
+.btn-liquid-emerald::before {
+  background: linear-gradient(180deg, rgba(0, 230, 118, 0.85) 0%, rgba(13, 148, 136, 0.9) 60%, rgba(6, 95, 70, 0.95) 100%) !important;
+  box-shadow: 0 -3px 12px rgba(0, 230, 118, 0.8) !important;
+}
+.btn-liquid-emerald::after {
+  background: linear-gradient(90deg, rgba(255,255,255,0.4), #ffffff, #00e676, #ffffff, rgba(255,255,255,0.4)) !important;
+  box-shadow: 0 0 8px #00e676, 0 0 14px #ffffff !important;
+}
+.btn-liquid-emerald:hover::before,
+.btn-liquid-emerald:active::before {
+  height: 100% !important;
+  background: linear-gradient(180deg, #00e676 0%, #059669 40%, #00f2fe 100%) !important;
+  filter: brightness(1.2) !important;
+}
+.btn-liquid-emerald:hover,
+.btn-liquid-emerald:active {
+  box-shadow: 0 0 28px rgba(0, 230, 118, 0.8), 0 0 45px rgba(0, 242, 254, 0.5) !important;
+  border-color: #00e676 !important;
+}
+
+/* ========================================================
+   TIPOGRAFÍA Y LETRAS CON EFECTO DE RAYO ELÉCTRICO ⚡
+   ======================================================== */
+@keyframes rayoElectricoFlicker {
+  0%, 100% {
+    text-shadow: 
+      0 0 4px #ffffff,
+      0 0 10px #00f2fe,
+      0 0 20px #00f2fe,
+      0 0 35px #ffe600,
+      0 0 50px rgba(0, 242, 254, 0.8);
+    filter: drop-shadow(0 0 8px rgba(0, 242, 254, 0.9));
+  }
+  15% {
+    text-shadow: 
+      0 0 2px #ffffff,
+      0 0 6px #ffe600,
+      0 0 14px #00f2fe;
+    filter: drop-shadow(0 0 5px rgba(255, 230, 0, 0.7));
+  }
+  19% {
+    text-shadow: 
+      0 0 10px #ffffff,
+      0 0 25px #ffffff,
+      0 0 45px #ffe600,
+      0 0 75px #00f2fe,
+      0 0 95px #ff007a;
+    filter: brightness(1.4) drop-shadow(0 0 16px #ffffff);
+  }
+  25% {
+    text-shadow: 
+      0 0 4px #ffffff,
+      0 0 12px #00f2fe,
+      0 0 22px #00f2fe;
+    filter: drop-shadow(0 0 8px rgba(0, 242, 254, 0.8));
+  }
+  68% {
+    text-shadow: 
+      0 0 5px #ffffff,
+      0 0 14px #ffe600,
+      0 0 28px #00f2fe,
+      0 0 45px rgba(255, 230, 0, 0.6);
+  }
+  71% {
+    text-shadow: 
+      0 0 14px #ffffff,
+      0 0 30px #ffffff,
+      0 0 55px #ffe600,
+      0 0 85px #00f2fe;
+    filter: brightness(1.5);
+  }
+  75% {
+    text-shadow: 
+      0 0 4px #ffffff,
+      0 0 10px #00f2fe,
+      0 0 20px #00f2fe;
+  }
+}
+
+@keyframes brilloRayoDesplazado {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 200% 50%; }
+}
+
+.texto-rayo {
+  font-weight: 900;
+  letter-spacing: 0.5px;
+  background: linear-gradient(90deg, #ffffff 0%, #00f2fe 25%, #ffe600 50%, #ffffff 75%, #00f2fe 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: rayoElectricoFlicker 3.2s infinite ease-in-out, brilloRayoDesplazado 3.5s linear infinite;
+  display: inline-block;
+}
+
+.texto-rayo-amarillo {
+  font-weight: 900;
+  letter-spacing: 0.5px;
+  background: linear-gradient(90deg, #ffffff 0%, #ffe600 30%, #ff8800 60%, #ffffff 85%, #ffe600 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: rayoElectricoFlicker 2.8s infinite ease-in-out, brilloRayoDesplazado 3s linear infinite;
+  display: inline-block;
+}
+
+.icono-rayo {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffe600;
+  filter: drop-shadow(0 0 8px #ffe600) drop-shadow(0 0 15px #00f2fe);
+  animation: rayoChispa 1.8s infinite alternate ease-in-out;
+}
+
+@keyframes rayoChispa {
+  0% { transform: scale(1) rotate(-3deg); filter: drop-shadow(0 0 6px #ffe600); }
+  50% { transform: scale(1.18) rotate(3deg); filter: drop-shadow(0 0 14px #00f2fe) drop-shadow(0 0 22px #ffffff); }
+  100% { transform: scale(1) rotate(-3deg); filter: drop-shadow(0 0 8px #ffe600); }
+}
+
+/* ========================================================
+   PIN DE CLIENTE: PERSONITA ANIMADA 👤 (REEMPLAZA LA "B")
+   ======================================================== */
+.pin-persona-cliente {
+  position: relative;
+  width: 38px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Ondas de radar expansivo en vivo */
+.pin-persona-onda {
+  position: absolute;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: 2px solid #00f2fe;
+  background: rgba(0, 242, 254, 0.25);
+  animation: ondaPersonaRadar 1.8s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+  pointer-events: none;
+}
+
+@keyframes ondaPersonaRadar {
+  0% {
+    transform: scale(0.6);
+    opacity: 0.95;
+  }
+  100% {
+    transform: scale(2.3);
+    opacity: 0;
+  }
+}
+
+/* Cuerpo central del avatar con silueta de persona */
+.pin-persona-cuerpo {
+  position: relative;
+  width: 32px;
+  height: 32px;
+  background: linear-gradient(135deg, #00f2fe 0%, #3b82f6 50%, #6366f1 100%);
+  border: 2.5px solid #ffffff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  box-shadow: 0 0 16px rgba(0, 242, 254, 0.9), 0 4px 10px rgba(0, 0, 0, 0.7);
+  z-index: 2;
+  transition: transform 0.2s ease;
+}
+
+.pin-persona-cuerpo svg {
+  width: 17px;
+  height: 17px;
+  fill: #ffffff;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.5));
+}
+
+/* Badge flotante "TÚ" */
+.pin-persona-badge-tu {
+  position: absolute;
+  bottom: -6px;
+  background: #030712;
+  color: #00f2fe;
+  border: 1px solid #00f2fe;
+  border-radius: 6px;
+  font-size: 8px;
+  font-weight: 900;
+  padding: 0px 5px;
+  line-height: 13px;
+  letter-spacing: 0.5px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.8);
+  z-index: 3;
+}
+
+/* Pines del mapa satelital */
 .pin-jewel-a {
   width: 28px;
   height: 28px;
@@ -402,4 +404,128 @@ button[onclick="abrirModalPersonalizado()"]:active {
   border-radius: 50%;
   border: 2px solid #10b981;
   animation: ping 1.5s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+/* ========================================================
+   ESTILOS DE LOGIN Y REGISTRO GLASSMORPHISM CON VIDEO DE FONDO
+   ======================================================== */
+
+/* Video que cubre todo el fondo */
+.background-video,
+.background-video-auth {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* Capa oscura con desenfoque para resaltar el formulario */
+.video-overlay,
+.video-overlay-auth {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle at center, rgba(3, 7, 18, 0.65) 0%, rgba(3, 7, 18, 0.90) 100%);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* Contenedor centrado */
+.login-container {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  max-width: 400px;
+  margin: auto;
+  padding: 14px;
+}
+
+/* Tarjeta Glassmorphic */
+.login-card {
+  background: rgba(15, 23, 42, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(0, 242, 254, 0.35);
+  padding: 24px 20px;
+  border-radius: 28px;
+  width: 100%;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 30px rgba(0, 242, 254, 0.2);
+  color: #ffffff;
+}
+
+/* Título de la marca */
+.brand-title {
+  font-size: 26px;
+  font-weight: 900;
+  text-align: center;
+  letter-spacing: -0.5px;
+  margin-bottom: 2px;
+}
+
+/* Subtítulo */
+.brand-subtitle {
+  text-align: center;
+  font-size: 11px;
+  color: #94a3b8;
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+
+/* Grupos de campos del formulario */
+.input-group {
+  margin-bottom: 12px;
+}
+.input-group label {
+  display: block;
+  font-size: 10px;
+  font-weight: 800;
+  margin-bottom: 4px;
+  color: #cbd5e1;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.input-group input {
+  width: 100%;
+  padding: 10px 14px;
+  background: rgba(2, 6, 23, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 14px;
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 600;
+  outline: none;
+  transition: all 0.25s ease;
+}
+.input-group input:focus {
+  border-color: #00f2fe;
+  box-shadow: 0 0 15px rgba(0, 242, 254, 0.35);
+  background: rgba(2, 6, 23, 0.95);
+}
+
+/* Botón de ingreso adaptado al efecto de llenado líquido */
+.btn-login {
+  width: 100%;
+  padding: 13px;
+  color: #ffffff;
+  border-radius: 16px;
+  font-size: 13px;
+  font-weight: 900;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
 }
