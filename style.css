@@ -1,62 +1,66 @@
-/* ========================================================
-   PEDIDOS FLASH NIRGUA - ESTILOS GLOBALES Y GLASSMORPHISM
-   ======================================================== */
+/* ==========================================================================
+   PEDIDOS FLASH NIRGUA — SISTEMA VISUAL TÁCTIL, HUMANO Y CREATIVO
+   Inspirado en la filosofía de Emil Kowalski: Micro-interacciones con alma,
+   física de resortes (spring physics), iluminación cenital multicapa y
+   feedback táctil que hace que cada botón se sienta vivo y real.
+   ========================================================================== */
 
-/* Reset y optimización táctil */
-* {
-  -webkit-tap-highlight-color: transparent;
-  touch-action: manipulation;
+:root {
+  /* Superficies profundas estilo app nativa (Apple / Linear) */
+  --bg-canvas: #030712;
+  --bg-card: rgba(15, 23, 42, 0.88);
+  --bg-field: rgba(2, 6, 23, 0.92);
+  --bg-surface-elevated: rgba(30, 41, 59, 0.7);
+
+  /* Acentos de marca vibrantes y cálidos */
+  --flash-cyan: #00f2fe;
+  --flash-cyan-deep: #0284c7;
+  --flash-magenta: #ff007a;
+  --flash-magenta-deep: #db2777;
+  --flash-emerald: #00e676;
+  --flash-emerald-deep: #059669;
+  --flash-amber: #ffb800;
+  --flash-amber-deep: #d97706;
+  --flash-blue: #3b82f6;
+  --flash-blue-deep: #1d4ed8;
+  --flash-indigo: #6366f1;
+  --flash-indigo-deep: #4338ca;
+
+  /* Luz cenital y bordes de alta fidelidad */
+  --light-edge-high: rgba(255, 255, 255, 0.38);
+  --light-edge-mid: rgba(255, 255, 255, 0.18);
+  --border-subtle: rgba(255, 255, 255, 0.08);
+
+  /* Curvas de física de Emil Kowalski */
+  --spring-snap: cubic-bezier(0.34, 1.56, 0.64, 1);       /* Rebote elástico juguetón */
+  --spring-tactile: cubic-bezier(0.2, 0.8, 0.2, 1);       /* Pulsación mecánica precisa */
+  --ease-human: cubic-bezier(0.16, 1, 0.3, 1);            /* Desaceleración suave y orgánica */
+  --ease-fluid: cubic-bezier(0.22, 1, 0.36, 1);           /* Desplazamiento fluido */
+}
+
+/* 1. Reset táctil y comportamiento nativo */
+*,
+*::before,
+*::after {
   box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
 }
 
-/* Ocultar barra de desplazamiento sin perder el scroll */
-.no-scrollbar::-webkit-scrollbar {
-  display: none;
+html,
+body {
+  background-color: var(--bg-canvas);
+  color: #f8fafc;
+  touch-action: manipulation;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
+
 .no-scrollbar {
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
-
-/* Animaciones de interfaz */
-@keyframes entradaModal {
-  0% { transform: translateY(24px) scale(0.97); opacity: 0; }
-  100% { transform: translateY(0) scale(1); opacity: 1; }
-}
-.anim-modal {
-  animation: entradaModal 0.24s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-
-@keyframes laserScan {
-  0% { top: 4%; opacity: 0.9; }
-  50% { top: 92%; opacity: 1; box-shadow: 0 0 16px #00f2fe; }
-  100% { top: 4%; opacity: 0.9; }
-}
-.laser-line {
-  position: absolute;
-  left: 0;
-  right: 0;
-  height: 3px;
-  background: linear-gradient(90deg, transparent, #00f2fe, #ffffff, #00f2fe, transparent);
-  box-shadow: 0 0 12px #00f2fe;
-  animation: laserScan 2s infinite ease-in-out;
-}
-
-@keyframes pulseGlow {
-  0%, 100% { transform: scale(1); opacity: 0.9; }
-  50% { transform: scale(1.05); opacity: 1; filter: drop-shadow(0 0 12px rgba(0, 242, 254, 0.6)); }
-}
-.ia-activo {
-  animation: pulseGlow 1.2s infinite ease-in-out;
-}
-
-/* Botones con respuesta háptica y micro-interacción */
-.btn-tactil {
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-}
-.btn-tactil:active {
-  transform: scale(0.96);
-  filter: brightness(0.92);
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
 }
 
 .safe-top {
@@ -66,200 +70,366 @@
   padding-bottom: max(env(safe-area-inset-bottom, 0px), 12px);
 }
 
-/* ========================================================
-   EFECTO DE BOTONES MEDIO LLENOS Y QUE SE LLENAN AL 100% ⚡
-   ======================================================== */
+/* ==========================================================================
+   2. SISTEMA DE FÍSICA Y MICRO-ANIMACIONES (EMIL KOWALSKI CRAFT)
+   ========================================================================== */
+
+/* Entrada de hojas/modales estilo Sheet iOS con desaceleración orgánica */
+@keyframes sheetSlideUp {
+  0% {
+    transform: translateY(32px) scale(0.97);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+.anim-modal {
+  animation: sheetSlideUp 0.32s var(--ease-human) forwards;
+}
+
+/* Destello especular de luz que recorre los botones al tocar o posarse */
+@keyframes sheenSweep {
+  0% {
+    transform: translateX(-120%) skewX(-20deg);
+  }
+  100% {
+    transform: translateX(280%) skewX(-20deg);
+  }
+}
+
+/* Rebote sutil y simpático en iconos de botones */
+@keyframes iconJoy {
+  0%, 100% {
+    transform: translateY(0) scale(1) rotate(0deg);
+  }
+  30% {
+    transform: translateY(-2px) scale(1.18) rotate(-6deg);
+  }
+  60% {
+    transform: translateY(0) scale(1.08) rotate(4deg);
+  }
+}
+
+/* Rayo kinetic que respira con energía viva */
+@keyframes boltKinetic {
+  0%, 100% {
+    transform: scale(1) translateY(0);
+    filter: drop-shadow(0 0 6px rgba(250, 204, 21, 0.6));
+  }
+  50% {
+    transform: scale(1.15) translateY(-1.5px);
+    filter: drop-shadow(0 0 14px rgba(250, 204, 21, 0.95));
+  }
+}
+
+/* Levitation orgánica y suave para botones flotantes */
+@keyframes organicLevitate {
+  0%, 100% {
+    transform: translateY(0);
+    box-shadow: 0 10px 25px -4px rgba(0, 0, 0, 0.6), 0 0 20px rgba(0, 242, 254, 0.3);
+  }
+  50% {
+    transform: translateY(-4px);
+    box-shadow: 0 16px 32px -4px rgba(0, 0, 0, 0.5), 0 0 28px rgba(0, 242, 254, 0.5);
+  }
+}
+
+/* Escáner láser fluido para lectura de fotos con IA */
+@keyframes scannerSweep {
+  0% {
+    top: 6%;
+    opacity: 0.85;
+  }
+  50% {
+    top: 92%;
+    opacity: 1;
+    filter: drop-shadow(0 0 12px var(--flash-cyan));
+  }
+  100% {
+    top: 6%;
+    opacity: 0.85;
+  }
+}
+
+.laser-line {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, var(--flash-cyan), #ffffff, var(--flash-cyan), transparent);
+  box-shadow: 0 0 14px var(--flash-cyan);
+  animation: scannerSweep 2s var(--ease-human) infinite;
+  z-index: 10;
+}
+
+.ia-activo {
+  animation: boltKinetic 1.5s var(--ease-human) infinite;
+}
+
+/* ==========================================================================
+   3. BOTONES TÁCTILES HUMANOS CON FÍSICA MECÁNICA REAL
+   En la vida real, los botones tienen grosor, luz cenital superior,
+   profundidad de pulsación y amortiguación de resorte.
+   ========================================================================== */
+
+.btn-tactil {
+  position: relative;
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+  transition: transform 0.16s var(--spring-snap), 
+              box-shadow 0.2s var(--ease-human), 
+              filter 0.18s ease, 
+              background 0.2s ease;
+  will-change: transform;
+}
+
+/* Presión mecánica al tocar (Spring Press) */
+.btn-tactil:active {
+  transform: scale(0.955) translateY(1.5px) !important;
+  filter: brightness(0.94);
+}
+
+/* Los iconos dentro de botones táctiles cobran vida al interactuar */
+.btn-tactil:hover i,
+.btn-tactil:hover svg,
+.btn-tactil:active i,
+.btn-tactil:active svg {
+  animation: iconJoy 0.45s var(--spring-snap);
+}
+
+/* ==========================================================================
+   4. BOTONES PRINCIPALES DE ACCIÓN (CTAs CON LUZ CENITAL Y PROFUNDIDAD 3D)
+   ========================================================================== */
+
+.btn-login,
 .btn-medio-lleno,
-.btn-liquid-fill {
+.btn-liquid-fill,
+.btn-liquid-emerald,
+.btn-neon-azul,
+.btn-neon-verde,
+.btn-neon-ambar,
+.btn-neon-indigo {
   position: relative;
   overflow: hidden;
-  z-index: 1;
-  background: rgba(15, 23, 42, 0.9);
-  border: 1.5px solid rgba(0, 242, 254, 0.45);
-  color: #ffffff;
-  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.2);
+  border-radius: 18px;
+  font-weight: 900;
+  letter-spacing: 0.4px;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  border: none;
+  border-top: 1px solid var(--light-edge-high) !important;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  user-select: none;
+  text-align: center;
+  text-decoration: none;
+  /* Luz interna superior e inferior que simula bisel físico */
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4),
+              inset 0 -2px 0 rgba(0, 0, 0, 0.25),
+              0 8px 24px -4px rgba(0, 0, 0, 0.6);
+  transition: transform 0.18s var(--spring-snap),
+              box-shadow 0.22s var(--ease-human),
+              filter 0.18s ease;
 }
 
-/* Capa líquida que inicia medio llena (50% de altura) */
+/* Efecto de destello de luz especular (Sheen Reflection) */
+.btn-login::after,
+.btn-medio-lleno::after,
+.btn-liquid-fill::after,
+.btn-liquid-emerald::after,
+.btn-neon-azul::after,
+.btn-neon-verde::after,
+.btn-neon-ambar::after,
+.btn-neon-indigo::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.28), transparent);
+  transform: translateX(-150%) skewX(-20deg);
+  pointer-events: none;
+}
+
+.btn-login:hover::after,
+.btn-medio-lleno:hover::after,
+.btn-liquid-fill:hover::after,
+.btn-liquid-emerald:hover::after,
+.btn-neon-azul:hover::after,
+.btn-neon-verde:hover::after {
+  animation: sheenSweep 0.65s var(--ease-fluid);
+}
+
+/* Desactivar cualquier máscara anterior de media gota rota */
 .btn-medio-lleno::before,
 .btn-liquid-fill::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  bottom: 0;
-  width: 100%;
-  height: 50%; /* Nivel medio lleno */
-  background: linear-gradient(180deg, rgba(0, 242, 254, 0.85) 0%, rgba(99, 102, 241, 0.9) 60%, rgba(255, 0, 122, 0.9) 100%);
-  z-index: -1;
-  transition: height 0.4s cubic-bezier(0.16, 1, 0.3, 1), background 0.3s ease, filter 0.3s ease;
-  box-shadow: 0 -3px 12px rgba(0, 242, 254, 0.8);
+  display: none !important;
 }
 
-/* Línea superficial brillante que delimita el líquido al 50% */
-.btn-medio-lleno::after,
-.btn-liquid-fill::after {
-  content: '';
-  position: absolute;
-  left: 0;
-  bottom: 50%;
-  width: 100%;
-  height: 2px;
-  background: linear-gradient(90deg, rgba(255,255,255,0.4), #ffffff, #00f2fe, #ffffff, rgba(255,255,255,0.4));
-  box-shadow: 0 0 8px #00f2fe, 0 0 14px #ffffff;
-  z-index: -1;
-  opacity: 0.95;
-  transition: bottom 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
-  animation: olaLiquidaSuperficie 2.2s infinite ease-in-out;
-}
-
-@keyframes olaLiquidaSuperficie {
-  0%, 100% { opacity: 0.8; transform: scaleX(0.97); }
-  50% { opacity: 1; transform: scaleX(1.01); box-shadow: 0 0 14px #00f2fe, 0 0 20px #ffffff; }
-}
-
-/* AL HACER HOVER, FOCUS, TOQUE O CLASE LLENO: SE LLENA AL 100% */
-.btn-medio-lleno:hover::before,
-.btn-medio-lleno:active::before,
-.btn-medio-lleno:focus::before,
-.btn-medio-lleno.lleno::before,
-.btn-liquid-fill:hover::before,
-.btn-liquid-fill:active::before,
-.btn-liquid-fill:focus::before,
-.btn-liquid-fill.lleno::before {
-  height: 100%;
-  background: linear-gradient(180deg, #00f2fe 0%, #6366f1 50%, #ff007a 100%);
-  filter: brightness(1.2);
-}
-
-.btn-medio-lleno:hover::after,
-.btn-medio-lleno:active::after,
-.btn-medio-lleno:focus::after,
-.btn-medio-lleno.lleno::after,
-.btn-liquid-fill:hover::after,
-.btn-liquid-fill:active::after,
-.btn-liquid-fill:focus::after,
-.btn-liquid-fill.lleno::after {
-  bottom: 100%;
-  opacity: 0;
-}
-
-.btn-medio-lleno:hover,
+/* Sensación física al hacer clic (Compresión táctil con amortiguador) */
+.btn-login:active,
 .btn-medio-lleno:active,
-.btn-liquid-fill:hover,
-.btn-liquid-fill:active {
-  box-shadow: 0 0 25px rgba(0, 242, 254, 0.7), 0 0 45px rgba(255, 0, 122, 0.5);
-  transform: translateY(-2px) scale(1.02);
-  border-color: #00f2fe;
+.btn-liquid-fill:active,
+.btn-liquid-emerald:active,
+.btn-neon-azul:active,
+.btn-neon-verde:active,
+.btn-neon-ambar:active,
+.btn-neon-indigo:active {
+  transform: scale(0.96) translateY(2px) !important;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.35),
+              0 2px 8px rgba(0, 0, 0, 0.5) !important;
+  filter: brightness(0.95);
 }
 
-/* Variante Líquida Esmeralda (Para Transporte Flash & Aceptación) */
+/* VARIANTES CROMÁTICAS RICAS Y ORGÁNICAS */
+
+/* 1. Cyan / Azul Neón Primario */
+.btn-neon-azul,
+.btn-login,
+.btn-medio-lleno,
+.btn-liquid-fill {
+  background: linear-gradient(180deg, #38bdf8 0%, #0284c7 50%, #0369a1 100%) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.45),
+              inset 0 -2px 0 rgba(0, 0, 0, 0.28),
+              0 8px 24px -4px rgba(2, 132, 199, 0.55),
+              0 2px 6px rgba(0, 0, 0, 0.3);
+}
+.btn-neon-azul:hover,
+.btn-login:hover {
+  filter: brightness(1.08);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.55),
+              0 12px 28px -4px rgba(2, 132, 199, 0.7);
+}
+
+/* 2. Esmeralda Vibrante (Confirmaciones y Viajes) */
+.btn-neon-verde,
 .btn-liquid-emerald {
-  border-color: rgba(0, 230, 118, 0.5) !important;
+  background: linear-gradient(180deg, #34d399 0%, #059669 50%, #047857 100%) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.45),
+              inset 0 -2px 0 rgba(0, 0, 0, 0.28),
+              0 8px 24px -4px rgba(5, 150, 105, 0.55),
+              0 2px 6px rgba(0, 0, 0, 0.3) !important;
 }
-.btn-liquid-emerald::before {
-  background: linear-gradient(180deg, rgba(0, 230, 118, 0.85) 0%, rgba(13, 148, 136, 0.9) 60%, rgba(6, 95, 70, 0.95) 100%) !important;
-  box-shadow: 0 -3px 12px rgba(0, 230, 118, 0.8) !important;
-}
-.btn-liquid-emerald::after {
-  background: linear-gradient(90deg, rgba(255,255,255,0.4), #ffffff, #00e676, #ffffff, rgba(255,255,255,0.4)) !important;
-  box-shadow: 0 0 8px #00e676, 0 0 14px #ffffff !important;
-}
-.btn-liquid-emerald:hover::before,
-.btn-liquid-emerald:active::before {
-  height: 100% !important;
-  background: linear-gradient(180deg, #00e676 0%, #059669 40%, #00f2fe 100%) !important;
-  filter: brightness(1.2) !important;
-}
-.btn-liquid-emerald:hover,
-.btn-liquid-emerald:active {
-  box-shadow: 0 0 28px rgba(0, 230, 118, 0.8), 0 0 45px rgba(0, 242, 254, 0.5) !important;
-  border-color: #00e676 !important;
+.btn-neon-verde:hover,
+.btn-liquid-emerald:hover {
+  filter: brightness(1.08);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.55),
+              0 12px 28px -4px rgba(5, 150, 105, 0.7) !important;
 }
 
-/* ========================================================
-   TIPOGRAFÍA Y LETRAS CON EFECTO DE RAYO ELÉCTRICO ⚡
-   ======================================================== */
-@keyframes rayoElectricoFlicker {
-  0%, 100% {
-    text-shadow: 
-      0 0 4px #ffffff,
-      0 0 10px #00f2fe,
-      0 0 20px #00f2fe,
-      0 0 35px #ffe600,
-      0 0 50px rgba(0, 242, 254, 0.8);
-    filter: drop-shadow(0 0 8px rgba(0, 242, 254, 0.9));
-  }
-  15% {
-    text-shadow: 
-      0 0 2px #ffffff,
-      0 0 6px #ffe600,
-      0 0 14px #00f2fe;
-    filter: drop-shadow(0 0 5px rgba(255, 230, 0, 0.7));
-  }
-  19% {
-    text-shadow: 
-      0 0 10px #ffffff,
-      0 0 25px #ffffff,
-      0 0 45px #ffe600,
-      0 0 75px #00f2fe,
-      0 0 95px #ff007a;
-    filter: brightness(1.4) drop-shadow(0 0 16px #ffffff);
-  }
-  25% {
-    text-shadow: 
-      0 0 4px #ffffff,
-      0 0 12px #00f2fe,
-      0 0 22px #00f2fe;
-    filter: drop-shadow(0 0 8px rgba(0, 242, 254, 0.8));
-  }
-  68% {
-    text-shadow: 
-      0 0 5px #ffffff,
-      0 0 14px #ffe600,
-      0 0 28px #00f2fe,
-      0 0 45px rgba(255, 230, 0, 0.6);
-  }
-  71% {
-    text-shadow: 
-      0 0 14px #ffffff,
-      0 0 30px #ffffff,
-      0 0 55px #ffe600,
-      0 0 85px #00f2fe;
-    filter: brightness(1.5);
-  }
-  75% {
-    text-shadow: 
-      0 0 4px #ffffff,
-      0 0 10px #00f2fe,
-      0 0 20px #00f2fe;
-  }
+/* 3. Magenta / Rosa Eléctrico (Acción y Promos) */
+.btn-neon-magenta,
+.btn-liquid-magenta {
+  background: linear-gradient(180deg, #f472b6 0%, #db2777 50%, #be185d 100%) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.45),
+              inset 0 -2px 0 rgba(0, 0, 0, 0.28),
+              0 8px 24px -4px rgba(219, 39, 119, 0.55),
+              0 2px 6px rgba(0, 0, 0, 0.3) !important;
 }
 
-@keyframes brilloRayoDesplazado {
-  0% { background-position: 0% 50%; }
-  100% { background-position: 200% 50%; }
+/* 4. Ámbar / Naranja Intenso */
+.btn-neon-ambar {
+  background: linear-gradient(180deg, #fbbf24 0%, #d97706 50%, #b45309 100%) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.45),
+              inset 0 -2px 0 rgba(0, 0, 0, 0.28),
+              0 8px 24px -4px rgba(217, 119, 6, 0.55);
 }
+
+/* 5. Índigo / Púrpura Elegante */
+.btn-neon-indigo {
+  background: linear-gradient(180deg, #818cf8 0%, #4f46e5 50%, #3730a3 100%) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.45),
+              inset 0 -2px 0 rgba(0, 0, 0, 0.28),
+              0 8px 24px -4px rgba(79, 70, 229, 0.55);
+}
+
+/* Dimensiones del botón de login */
+.btn-login {
+  width: 100%;
+  padding: 14px 20px;
+  font-size: 13.5px;
+}
+
+/* Botón flotante "¿No lo ves? Pídelo" con flotación orgánica viva */
+button[onclick*="abrirModalPersonalizado"] {
+  animation: organicLevitate 3s var(--ease-human) infinite ease-in-out;
+}
+
+/* Botones deshabilitados */
+button:disabled {
+  opacity: 0.45 !important;
+  cursor: not-allowed !important;
+  transform: none !important;
+  box-shadow: none !important;
+  filter: grayscale(0.6) !important;
+}
+
+/* ==========================================================================
+   5. TARJETAS DE PRODUCTOS Y CATEGORÍAS (SQUIRCLES TÁCTILES)
+   ========================================================================== */
+
+.item-producto,
+#menu-principal-servicios button {
+  border-radius: 22px;
+  background: var(--bg-card);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--border-subtle);
+  border-top: 1px solid var(--light-edge-mid);
+  box-shadow: 0 4px 16px -2px rgba(0, 0, 0, 0.5),
+              0 1px 3px rgba(0, 0, 0, 0.3);
+  transition: transform 0.2s var(--spring-snap), 
+              border-color 0.2s ease, 
+              box-shadow 0.25s var(--ease-human);
+}
+
+.item-producto:hover,
+#menu-principal-servicios button:hover {
+  transform: translateY(-2px);
+  border-color: rgba(0, 242, 254, 0.4);
+  box-shadow: 0 10px 24px -4px rgba(0, 0, 0, 0.65), 
+              0 0 18px rgba(0, 242, 254, 0.15);
+}
+
+.item-producto:active,
+#menu-principal-servicios button:active {
+  transform: scale(0.965);
+}
+
+/* Botoncito "Pedir / Agregar" dentro de la tarjeta de producto */
+.item-producto button {
+  border-radius: 14px;
+  font-weight: 800;
+  border-top: 1px solid rgba(255, 255, 255, 0.4);
+  box-shadow: 0 3px 10px -1px rgba(0, 242, 254, 0.4);
+}
+
+/* ==========================================================================
+   6. TIPOGRAFÍA LUMINOSA Y LEGIBLE
+   ========================================================================== */
 
 .texto-rayo {
   font-weight: 900;
-  letter-spacing: 0.5px;
-  background: linear-gradient(90deg, #ffffff 0%, #00f2fe 25%, #ffe600 50%, #ffffff 75%, #00f2fe 100%);
-  background-size: 200% auto;
+  letter-spacing: -0.015em;
+  background: linear-gradient(135deg, #ffffff 40%, #cffafe 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  animation: rayoElectricoFlicker 3.2s infinite ease-in-out, brilloRayoDesplazado 3.5s linear infinite;
   display: inline-block;
 }
 
 .texto-rayo-amarillo {
   font-weight: 900;
-  letter-spacing: 0.5px;
-  background: linear-gradient(90deg, #ffffff 0%, #ffe600 30%, #ff8800 60%, #ffffff 85%, #ffe600 100%);
-  background-size: 200% auto;
+  letter-spacing: -0.015em;
+  background: linear-gradient(135deg, #fef08a 10%, var(--flash-amber) 60%, #ea580c 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  animation: rayoElectricoFlicker 2.8s infinite ease-in-out, brilloRayoDesplazado 3s linear infinite;
   display: inline-block;
 }
 
@@ -267,155 +437,243 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  color: #ffe600;
-  filter: drop-shadow(0 0 8px #ffe600) drop-shadow(0 0 15px #00f2fe);
-  animation: rayoChispa 1.8s infinite alternate ease-in-out;
+  color: var(--flash-amber);
+  animation: boltKinetic 2s var(--ease-human) infinite;
 }
 
-@keyframes rayoChispa {
-  0% { transform: scale(1) rotate(-3deg); filter: drop-shadow(0 0 6px #ffe600); }
-  50% { transform: scale(1.18) rotate(3deg); filter: drop-shadow(0 0 14px #00f2fe) drop-shadow(0 0 22px #ffffff); }
-  100% { transform: scale(1) rotate(-3deg); filter: drop-shadow(0 0 8px #ffe600); }
+/* ==========================================================================
+   7. FORMULARIOS E INPUTS CUIDADOS Y HUMANOS
+   ========================================================================== */
+
+.input-group label {
+  display: block;
+  font-size: 10px;
+  font-weight: 800;
+  margin-bottom: 5px;
+  color: #cbd5e1;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
 }
 
-/* ========================================================
-   PIN DE CLIENTE: PERSONITA ANIMADA 👤 (REEMPLAZA LA "B")
-   ======================================================== */
+.input-group input,
+#inputBusqueda,
+#inputBuscadorOrigen,
+#inputBuscadorDestino {
+  width: 100%;
+  padding: 11px 14px;
+  background: var(--bg-field);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-top: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 15px;
+  color: #f8fafc;
+  font-size: 13px;
+  font-weight: 600;
+  outline: none;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.4);
+  transition: border-color 0.2s ease, 
+              box-shadow 0.2s var(--ease-human), 
+              transform 0.15s ease;
+}
+
+.input-group input:focus,
+#inputBusqueda:focus,
+#inputBuscadorOrigen:focus,
+#inputBuscadorDestino:focus {
+  border-color: var(--flash-cyan);
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3),
+              0 0 0 3px rgba(0, 242, 254, 0.25),
+              0 0 20px rgba(0, 242, 254, 0.2);
+}
+
+/* ==========================================================================
+   8. PESTAÑAS (SEGMENTED CONTROLS) CON FÍSICA DE RESORTE
+   ========================================================================== */
+
+#tab-auth-login,
+#tab-auth-registro,
+#tab-historial-activos,
+#tab-historial-todos,
+.btn-sub-viveres {
+  border-radius: 13px;
+  transition: all 0.2s var(--spring-snap);
+}
+
+#tab-auth-login:active,
+#tab-auth-registro:active,
+#tab-historial-activos:active,
+#tab-historial-todos:active {
+  transform: scale(0.96);
+}
+
+/* ==========================================================================
+   9. BARRA DE NAVEGACIÓN INFERIOR (BLANCA / FROSTED APPLE STYLE)
+   ========================================================================== */
+
+.nav-inferior-blanca {
+  background: rgba(255, 255, 255, 0.98) !important;
+  backdrop-filter: blur(28px) saturate(190%) !important;
+  -webkit-backdrop-filter: blur(28px) saturate(190%) !important;
+  border-top: 1px solid rgba(226, 232, 240, 0.95) !important;
+  box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.15) !important;
+}
+
+.nav-inferior-blanca button {
+  position: relative;
+  color: #64748b !important;
+  transition: color 0.18s ease, transform 0.16s var(--spring-snap);
+}
+
+.nav-inferior-blanca button:active {
+  transform: scale(0.88);
+}
+
+.nav-inferior-blanca button.nav-item-activo,
+.nav-inferior-blanca .nav-item-activo {
+  color: var(--flash-indigo-deep) !important;
+  font-weight: 800 !important;
+}
+
+.nav-inferior-blanca .nav-item-activo::before {
+  content: "";
+  position: absolute;
+  top: -6px;
+  width: 22px;
+  height: 3.5px;
+  border-radius: 999px;
+  background: var(--flash-indigo-deep);
+  box-shadow: 0 2px 6px rgba(79, 70, 229, 0.45);
+}
+
+.nav-inferior-blanca .nav-item-activo svg,
+.nav-inferior-blanca .nav-item-activo i {
+  color: var(--flash-indigo-deep) !important;
+  stroke: var(--flash-indigo-deep) !important;
+  transform: translateY(-1px);
+}
+
+.nav-inferior-blanca .nav-badge-monto {
+  color: var(--flash-indigo-deep) !important;
+  font-weight: 900 !important;
+}
+
+/* ==========================================================================
+   10. PINES DE MAPA DE ALTA PRECISIÓN Y RADAR HUMANO
+   ========================================================================== */
+
 .pin-persona-cliente {
   position: relative;
-  width: 38px;
-  height: 38px;
+  width: 44px;
+  height: 44px;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-/* Ondas de radar expansivo en vivo */
 .pin-persona-onda {
   position: absolute;
-  width: 38px;
-  height: 38px;
+  inset: 0;
   border-radius: 50%;
-  border: 2px solid #00f2fe;
-  background: rgba(0, 242, 254, 0.25);
-  animation: ondaPersonaRadar 1.8s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+  background: rgba(0, 242, 254, 0.28);
+  border: 1.5px solid rgba(0, 242, 254, 0.75);
+  animation: radarPersona 1.9s cubic-bezier(0, 0, 0.2, 1) infinite;
   pointer-events: none;
 }
 
-@keyframes ondaPersonaRadar {
+@keyframes radarPersona {
   0% {
-    transform: scale(0.6);
-    opacity: 0.95;
+    transform: scale(0.65);
+    opacity: 0.9;
   }
   100% {
-    transform: scale(2.3);
+    transform: scale(2.4);
     opacity: 0;
   }
 }
 
-/* Cuerpo central del avatar con silueta de persona */
 .pin-persona-cuerpo {
   position: relative;
+  z-index: 2;
   width: 32px;
   height: 32px;
-  background: linear-gradient(135deg, #00f2fe 0%, #3b82f6 50%, #6366f1 100%);
-  border: 2.5px solid #ffffff;
   border-radius: 50%;
+  background: linear-gradient(145deg, #0ea5e9, #2563eb);
+  border: 2.5px solid #ffffff;
   display: flex;
   align-items: center;
   justify-content: center;
   color: #ffffff;
-  box-shadow: 0 0 16px rgba(0, 242, 254, 0.9), 0 4px 10px rgba(0, 0, 0, 0.7);
-  z-index: 2;
-  transition: transform 0.2s ease;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.65), 0 0 10px rgba(14, 165, 233, 0.5);
 }
 
 .pin-persona-cuerpo svg {
-  width: 17px;
-  height: 17px;
-  fill: #ffffff;
-  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.5));
+  width: 16px;
+  height: 16px;
+  fill: currentColor;
 }
 
-/* Badge flotante "TÚ" */
 .pin-persona-badge-tu {
   position: absolute;
-  bottom: -6px;
-  background: #030712;
-  color: #00f2fe;
-  border: 1px solid #00f2fe;
-  border-radius: 6px;
+  bottom: -7px;
+  z-index: 3;
+  background: #0f172a;
+  color: #38bdf8;
+  border: 1px solid rgba(56, 189, 248, 0.6);
+  border-radius: 999px;
   font-size: 8px;
   font-weight: 900;
-  padding: 0px 5px;
-  line-height: 13px;
+  padding: 1px 6px;
   letter-spacing: 0.5px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.8);
-  z-index: 3;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.6);
 }
 
-/* Pines del mapa satelital */
+.pin-jewel-a,
+.pin-jewel-b,
+.pin-radar-chofer {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 2.5px solid #ffffff;
+  font-weight: 900;
+  font-size: 11px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.55);
+}
+
 .pin-jewel-a {
-  width: 28px;
-  height: 28px;
   background: linear-gradient(135deg, #2563eb, #1d4ed8);
-  border: 2px solid #ffffff;
-  border-radius: 50%;
-  color: white;
-  font-weight: 900;
-  font-size: 11px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 0 15px rgba(37, 99, 235, 0.8);
+  color: #ffffff;
 }
+
 .pin-jewel-b {
-  width: 28px;
-  height: 28px;
-  background: linear-gradient(135deg, #f97316, #ea580c);
-  border: 2px solid #ffffff;
-  border-radius: 50%;
-  color: white;
-  font-weight: 900;
-  font-size: 11px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 0 15px rgba(249, 115, 22, 0.8);
+  background: linear-gradient(135deg, #ea580c, #c2410c);
+  color: #ffffff;
 }
+
 .pin-radar-chofer {
   position: relative;
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
   background: #10b981;
-  border: 2px solid #ffffff;
-  box-shadow: 0 0 16px #10b981;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #05070c;
-  font-weight: 900;
+  color: #052e16;
 }
+
 .pin-radar-chofer::after {
-  content: '';
+  content: "";
   position: absolute;
-  inset: -8px;
+  inset: -7px;
   border-radius: 50%;
   border: 2px solid #10b981;
-  animation: ping 1.5s cubic-bezier(0, 0, 0.2, 1) infinite;
+  animation: radarPersona 1.8s cubic-bezier(0, 0, 0.2, 1) infinite;
 }
 
-/* ========================================================
-   ESTILOS DE LOGIN Y REGISTRO GLASSMORPHISM CON VIDEO DE FONDO
-   ======================================================== */
+/* ==========================================================================
+   11. CONTENEDOR LOGIN Y GLASSMORPHISM CINEMATOGRÁFICO
+   ========================================================================== */
 
-/* Video que cubre todo el fondo */
 .background-video,
 .background-video-auth {
   position: absolute;
-  top: 0;
-  left: 0;
+  inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
@@ -423,22 +681,22 @@
   pointer-events: none;
 }
 
-/* Capa oscura con desenfoque para resaltar el formulario */
 .video-overlay,
 .video-overlay-auth {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: radial-gradient(circle at center, rgba(3, 7, 18, 0.65) 0%, rgba(3, 7, 18, 0.90) 100%);
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
+  inset: 0;
   z-index: 1;
   pointer-events: none;
+  background: radial-gradient(
+    circle at center,
+    rgba(3, 7, 18, 0.65) 0%,
+    rgba(3, 7, 18, 0.92) 80%,
+    rgba(3, 7, 18, 0.98) 100%
+  );
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
 }
 
-/* Contenedor centrado */
 .login-container {
   position: relative;
   z-index: 10;
@@ -452,80 +710,46 @@
   padding: 14px;
 }
 
-/* Tarjeta Glassmorphic */
 .login-card {
-  background: rgba(15, 23, 42, 0.85);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(0, 242, 254, 0.35);
-  padding: 24px 20px;
-  border-radius: 28px;
   width: 100%;
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 30px rgba(0, 242, 254, 0.2);
-  color: #ffffff;
+  padding: 26px 22px;
+  border-radius: 28px;
+  background: rgba(15, 23, 42, 0.88);
+  backdrop-filter: blur(24px) saturate(160%);
+  -webkit-backdrop-filter: blur(24px) saturate(160%);
+  border: 1px solid rgba(0, 242, 254, 0.25);
+  border-top: 1px solid rgba(255, 255, 255, 0.35);
+  box-shadow: 0 24px 60px -12px rgba(0, 0, 0, 0.85),
+              0 0 35px rgba(0, 242, 254, 0.18);
+  color: #f8fafc;
 }
 
-/* Título de la marca */
 .brand-title {
-  font-size: 26px;
+  font-size: 27px;
   font-weight: 900;
   text-align: center;
-  letter-spacing: -0.5px;
-  margin-bottom: 2px;
+  letter-spacing: -0.6px;
+  margin-bottom: 3px;
 }
 
-/* Subtítulo */
 .brand-subtitle {
   text-align: center;
-  font-size: 11px;
+  font-size: 11.5px;
   color: #94a3b8;
   font-weight: 600;
-  margin-bottom: 16px;
+  margin-bottom: 18px;
 }
 
-/* Grupos de campos del formulario */
-.input-group {
-  margin-bottom: 12px;
-}
-.input-group label {
-  display: block;
-  font-size: 10px;
-  font-weight: 800;
-  margin-bottom: 4px;
-  color: #cbd5e1;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-.input-group input {
-  width: 100%;
-  padding: 10px 14px;
-  background: rgba(2, 6, 23, 0.85);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: 14px;
-  color: #ffffff;
-  font-size: 12px;
-  font-weight: 600;
-  outline: none;
-  transition: all 0.25s ease;
-}
-.input-group input:focus {
-  border-color: #00f2fe;
-  box-shadow: 0 0 15px rgba(0, 242, 254, 0.35);
-  background: rgba(2, 6, 23, 0.95);
-}
+/* ==========================================================================
+   12. ACCESIBILIDAD Y REDUCCIÓN DE MOVIMIENTO
+   ========================================================================== */
 
-/* Botón de ingreso adaptado al efecto de llenado líquido */
-.btn-login {
-  width: 100%;
-  padding: 13px;
-  color: #ffffff;
-  border-radius: 16px;
-  font-size: 13px;
-  font-weight: 900;
-  letter-spacing: 0.5px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }

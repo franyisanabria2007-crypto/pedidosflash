@@ -889,38 +889,38 @@
         </div>
       </div>
 
-      <!-- BARRA DE NAVEGACIÓN INFERIOR (CON "MI PEDIDO" PULSANTE E HISTORIAL) -->
-      <nav class="absolute bottom-0 left-0 right-0 bg-slate-950/95 backdrop-blur-2xl border-t border-slate-800/80 px-2 py-1.5 z-40 flex items-center justify-around shadow-2xl safe-bottom">
-        <button onclick="volverAlMenuPrincipal()" type="button" class="btn-tactil flex flex-col items-center gap-0.5 text-accent-cyan py-1 px-1.5">
-          <i data-lucide="home" class="w-4 h-4 sm:w-5 sm:h-5"></i>
-          <span class="text-[9px] sm:text-[10px] font-black tracking-tight">Inicio</span>
+      <!-- BARRA DE NAVEGACIÓN INFERIOR (COLOR BLANCO DE ALTA VISIBILIDAD) -->
+      <nav id="barra-inferior-cliente" class="nav-inferior-blanca absolute bottom-0 left-0 right-0 px-2 py-1.5 z-40 flex items-center justify-around safe-bottom">
+        <button onclick="volverAlMenuPrincipal()" type="button" class="btn-tactil nav-item-activo flex flex-col items-center gap-0.5 text-indigo-600 hover:text-indigo-800 py-1 px-1.5 transition">
+          <i data-lucide="home" class="w-4 h-4 sm:w-5 sm:h-5 text-indigo-600"></i>
+          <span class="text-[9px] sm:text-[10px] font-black text-indigo-600 tracking-tight">Inicio</span>
         </button>
 
-        <button id="nav-btn-rastreo" onclick="abrirModalRastreoCliente()" type="button" class="btn-tactil relative flex flex-col items-center gap-0.5 text-slate-400 hover:text-accent-emerald py-1 px-1.5 transition">
+        <button id="nav-btn-rastreo" onclick="abrirModalRastreoCliente()" type="button" class="btn-tactil relative flex flex-col items-center gap-0.5 text-slate-600 hover:text-emerald-600 py-1 px-1.5 transition">
           <div class="relative">
-            <i data-lucide="radar" id="nav-icono-rastreo" class="w-4 h-4 sm:w-5 sm:h-5"></i>
-            <span id="nav-pulse-dot" class="hidden absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-accent-emerald animate-ping"></span>
-            <span id="nav-static-dot" class="hidden absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-accent-emerald shadow-glow-emerald"></span>
+            <i data-lucide="radar" id="nav-icono-rastreo" class="w-4 h-4 sm:w-5 sm:h-5 text-slate-600"></i>
+            <span id="nav-pulse-dot" class="hidden absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping"></span>
+            <span id="nav-static-dot" class="hidden absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-emerald-500 shadow-[0_0_8px_#10b981]"></span>
           </div>
-          <span id="nav-txt-rastreo" class="text-[9px] sm:text-[10px] font-bold tracking-tight">Mi Pedido</span>
+          <span id="nav-txt-rastreo" class="text-[9px] sm:text-[10px] font-bold text-slate-600 tracking-tight">Mi Pedido</span>
         </button>
 
-        <button onclick="abrirModalHistorialPedidos()" type="button" class="btn-tactil relative flex flex-col items-center gap-0.5 text-slate-400 hover:text-accent-cyan py-1 px-1.5 transition">
-          <i data-lucide="clock" class="w-4 h-4 sm:w-5 sm:h-5"></i>
-          <span class="text-[9px] sm:text-[10px] font-bold tracking-tight">Historial</span>
+        <button onclick="abrirModalHistorialPedidos()" type="button" class="btn-tactil relative flex flex-col items-center gap-0.5 text-slate-600 hover:text-indigo-600 py-1 px-1.5 transition">
+          <i data-lucide="clock" class="w-4 h-4 sm:w-5 sm:h-5 text-slate-600"></i>
+          <span class="text-[9px] sm:text-[10px] font-bold text-slate-600 tracking-tight">Historial</span>
         </button>
 
-        <button onclick="cambiarSeccion('transporte')" type="button" class="btn-tactil flex flex-col items-center gap-0.5 text-slate-400 hover:text-accent-emerald py-1 px-1.5">
-          <i data-lucide="navigation" class="w-4 h-4 sm:w-5 sm:h-5"></i>
-          <span class="text-[9px] sm:text-[10px] font-bold tracking-tight">Viajes</span>
+        <button onclick="cambiarSeccion('transporte')" type="button" class="btn-tactil flex flex-col items-center gap-0.5 text-slate-600 hover:text-indigo-600 py-1 px-1.5 transition">
+          <i data-lucide="navigation" class="w-4 h-4 sm:w-5 sm:h-5 text-slate-600"></i>
+          <span class="text-[9px] sm:text-[10px] font-bold text-slate-600 tracking-tight">Viajes</span>
         </button>
 
-        <button onclick="abrirModalCarrito()" type="button" class="btn-tactil relative flex flex-col items-center gap-0.5 text-slate-400 hover:text-accent-yellow py-1 px-1.5">
+        <button onclick="abrirModalCarrito()" type="button" class="btn-tactil relative flex flex-col items-center gap-0.5 text-slate-800 hover:text-indigo-900 py-1 px-1.5 transition">
           <div class="relative">
-            <i data-lucide="shopping-bag" class="w-4 h-4 sm:w-5 sm:h-5"></i>
-            <span id="badge-nav-cant" class="absolute -top-1.5 -right-2 bg-accent-magenta text-white font-black text-[9px] w-4 h-4 rounded-full flex items-center justify-center shadow-glow-magenta">0</span>
+            <i data-lucide="shopping-bag" class="w-4 h-4 sm:w-5 sm:h-5 text-slate-800"></i>
+            <span id="badge-nav-cant" class="absolute -top-1.5 -right-2 bg-accent-magenta text-white font-black text-[9px] w-4 h-4 rounded-full flex items-center justify-center shadow-md">0</span>
           </div>
-          <span id="badge-nav-monto" class="text-[9px] sm:text-[10px] font-black text-accent-yellow leading-tight">$0.00</span>
+          <span id="badge-nav-monto" class="nav-badge-monto text-[9px] sm:text-[10px] font-black text-indigo-700 leading-tight">$0.00</span>
         </button>
       </nav>
     </div>
@@ -1397,7 +1397,6 @@
             <i data-lucide="navigation-2" class="w-4 h-4 fill-slate-950"></i>
             <span>VER SEGUIMIENTO EN VIVO (GPS)</span>
           </button>
-
           <div class="grid grid-cols-2 gap-2">
             <a id="chofer-acepto-btn-wa" href="#" target="_blank" class="btn-tactil bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2 rounded-xl text-xs flex items-center justify-center gap-1.5 shadow-sm">
               <i data-lucide="message-circle" class="w-3.5 h-3.5"></i>
@@ -3016,7 +3015,11 @@
           ? `<span class="text-[10px] text-accent-cyan font-bold block">A Pedido (Precio Variable)</span>` 
           : `<span class="text-xs text-accent-yellow font-black">$${(item.cantidad * item.precio).toFixed(2)}</span>`;
         
-        const tiendaLabel = item.tiendaNombre ? `<span class="text-[9px] text-amber-400 font-bold block">🏪 ${item.tiendaNombre}</span>` : '';
+        // Ocultar nombre de comercio físico en víveres, verduras y bebidas; solo mostrar para comida rápida / restaurantes
+        const esRestaurante = item.tiendaId && (item.tiendaId === 'moravos' || item.tiendaId === 'fran_chero' || item.tiendaId === 'antons' || item.tiendaId === 'zirus');
+        const tiendaLabel = esRestaurante && item.tiendaNombre 
+          ? `<span class="text-[9px] text-amber-400 font-bold block">🏪 ${item.tiendaNombre}</span>` 
+          : `<span class="text-[9px] text-cyan-400 font-semibold block">⚡ Supermercado Flash</span>`;
 
         contenedor.innerHTML += `
           <div class="flex items-center justify-between bg-slate-950/85 p-3 rounded-2xl border border-slate-800">
@@ -3354,6 +3357,14 @@
 
       const ubicacionGPSFinal = ubicacionGPS || `https://maps.google.com/?q=${latDestinoFinal},${lngDestinoFinal}`;
 
+      // Distinguir entre restaurante de comida rápida y productos de supermercado (víveres, verduras, bebidas)
+      let esRestauranteComida = false;
+      if (tiendaDetectadaId && (tiendaDetectadaId === 'moravos' || tiendaDetectadaId === 'fran_chero' || tiendaDetectadaId === 'antons' || tiendaDetectadaId === 'zirus')) {
+        esRestauranteComida = true;
+      }
+      // El cliente NUNCA ve el nombre del proveedor de víveres, verduras o bebidas (solo ve 'Supermercado Flash')
+      const nombreTiendaCliente = esRestauranteComida ? tiendaDetectadaNombre : (esPagoTransporteDirecto ? 'Transporte Flash' : 'Supermercado Flash');
+
       if (firebaseActivo && db) {
         try {
           const nuevoPedidoRef = db.ref('pedidos').push({
@@ -3377,8 +3388,10 @@
             estado: 'pendiente',
             chofer: 'Sin Asignar',
             choferTelefono: '',
-            tiendaId: tiendaDetectadaId || '',
-            tiendaNombre: tiendaDetectadaNombre || '',
+            tiendaId: esRestauranteComida ? (tiendaDetectadaId || '') : 'supermercado_flash',
+            tiendaNombre: esRestauranteComida ? (tiendaDetectadaNombre || '') : 'Supermercado Flash',
+            tiendaPublicaCliente: nombreTiendaCliente,
+            esSupermercadoFlash: !esRestauranteComida && !esPagoTransporteDirecto,
             porcentajeComision: tiendaDetectadaId ? tiendaPctComision : 0,
             comisionFlash: comisionFlash,
             netoTienda: netoTienda,
@@ -3398,7 +3411,7 @@
             total: montoTotalCalculado,
             direccion: direccion || textoDestinoStr || 'Ubicación especificada',
             estado: 'pendiente',
-            tiendaNombre: tiendaDetectadaNombre || (esPagoTransporteDirecto ? 'Transporte Flash' : 'Supermercado Flash'),
+            tiendaNombre: nombreTiendaCliente,
             items: listaItemsArray
           };
           guardarEnHistorialCliente(registroHistorial);
@@ -3407,7 +3420,7 @@
             activarRastreoPedidoCliente(nuevoPedidoId);
           }
 
-          if (tiendaDetectadaId) {
+          if (tiendaDetectadaId && esRestauranteComida) {
             const descItems = listaItemsArray.map(i => `${i.cantidad}x ${i.nombre}`).join(', ');
             db.ref(`cuentas_tiendas/${tiendaDetectadaId}/movimientos`).push({
               orden: numOrden,
@@ -3433,7 +3446,7 @@
           total: montoTotalCalculado,
           direccion: direccion || textoDestinoStr || 'Ubicación especificada',
           estado: 'pendiente',
-          tiendaNombre: tiendaDetectadaNombre || 'Comercio Flash',
+          tiendaNombre: nombreTiendaCliente,
           items: listaItemsArray
         };
         guardarEnHistorialCliente(registroHistorial);
@@ -3471,8 +3484,10 @@
         msj += `📍 *Dirección:* ${direccion}\n`;
         msj += `🗺️ *GPS Exacto en Vivo:* ${ubicacionGPSFinal}\n`;
 
-        if (tiendaDetectadaNombre) {
-          msj += `\n🏪 *LOCAL / COMIDA:* ${tiendaDetectadaNombre}\n`;
+        if (esRestauranteComida && tiendaDetectadaNombre) {
+          msj += `\n🏪 *RESTAURANTE / COMIDA:* ${tiendaDetectadaNombre}\n`;
+        } else if (!esPagoTransporteDirecto) {
+          msj += `\n🛒 *COMPRA:* Supermercado Flash (Víveres & Bebidas)\n`;
         }
 
         msj += `\n🛒 *LISTA DE ARTÍCULOS:*\n`;
