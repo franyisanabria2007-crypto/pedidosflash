@@ -119,28 +119,6 @@
       background: #10b981; border: 2px solid #ffffff; box-shadow: 0 0 16px #10b981;
       display: flex; align-items: center; justify-content: center; color: #05070c; font-weight: 900;
     }
-    .pin-persona-cliente {
-      position: relative; width: 38px; height: 38px;
-      display: flex; align-items: center; justify-content: center;
-    }
-    .pin-persona-onda {
-      position: absolute; inset: -6px; border-radius: 50%;
-      border: 2px solid #00f2fe; background: rgba(0, 242, 254, 0.25);
-      animation: ping 1.5s infinite;
-    }
-    .pin-persona-cuerpo {
-      width: 30px; height: 30px; border-radius: 50%;
-      background: linear-gradient(135deg, #00f2fe, #4f46e5);
-      border: 2px solid #ffffff; display: flex; align-items: center; justify-content: center;
-      box-shadow: 0 0 15px rgba(0, 242, 254, 0.8); z-index: 2;
-    }
-    .pin-persona-cuerpo svg { width: 16px; height: 16px; fill: #ffffff; }
-    .pin-persona-badge-tu {
-      position: absolute; bottom: -10px; background: #030712; color: #00f2fe;
-      border: 1px solid #00f2fe; font-size: 9px; font-weight: 900;
-      padding: 0 5px; border-radius: 6px; z-index: 3;
-    }
-
     .pin-radar-chofer::after {
       content: ''; position: absolute; inset: -8px; border-radius: 50%;
       border: 2px solid #10b981; animation: ping 1.5s cubic-bezier(0, 0, 0.2, 1) infinite;
@@ -2457,7 +2435,7 @@
         setTimeout(() => {
           if (!mapaRuta) {
             mapaRuta = L.map('mapa-interactivo-ruta', { zoomControl: true, attributionControl: false }).setView(puntoOrigen, 15);
-            L.tileLayer('https://a.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(mapaRuta);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(mapaRuta);
 
             mapaRuta.on('click', (e) => {
               puntoDestino = [e.latlng.lat, e.latlng.lng];
@@ -2482,15 +2460,16 @@
             if (navigator.geolocation) {
               navigator.geolocation.getCurrentPosition((pos) => {
                 puntoOrigen = [pos.coords.latitude, pos.coords.longitude];
-                mapaRuta.setView(puntoOrigen, 16);
+                mapaRuta.setView(puntoOrigen, 15);
                 actualizarMarcadorOrigen();
-              }, () => { actualizarMarcadorOrigen(); }, { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 });
+              }, () => { actualizarMarcadorOrigen(); });
             } else {
               actualizarMarcadorOrigen();
             }
+          } else {
+            mapaRuta.invalidateSize();
           }
-          setTimeout(() => { if (mapaRuta) mapaRuta.invalidateSize(); }, 250);
-        }, 250);
+        }, 200);
       }
     }
 
@@ -3656,9 +3635,10 @@
       setTimeout(() => {
         if (!mapaRastreoClienteInstance) {
           mapaRastreoClienteInstance = L.map('mapa-rastreo-cliente-box', { zoomControl: false, attributionControl: false }).setView([10.1506, -68.5668], 15);
-          L.tileLayer('https://a.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(mapaRastreoClienteInstance);
+          L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(mapaRastreoClienteInstance);
+        } else {
+          mapaRastreoClienteInstance.invalidateSize();
         }
-        setTimeout(() => { if (mapaRastreoClienteInstance) mapaRastreoClienteInstance.invalidateSize(); }, 250);
         if (pedidoActivoClienteId && db) {
           db.ref(`pedidos/${pedidoActivoClienteId}`).once('value').then(snap => {
             const p = snap.val();
