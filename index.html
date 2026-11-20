@@ -497,6 +497,26 @@
 
       <main class="flex-1 p-3 space-y-3.5 overflow-y-auto no-scrollbar pb-32">
 
+        <!-- BANNER PROMO: COMPRA MÁS DE 20 PRODUCTOS Y EL DELIVERY ES GRATIS -->
+        <div id="banner-promo-delivery-gratis" class="bg-gradient-to-r from-emerald-950/90 via-slate-900/95 to-cyan-950/90 border-2 border-emerald-500/50 rounded-2xl p-3 shadow-[0_0_20px_rgba(16,185,129,0.25)] flex items-center justify-between gap-2.5 transition-all mb-2">
+          <div class="flex items-center gap-2.5 min-w-0">
+            <div class="w-10 h-10 rounded-xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center justify-center text-xl shrink-0 animate-bounce">
+              🎁
+            </div>
+            <div class="min-w-0">
+              <span class="text-[9px] font-black uppercase text-accent-yellow tracking-wider block">¡PROMO FLASH NIRGUA!</span>
+              <p class="text-xs font-black text-white leading-tight">¡Compra más de 20 productos y el <span class="text-emerald-400">DELIVERY ES GRATIS</span>!</p>
+              <div class="w-full bg-slate-800 rounded-full h-1.5 mt-1 overflow-hidden border border-slate-700">
+                <div id="barra-progreso-promo-20" class="bg-gradient-to-r from-accent-cyan to-emerald-400 h-1.5 rounded-full transition-all duration-300" style="width: 0%;"></div>
+              </div>
+            </div>
+          </div>
+          <div class="text-right shrink-0">
+            <span id="badge-contador-promo-20" class="text-[10px] font-black font-mono bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-2 py-0.5 rounded-full block">0/20</span>
+            <span id="txt-estado-promo-20" class="text-[9px] text-slate-400 block mt-0.5">Faltan 20</span>
+          </div>
+        </div>
+
         <!-- MENÚ PRINCIPAL: CUADROS DE CATEGORÍAS -->
         <div id="menu-principal-servicios" class="space-y-2.5 py-1">
           <div class="flex items-center justify-between px-1">
@@ -1294,7 +1314,12 @@
           </button>
         </div>
         <div id="lista-modal-carrito" class="flex-1 overflow-y-auto no-scrollbar space-y-2 pr-1"></div>
-        <div class="border-t border-slate-800 pt-3 space-y-3">
+        <div class="border-t border-slate-800 pt-3 space-y-2.5">
+          <!-- AVISO PROMO DELIVERY GRATIS DENTRO DEL CARRITO -->
+          <div id="modal-carrito-promo-aviso" class="bg-gradient-to-r from-emerald-950/80 to-slate-900 border border-emerald-500/40 rounded-xl p-2.5 text-center text-[10px] text-emerald-300 flex items-center justify-center gap-1.5 shadow-sm">
+            <span>🎁 Compra más de 20 productos y el delivery es gratis</span>
+          </div>
+
           <div class="flex justify-between items-center px-1">
             <span class="text-xs font-bold text-slate-400">Total a pagar:</span>
             <span id="modal-carrito-monto-total" class="text-base font-black text-accent-yellow">$0.00</span>
@@ -2410,17 +2435,40 @@
       }
 
       return `
-        <div class="item-producto bg-slate-950/80 border border-slate-800/80 hover:border-slate-700 p-2.5 rounded-[22px] flex flex-col justify-between relative group backdrop-blur-sm" data-nombre="${normalizarTexto(item.nombre)}" data-sub="${item.sub || ''}">
+        <div onclick="puyarProductoAgregar('${item.id}', event)" class="item-producto bg-slate-950/80 border border-slate-800/80 hover:border-slate-700 p-2.5 rounded-[22px] flex flex-col justify-between relative group backdrop-blur-sm cursor-pointer active:scale-95 transition-transform" data-nombre="${normalizarTexto(item.nombre)}" data-sub="${item.sub || ''}">
           ${badgeHTML}
-          <div class="w-full h-20 rounded-xl overflow-hidden bg-slate-900/60 flex items-center justify-center p-1 relative mb-1.5">
+          <div class="w-full h-20 rounded-xl overflow-hidden bg-slate-900/60 flex items-center justify-center p-1 relative mb-1.5 pointer-events-none">
             <img src="${item.imagen || 'img/logo.jfif'}" alt="${item.nombre}" class="w-full h-full object-contain group-hover:scale-105 transition-transform duration-300" onerror="this.src='img/logo.jfif';">
           </div>
           <div class="flex-1 flex flex-col justify-between">
-            <h5 class="text-xs font-bold text-white leading-tight line-clamp-2 mb-1">${item.nombre}</h5>
+            <h5 class="text-xs font-bold text-white leading-tight line-clamp-2 mb-1 pointer-events-none">${item.nombre}</h5>
             ${bloqueControl}
           </div>
         </div>
       `;
+    }
+
+    // FUNCIÓN PARA PUYAR EL PRODUCTO EN CUALQUIER LADO Y AGREGARLO AL INSTANTE
+    function puyarProductoAgregar(id, event) {
+      if (event && event.target && event.target.tagName === 'INPUT' && event.target.type === 'range') {
+        return; // Permite arrastrar el slider de peso sin agregar prematuramente
+      }
+
+      const item = mapaProductos[id];
+      if (!item) return;
+
+      if (event && event.currentTarget) {
+        event.currentTarget.classList.add('ring-2', 'ring-cyan-400', 'scale-95');
+        setTimeout(() => {
+          if (event.currentTarget) event.currentTarget.classList.remove('ring-2', 'ring-cyan-400', 'scale-95');
+        }, 160);
+      }
+
+      if (item.esGranel) {
+        agregarGranelAlCarrito(id);
+      } else {
+        agregarAlCarritoPorId(id, 1);
+      }
     }
 
     function cambiarSeccion(seccion) {
@@ -2874,6 +2922,18 @@
       document.getElementById(`precio-granel-${id}`).innerText = `$${sub.toFixed(2)}`;
     }
 
+    function notificarPromoDelivery(nombreProd) {
+      const { cant } = calcularTotal();
+      if (cant > 20) {
+        mostrarToast(`¡${nombreProd} agregado! 🎉 ¡Llevas ${cant} productos y tu DELIVERY ES GRATIS ($0.00)!`, "¡Promo Flash Activa!", "success");
+      } else if (cant === 20) {
+        mostrarToast(`¡${nombreProd} agregado! ⚡ Llevas 20 productos: ¡Compra más de 20 productos y el delivery es gratis (¡Falta 1 solo!)`, "¡A 1 paso!", "warning");
+      } else {
+        const faltan = 21 - cant;
+        mostrarToast(`¡${nombreProd} agregado! 🎁 Compra más de 20 productos y el delivery es gratis (Llevas ${cant}/20, faltan ${faltan})`, "¡Promo Delivery Gratis!", "info");
+      }
+    }
+
     function agregarGranelAlCarrito(id) {
       const item = mapaProductos[id];
       if (!item) return;
@@ -2888,14 +2948,14 @@
         carrito[idUnico].cantidad += 1;
       }
       actualizarTotales();
-      mostrarToast(`Agregado: ${item.nombre} (${etiqueta})`, "Canasta", "success");
+      notificarPromoDelivery(`${item.nombre} (${etiqueta})`);
     }
 
     function agregarAlCarritoPorId(id, cantidad = 1) {
       const item = mapaProductos[id];
       if (!item) return;
       agregarAlCarritoDirecto(item.id, item.nombre, item.precioBase, cantidad, item.tiendaId || item.local);
-      mostrarToast(`Agregado: ${item.nombre}`, "Canasta", "success");
+      notificarPromoDelivery(item.nombre);
     }
 
     function agregarAlCarritoDirecto(id, nombre, precio, cantidad = 1, tiendaId = null) {
@@ -2980,6 +3040,32 @@
       if (widgetCant) widgetCant.innerText = cant;
       if (widgetMonto) widgetMonto.innerText = `$${total.toFixed(2)}`;
       
+      // Actualizar Banner de Promo Delivery Gratis (> 20 productos)
+      const barraPromo = document.getElementById('barra-progreso-promo-20');
+      const badgePromo = document.getElementById('badge-contador-promo-20');
+      const txtPromo = document.getElementById('txt-estado-promo-20');
+      
+      if (barraPromo && badgePromo && txtPromo) {
+        const pct = Math.min(100, Math.round((cant / 20) * 100));
+        barraPromo.style.width = `${pct}%`;
+        if (cant > 20) {
+          badgePromo.innerHTML = `✓ ¡GRATIS! (${cant})`;
+          badgePromo.className = "text-[10px] font-black font-mono bg-emerald-500 text-slate-950 px-2 py-0.5 rounded-full block animate-pulse";
+          txtPromo.innerText = "Delivery $0.00 (Gratis)";
+          txtPromo.className = "text-[9px] text-emerald-400 font-bold block mt-0.5";
+        } else if (cant === 20) {
+          badgePromo.innerText = "20/20";
+          badgePromo.className = "text-[10px] font-black font-mono bg-amber-500/20 text-amber-300 border border-amber-500/30 px-2 py-0.5 rounded-full block";
+          txtPromo.innerText = "¡Falta 1 para gratis!";
+          txtPromo.className = "text-[9px] text-accent-yellow font-bold block mt-0.5";
+        } else {
+          badgePromo.innerText = `${cant}/20`;
+          badgePromo.className = "text-[10px] font-black font-mono bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-2 py-0.5 rounded-full block";
+          txtPromo.innerText = `Faltan ${20 - cant} prods`;
+          txtPromo.className = "text-[9px] text-slate-400 block mt-0.5";
+        }
+      }
+
       if (widgetFlotante) {
         if (cant > 0) {
           widgetFlotante.classList.remove('opacity-0', 'pointer-events-none');
@@ -3006,8 +3092,28 @@
 
     function renderizarModalCarrito() {
       const contenedor = document.getElementById('lista-modal-carrito');
-      const { total } = calcularTotal();
-      document.getElementById('modal-carrito-monto-total').innerText = `$${total.toFixed(2)}`;
+      const { total, cant } = calcularTotal();
+      const esDeliveryGratis = cant > 20;
+      const costoDelivery = esDeliveryGratis ? 0.00 : 1.00;
+      const totalConDelivery = total + costoDelivery;
+
+      document.getElementById('modal-carrito-monto-total').innerText = `$${totalConDelivery.toFixed(2)}`;
+
+      const avisoPromoModal = document.getElementById('modal-carrito-promo-aviso');
+      if (avisoPromoModal) {
+        if (esDeliveryGratis) {
+          avisoPromoModal.className = "bg-emerald-950/80 border border-emerald-500/50 rounded-xl p-2 text-center text-[10px] text-emerald-300 font-bold";
+          avisoPromoModal.innerHTML = `🎉 ¡Llevas ${cant} productos! ¡Tu delivery es GRATIS ($0.00)!`;
+        } else if (cant === 20) {
+          avisoPromoModal.className = "bg-amber-950/80 border border-amber-500/50 rounded-xl p-2 text-center text-[10px] text-amber-300 font-bold";
+          avisoPromoModal.innerHTML = `⚡ ¡Llevas 20 productos! Compra más de 20 productos y el delivery es gratis (¡Falta 1 solo!)`;
+        } else {
+          const faltan = 21 - cant;
+          avisoPromoModal.className = "bg-slate-950/90 border border-emerald-500/30 rounded-xl p-2 text-center text-[10px] text-emerald-400 font-medium";
+          avisoPromoModal.innerHTML = `🎁 Compra más de 20 productos y el delivery es gratis (Llevas ${cant}/20, faltan ${faltan})`;
+        }
+      }
+
       contenedor.innerHTML = "";
       Object.keys(carrito).forEach(id => {
         const item = carrito[id];
@@ -3078,13 +3184,45 @@
         listaResumen.innerHTML += `<div class="flex justify-between items-center"><span class="text-slate-200">1x ${nombreServicio}</span><span class="text-accent-yellow font-black">$${precioTransporte.toFixed(2)}</span></div>`;
         document.getElementById('total-precio-resumen').innerText = `$${precioTransporte.toFixed(2)}`;
       } else {
+        const { total, cant } = calcularTotal();
+        const esDeliveryGratis = cant > 20;
+        const costoDelivery = esDeliveryGratis ? 0.00 : 1.00;
+        const totalFinal = total + costoDelivery;
+
         Object.keys(carrito).forEach(id => {
           const item = carrito[id];
           const precioTxt = item.esPersonalizado ? `<span class="text-accent-cyan font-bold">Variable</span>` : `<span class="text-accent-yellow font-black">$${(item.cantidad * item.precio).toFixed(2)}</span>`;
           listaResumen.innerHTML += `<div class="flex justify-between items-center"><span class="text-slate-200">${item.cantidad}x ${item.nombre}</span>${precioTxt}</div>`;
         });
-        const { total } = calcularTotal();
-        document.getElementById('total-precio-resumen').innerText = `$${total.toFixed(2)}`;
+
+        // Línea de Delivery y Desglose de Promo
+        listaResumen.innerHTML += `
+          <div class="pt-2 border-t border-slate-800/80 flex justify-between items-center">
+            <span class="text-slate-300 text-xs font-semibold flex items-center gap-1">
+              🛵 Tarifa de Delivery Nirgua:
+            </span>
+            <span class="${esDeliveryGratis ? 'text-emerald-400 font-black' : 'text-slate-300 font-bold'} text-xs">
+              ${esDeliveryGratis ? '¡GRATIS! ($0.00)' : '$1.00'}
+            </span>
+          </div>
+        `;
+
+        if (esDeliveryGratis) {
+          listaResumen.innerHTML += `
+            <div class="bg-emerald-950/60 border border-emerald-500/40 rounded-xl p-2 text-center text-[11px] text-emerald-300 font-bold">
+              🎉 ¡Promo Flash! Llevas ${cant} productos (más de 20). ¡Tu delivery es 100% GRATIS!
+            </div>
+          `;
+        } else {
+          const faltan = 21 - cant;
+          listaResumen.innerHTML += `
+            <div class="bg-slate-900/80 border border-slate-800 rounded-xl p-2 text-center text-[10px] text-slate-400">
+              💡 ¡Compra más de 20 productos y el delivery es gratis! (Llevas ${cant}, faltan ${faltan})
+            </div>
+          `;
+        }
+
+        document.getElementById('total-precio-resumen').innerText = `$${totalFinal.toFixed(2)}`;
       }
 
       // Autocompletar con usuario activo si existe
@@ -3277,7 +3415,10 @@
       }
 
       const numOrden = `FLASH-${Math.floor(1000 + Math.random() * 9000)}`;
-      const montoTotalCalculado = esPagoTransporteDirecto ? precioTransporte : calcularTotal().total;
+      const { total: totalProductos, cant: cantProductos } = calcularTotal();
+      const esDeliveryGratis = !esPagoTransporteDirecto && (cantProductos > 20);
+      const costoDelivery = esPagoTransporteDirecto ? 0.00 : (esDeliveryGratis ? 0.00 : 1.00);
+      const montoTotalCalculado = esPagoTransporteDirecto ? precioTransporte : (totalProductos + costoDelivery);
 
       const listaItemsArray = [];
       let tiendaDetectadaId = null;
@@ -3384,6 +3525,10 @@
             metodoPago: `${metodoPagoActual} (Pago Contra Entrega)`,
             pagoContraEntrega: true,
             pagaCon: montoPaga || '',
+            subtotal: totalProductos,
+            costoDelivery: costoDelivery,
+            deliveryGratis: esDeliveryGratis,
+            cantProductos: cantProductos,
             total: montoTotalCalculado,
             estado: 'pendiente',
             chofer: 'Sin Asignar',
@@ -3400,6 +3545,25 @@
             fecha: new Date().toISOString()
           });
 
+          // Asegurar que el cliente quede registrado en 'usuarios_clientes' para el conteo e historial del admin
+          if (telefono) {
+            const telLimpio = limpiarTelefonoId(telefono);
+            if (telLimpio) {
+              db.ref(`usuarios_clientes/${telLimpio}`).once('value').then(snap => {
+                if (!snap.exists()) {
+                  db.ref(`usuarios_clientes/${telLimpio}`).set({
+                    nombre: nombre,
+                    telefono: telLimpio,
+                    telefonoOriginal: telefono,
+                    direccion: direccion || '',
+                    fechaRegistro: new Date().toISOString(),
+                    origen: 'pedido_flash'
+                  });
+                }
+              }).catch(() => {});
+            }
+          }
+
           const nuevoPedidoId = nuevoPedidoRef ? nuevoPedidoRef.key : `ped_${Date.now()}`;
 
           // Guardar orden en el Historial del Cliente
@@ -3409,6 +3573,8 @@
             tipoServicio: esPagoTransporteDirecto ? 'transporte' : 'delivery',
             fecha: new Date().toISOString(),
             total: montoTotalCalculado,
+            deliveryGratis: esDeliveryGratis,
+            costoDelivery: costoDelivery,
             direccion: direccion || textoDestinoStr || 'Ubicación especificada',
             estado: 'pendiente',
             tiendaNombre: nombreTiendaCliente,
@@ -3444,6 +3610,8 @@
           tipoServicio: esPagoTransporteDirecto ? 'transporte' : 'delivery',
           fecha: new Date().toISOString(),
           total: montoTotalCalculado,
+          deliveryGratis: esDeliveryGratis,
+          costoDelivery: costoDelivery,
           direccion: direccion || textoDestinoStr || 'Ubicación especificada',
           estado: 'pendiente',
           tiendaNombre: nombreTiendaCliente,
@@ -3494,7 +3662,12 @@
         listaItemsArray.forEach(it => {
           msj += ` • ${it.cantidad}x ${it.nombre} ${it.esPersonalizado ? '(Bajo Pedido)' : ''}\n`;
         });
-        msj += `\n🛵 *Tarifa Delivery Chofer:* $1.00\n`;
+        if (esDeliveryGratis) {
+          msj += `\n🛵 *Tarifa Delivery Chofer:* ¡GRATIS! ($0.00 - Promo Flash Nirgua >20 productos)\n`;
+        } else {
+          msj += `\n🛵 *Tarifa Delivery Chofer:* $1.00\n`;
+        }
+        msj += `💰 *TOTAL A PAGAR:* $${montoTotalCalculado.toFixed(2)}\n`;
         msj += `💳 *Forma de Pago:* ${metodoPagoActual} (Pago Contra Entrega)\n`;
         if (metodoPagoActual === 'Efectivo' && montoPaga) msj += `💵 *Paga con:* ${montoPaga} (Llevar vuelto)\n`;
       }
