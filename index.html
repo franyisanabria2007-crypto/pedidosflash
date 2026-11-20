@@ -424,6 +424,12 @@
             Continuar como invitado sin registrarme →
           </button>
 
+          <div class="pt-2 border-t border-white/10 text-center">
+            <button onclick="abrirModalPoliticasPrivacidad()" type="button" class="text-[10px] text-slate-400 hover:text-accent-cyan transition inline-flex items-center gap-1 font-semibold">
+              <i data-lucide="shield-check" class="w-3.5 h-3.5 text-accent-emerald"></i> Políticas de Privacidad y Términos
+            </button>
+          </div>
+
         </div>
       </div>
     </div>
@@ -441,6 +447,9 @@
           </div>
         </div>
         <div class="flex items-center gap-1.5">
+          <button onclick="abrirModalPoliticasPrivacidad()" type="button" title="Políticas de Privacidad" class="btn-tactil bg-slate-950/80 hover:bg-slate-800 text-slate-300 hover:text-white border border-slate-800 px-2 py-1 rounded-xl text-[10px] font-bold flex items-center gap-1 shadow-sm">
+            <i data-lucide="shield-check" class="w-3 h-3 text-accent-emerald"></i> <span>Privacidad</span>
+          </button>
           <button onclick="abrirModalHistorialPedidos()" type="button" title="Historial de Pedidos" class="btn-tactil bg-slate-950/80 hover:bg-slate-800 text-indigo-300 hover:text-white border border-indigo-500/30 px-2.5 py-1 rounded-xl text-[10px] font-bold flex items-center gap-1 shadow-sm">
             <i data-lucide="clock" class="w-3 h-3 text-accent-cyan"></i> <span>Historial</span>
           </button>
@@ -1612,9 +1621,90 @@
       </div>
     </div>
 
+    <!-- ================= MODAL: POLÍTICAS DE PRIVACIDAD & CONDICIONES DE SERVICIO ================= -->
+    <div id="modal-politicas-privacidad-cliente" class="fixed inset-0 bg-slate-950/90 backdrop-blur-xl z-[120] flex items-center justify-center p-3 sm:p-4 hidden">
+      <div class="anim-modal bg-slate-900 border-2 border-emerald-500/40 w-full max-w-md rounded-[32px] p-5 space-y-4 shadow-2xl max-h-[88vh] overflow-y-auto no-scrollbar text-left text-xs">
+        
+        <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+          <div class="flex items-center gap-2.5">
+            <div class="w-10 h-10 rounded-2xl bg-emerald-500/20 text-accent-emerald border border-emerald-500/30 flex items-center justify-center text-xl shadow-glow-emerald">
+              🛡️
+            </div>
+            <div>
+              <h3 class="text-sm font-black text-white">Políticas de Privacidad</h3>
+              <p class="text-[10px] text-slate-400">Pedidos Flash Nirgua • Términos & Protección</p>
+            </div>
+          </div>
+          <button onclick="cerrarModalPoliticasPrivacidad()" type="button" class="w-8 h-8 rounded-full bg-slate-800 text-slate-400 hover:text-white flex items-center justify-center">
+            <i data-lucide="x" class="w-4 h-4"></i>
+          </button>
+        </div>
+
+        <div class="space-y-3 text-slate-300 text-[11px] leading-relaxed">
+          <div class="bg-slate-950 p-3 rounded-2xl border border-slate-800 space-y-1">
+            <h4 class="font-bold text-emerald-400 flex items-center gap-1.5 text-xs">
+              <i data-lucide="user-check" class="w-3.5 h-3.5"></i> 1. Recopilación de Datos Personales
+            </h4>
+            <p>En Pedidos Flash Nirgua únicamente solicitamos tu <b>Nombre</b>, <b>Teléfono Móvil</b> y <b>Dirección de Entrega</b>. Estos datos se usan exclusivamente para procesar tus pedidos, contactarte sobre la entrega y garantizar que tus productos lleguen al destino correcto.</p>
+          </div>
+
+          <div class="bg-slate-950 p-3 rounded-2xl border border-slate-800 space-y-1">
+            <h4 class="font-bold text-accent-cyan flex items-center gap-1.5 text-xs">
+              <i data-lucide="map-pin" class="w-3.5 h-3.5"></i> 2. Geolocalización GPS en Tiempo Real
+            </h4>
+            <p>Tu ubicación satelital es consultada con tu consentimiento durante la creación del pedido. Se utiliza de forma puntual para trazar la ruta de entrega del chofer (Punto B). <b>No rastreamos ni almacenamos tu ubicación en segundo plano</b> fuera del transcurso de la orden activa.</p>
+          </div>
+
+          <div class="bg-slate-950 p-3 rounded-2xl border border-slate-800 space-y-1">
+            <h4 class="font-bold text-accent-yellow flex items-center gap-1.5 text-xs">
+              <i data-lucide="receipt" class="w-3.5 h-3.5"></i> 3. Facturación Oficial y Transparencia
+            </h4>
+            <p>Todos los productos provienen de comercios formales y puntos oficiales de compra en Nirgua. <b>Nuestros choferes están obligados a tomar y enviar la foto de la factura oficial entregada por el comercio al Administrador</b> por WhatsApp y sistema antes de continuar la entrega, garantizando que pagues el precio real y justo.</p>
+          </div>
+
+          <div class="bg-slate-950 p-3 rounded-2xl border border-slate-800 space-y-1">
+            <h4 class="font-bold text-indigo-300 flex items-center gap-1.5 text-xs">
+              <i data-lucide="wallet" class="w-3.5 h-3.5"></i> 4. Pagos Seguros y Métodos Aceptados
+            </h4>
+            <p>Aceptamos transferencias por <b>Pago Móvil a tasa oficial BCV</b> y pagos en <b>Efectivo (Bs o Divisas)</b> directamente al chofer. Nunca solicitamos ni almacenamos números de tarjetas de crédito o contraseñas bancarias personales.</p>
+          </div>
+
+          <div class="bg-slate-950 p-3 rounded-2xl border border-slate-800 space-y-1">
+            <h4 class="font-bold text-rose-300 flex items-center gap-1.5 text-xs">
+              <i data-lucide="lock" class="w-3.5 h-3.5"></i> 5. Seguridad y Eliminación de Cuenta
+            </h4>
+            <p>Tus datos son almacenados en servidores seguros con cifrado estándar. Puedes solicitar la modificación o eliminación total de tu cuenta en cualquier momento contactando a nuestro centro de atención por WhatsApp.</p>
+          </div>
+        </div>
+
+        <div class="pt-2 border-t border-slate-800">
+          <button onclick="cerrarModalPoliticasPrivacidad()" type="button" class="btn-tactil w-full bg-gradient-to-r from-emerald-500 to-teal-400 hover:brightness-110 text-slate-950 font-black py-3 rounded-2xl text-xs flex items-center justify-center gap-1.5 shadow-lg shadow-emerald-500/20">
+            <i data-lucide="check" class="w-4 h-4"></i> Entendido y Aceptar
+          </button>
+        </div>
+
+      </div>
+    </div>
+
   </div>
 
   <script>
+    // ================= POLÍTICAS DE PRIVACIDAD MODAL =================
+    function abrirModalPoliticasPrivacidad() {
+      const modal = document.getElementById('modal-politicas-privacidad-cliente');
+      if (modal) {
+        modal.classList.remove('hidden');
+        if (window.lucide) lucide.createIcons();
+      }
+    }
+    window.abrirModalPoliticasPrivacidad = abrirModalPoliticasPrivacidad;
+
+    function cerrarModalPoliticasPrivacidad() {
+      const modal = document.getElementById('modal-politicas-privacidad-cliente');
+      if (modal) modal.classList.add('hidden');
+    }
+    window.cerrarModalPoliticasPrivacidad = cerrarModalPoliticasPrivacidad;
+
     // ================= FUNCIONES GLOBALES DE TELÉFONO =================
     function normalizarTelefono(tel) {
       if (!tel) return '';
@@ -1649,7 +1739,9 @@
     let firebaseActivo = false;
     let db = null;
     try {
-      firebase.initializeApp(firebaseConfig);
+      if (!firebase.apps.length) {
+        firebase.initializeApp(firebaseConfig);
+      }
       db = firebase.database();
       firebaseActivo = true;
     } catch(e) {
@@ -2417,8 +2509,8 @@
               <span>Peso: <b id="label-gramos-${item.id}" class="text-accent-cyan">${item.defGranel >= 1000 ? (item.defGranel/1000).toFixed(1)+'kg' : item.defGranel+'g'}</b></span>
               <span id="precio-granel-${item.id}" class="text-accent-yellow font-black">${precioMostrar}</span>
             </div>
-            <input type="range" id="slider-${item.id}" min="${item.minGranel || 200}" max="${item.maxGranel || 3000}" step="${item.pasoGranel || 100}" value="${item.defGranel || 500}" oninput="actualizarSliderGranel('${item.id}')" class="w-full accent-accent-cyan h-1.5 bg-slate-800 rounded-lg cursor-pointer">
-            <button onclick="agregarGranelAlCarrito('${item.id}')" class="btn-tactil w-full bg-gradient-to-r from-accent-cyan to-brand-600 text-slate-950 font-black py-1.5 rounded-xl text-[10px] flex items-center justify-center gap-1 shadow-md">
+            <input type="range" id="slider-${item.id}" min="${item.minGranel || 200}" max="${item.maxGranel || 3000}" step="${item.pasoGranel || 100}" value="${item.defGranel || 500}" oninput="actualizarSliderGranel('${item.id}')" onclick="event.stopPropagation()" class="w-full accent-accent-cyan h-1.5 bg-slate-800 rounded-lg cursor-pointer">
+            <button onclick="agregarGranelAlCarrito('${item.id}'); event.stopPropagation();" class="btn-tactil w-full bg-gradient-to-r from-accent-cyan to-brand-600 text-slate-950 font-black py-1.5 rounded-xl text-[10px] flex items-center justify-center gap-1 shadow-md">
               <i data-lucide="plus" class="w-3.5 h-3.5"></i> Agregar
             </button>
           </div>
@@ -2427,7 +2519,7 @@
         bloqueControl = `
           <div class="flex items-center justify-between w-full pt-1">
             <span class="text-xs font-black text-accent-yellow">${precioMostrar}</span>
-            <button onclick="agregarAlCarritoPorId('${item.id}')" class="btn-tactil bg-accent-cyan hover:bg-cyan-400 text-slate-950 font-black px-3 py-1.5 rounded-xl text-[10px] flex items-center gap-1 shadow-md">
+            <button onclick="agregarAlCarritoPorId('${item.id}'); event.stopPropagation();" class="btn-tactil bg-accent-cyan hover:bg-cyan-400 text-slate-950 font-black px-3 py-1.5 rounded-xl text-[10px] flex items-center gap-1 shadow-md">
               <i data-lucide="plus" class="w-3.5 h-3.5 stroke-[3]"></i> Pedir
             </button>
           </div>
@@ -2435,14 +2527,16 @@
       }
 
       return `
-        <div onclick="puyarProductoAgregar('${item.id}', event)" class="item-producto bg-slate-950/80 border border-slate-800/80 hover:border-slate-700 p-2.5 rounded-[22px] flex flex-col justify-between relative group backdrop-blur-sm cursor-pointer active:scale-95 transition-transform" data-nombre="${normalizarTexto(item.nombre)}" data-sub="${item.sub || ''}">
+        <div class="item-producto cursor-pointer active:scale-95 hover:border-cyan-500/60 transition-all select-none bg-slate-950/80 border border-slate-800/80 p-2.5 rounded-[22px] flex flex-col justify-between relative group backdrop-blur-sm shadow-md" data-nombre="${normalizarTexto(item.nombre)}" data-sub="${item.sub || ''}" onclick="puyarProductoAgregar('${item.id}', event)">
           ${badgeHTML}
           <div class="w-full h-20 rounded-xl overflow-hidden bg-slate-900/60 flex items-center justify-center p-1 relative mb-1.5 pointer-events-none">
             <img src="${item.imagen || 'img/logo.jfif'}" alt="${item.nombre}" class="w-full h-full object-contain group-hover:scale-105 transition-transform duration-300" onerror="this.src='img/logo.jfif';">
           </div>
-          <div class="flex-1 flex flex-col justify-between">
-            <h5 class="text-xs font-bold text-white leading-tight line-clamp-2 mb-1 pointer-events-none">${item.nombre}</h5>
-            ${bloqueControl}
+          <div class="flex-1 flex flex-col justify-between pointer-events-none">
+            <h5 class="text-xs font-bold text-white leading-tight line-clamp-2 mb-1">${item.nombre}</h5>
+            <div class="pointer-events-auto">
+              ${bloqueControl}
+            </div>
           </div>
         </div>
       `;
