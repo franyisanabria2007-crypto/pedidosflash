@@ -259,6 +259,94 @@
     .btn-login:active {
       transform: scale(0.97);
     }
+  
+    /* ================= BARRA DE NAVEGACIÓN INFERIOR BLANCA ================= */
+    .nav-inferior-blanca {
+      background: rgba(255, 255, 255, 0.96);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border-top: 1px solid rgba(226, 232, 240, 0.9);
+      box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.45);
+    }
+
+    /* ================= ANIMACIÓN DE RAYO Y BOTONES LÍQUIDOS ================= */
+    @keyframes brilloRayo {
+      0%, 100% { filter: drop-shadow(0 0 4px rgba(0, 242, 254, 0.6)); }
+      50% { filter: drop-shadow(0 0 12px rgba(255, 184, 0, 0.95)); }
+    }
+    .icono-rayo {
+      animation: brilloRayo 1.6s infinite ease-in-out;
+    }
+    .texto-rayo {
+      background: linear-gradient(90deg, #ffffff 0%, #00f2fe 50%, #ffb800 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .btn-medio-lleno {
+      background: linear-gradient(135deg, #4f46e5 0%, #0ea5e9 50%, #ff007a 100%);
+      color: #ffffff;
+      box-shadow: 0 8px 25px rgba(99, 102, 241, 0.4);
+      position: relative;
+      overflow: hidden;
+    }
+    .btn-liquid-emerald {
+      background: linear-gradient(135deg, #059669 0%, #10b981 55%, #00f2fe 100%);
+      color: #030712 !important;
+    }
+    .btn-liquid-emerald .texto-rayo {
+      background: none;
+      -webkit-text-fill-color: #030712;
+      color: #030712;
+    }
+
+    /* ================= PIN SATELITAL DEL CLIENTE EN MAPA ================= */
+    .pin-persona-cliente {
+      position: relative;
+      width: 38px;
+      height: 38px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .pin-persona-onda {
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      border: 2px solid #00f2fe;
+      background: rgba(0, 242, 254, 0.25);
+      animation: ping 1.6s cubic-bezier(0, 0, 0.2, 1) infinite;
+    }
+    .pin-persona-cuerpo {
+      position: relative;
+      z-index: 2;
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #00f2fe, #4f46e5);
+      border: 2px solid #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 14px rgba(0, 242, 254, 0.9);
+    }
+    .pin-persona-cuerpo svg {
+      width: 15px;
+      height: 15px;
+      fill: #ffffff;
+    }
+    .pin-persona-badge-tu {
+      position: absolute;
+      bottom: -8px;
+      z-index: 3;
+      background: #030712;
+      color: #00f2fe;
+      border: 1px solid #00f2fe;
+      font-size: 8px;
+      font-weight: 900;
+      padding: 0 4px;
+      border-radius: 6px;
+      line-height: 1.2;
+    }
   </style>
 </head>
 <body class="bg-slate-950 font-sans text-slate-100 antialiased min-h-[100dvh] flex items-center justify-center p-0 sm:p-4 selection:bg-accent-magenta selection:text-white overflow-x-hidden">
@@ -1798,19 +1886,15 @@
     let esPagoTransporteDirecto = false;
     let usuarioActivo = null;
 
-    // ================= AUTENTICACIÓN Y GESTIÓN DE SESIÓN CLIENTE =================
+    // ================= AUTENTICACIÓN Y GESTIÓN DE SESIÓN CLIENTE (UNIFICADA) =================
+    let tasaBCVActual = parseFloat(localStorage.getItem('pedidosflash_tasa_bcv')) || 0;
+
     function iniciarFlujoAuth() {
       const authScreen = document.getElementById('pantalla-auth');
       if (authScreen) {
         authScreen.classList.remove('hidden', 'opacity-0', 'pointer-events-none');
         authScreen.classList.add('opacity-100', 'pointer-events-auto');
       }
-      document.addEventListener('visibilitychange', () => {
-        if (document.hidden) {
-          guardarRespaldoCarrito();
-        }
-      });
-
       const vidAuth = document.getElementById('video-bg-auth');
       if (vidAuth) {
         vidAuth.muted = true;
@@ -1835,21 +1919,19 @@
         formReg.classList.remove('hidden');
         formLogin.classList.add('hidden');
       }
-      lucide.createIcons();
+      if (window.lucide) lucide.createIcons();
     }
 
     function saltarAuthComoInvitado() {
       const authScreen = document.getElementById('pantalla-auth');
       if (authScreen) {
         authScreen.classList.add('opacity-0', 'pointer-events-none');
-        setTimeout(() => {
-          authScreen.classList.add('hidden');
-        }, 400);
+        setTimeout(() => authScreen.classList.add('hidden'), 400);
       }
       mostrarToast("Navegando como Invitado", "Bienvenido", "info");
     }
 
-    function ejecutarLogin(e) {
+    async function ejecutarLogin(e) {
       e.preventDefault();
       const telRaw = document.getElementById('auth-login-tel').value.trim();
       const pin = document.getElementById('auth-login-pin').value.trim();
@@ -1865,18 +1947,9 @@
       btn.disabled = true;
       btn.innerHTML = `<span class="animate-spin mr-2">⏳</span> Verificando...`;
 
-      if (!db) {
-        const usuarioLocal = { telefono: telLimpio, telefonoOriginal: telRaw, nombre: "Usuario Flash", direccion: "Nirgua", pin: pin };
-        guardarYAplicarSesion(usuarioLocal);
-        btn.disabled = false;
-        btn.innerHTML = textoOrig;
-        return;
-      }
-
-      db.ref(`usuarios_clientes/${telLimpio}`).once('value')
-        .then(snap => {
-          btn.disabled = false;
-          btn.innerHTML = textoOrig;
+      try {
+        if (firebaseActivo && db) {
+          const snap = await db.ref(`usuarios_clientes/${telLimpio}`).once('value');
           const user = snap.val();
           if (!user) {
             mostrarToast("Usuario no encontrado. Crea tu cuenta", "No registrado", "error");
@@ -1890,16 +1963,25 @@
           }
           guardarYAplicarSesion(user);
           mostrarToast(`¡Bienvenido de nuevo, ${user.nombre || 'Cliente'}!`, "Sesión Iniciada", "success");
-        })
-        .catch(err => {
-          btn.disabled = false;
-          btn.innerHTML = textoOrig;
-          console.error("Error al iniciar sesión:", err);
+        } else {
+          const usuarioLocal = { telefono: telLimpio, telefonoOriginal: telRaw, nombre: "Cliente Flash", direccion: "Nirgua", pin };
+          guardarYAplicarSesion(usuarioLocal);
+        }
+      } catch (err) {
+        console.error("Error login:", err);
+        const local = JSON.parse(localStorage.getItem('pedidosflash_usuario') || 'null');
+        if (local && local.telefono === telLimpio && local.pin === pin) {
+          guardarYAplicarSesion(local);
+        } else {
           mostrarToast("Error de conexión al verificar usuario", "Error", "error");
-        });
+        }
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = textoOrig;
+      }
     }
 
-    function ejecutarRegistro(e) {
+    async function ejecutarRegistro(e) {
       e.preventDefault();
       const nombre = document.getElementById('auth-reg-nombre').value.trim();
       const telRaw = document.getElementById('auth-reg-tel').value.trim();
@@ -1908,7 +1990,7 @@
       const telLimpio = limpiarTelefonoId(telRaw);
 
       if (!nombre || !telLimpio || pin.length !== 4) {
-        mostrarToast("Por favor completa tu nombre, teléfono y PIN de 4 dígitos", "Datos incompletos", "error");
+        mostrarToast("Completa tu nombre, teléfono y PIN de 4 dígitos", "Datos incompletos", "error");
         return;
       }
 
@@ -1920,32 +2002,25 @@
       const nuevoUsuario = {
         telefono: telLimpio,
         telefonoOriginal: telRaw,
-        nombre: nombre,
+        nombre,
         direccion: direccion || '',
-        pin: pin,
+        pin,
         fechaRegistro: new Date().toISOString()
       };
 
-      if (!db) {
+      try {
+        if (firebaseActivo && db) {
+          await db.ref(`usuarios_clientes/${telLimpio}`).set(nuevoUsuario);
+        }
         guardarYAplicarSesion(nuevoUsuario);
+        mostrarToast(`¡Bienvenido a Pedidos Flash, ${nombre}!`, "Cuenta Creada", "success");
+      } catch (err) {
+        console.warn("Guardado local por fallo de red:", err);
+        guardarYAplicarSesion(nuevoUsuario);
+      } finally {
         btn.disabled = false;
         btn.innerHTML = textoOrig;
-        return;
       }
-
-      db.ref(`usuarios_clientes/${telLimpio}`).set(nuevoUsuario)
-        .then(() => {
-          btn.disabled = false;
-          btn.innerHTML = textoOrig;
-          guardarYAplicarSesion(nuevoUsuario);
-          mostrarToast(`¡Bienvenido a Pedidos Flash, ${nombre}!`, "Cuenta Creada", "success");
-        })
-        .catch(err => {
-          btn.disabled = false;
-          btn.innerHTML = textoOrig;
-          console.error("Error al registrar:", err);
-          mostrarToast("Error al registrar usuario en Firebase", "Error", "error");
-        });
     }
 
     function guardarYAplicarSesion(user) {
@@ -1954,29 +2029,25 @@
       const authScreen = document.getElementById('pantalla-auth');
       if (authScreen) {
         authScreen.classList.add('opacity-0', 'pointer-events-none');
-        setTimeout(() => { authScreen.classList.add('hidden'); }, 400);
+        setTimeout(() => authScreen.classList.add('hidden'), 400);
       }
     }
 
     function aplicarSesionUsuario(user) {
       if (!user) return;
       usuarioActivo = user;
-      
       const txtNombre = document.getElementById('txt-header-nombre-usuario');
       if (txtNombre) txtNombre.innerText = user.nombre || user.telefono || 'Cliente';
 
       const inpNombre = document.getElementById('nombreCliente');
       const inpTel = document.getElementById('telefonoCliente');
       const inpDir = document.getElementById('direccion');
-
       if (inpNombre && !inpNombre.value) inpNombre.value = user.nombre || '';
       if (inpTel && !inpTel.value) inpTel.value = user.telefonoOriginal || user.telefono || '';
       if (inpDir && !inpDir.value) inpDir.value = user.direccion || '';
 
       const authScreen = document.getElementById('pantalla-auth');
-      if (authScreen) {
-        authScreen.classList.add('hidden', 'opacity-0', 'pointer-events-none');
-      }
+      if (authScreen) authScreen.classList.add('hidden', 'opacity-0', 'pointer-events-none');
     }
 
     function cerrarSesionUsuario() {
@@ -1984,14 +2055,10 @@
       usuarioActivo = null;
       const txtNombre = document.getElementById('txt-header-nombre-usuario');
       if (txtNombre) txtNombre.innerText = 'Invitado';
-      
-      const inpNombre = document.getElementById('nombreCliente');
-      const inpTel = document.getElementById('telefonoCliente');
-      const inpDir = document.getElementById('direccion');
-      if (inpNombre) inpNombre.value = '';
-      if (inpTel) inpTel.value = '';
-      if (inpDir) inpDir.value = '';
-
+      ['nombreCliente', 'telefonoCliente', 'direccion'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.value = '';
+      });
       iniciarFlujoAuth();
       mostrarToast("Has cerrado sesión", "Sesión Finalizada", "info");
     }
@@ -2477,144 +2544,6 @@
       }, 3000);
     }
 
-    // ================= SISTEMA DE AUTH (FIREBASE + LOCALSTORAGE) =================
-    function iniciarFlujoAuth() {
-      const authScreen = document.getElementById('pantalla-auth');
-      if (authScreen) authScreen.classList.remove('hidden', 'opacity-0', 'pointer-events-none');
-    }
-
-    function cambiarTabAuth(tab) {
-      const tabLogin = document.getElementById('tab-auth-login');
-      const tabReg = document.getElementById('tab-auth-registro');
-      const formLogin = document.getElementById('form-auth-login');
-      const formReg = document.getElementById('form-auth-registro');
-
-      if (tab === 'login') {
-        tabLogin.className = "btn-tactil py-2.5 text-xs font-black rounded-xl bg-gradient-to-r from-accent-cyan to-brand-600 text-slate-950 shadow-md transition";
-        tabReg.className = "btn-tactil py-2.5 text-xs font-bold text-slate-400 hover:text-white rounded-xl transition";
-        formLogin.classList.remove('hidden');
-        formReg.classList.add('hidden');
-      } else {
-        tabReg.className = "btn-tactil py-2.5 text-xs font-black rounded-xl bg-gradient-to-r from-accent-magenta to-indigo-600 text-white shadow-md transition";
-        tabLogin.className = "btn-tactil py-2.5 text-xs font-bold text-slate-400 hover:text-white rounded-xl transition";
-        formReg.classList.remove('hidden');
-        formLogin.classList.add('hidden');
-      }
-      lucide.createIcons();
-    }
-
-    async function ejecutarRegistro(e) {
-      e.preventDefault();
-      const nombre = document.getElementById('auth-reg-nombre').value.trim();
-      const tel = document.getElementById('auth-reg-tel').value.trim();
-      const dir = document.getElementById('auth-reg-direccion').value.trim();
-      const pin = document.getElementById('auth-reg-pin').value.trim();
-
-      if (!nombre || !tel || pin.length !== 4) {
-        mostrarToast("Completa nombre, teléfono y PIN de 4 dígitos.", "Campos Requeridos", "error");
-        return;
-      }
-
-      const telId = limpiarTelefonoId(tel);
-      const btnReg = document.getElementById('btn-submit-reg');
-      btnReg.disabled = true;
-      btnReg.innerText = "Registrando...";
-
-      const nuevoUsuario = { nombre, telefono: telId, direccion: dir, pin };
-
-      if (firebaseActivo && db) {
-        try {
-          await db.ref(`usuarios_clientes/${telId}`).set(nuevoUsuario);
-        } catch(err) {
-          console.warn("Respaldo local para registro:", err);
-        }
-      }
-      localStorage.setItem('pedidosflash_usuario', JSON.stringify(nuevoUsuario));
-      mostrarToast(`¡Bienvenido ${nombre.split(' ')[0]}! Cuenta lista.`, "Éxito", "success");
-      aplicarSesionUsuario(nuevoUsuario);
-      btnReg.disabled = false;
-      btnReg.innerText = "CREAR CUENTA Y CONTINUAR";
-    }
-
-    async function ejecutarLogin(e) {
-      e.preventDefault();
-      const tel = document.getElementById('auth-login-tel').value.trim();
-      const pin = document.getElementById('auth-login-pin').value.trim();
-
-      if (!tel || pin.length !== 4) {
-        mostrarToast("Ingresa tu teléfono y PIN de 4 dígitos.", "Datos Incompletos", "error");
-        return;
-      }
-
-      const telId = limpiarTelefonoId(tel);
-      const btnSub = document.getElementById('btn-submit-login');
-      btnSub.disabled = true;
-      btnSub.innerText = "Verificando...";
-
-      if (firebaseActivo && db) {
-        try {
-          const snap = await db.ref(`usuarios_clientes/${telId}`).once('value');
-          if (snap.exists()) {
-            const u = snap.val();
-            if (u.pin === pin) {
-              localStorage.setItem('pedidosflash_usuario', JSON.stringify(u));
-              mostrarToast(`¡Hola de nuevo, ${u.nombre.split(' ')[0]}!`, "Sesión Iniciada", "success");
-              aplicarSesionUsuario(u);
-            } else {
-              mostrarToast("PIN de 4 dígitos incorrecto.", "Error", "error");
-            }
-          } else {
-            const local = JSON.parse(localStorage.getItem('pedidosflash_usuario') || '{}');
-            if (local.telefono === telId && local.pin === pin) {
-              aplicarSesionUsuario(local);
-            } else {
-              mostrarToast("Usuario no encontrado. Crea tu cuenta.", "Aviso", "info");
-              cambiarTabAuth('registro');
-              document.getElementById('auth-reg-tel').value = tel;
-            }
-          }
-        } catch(err) {
-          const local = JSON.parse(localStorage.getItem('pedidosflash_usuario') || '{}');
-          if (local.telefono === telId) {
-            aplicarSesionUsuario(local);
-          } else {
-            const uMock = { nombre: "Cliente Flash", telefono: telId, direccion: "" };
-            localStorage.setItem('pedidosflash_usuario', JSON.stringify(uMock));
-            aplicarSesionUsuario(uMock);
-          }
-        }
-      } else {
-        const uMock = { nombre: "Cliente Flash", telefono: telId, direccion: "" };
-        localStorage.setItem('pedidosflash_usuario', JSON.stringify(uMock));
-        aplicarSesionUsuario(uMock);
-      }
-      btnSub.disabled = false;
-      btnSub.innerText = "INGRESAR AHORA";
-    }
-
-    function aplicarSesionUsuario(u) {
-      if (!u) return;
-      usuarioActivo = u;
-      document.getElementById('txt-header-nombre-usuario').innerText = u.nombre || 'Cliente';
-
-      if (document.getElementById('nombreCliente')) document.getElementById('nombreCliente').value = u.nombre || '';
-      if (document.getElementById('telefonoCliente')) document.getElementById('telefonoCliente').value = u.telefono || '';
-      if (document.getElementById('direccion') && u.direccion) document.getElementById('direccion').value = u.direccion || '';
-
-      const authScreen = document.getElementById('pantalla-auth');
-      if (authScreen) {
-        authScreen.classList.add('opacity-0', 'pointer-events-none');
-        setTimeout(() => { authScreen.classList.add('hidden'); }, 400);
-      }
-    }
-
-    function cerrarSesionUsuario() {
-      localStorage.removeItem('pedidosflash_usuario');
-      usuarioActivo = null;
-      document.getElementById('pantalla-auth').classList.remove('hidden', 'opacity-0', 'pointer-events-none');
-      mostrarToast("Sesión cerrada", "Hasta pronto", "info");
-    }
-
     // ================= RENDERIZADO DEL CATÁLOGO & TIENDAS =================
     function renderizarCatalogo() {
       ['viveres', 'charcuteria', 'carnes', 'verduras', 'bebidas', 'limpieza', 'farmacia', 'ferreteria'].forEach(cat => {
@@ -2698,16 +2627,22 @@
     }
 
     function crearTarjetaProductoHTML(item) {
-      const precioMostrar = item.precioBase !== undefined ? `$${parseFloat(item.precioBase).toFixed(2)}` : '$1.00';
-      const badgeHTML = item.badge ? `<span class="absolute top-1.5 right-1.5 bg-accent-magenta text-white font-black text-[8px] px-1.5 py-0.5 rounded-md shadow-md z-10">${item.badge}</span>` : '';
-      
+      const esConsultar = !item.precioBase || parseFloat(item.precioBase) <= 0;
+      const precioMostrar = esConsultar
+        ? '<span class="text-[10px] font-black text-accent-cyan bg-accent-cyan/15 px-2 py-0.5 rounded-md border border-accent-cyan/30">Consultar</span>'
+        : `<span class="text-xs font-black text-accent-yellow">$${parseFloat(item.precioBase).toFixed(2)}</span>`;
+
+      const badgeHTML = item.badge
+        ? `<span class="absolute top-1.5 right-1.5 bg-accent-magenta text-white font-black text-[8px] px-1.5 py-0.5 rounded-md shadow-md z-10">${item.badge}</span>`
+        : '';
+
       let bloqueControl = '';
       if (item.esGranel) {
         bloqueControl = `
           <div class="w-full space-y-1.5 pt-1">
             <div class="flex justify-between items-center text-[10px] text-slate-300 font-bold px-0.5">
               <span>Peso: <b id="label-gramos-${item.id}" class="text-accent-cyan">${item.defGranel >= 1000 ? (item.defGranel/1000).toFixed(1)+'kg' : item.defGranel+'g'}</b></span>
-              <span id="precio-granel-${item.id}" class="text-accent-yellow font-black">${precioMostrar}</span>
+              <span id="precio-granel-${item.id}" class="text-accent-yellow font-black">$${parseFloat(item.precioBase).toFixed(2)}</span>
             </div>
             <input type="range" id="slider-${item.id}" min="${item.minGranel || 200}" max="${item.maxGranel || 3000}" step="${item.pasoGranel || 100}" value="${item.defGranel || 500}" oninput="actualizarSliderGranel('${item.id}')" onclick="event.stopPropagation()" class="w-full accent-accent-cyan h-1.5 bg-slate-800 rounded-lg cursor-pointer">
             <button onclick="agregarGranelAlCarrito('${item.id}'); event.stopPropagation();" class="btn-tactil w-full bg-gradient-to-r from-accent-cyan to-brand-600 text-slate-950 font-black py-1.5 rounded-xl text-[10px] flex items-center justify-center gap-1 shadow-md">
@@ -2717,9 +2652,9 @@
         `;
       } else {
         bloqueControl = `
-          <div class="flex items-center justify-between w-full pt-1">
-            <span class="text-xs font-black text-accent-yellow">${precioMostrar}</span>
-            <button onclick="agregarAlCarritoPorId('${item.id}'); event.stopPropagation();" class="btn-tactil bg-accent-cyan hover:bg-cyan-400 text-slate-950 font-black px-3 py-1.5 rounded-xl text-[10px] flex items-center gap-1 shadow-md">
+          <div class="flex items-center justify-between w-full pt-1 gap-1">
+            ${precioMostrar}
+            <button onclick="agregarAlCarritoPorId('${item.id}'); event.stopPropagation();" class="btn-tactil bg-accent-cyan hover:bg-cyan-400 text-slate-950 font-black px-3 py-1.5 rounded-xl text-[10px] flex items-center gap-1 shadow-md shrink-0">
               <i data-lucide="plus" class="w-3.5 h-3.5 stroke-[3]"></i> Pedir
             </button>
           </div>
@@ -2730,7 +2665,7 @@
         <div class="item-producto cursor-pointer active:scale-95 hover:border-cyan-500/60 transition-all select-none bg-slate-950/80 border border-slate-800/80 p-2.5 rounded-[22px] flex flex-col justify-between relative group backdrop-blur-sm shadow-md" data-nombre="${normalizarTexto(item.nombre)}" data-sub="${item.sub || ''}" onclick="puyarProductoAgregar('${item.id}', event)">
           ${badgeHTML}
           <div class="w-full h-20 rounded-xl overflow-hidden bg-slate-900/60 flex items-center justify-center p-1 relative mb-1.5 pointer-events-none">
-            <img src="${item.imagen || 'img/logo.jfif'}" alt="${item.nombre}" class="w-full h-full object-contain group-hover:scale-105 transition-transform duration-300" onerror="this.src='img/logo.jfif';">
+            <img src="${item.imagen || 'img/logo.jfif'}" loading="lazy" alt="${item.nombre}" class="w-full h-full object-contain group-hover:scale-105 transition-transform duration-300" onerror="this.src='img/logo.jfif';">
           </div>
           <div class="flex-1 flex flex-col justify-between pointer-events-none">
             <h5 class="text-xs font-bold text-white leading-tight line-clamp-2 mb-1">${item.nombre}</h5>
@@ -2742,7 +2677,6 @@
       `;
     }
 
-    // FUNCIÓN PARA PUYAR EL PRODUCTO EN CUALQUIER LADO Y AGREGARLO AL INSTANTE
     function puyarProductoAgregar(id, event) {
       if (event && event.target && event.target.tagName === 'INPUT' && event.target.type === 'range') {
         return; // Permite arrastrar el slider de peso sin agregar prematuramente
@@ -3159,12 +3093,12 @@
     }
 
     // Comprime cualquier foto subida (evita cierre por falta de memoria RAM en WebView/APK con fotos pesadas)
-    function comprimirImagenArchivo(archivo, maxDim = 1280) {
+    function comprimirImagenArchivo(archivo, maxDim = 1024) {
       return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          const img = new Image();
-          img.onload = () => {
+        const urlObj = URL.createObjectURL(archivo);
+        const img = new Image();
+        img.onload = () => {
+          try {
             let w = img.width;
             let h = img.height;
             if (w > maxDim || h > maxDim) {
@@ -3181,13 +3115,22 @@
             canvas.height = h;
             const ctx = canvas.getContext('2d');
             ctx.drawImage(img, 0, 0, w, h);
-            resolve(canvas.toDataURL('image/jpeg', 0.85));
-          };
-          img.onerror = reject;
-          img.src = e.target.result;
+            const dataUrl = canvas.toDataURL('image/jpeg', 0.82);
+
+            canvas.width = 0;
+            canvas.height = 0;
+            URL.revokeObjectURL(urlObj);
+            resolve(dataUrl);
+          } catch (err) {
+            URL.revokeObjectURL(urlObj);
+            reject(err);
+          }
         };
-        reader.onerror = reject;
-        reader.readAsDataURL(archivo);
+        img.onerror = (err) => {
+          URL.revokeObjectURL(urlObj);
+          reject(err);
+        };
+        img.src = urlObj;
       });
     }
 
@@ -3441,8 +3384,18 @@
       if (tiendaId && infoLocales[tiendaId]) {
         tNom = infoLocales[tiendaId].nombre;
       }
+      const precioNum = parseFloat(precio) || 0;
+      const esConsultar = precioNum <= 0;
+
       if (!carrito[id]) {
-        carrito[id] = { nombre, precio, cantidad, tiendaId: tiendaId || null, tiendaNombre: tNom };
+        carrito[id] = {
+          nombre: esConsultar ? `${nombre} (Precio en tienda)` : nombre,
+          precio: precioNum,
+          cantidad,
+          esPersonalizado: esConsultar,
+          tiendaId: tiendaId || null,
+          tiendaNombre: tNom
+        };
       } else {
         carrito[id].cantidad += cantidad;
       }
@@ -4922,6 +4875,19 @@
       restaurarRespaldoCarrito();
       sincronizarTiendasDesdeFirebase();
       sincronizarCatalogoFlashDesdeFirebase();
+      if (firebaseActivo && db) {
+        db.ref('configuracion/tasaBCV').on('value', (snap) => {
+          const val = parseFloat(snap.val());
+          if (!isNaN(val) && val > 0) {
+            tasaBCVActual = val;
+            localStorage.setItem('pedidosflash_tasa_bcv', val.toString());
+          }
+        });
+      }
+      document.addEventListener('visibilitychange', () => {
+        if (document.hidden) guardarRespaldoCarrito();
+      });
+      window.addEventListener('pagehide', guardarRespaldoCarrito);
 
       // Comprobar sesión de usuario guardada
       const usuarioGuardado = localStorage.getItem('pedidosflash_usuario');
