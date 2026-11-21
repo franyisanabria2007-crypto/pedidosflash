@@ -1152,6 +1152,51 @@
       </div>
     </div>
 
+    <!-- MODAL CÁMARA EN VIVO DENTRO DE LA APP (ANTI-REINICIO WEBTOAPK / ANDROID) -->
+    <div id="modal-camara-interna" class="fixed inset-0 bg-slate-950 z-[90] flex flex-col justify-between p-4 hidden safe-top safe-bottom">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <div class="flex items-center gap-2">
+          <div class="w-8 h-8 rounded-xl bg-accent-magenta/20 text-accent-magenta border border-accent-magenta/40 flex items-center justify-center">
+            <i data-lucide="camera" class="w-4 h-4"></i>
+          </div>
+          <div>
+            <h3 class="text-xs font-black text-white">Escáner Cámara Flash</h3>
+            <p class="text-[10px] text-accent-cyan font-semibold">Enfoca tu lista de mercado y captura</p>
+          </div>
+        </div>
+        <button onclick="cerrarCamaraInterna()" type="button" class="btn-tactil w-9 h-9 rounded-full bg-slate-800 text-slate-300 hover:text-white flex items-center justify-center">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <div class="relative flex-1 my-3 rounded-3xl overflow-hidden bg-black border-2 border-accent-cyan/40 shadow-glow-cyan flex items-center justify-center">
+        <video id="video-camara-interna" autoplay playsinline muted class="w-full h-full object-cover"></video>
+        <canvas id="canvas-captura-interna" class="hidden"></canvas>
+        <!-- Guía visual de encuadre -->
+        <div class="absolute inset-6 border-2 border-dashed border-accent-cyan/60 rounded-2xl pointer-events-none flex flex-col justify-between p-3">
+          <span class="text-[10px] font-black text-accent-cyan bg-slate-950/80 px-2.5 py-1 rounded-full self-center border border-accent-cyan/30">
+            📄 Centra tu lista aquí
+          </span>
+          <div class="laser-line"></div>
+          <span class="text-[9px] text-slate-300 bg-slate-950/80 px-2 py-0.5 rounded-full self-center">
+            Buena iluminación = lectura 100% precisa
+          </span>
+        </div>
+      </div>
+
+      <div class="flex items-center justify-around gap-3 pt-1">
+        <button onclick="alternarCamaraInterna()" type="button" class="btn-tactil bg-slate-800 hover:bg-slate-700 text-white px-4 py-3 rounded-2xl text-xs font-bold flex items-center gap-1.5 border border-slate-700">
+          <i data-lucide="refresh-cw" class="w-4 h-4 text-accent-cyan"></i>
+          <span>Voltear</span>
+        </button>
+
+        <button onclick="capturarFotoCamaraInterna()" type="button" class="btn-tactil flex-1 bg-gradient-to-r from-accent-magenta via-pink-600 to-indigo-600 text-white font-black py-3.5 px-5 rounded-2xl text-xs shadow-glow-magenta flex items-center justify-center gap-2 border-t border-white/30">
+          <i data-lucide="aperture" class="w-5 h-5"></i>
+          <span>TOMAR FOTO AHORA</span>
+        </button>
+      </div>
+    </div>
+
     <!-- MODAL FOTO RESULTADO OCR -->
     <div id="modal-foto-resultado" class="fixed inset-0 bg-slate-950/85 backdrop-blur-md z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 hidden">
       <div class="anim-modal bg-slate-900 border-t sm:border border-indigo-500/40 w-full max-w-md rounded-t-[32px] sm:rounded-3xl p-4 space-y-3 shadow-2xl max-h-[90vh] flex flex-col">
@@ -1760,6 +1805,12 @@
         authScreen.classList.remove('hidden', 'opacity-0', 'pointer-events-none');
         authScreen.classList.add('opacity-100', 'pointer-events-auto');
       }
+      document.addEventListener('visibilitychange', () => {
+        if (document.hidden) {
+          guardarRespaldoCarrito();
+        }
+      });
+
       const vidAuth = document.getElementById('video-bg-auth');
       if (vidAuth) {
         vidAuth.muted = true;
@@ -1971,21 +2022,33 @@
 
     // ================= CATÁLOGO BASE COMPLETO PEDIDOS FLASH =================
     const productos = {
+     
       viveres: [
+        // --- HARINAS ---
         { id: 'v_harina_bellini', nombre: 'Harina de Maíz Bellini 1kg', precioBase: 0.75, imagen: 'img/v_harina_bellini.png', sub: 'harinas' },
         { id: 'v_harina_belen', nombre: 'Harina de Maíz Belén 1kg', precioBase: 0.99, imagen: 'img/v_harina_belen.png', sub: 'harinas' },
-        { id: 'v_harina_pan_mezcla', nombre: 'Harina PAN Mezcla Maíz y Arroz 1kg', precioBase: 1.26, imagen: 'img/v_harina_pan_mezcla.png', sub: 'harinas' },
-        { id: 'v_harina_pan_blanca', nombre: 'Harina PAN Maíz Blanco 1kg', precioBase: 1.31, imagen: 'img/v_harina_pan_blanca.png', badge: 'MÁS VENDIDA', sub: 'harinas' },
-        { id: 'v_harina_pan_amarilla', nombre: 'Harina de Maíz Amarillo 1kg', precioBase: 1.18, imagen: 'img/v_harina_pan_amarilla.png', sub: 'harinas' },
-        { id: 'v_harina_juana', nombre: 'Harina de Maíz Juana 1kg', precioBase: 1.10, imagen: 'img/v_harina_juana.png', sub: 'harinas' },
+        { id: 'v_harina_pan_mezcla', nombre: 'Harina PAN Mezcla Maíz y Arroz 1kg', precioBase: 1.28, imagen: 'img/v_harina_pan_mezcla.png', sub: 'harinas' },
+        { id: 'v_harina_pan_blanca', nombre: 'Harina PAN Maíz Blanco 1kg', precioBase: 1.17, imagen: 'img/v_harina_pan_blanca.png', badge: 'MÁS VENDIDA', sub: 'harinas' },
+        { id: 'v_harina_pan_amarilla', nombre: 'Harina de Maíz Amarillo 1kg', precioBase: 1.28, imagen: 'img/v_harina_pan_amarilla.png', sub: 'harinas' },
+        { id: 'v_harina_juana', nombre: 'Harina de Maíz Juana 1kg', precioBase: 1.12, imagen: 'img/v_harina_juana.png', sub: 'harinas' },
         { id: 'v_harina_fina', nombre: 'Harina Fina 1kg', precioBase: 0.89, imagen: 'img/v_harina_fina.png', sub: 'harinas' },
-        { id: 'v_harina_emilia', nombre: 'Harina de Maíz Doña Emilia 1kg', precioBase: 1.00, imagen: 'img/v_harina_emilia.png', sub: 'harinas' },
-        { id: 'v_trigo_domaria', nombre: 'Harina de Trigo Leudante Doña María 1kg', precioBase: 1.40, imagen: 'img/v_trigo_domaria.png', sub: 'harinas' },
+        { id: 'v_harina_emilia', nombre: 'Harina de Maíz Doña Emilia 1kg', precioBase: 1.40, imagen: 'img/v_harina_emilia.png', sub: 'harinas' },
+        { id: 'v_trigo_domaria', nombre: 'Harina de Trigo Leudante Doña María 1kg', precioBase: 0.94, imagen: 'img/v_trigo_domaria.png', sub: 'harinas' },
         { id: 'v_trigo_mary_leu', nombre: 'Harina de Trigo Leudante Mary 900g', precioBase: 1.35, imagen: 'img/v_trigo_mary_leu.png', sub: 'harinas' },
         { id: 'v_trigo_mary_tu', nombre: 'Harina de Trigo Todo Uso Mary 900g', precioBase: 1.24, imagen: 'img/v_trigo_mary_tu.png', sub: 'harinas' },
-        { id: 'v_trigo_dulcemar', nombre: 'Harina de Trigo Leudante Dulce Mar 1kg', precioBase: 1.33, imagen: 'img/v_trigo_dulcemar.png', sub: 'harinas' },
+        { id: 'v_trigo_dulcemar', nombre: 'Harina de Trigo Leudante Dulce Mar 1kg', precioBase: 1.12, imagen: 'img/v_trigo_dulcemar.png', sub: 'harinas' },
         { id: 'v_levadura_gloripan', nombre: 'Levadura Gloripan 500g', precioBase: 3.75, imagen: 'img/v_levadura_gloripan.png', sub: 'harinas' },
         { id: 'v_trigo_aveiro_kg', nombre: 'Harina de Trigo Aveiro (kg)', precioBase: 1.00, imagen: 'img/v_trigo_aveiro_kg.png', sub: 'harinas' },
+        { id: 'v_harina_blancaflor_1kg', nombre: 'Harina Blancaflor Leudante 1kg', precioBase: 1.22, imagen: 'img/logo.jfif', sub: 'harinas' },
+        { id: 'v_harina_venemar_1kg', nombre: 'Harina Venemar 1kg', precioBase: 1.21, imagen: 'img/logo.jfif', sub: 'harinas' },
+        { id: 'v_harina_kaly_1kg', nombre: 'Harina Kaly Premium 1kg', precioBase: 1.10, imagen: 'img/logo.jfif', sub: 'harinas' },
+        { id: 'v_harina_mary_trigo_1kg', nombre: 'Harina Mary Trigo 1kg', precioBase: 1.08, imagen: 'img/logo.jfif', sub: 'harinas' },
+        { id: 'v_harina_masia_1kg', nombre: 'Harina Masía 1kg', precioBase: 1.02, imagen: 'img/logo.jfif', sub: 'harinas' },
+        { id: 'v_harina_lalucha_1kg', nombre: 'Harina La Lucha 1kg', precioBase: 0.97, imagen: 'img/logo.jfif', sub: 'harinas' },
+        { id: 'v_harina_pampa_blanca_1kg', nombre: 'Harina La Pampa Blanca 1kg', precioBase: 0.92, imagen: 'img/logo.jfif', sub: 'harinas' },
+        { id: 'v_harina_pampa_leu_500g', nombre: 'Harina Pampa Leudante 500g', precioBase: 0.84, imagen: 'img/logo.jfif', sub: 'harinas' },
+
+        // --- PASTAS ---
         { id: 'v_pasta_primavera', nombre: 'Pasata Primavera Larga 1kg', precioBase: 0.78, imagen: 'img/v_pasta_primavera.png', sub: 'pastas' },
         { id: 'v_pasta_veneciana', nombre: 'Pasta Veneciana Corta 1kg', precioBase: 1.32, imagen: 'img/v_pasta_veneciana.png', sub: 'pastas' },
         { id: 'v_pasta_mary_larga', nombre: 'Pasta Mary Larga 1kg', precioBase: 1.40, imagen: 'img/v_pasta_mary_larga.png', sub: 'pastas' },
@@ -2001,6 +2064,16 @@
         { id: 'v_pasta_sindoni_500g', nombre: 'Pasta Corta Sindoni 500g', precioBase: 0.72, imagen: 'img/v_pasta_sindoni_500g.png', sub: 'pastas' },
         { id: 'v_pasata_sindoni', nombre: 'Pasata Sindoni 480g', precioBase: 2.24, imagen: 'img/v_pasata_sindoni.png', sub: 'pastas' },
         { id: 'v_pasta_oba_500g', nombre: 'Pasta Larga Oba 500g', precioBase: 0.77, imagen: 'img/v_pasta_oba_500g.png', sub: 'pastas' },
+        { id: 'v_pasta_huevo_esp', nombre: 'Pasta al Huevo Especial 500g / 1kg', precioBase: 3.74, imagen: 'img/logo.jfif', sub: 'pastas' },
+        { id: 'v_capri_pasticho_500g', nombre: 'Capri Pasticho 500g', precioBase: 1.81, imagen: 'img/logo.jfif', sub: 'pastas' },
+        { id: 'v_capri_nido_500g', nombre: 'Capri Especialidad / Nido 500g', precioBase: 1.75, imagen: 'img/logo.jfif', sub: 'pastas' },
+        { id: 'v_capri_conchita_500g', nombre: 'Capri Conchita / Corta 500g', precioBase: 1.73, imagen: 'img/logo.jfif', sub: 'pastas' },
+        { id: 'v_pasta_horiz_500g', nombre: 'Pasta Horizonte / Especial Corta 500g', precioBase: 1.98, imagen: 'img/logo.jfif', sub: 'pastas' },
+        { id: 'v_dudomi_instantanea', nombre: 'Dudomi Pasta Instantánea Empaque', precioBase: 1.37, imagen: 'img/logo.jfif', sub: 'pastas' },
+        { id: 'v_pastas_ronco', nombre: 'Pastas Ronco (Vermicelli / Linguini)', precioBase: 0, badge: 'CONSULTAR', imagen: 'img/logo.jfif', sub: 'pastas' },
+        { id: 'v_sopas_instantaneas_fideos', nombre: 'Sopas Instantáneas Fideos', precioBase: 0, badge: 'CONSULTAR', imagen: 'img/logo.jfif', sub: 'pastas' },
+
+        // --- GRANOS, ARROZ, AZÚCAR, SEMILLAS, COTUFAS Y SAL ---
         { id: 'v_arroz_delicia', nombre: 'Arroz Delicia 1kg', precioBase: 0.96, imagen: 'img/v_arroz_delicia.png', sub: 'granos' },
         { id: 'v_arroz_mary_trad', nombre: 'Arroz Blanco Mary Tradicional 1kg', precioBase: 0.95, imagen: 'img/v_arroz_mary_trad.png', sub: 'granos' },
         { id: 'v_arroz_mary_sup', nombre: 'Arroz Blanco Mary Superior 1kg', precioBase: 1.02, imagen: 'img/v_arroz_mary_sup.png', sub: 'granos' },
@@ -2009,16 +2082,46 @@
         { id: 'v_arroz_llano_verde', nombre: 'Arroz Llano Verde 1kg', precioBase: 0.96, imagen: 'img/v_arroz_llano_verde.png', sub: 'granos' },
         { id: 'v_arroz_molienda', nombre: 'Arroz La Molienda 1kg', precioBase: 0.90, imagen: 'img/v_arroz_molienda.png', sub: 'granos' },
         { id: 'v_arroz_emilia', nombre: 'Arroz Doña Emilia 1kg', precioBase: 0.96, imagen: 'img/v_arroz_emilia.png', sub: 'granos' },
+        { id: 'v_arroz_esp_horizonte_1kg', nombre: 'Arroz Especial / Horizonte 1kg', precioBase: 1.62, imagen: 'img/logo.jfif', sub: 'granos' },
+        { id: 'v_arroz_mary_sancarlos_1kg', nombre: 'Arroz Mary / San Carlos Azúcar 1kg', precioBase: 1.54, imagen: 'img/logo.jfif', sub: 'granos' },
+        { id: 'v_arroz_santoni_zafiro_1kg', nombre: 'Arroz Santoni Zafiro 1kg', precioBase: 1.15, imagen: 'img/logo.jfif', sub: 'granos' },
+        { id: 'v_arroz_mimasa_1kg', nombre: 'Arroz Mi Masa 1kg', precioBase: 1.01, imagen: 'img/logo.jfif', sub: 'granos' },
+        { id: 'v_arroz_aurora_1kg', nombre: 'Arroz Aurora / Amanecer 1kg', precioBase: 0.99, imagen: 'img/logo.jfif', sub: 'granos' },
+        { id: 'v_arroz_santoni_exc_1kg', nombre: 'Arroz Santoni Excelente 1kg', precioBase: 0.98, imagen: 'img/logo.jfif', sub: 'granos' },
+        { id: 'v_arroz_yamari_1kg', nombre: 'Arroz Yamari / Kaly 1kg', precioBase: 0.97, imagen: 'img/logo.jfif', sub: 'granos' },
+        { id: 'v_arroz_aguablanca_1kg', nombre: 'Arroz Agua Blanca 1kg', precioBase: 0.92, imagen: 'img/logo.jfif', sub: 'granos' },
         { id: 'v_azucar_miangel', nombre: 'Azúcar Mi Ángel 1kg', precioBase: 1.03, imagen: 'img/v_azucar_miangel.png', sub: 'granos' },
-        { id: 'v_azucar_montalban', nombre: 'Azúcar Montalbán 1kg', precioBase: 1.18, imagen: 'img/v_azucar_montalban.png', sub: 'granos' },
-        { id: 'v_azucar_konfit', nombre: 'Azúcar Blanca Konfit 1kg', precioBase: 1.23, imagen: 'img/v_azucar_konfit.png', sub: 'granos' },
+        { id: 'v_azucar_montalban', nombre: 'Azúcar Montalbán 1kg', precioBase: 1.40, imagen: 'img/v_azucar_montalban.png', sub: 'granos' },
+        { id: 'v_azucar_konfit', nombre: 'Azúcar Blanca Konfit 1kg', precioBase: 1.39, imagen: 'img/v_azucar_konfit.png', sub: 'granos' },
         { id: 'v_azucar_sonora', nombre: 'Azúcar Blanca Sonora 1kg', precioBase: 1.10, imagen: 'img/v_azucar_sonora.png', sub: 'granos' },
+        { id: 'v_azucar_batur_1kg', nombre: 'Azúcar Batur 1kg', precioBase: 1.29, imagen: 'img/logo.jfif', sub: 'granos' },
+        { id: 'v_azucar_conquista_1kg', nombre: 'Azúcar La Conquista 1kg', precioBase: 0.83, imagen: 'img/logo.jfif', sub: 'granos' },
         { id: 'v_sal_prosanca_1kg', nombre: 'Sal Blanca Refinada Prosanca 1kg', precioBase: 0.19, imagen: 'img/v_sal_prosanca_1kg.png', sub: 'granos' },
+        { id: 'v_sal_bahia_500g', nombre: 'Sal Bahía Pote 500g', precioBase: 2.41, imagen: 'img/logo.jfif', sub: 'granos' },
+        { id: 'v_sal_mia_1kg', nombre: 'Sal Mía Paquete 1kg', precioBase: 0.58, imagen: 'img/logo.jfif', sub: 'granos' },
+        { id: 'v_sal_mesa_ensal', nombre: 'Sal de Mesa (Ensal / Sal Marina)', precioBase: 0, badge: 'CONSULTAR', imagen: 'img/logo.jfif', sub: 'granos' },
         { id: 'v_arvejas_maizalito', nombre: 'Arvejas Verdes Maizalito 400g', precioBase: 0.89, imagen: 'img/v_arvejas_maizalito.png', sub: 'granos' },
         { id: 'v_lentejas_maizalito', nombre: 'Lentejas Maizalito 400g', precioBase: 1.13, imagen: 'img/v_lentejas_maizalito.png', sub: 'granos' },
         { id: 'v_caraotas_m_400g', nombre: 'Caraotas Negras Maizalito 400g', precioBase: 0.96, imagen: 'img/v_caraotas_m_400g.png', sub: 'granos' },
         { id: 'v_caraotas_m_900g', nombre: 'Caraotas Negras Maizalito 900g', precioBase: 2.14, imagen: 'img/v_caraotas_m_900g.png', sub: 'granos' },
         { id: 'v_maiz_cotufa_m', nombre: 'Maíz para Cotufas Maizalito 400g', precioBase: 0.91, imagen: 'img/v_maiz_cotufa_m.png', sub: 'granos' },
+        { id: 'v_pantera_chia_454g', nombre: 'Pantera Chía 454g (1 lb)', precioBase: 7.87, imagen: 'img/logo.jfif', sub: 'granos' },
+        { id: 'v_pantera_quinoa_454g', nombre: 'Pantera Quinoa 454g', precioBase: 6.59, imagen: 'img/logo.jfif', sub: 'granos' },
+        { id: 'v_pantera_linaza_454g', nombre: 'Pantera Linaza 454g', precioBase: 3.39, imagen: 'img/logo.jfif', sub: 'granos' },
+        { id: 'v_pantera_caraota_blanca_454g', nombre: 'Pantera Caraota Blanca 454g', precioBase: 3.09, imagen: 'img/logo.jfif', sub: 'granos' },
+        { id: 'v_pantera_caraota_negra_900g', nombre: 'Pantera Caraota Negra 900g', precioBase: 3.06, imagen: 'img/logo.jfif', sub: 'granos' },
+        { id: 'v_vicone_lentejas_caraota', nombre: 'Vicone Lentejas / Caraota 400g / 1kg', precioBase: 2.92, imagen: 'img/logo.jfif', sub: 'granos' },
+        { id: 'v_pantera_caraota_roja_454g', nombre: 'Pantera Caraota Roja 454g', precioBase: 2.70, imagen: 'img/logo.jfif', sub: 'granos' },
+        { id: 'v_caraotas_negras_pantera_1kg', nombre: 'Caraotas Negras Pantera 1kg / Paquete', precioBase: 2.62, imagen: 'img/logo.jfif', sub: 'granos' },
+        { id: 'v_caraotas_negras_granel_1kg', nombre: 'Caraotas Negras Granel 1kg', precioBase: 2.33, imagen: 'img/logo.jfif', sub: 'granos' },
+        { id: 'v_cotufa_pantera_500g', nombre: 'Pantera / Mary Cotufa Maíz 500g', precioBase: 1.95, imagen: 'img/logo.jfif', sub: 'granos' },
+        { id: 'v_amanecer_lentejas_400g', nombre: 'Amanecer Lentejas 400g', precioBase: 1.48, imagen: 'img/logo.jfif', sub: 'granos' },
+        { id: 'v_mary_arveja_cotufa_400g', nombre: 'Mary / Arveja Maíz Cotufa 400g', precioBase: 1.46, imagen: 'img/logo.jfif', sub: 'granos' },
+        { id: 'v_amanecer_arvejas_400g', nombre: 'Amanecer Arvejas 400g', precioBase: 1.39, imagen: 'img/logo.jfif', sub: 'granos' },
+        { id: 'v_aurora_cotufa_400g', nombre: 'Aurora / Amanecer Maíz Cotufa 400g', precioBase: 1.35, imagen: 'img/logo.jfif', sub: 'granos' },
+        { id: 'v_granos_amanecer_400g', nombre: 'Granos Amanecer (Verdes / Rojos) 400g', precioBase: 1.18, imagen: 'img/logo.jfif', sub: 'granos' },
+
+        // --- LÁCTEOS, ACEITES, ENLATADOS, HUEVOS Y CAFÉ ---
         { id: 'v_crema_arroz_polly', nombre: 'Crema de Arroz Polly Bolsa 450g', precioBase: 2.37, imagen: 'img/v_crema_arroz_polly.png', sub: 'lacteos' },
         { id: 'v_villa_lactea_400g', nombre: 'Alimento en Polvo Villa Láctea 400g', precioBase: 2.67, imagen: 'img/v_villa_lactea_400g.png', sub: 'lacteos' },
         { id: 'v_lactovisoy_200g', nombre: 'Lactovisoy Sachet 200g', precioBase: 11.98, imagen: 'img/v_lactovisoy_200g.png', sub: 'lacteos' },
@@ -2036,13 +2139,41 @@
         { id: 'v_induleche_360g', nombre: 'Leche en Polvo Induleche 360g', precioBase: 4.00, imagen: 'img/v_induleche_360g.png', sub: 'lacteos' },
         { id: 'v_campestre_900g', nombre: 'Leche en Polvo Campestre 900g', precioBase: 8.29, imagen: 'img/v_campestre_900g.png', sub: 'lacteos' },
         { id: 'v_campestre_500g', nombre: 'Leche en Polvo Campestre 500g', precioBase: 4.43, imagen: 'img/v_campestre_500g.png', sub: 'lacteos' },
+        { id: 'v_campina_desc_900g', nombre: 'La Campiña Leche en Polvo Descremada 900g', precioBase: 14.21, imagen: 'img/logo.jfif', sub: 'lacteos' },
+        { id: 'v_campina_entera_1kg', nombre: 'La Campiña Leche en Polvo Entera 1kg', precioBase: 14.07, imagen: 'img/logo.jfif', sub: 'lacteos' },
+        { id: 'v_campina_400g', nombre: 'La Campiña Leche en Polvo 400g', precioBase: 7.82, imagen: 'img/logo.jfif', sub: 'lacteos' },
+        { id: 'v_campina_200g', nombre: 'La Campiña Leche en Polvo 200g', precioBase: 3.71, imagen: 'img/logo.jfif', sub: 'lacteos' },
+        { id: 'v_campina_125g', nombre: 'La Campiña Leche en Polvo 125g', precioBase: 2.47, imagen: 'img/logo.jfif', sub: 'lacteos' },
+        { id: 'v_parmalat_400g', nombre: 'Parmalat Max Multi Nutri 400g', precioBase: 5.50, imagen: 'img/logo.jfif', sub: 'lacteos' },
+        { id: 'v_purisima_crema_500g', nombre: 'Purísima Crema de Leche 500g', precioBase: 5.34, imagen: 'img/logo.jfif', sub: 'lacteos' },
+        { id: 'v_purisima_crema_250g', nombre: 'Purísima Crema de Leche 250g', precioBase: 3.23, imagen: 'img/logo.jfif', sub: 'lacteos' },
+        { id: 'v_crema_suero_500ml', nombre: 'Crema de Leche / Suero Especial 500ml', precioBase: 3.95, imagen: 'img/logo.jfif', sub: 'lacteos' },
+        { id: 'v_chaja_yogurt_500g', nombre: 'Chajá Lácteo / Yogurt Pote Grande 500g', precioBase: 3.68, imagen: 'img/logo.jfif', sub: 'lacteos' },
+        { id: 'v_chaja_yogurt_250g', nombre: 'Chajá / Lácteo Pote Mediano 250g', precioBase: 2.22, imagen: 'img/logo.jfif', sub: 'lacteos' },
+        { id: 'v_natilla_artesanal', nombre: 'Natilla Artesanal Pote', precioBase: 3.59, imagen: 'img/logo.jfif', sub: 'lacteos' },
+        { id: 'v_suero_tradicional_500ml', nombre: 'Suero Lácteo Tradicional Botella 500ml', precioBase: 1.71, imagen: 'img/logo.jfif', sub: 'lacteos' },
+        { id: 'v_tigo_crema_culinaria', nombre: 'Tigo Crema Culinaria / Bebida Envase', precioBase: 1.32, imagen: 'img/logo.jfif', sub: 'lacteos' },
+        { id: 'v_carton_huevos_15', nombre: 'Cartón de Huevos (1/2 Cartón - 15 Und)', precioBase: 2.81, imagen: 'img/logo.jfif', sub: 'lacteos' },
+        { id: 'v_cafe_amanecer_lata', nombre: 'Café Amanecer Molido (Lata Sellada)', precioBase: 6.68, imagen: 'img/logo.jfif', sub: 'lacteos' },
+        { id: 'v_cafe_amanecer_gourmet', nombre: 'Café Amanecer Gourmet 250g / 500g', precioBase: 2.69, imagen: 'img/logo.jfif', sub: 'lacteos' },
+        { id: 'v_maizoritos_cereales', nombre: 'Maizoritos Cereales Hojuelas', precioBase: 0, badge: 'CONSULTAR', imagen: 'img/logo.jfif', sub: 'lacteos' },
         { id: 'v_sardina_aceite', nombre: 'Sardina Misión Mar Aceite', precioBase: 0.55, imagen: 'img/v_sardina_aceite.png', sub: 'lacteos' },
         { id: 'v_sardina_tomate', nombre: 'Sardina Misión Mar Tomate', precioBase: 0.56, imagen: 'img/v_sardina_tomate.png', sub: 'lacteos' },
+        { id: 'v_sardinas_pacific_170g', nombre: 'Sardinas Tomate Pacific 170g Lata', precioBase: 1.12, imagen: 'img/logo.jfif', sub: 'lacteos' },
         { id: 'v_atun_margarita_140g', nombre: 'Atún en Aceite Margarita 140g', precioBase: 2.09, imagen: 'img/v_atun_margarita_140g.png', sub: 'lacteos' },
         { id: 'v_atun_marguajira', nombre: 'Atún Marguajira', precioBase: 0.94, imagen: 'img/v_atun_marguajira.png', sub: 'lacteos' },
         { id: 'v_atun_lobo_175g', nombre: 'Atún Lobo de Mar 175g', precioBase: 1.09, imagen: 'img/v_atun_lobo_175g.png', sub: 'lacteos' },
+        { id: 'v_atun_eveba_oliva_170g', nombre: 'Atún Eveba Aceite de Oliva 170g Lata', precioBase: 3.78, imagen: 'img/logo.jfif', sub: 'lacteos' },
+        { id: 'v_atun_eveba_oliva_140g', nombre: 'Atún Eveba Aceite de Oliva 140g Lata', precioBase: 3.37, imagen: 'img/logo.jfif', sub: 'lacteos' },
+        { id: 'v_atun_eveba_natural_170g', nombre: 'Atún Sólido al Natural Eveba 170g Lata', precioBase: 3.21, imagen: 'img/logo.jfif', sub: 'lacteos' },
+        { id: 'v_ensalada_eveba_calif_170g', nombre: 'Ensalada de Atún Eveba Californiana 170g', precioBase: 3.14, imagen: 'img/logo.jfif', sub: 'lacteos' },
+        { id: 'v_atun_eveba_aceite_170g', nombre: 'Atún Sólido en Aceite Eveba 170g Lata', precioBase: 3.00, imagen: 'img/logo.jfif', sub: 'lacteos' },
+        { id: 'v_ensalada_eveba_medit_170g', nombre: 'Ensalada de Atún Eveba Mediterránea 170g', precioBase: 2.99, imagen: 'img/logo.jfif', sub: 'lacteos' },
+        { id: 'v_atun_eveba_aceite_140g', nombre: 'Atún Sólido en Aceite Eveba 140g Lata', precioBase: 2.50, imagen: 'img/logo.jfif', sub: 'lacteos' },
+        { id: 'v_atun_eveba_natural_140g', nombre: 'Atún al Natural Eveba 140g Lata', precioBase: 1.89, imagen: 'img/logo.jfif', sub: 'lacteos' },
         { id: 'v_diablito_115g', nombre: 'Diablito Underwood 115g', precioBase: 2.35, imagen: 'img/v_diablito_115g.png', sub: 'lacteos' },
         { id: 'v_diablito_54g', nombre: 'Diablito Underwood 54g', precioBase: 1.25, imagen: 'img/v_diablito_54g.png', sub: 'lacteos' },
+        { id: 'v_jamon_endiablado_plumrose_110g', nombre: 'Jamón Endiablado Plumrose 110g Lata', precioBase: 3.12, imagen: 'img/logo.jfif', sub: 'lacteos' },
         { id: 'v_twisty_keso_200g', nombre: 'Twisty Keso 200g', precioBase: 2.19, imagen: 'img/v_twisty_keso_200g.png', sub: 'lacteos' },
         { id: 'v_dalvito_200g', nombre: 'Dalvito 200g', precioBase: 2.56, imagen: 'img/v_dalvito_200g.png', sub: 'lacteos' },
         { id: 'v_margarina_delicia_500g', nombre: 'Margarina Delicia (500g)', precioBase: 0.73, imagen: 'img/v_margarina_delicia_500g.png', sub: 'lacteos' },
@@ -2053,7 +2184,13 @@
         { id: 'v_aceite_soya_900ml', nombre: 'Aceite Brasilero Soya 900ml', precioBase: 2.18, imagen: 'img/v_aceite_soya_900ml.png', sub: 'lacteos' },
         { id: 'v_aceite_oliva_500ml', nombre: 'Aceite de Oliva Puro 500ml', precioBase: 6.67, imagen: 'img/v_aceite_oliva_500ml.png', sub: 'lacteos' },
         { id: 'v_aceite_mixto_430ml', nombre: 'Aceite Mixto 430ml', precioBase: 0.96, imagen: 'img/v_aceite_mixto_430ml.png', sub: 'lacteos' },
-        { id: 'v_mazeite_1l', nombre: 'Aceite Mazeite 1L', precioBase: 5.28, imagen: 'img/v_mazeite_1l.png', badge: 'PROMO', sub: 'lacteos' }
+        { id: 'v_mazeite_1l', nombre: 'Aceite Mazeite 1L', precioBase: 5.28, imagen: 'img/v_mazeite_1l.png', badge: 'PROMO', sub: 'lacteos' },
+        { id: 'v_aceite_vatel_1l', nombre: 'Aceite Vatel (Soya / Girasol / Maíz) 1L', precioBase: 3.71, imagen: 'img/logo.jfif', sub: 'lacteos' },
+        { id: 'v_aceite_coco_250ml', nombre: 'Aceite de Coco Puro Botella 250ml', precioBase: 2.68, imagen: 'img/logo.jfif', sub: 'lacteos' },
+        { id: 'v_aceite_ideal_850ml', nombre: 'Aceite Ideal 850ml', precioBase: 2.46, imagen: 'img/logo.jfif', sub: 'lacteos' },
+        { id: 'v_aceite_amanecer_828ml', nombre: 'Aceite Amanecer 828ml', precioBase: 2.29, imagen: 'img/logo.jfif', sub: 'lacteos' },
+        { id: 'v_aceite_ideal_1l', nombre: 'Aceite Ideal 1 Litro', precioBase: 1.93, imagen: 'img/logo.jfif', sub: 'lacteos' },
+        { id: 'v_aceite_ideal_430ml', nombre: 'Aceite Ideal 430ml', precioBase: 1.65, imagen: 'img/logo.jfif', sub: 'lacteos' }
       ],
       charcuteria: [
         { id: 'ch_salchicha_pollo_kg', nombre: 'Salchicha de Pollo Don Ramón (kg)', precioBase: 1.98, imagen: 'img/ch_salchicha_pollo_kg.png', esGranel: true, unidadMedida: 'g', pasoGranel: 100, minGranel: 200, maxGranel: 3000, defGranel: 500 },
@@ -2071,7 +2208,7 @@
         { id: 'ch_masa_picaro_500g', nombre: "Masa de Pastelito Pícaro's 500g", precioBase: 0.68, imagen: 'img/ch_masa_picaro_500g.png' },
         { id: 'ch_masa_picaro_1kg', nombre: "Masa de Pastelito Pícaro's 1kg", precioBase: 1.26, imagen: 'img/ch_masa_picaro_1kg.png' },
         { id: 'ch_suero_bravos', nombre: 'Suero Cremoso Bravos de Apure', precioBase: 2.05, imagen: 'img/ch_suero_bravos.png' },
-        { id: 'ch_queso_blanco_kg', nombre: 'Queso Blanco Duro (kg)', precioBase: 4.40, imagen: 'img/ch_queso_blanco_kg.png', badge: 'MÁS VENDIDO', esGranel: true, unidadMedida: 'g', pasoGranel: 100, minGranel: 200, maxGranel: 3000, defGranel: 500 },
+        { id: 'ch_queso_blanco_kg', nombre: 'Queso Blanco Duro (kg)', precioBase: 7.80, imagen: 'img/ch_queso_blanco_kg.png', badge: 'MÁS VENDIDO', esGranel: true, unidadMedida: 'g', pasoGranel: 100, minGranel: 200, maxGranel: 3000, defGranel: 500 },
         { id: 'ch_chorizo_seara_kg', nombre: 'Chorizo Calabresa Seara (kg)', precioBase: 5.73, imagen: 'img/ch_chorizo_seara_kg.png', esGranel: true, unidadMedida: 'g', pasoGranel: 100, minGranel: 200, maxGranel: 3000, defGranel: 500 },
         { id: 'ch_mozzarella_oriana_kg', nombre: 'Queso Mozzarella Oriana (kg)', precioBase: 6.38, imagen: 'img/ch_mozzarella_oriana_kg.png', esGranel: true, unidadMedida: 'g', pasoGranel: 100, minGranel: 200, maxGranel: 3000, defGranel: 500 },
         { id: 'ch_ricotta_imperial_kg', nombre: 'Ricotta Imperial (kg)', precioBase: 2.76, imagen: 'img/ch_ricotta_imperial_kg.png', esGranel: true, unidadMedida: 'g', pasoGranel: 100, minGranel: 200, maxGranel: 3000, defGranel: 500 },
@@ -2099,7 +2236,30 @@
         { id: 'ch_tocineta_pieza_kg', nombre: 'Tocineta Ahumada en Pieza (kg)', precioBase: 8.00, imagen: 'img/ch_tocineta_pieza_kg.png', esGranel: true, unidadMedida: 'g', pasoGranel: 100, minGranel: 200, maxGranel: 3000, defGranel: 500 },
         { id: 'ch_tocineta_rebanada_kg', nombre: 'Tocineta Ahumada Rebanada (kg)', precioBase: 8.50, imagen: 'img/ch_tocineta_rebanada_kg.png', esGranel: true, unidadMedida: 'g', pasoGranel: 100, minGranel: 200, maxGranel: 3000, defGranel: 500 },
         { id: 'ch_mortadela_extra_lanonna_kg', nombre: 'Mortadela Extra La Nonna (kg)', precioBase: 4.44, imagen: 'img/ch_mortadela_extra_lanonna_kg.png', esGranel: true, unidadMedida: 'g', pasoGranel: 100, minGranel: 200, maxGranel: 3000, defGranel: 500 },
-        { id: 'ch_salchicha_mana_kg', nombre: 'Salchicha Tipo Polaca Mana (kg)', precioBase: 2.81, imagen: 'img/ch_salchicha_mana_kg.png', esGranel: true, unidadMedida: 'g', pasoGranel: 100 }
+        { id: 'ch_salchicha_mana_kg', nombre: 'Salchicha Tipo Polaca Mana (kg)', precioBase: 2.81, imagen: 'img/ch_salchicha_mana_kg.png', esGranel: true, unidadMedida: 'g', pasoGranel: 100 },
+        // --- NUEVOS CHARCUTERÍA Y QUESOS UNTABLES DEL INVENTARIO ---
+        { id: 'ch_puntamonte_mortadela_1kg', nombre: 'Punta Monte Mortadela 1kg', precioBase: 4.18, imagen: 'img/logo.jfif' },
+        { id: 'ch_puntamonte_bolognesa', nombre: 'Punta Monte Bolognesa Pieza / Bloque', precioBase: 4.16, imagen: 'img/logo.jfif' },
+        { id: 'ch_corral_mortadela_1kg', nombre: 'Corral Mortadela 1kg', precioBase: 3.98, imagen: 'img/logo.jfif' },
+        { id: 'ch_prosciutti_mortadela', nombre: 'Prosciutti Mortadela Pieza / Bloque', precioBase: 3.38, imagen: 'img/logo.jfif' },
+        { id: 'ch_plumrose_mortadela_1kg', nombre: 'Plumrose Mortadela 1kg / Pieza', precioBase: 3.15, imagen: 'img/logo.jfif' },
+        { id: 'ch_caracas_mortadela_900g', nombre: 'Caracas Mortadela 900g', precioBase: 3.11, imagen: 'img/logo.jfif' },
+        { id: 'ch_alibal_mortadela_1kg', nombre: 'Alibal Mortadela 1kg', precioBase: 3.00, imagen: 'img/logo.jfif' },
+        { id: 'ch_pechuga_bologna_400g', nombre: 'Pechuga / Bologna Cocida 400g', precioBase: 2.97, imagen: 'img/logo.jfif' },
+        { id: 'ch_lider_pollo_mortadela_900g', nombre: 'Líder Pollo Mortadela 900g', precioBase: 2.78, imagen: 'img/logo.jfif' },
+        { id: 'ch_donramon_mortadela_900g', nombre: 'Don Ramón Mortadela 800g / 900g', precioBase: 2.68, imagen: 'img/logo.jfif' },
+        { id: 'ch_fiambre_especial_900g', nombre: 'Fiambre / Embutido Especial 900g', precioBase: 5.48, imagen: 'img/logo.jfif' },
+        { id: 'ch_puntamonte_mortadela_500g', nombre: 'Punta Monte Mortadela 500g', precioBase: 2.43, imagen: 'img/logo.jfif' },
+        { id: 'ch_donramon_mortadela_500g', nombre: 'Don Ramón Mortadela 500g', precioBase: 2.28, imagen: 'img/logo.jfif' },
+        { id: 'ch_alibal_mortadela_700g', nombre: 'Alibal Mortadela 700g', precioBase: 2.19, imagen: 'img/logo.jfif' },
+        { id: 'ch_caracas_donramon_500g', nombre: 'Caracas / Don Ramón Mortadela 500g', precioBase: 1.88, imagen: 'img/logo.jfif' },
+        { id: 'ch_lider_pollo_500g', nombre: 'Líder Pollo 450g / 500g', precioBase: 1.67, imagen: 'img/logo.jfif' },
+        { id: 'ch_guayo_mortadela_400g', nombre: 'Guayo Mortadela 400g', precioBase: 1.19, imagen: 'img/logo.jfif' },
+        { id: 'ch_salchicha_embutido_econ', nombre: 'Salchicha / Embutido Económico Individual', precioBase: 1.83, imagen: 'img/logo.jfif' },
+        { id: 'ch_rikesa_cheddar_300g', nombre: 'Rikesa Cheddar Pote 300g', precioBase: 6.01, imagen: 'img/logo.jfif' },
+        { id: 'ch_rikesa_original_200g', nombre: 'Rikesa Original Queso 200g Frasco', precioBase: 4.04, imagen: 'img/logo.jfif' },
+        { id: 'ch_rikesa_parmesano_200g', nombre: 'Rikesa Parmesano 200g Frasco', precioBase: 3.60, imagen: 'img/logo.jfif' },
+        { id: 'ch_queso_crema_tarrina', nombre: 'Queso Crema / Untable Tarrina Azul', precioBase: 2.05, imagen: 'img/logo.jfif' }
       ],
       carnes: [
         { id: 'cn_costilla_res_kg', nombre: 'Costilla de Res (kg)', precioBase: 2.50, imagen: 'img/cn_costilla_res_kg.png', esGranel: true, unidadMedida: 'g', pasoGranel: 100, minGranel: 250, maxGranel: 4000, defGranel: 1000 },
@@ -2128,7 +2288,17 @@
         { id: 'pa_pan_baguette', nombre: 'Pan Baguette Francés', precioBase: 1.20, imagen: 'img/p_pan_baguette.png', local: 'panamericana', tiendaId: 'panamericana' },
         { id: 'pa_quesillo', nombre: 'Quesillo Casero (Porción)', precioBase: 2.50, imagen: 'img/p_quesillo.png', badge: 'DULCE', local: 'panamericana', tiendaId: 'panamericana' },
         { id: 'pa_ponque', nombre: 'Ponqué con Pasas', precioBase: 2.00, imagen: 'img/p_ponque.png', badge: 'DULCE', local: 'panamericana', tiendaId: 'panamericana' },
-        { id: 'pa_galletas_charmy', nombre: 'Galletas Charmy Brownie', precioBase: 1.11, imagen: 'img/v34.png', local: 'panamericana', tiendaId: 'panamericana' }
+        { id: 'pa_galletas_charmy', nombre: 'Galletas Charmy Brownie', precioBase: 1.64, imagen: 'img/v34.png', local: 'panamericana', tiendaId: 'panamericana' },
+        // --- NUEVOS PANADERÍA Y GALLETAS DEL INVENTARIO ---
+        { id: 'pa_ponque_paneton_caja', nombre: 'Ponqué / Panetón Frutas y Choc. Caja', precioBase: 2.82, imagen: 'img/logo.jfif', local: 'panamericana', tiendaId: 'panamericana' },
+        { id: 'pa_ducales_deleitinas', nombre: 'Ducales / Deleitinas Galletas 3-4 Tacos', precioBase: 2.96, imagen: 'img/logo.jfif', local: 'panamericana', tiendaId: 'panamericana' },
+        { id: 'pa_galletas_katy_oreo', nombre: 'Galletas Katy / Oreo Multipack Familiar', precioBase: 2.63, imagen: 'img/logo.jfif', local: 'panamericana', tiendaId: 'panamericana' },
+        { id: 'pa_galletas_marilu_270g', nombre: 'Galletas Marilú 270g Paquete', precioBase: 2.34, imagen: 'img/logo.jfif', local: 'panamericana', tiendaId: 'panamericana' },
+        { id: 'pa_saltin_noel_3tacos', nombre: 'Saltín Noel Galletas 3 Tacos', precioBase: 2.28, imagen: 'img/logo.jfif', local: 'panamericana', tiendaId: 'panamericana' },
+        { id: 'pa_galletas_cooky_chips', nombre: 'Galletas Cooky Chips / Chiquilín Paquete', precioBase: 2.08, imagen: 'img/logo.jfif', local: 'panamericana', tiendaId: 'panamericana' },
+        { id: 'pa_galletas_mini_brownies_puig', nombre: 'Galletas Mini Brownies Puig Paquete', precioBase: 1.93, imagen: 'img/logo.jfif', local: 'panamericana', tiendaId: 'panamericana' },
+        { id: 'pa_galletas_safari_choco', nombre: 'Galletas Safari Choco Paquete', precioBase: 1.47, imagen: 'img/logo.jfif', local: 'panamericana', tiendaId: 'panamericana' },
+        { id: 'pa_pan_sandwich_hoho', nombre: 'Pan de Sándwich / Ponqués Ho! Ho!', precioBase: 0, badge: 'CONSULTAR', imagen: 'img/logo.jfif', local: 'panamericana', tiendaId: 'panamericana' }
       ],
       verduras: [
         { id: 'vf_tomate', nombre: 'Tomate Perita (kg)', precioBase: 1.80, imagen: 'img/vf_tomate.png', badge: 'FRESCO', esGranel: true, unidadMedida: 'g', pasoGranel: 100, minGranel: 250, maxGranel: 3000, defGranel: 1000 },
@@ -2150,18 +2320,29 @@
         { id: 'b_carorena_blanca_lata', nombre: 'Sangría Caroreña Blanca', precioBase: 1.50, imagen: 'img/b_carorena_blanca_lata.png', badge: 'SANGRÍA' },
         { id: 'b_carorena_verano_lata', nombre: 'Sangría Caroreña Tinta', precioBase: 1.50, imagen: 'img/b_carorena_verano_lata.png', badge: 'SANGRÍA' },
         { id: 'b_carorena_botella_175l', nombre: 'Sangría Caroreña 1.75L', precioBase: 6.50, imagen: 'img/b_carorena_botella_175l.png', badge: 'TOP' },
-        { id: 'b_pepsi_2l', nombre: 'Refresco Pepsi 2L', precioBase: 2.20, imagen: 'img/b_pepsi_2l.png' },
-        { id: 'b_pepsi_15l', nombre: 'Refresco Pepsi 1.5L', precioBase: 1.80, imagen: 'img/b_pepsi_15l.png' },
-        { id: 'b_pepsi_1l', nombre: 'Refresco Pepsi 1L', precioBase: 1.30, imagen: 'img/b_pepsi_1l.png' },
+        { id: 'b_pepsi_2l', nombre: 'Refresco Pepsi 2L', precioBase: 1.49, imagen: 'img/b_pepsi_2l.png' },
+        { id: 'b_pepsi_15l', nombre: 'Refresco Pepsi 1.5L', precioBase: 1.28, imagen: 'img/b_pepsi_15l.png' },
+        { id: 'b_pepsi_1l', nombre: 'Refresco Pepsi 1L', precioBase: 1.08, imagen: 'img/b_pepsi_1l.png' },
         { id: 'b_pepsi_light_lata', nombre: 'Pepsi Light (Lata)', precioBase: 1.10, imagen: 'img/b_pepsi_light_lata.png' },
-        { id: 'b_golden_manzanita_2l', nombre: 'Golden Manzanita 2L', precioBase: 2.00, imagen: 'img/b_golden_manzanita_2l.png' },
-        { id: 'b_golden_kolita_2l', nombre: 'Golden Kolita 2L', precioBase: 2.00, imagen: 'img/b_golden_kolita_2l.png' },
-        { id: 'b_golden_uva_2l', nombre: 'Golden Uva 2L', precioBase: 2.00, imagen: 'img/b_golden_uva_2l.png' },
-        { id: 'b1', nombre: 'Coca-Cola 1.5L', precioBase: 2.00, imagen: 'img/b1.png' },
+        { id: 'b_golden_manzanita_2l', nombre: 'Golden Manzanita 2L', precioBase: 1.22, imagen: 'img/b_golden_manzanita_2l.png' },
+        { id: 'b_golden_kolita_2l', nombre: 'Golden Kolita 2L', precioBase: 1.22, imagen: 'img/b_golden_kolita_2l.png' },
+        { id: 'b_golden_uva_2l', nombre: 'Golden Uva 2L', precioBase: 1.22, imagen: 'img/b_golden_uva_2l.png' },
+        { id: 'b1', nombre: 'Coca-Cola 1.5L', precioBase: 1.65, imagen: 'img/b1.png' },
         { id: 'b3', nombre: 'Maltín Polar (Pack)', precioBase: 15.00, imagen: 'img/b3.png', badge: 'PACK' },
         { id: 'b4', nombre: 'Jugo Yukery Durazno 1L', precioBase: 1.80, imagen: 'img/b4.png' },
         { id: 'b5', nombre: 'Agua Mineral 5L', precioBase: 2.50, imagen: 'img/b5.png' },
-        { id: 'b6', nombre: 'Energizante Monster', precioBase: 2.80, imagen: 'img/b6.png' }
+        { id: 'b6', nombre: 'Energizante Monster', precioBase: 2.80, imagen: 'img/b6.png' },
+        // --- NUEVAS BEBIDAS DEL INVENTARIO ---
+        { id: 'b_jugo_santal_light_1l', nombre: 'Jugo Santal Light Manzana 1L Tetra Pak', precioBase: 2.23, imagen: 'img/logo.jfif' },
+        { id: 'b_gatorade_powerade_500ml', nombre: 'Gatorade / Powerade 500ml Botella', precioBase: 1.53, imagen: 'img/logo.jfif' },
+        { id: 'b_jugo_santal_manzana_1l', nombre: 'Jugo Santal Manzana Tradicional 1L', precioBase: 1.23, imagen: 'img/logo.jfif' },
+        { id: 'b_chinotto_2l', nombre: 'Chinotto Refresco 2 Litros', precioBase: 1.22, imagen: 'img/logo.jfif' },
+        { id: 'b_refresco_glup_2l', nombre: 'Refresco Glup 2 Litros', precioBase: 1.04, imagen: 'img/logo.jfif' },
+        { id: 'b_bebida_thesun_15l', nombre: 'Bebida The Sun Limón / Cítrico 1.5L', precioBase: 1.02, imagen: 'img/logo.jfif' },
+        { id: 'b_golden_refresco_15l', nombre: 'Golden Refresco 1.5 Litros', precioBase: 0.98, imagen: 'img/logo.jfif' },
+        { id: 'b_agua_mineral_15l', nombre: 'Agua Mineral Embotellada 1.5 Litros', precioBase: 0.85, imagen: 'img/logo.jfif' },
+        { id: 'b_agua_glacier_500ml', nombre: 'Agua Glacier Purificada 355ml / 500ml', precioBase: 0.40, imagen: 'img/logo.jfif' },
+        { id: 'b_refrescos_cool_2l', nombre: 'Refrescos Cool 2L Surtidos', precioBase: 0, badge: 'CONSULTAR', imagen: 'img/logo.jfif' }
       ],
       comida: [
         { id: 'mc_cafe_capuchino', nombre: 'Café Capuchino Especial ☕', precioBase: 2.00, imagen: 'img/b6.png', badge: 'CAFÉ', local: 'moravos', tiendaId: 'moravos' },
@@ -2192,7 +2373,26 @@
         { id: 'l2', nombre: 'Desinfectante Floral 1L', precioBase: 1.21, imagen: 'img/l2.png', badge: 'ASEO' },
         { id: 'l3', nombre: 'Desinfectante Lavanda 1L', precioBase: 1.21, imagen: 'img/l3.png', badge: 'ASEO' },
         { id: 'l4', nombre: 'Detergente Líquido 1L', precioBase: 2.14, imagen: 'img/l4.png', badge: 'ASEO' },
-        { id: 'l5', nombre: 'Lavaplatos Limón 1L', precioBase: 2.14, imagen: 'img/l5.png', badge: 'ASEO' }
+        { id: 'l5', nombre: 'Lavaplatos Limón 1L', precioBase: 2.14, imagen: 'img/l5.png', badge: 'ASEO' },
+        // --- NUEVOS LIMPIEZA Y VINAGRES DEL INVENTARIO ---
+        { id: 'l_vinagre_mavesa_iberia_500ml', nombre: 'Mavesa / Iberia Vinagre Blanco 500ml', precioBase: 1.66, imagen: 'img/logo.jfif' },
+        { id: 'l_vanish_quitamanchas', nombre: 'Vanish Quitamanchas Líquido / Polvo', precioBase: 14.91, imagen: 'img/logo.jfif', badge: 'ASEO' },
+        { id: 'l_jabon_crema_lavaplatos', nombre: 'Jabón en Crema / Pote Lavaplatos', precioBase: 6.61, imagen: 'img/logo.jfif', badge: 'ASEO' },
+        { id: 'l_downy_intense_suavizante', nombre: 'Downy Intense Suavizante Botella', precioBase: 6.20, imagen: 'img/logo.jfif', badge: 'ASEO' },
+        { id: 'l_lavaplatos_llaves', nombre: 'Lavaplatos Líquido Llaves Concentrado', precioBase: 5.63, imagen: 'img/logo.jfif', badge: 'ASEO' },
+        { id: 'l_suavitel_suavizante', nombre: 'Suavitel Suavizante de Telas Botella', precioBase: 5.56, imagen: 'img/logo.jfif', badge: 'ASEO' },
+        { id: 'l_kerosene_jades_crismar_1l', nombre: 'Kerosene Multiuso / Jades / Crismar 1L', precioBase: 5.39, imagen: 'img/logo.jfif', badge: 'ASEO' },
+        { id: 'l_brisolux_multiuso', nombre: 'Brisolux Limpiador Multiuso con Asa', precioBase: 4.45, imagen: 'img/logo.jfif', badge: 'ASEO' },
+        { id: 'l_lavaplatos_vale_brisolux', nombre: 'Lavaplatos Líquido Vale / Brisolux Mediano', precioBase: 3.10, imagen: 'img/logo.jfif', badge: 'ASEO' },
+        { id: 'l_la_aurora_limpiador_1l', nombre: 'La Aurora Limpiador / Sellador Pisos 1L', precioBase: 2.32, imagen: 'img/logo.jfif', badge: 'ASEO' },
+        { id: 'l_vale_crismar_desinfectante', nombre: 'Vale / Crismar Suavizante y Desinfectante', precioBase: 2.18, imagen: 'img/logo.jfif', badge: 'ASEO' },
+        { id: 'l_cloro_lavansan', nombre: 'Cloro Lavan San Botella Blanca', precioBase: 2.10, imagen: 'img/logo.jfif', badge: 'ASEO' },
+        { id: 'l_osoblanco_lavaplatos_doypack', nombre: 'Oso Blanco Lavaplatos Líquido Doypack', precioBase: 1.94, imagen: 'img/logo.jfif', badge: 'ASEO' },
+        { id: 'l_osoblanco_detergente', nombre: 'Oso Blanco Detergente Desinfectante Bolsa', precioBase: 1.75, imagen: 'img/logo.jfif', badge: 'ASEO' },
+        { id: 'l_lavaplatos_multimarca_500ml', nombre: 'Lavaplatos Líquido Multi-marca 500ml', precioBase: 1.69, imagen: 'img/logo.jfif', badge: 'ASEO' },
+        { id: 'l_detergente_polvo_generico', nombre: 'Detergente en Polvo (Genérico) Bolsa', precioBase: 1.29, imagen: 'img/logo.jfif', badge: 'ASEO' },
+        { id: 'l_cloros_vale_oxiclean_crismar', nombre: 'Cloros Vale / Oxi Clean / Crismar', precioBase: 0, badge: 'CONSULTAR', imagen: 'img/logo.jfif' },
+        { id: 'l_detergentes_hugme_alive_ultra_1kg', nombre: 'Detergentes Hugme / Alive / Ultra 1kg', precioBase: 0, badge: 'CONSULTAR', imagen: 'img/logo.jfif' }
       ],
       farmacia: [
         { id: 'far_acetaminofen', nombre: 'Acetaminofén 500mg (Blíster 10 tabletas)', precioBase: 1.00, imagen: 'img/farmacia.webp', badge: 'ESENCIAL' },
@@ -2807,11 +3007,140 @@
       return { tipo: 'personalizado', nombre: terminoBruto.trim(), cantidad, precioBase: 0, nota: 'Bajo Pedido' };
     }
 
-    // ================= OCR Y VOZ =================
-    function abrirSelectorCapturaLista() { document.getElementById('modal-opciones-captura').classList.remove('hidden'); }
+    // ================= OCR, CÁMARA INTEGRADA (ANTI-REINICIO APK) Y VOZ =================
+    let streamCamaraInterna = null;
+    let facingModeActual = 'environment';
+
+    function guardarRespaldoCarrito() {
+      try {
+        localStorage.setItem('pedidosflash_carrito_backup', JSON.stringify(carrito));
+      } catch(e) {}
+    }
+
+    function restaurarRespaldoCarrito() {
+      try {
+        const saved = localStorage.getItem('pedidosflash_carrito_backup');
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          if (parsed && typeof parsed === 'object' && Object.keys(parsed).length > 0) {
+            carrito = parsed;
+            actualizarTotales();
+          }
+        }
+      } catch(e) {}
+    }
+
+    function abrirSelectorCapturaLista() {
+      guardarRespaldoCarrito();
+      document.getElementById('modal-opciones-captura').classList.remove('hidden');
+    }
     function cerrarSelectorCapturaLista() { document.getElementById('modal-opciones-captura').classList.add('hidden'); }
-    function dispararCamara() { cerrarSelectorCapturaLista(); document.getElementById('input-camara-directa').click(); }
-    function dispararGaleria() { cerrarSelectorCapturaLista(); document.getElementById('input-galeria-foto').click(); }
+
+    // Cámara nativa dentro del WebView (WebRTC) para evitar que Android reinicie la app al abrir la cámara externa
+    async function dispararCamara() {
+      cerrarSelectorCapturaLista();
+      guardarRespaldoCarrito();
+
+      if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+        try {
+          await iniciarCamaraInterna(facingModeActual);
+          return;
+        } catch (err) {
+          console.warn("Fallback a input file por permiso o dispositivo:", err);
+        }
+      }
+      // Respaldo si el WebView no tiene permiso WebRTC habilitado en webtoapk
+      const inp = document.getElementById('input-camara-directa');
+      inp.value = "";
+      inp.click();
+    }
+
+    async function iniciarCamaraInterna(facingMode = 'environment') {
+      detenerStreamCamara();
+      const modalCam = document.getElementById('modal-camara-interna');
+      const videoEl = document.getElementById('video-camara-interna');
+
+      const constraints = {
+        video: {
+          facingMode: { ideal: facingMode },
+          width: { ideal: 1280 },
+          height: { ideal: 720 }
+        },
+        audio: false
+      };
+
+      streamCamaraInterna = await navigator.mediaDevices.getUserMedia(constraints);
+      videoEl.srcObject = streamCamaraInterna;
+      await videoEl.play();
+      modalCam.classList.remove('hidden');
+      if (window.lucide) lucide.createIcons();
+    }
+
+    function detenerStreamCamara() {
+      if (streamCamaraInterna) {
+        try {
+          streamCamaraInterna.getTracks().forEach(track => track.stop());
+        } catch (e) {}
+        streamCamaraInterna = null;
+      }
+      const videoEl = document.getElementById('video-camara-interna');
+      if (videoEl) videoEl.srcObject = null;
+    }
+
+    function cerrarCamaraInterna() {
+      detenerStreamCamara();
+      document.getElementById('modal-camara-interna').classList.add('hidden');
+    }
+
+    async function alternarCamaraInterna() {
+      facingModeActual = (facingModeActual === 'environment') ? 'user' : 'environment';
+      try {
+        await iniciarCamaraInterna(facingModeActual);
+      } catch (e) {
+        mostrarToast("No se pudo cambiar de cámara", "Aviso", "info");
+      }
+    }
+
+    function capturarFotoCamaraInterna() {
+      const videoEl = document.getElementById('video-camara-interna');
+      const canvas = document.getElementById('canvas-captura-interna');
+      if (!videoEl || !videoEl.videoWidth) {
+        mostrarToast("Espera a que enfoque la cámara", "Cámara", "info");
+        return;
+      }
+
+      // Redimensionar a máximo 1280px para que Tesseract no sature la memoria RAM del teléfono en APK
+      const maxDim = 1280;
+      let w = videoEl.videoWidth;
+      let h = videoEl.videoHeight;
+      if (w > maxDim || h > maxDim) {
+        if (w > h) {
+          h = Math.round((h * maxDim) / w);
+          w = maxDim;
+        } else {
+          w = Math.round((w * maxDim) / h);
+          h = maxDim;
+        }
+      }
+
+      canvas.width = w;
+      canvas.height = h;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(videoEl, 0, 0, w, h);
+
+      const dataUrl = canvas.toDataURL('image/jpeg', 0.85);
+      cerrarCamaraInterna();
+      ejecutarOCRConImagenOptimizada(dataUrl);
+    }
+
+    function dispararGaleria() {
+      cerrarSelectorCapturaLista();
+      guardarRespaldoCarrito();
+      const inp = document.getElementById('input-galeria-foto');
+      inp.value = "";
+      inp.click();
+    }
+
     function abrirModalPegarLista() { document.getElementById('modal-pegar-lista').classList.remove('hidden'); document.getElementById('textarea-lista-manual').focus(); }
     function cerrarModalPegarLista() { document.getElementById('modal-pegar-lista').classList.add('hidden'); document.getElementById('textarea-lista-manual').value = ""; }
 
@@ -2829,10 +3158,67 @@
       analizarTextoYMostrarListaCompleta(texto);
     }
 
-    function procesarFotoIA(event) {
+    // Comprime cualquier foto subida (evita cierre por falta de memoria RAM en WebView/APK con fotos pesadas)
+    function comprimirImagenArchivo(archivo, maxDim = 1280) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const img = new Image();
+          img.onload = () => {
+            let w = img.width;
+            let h = img.height;
+            if (w > maxDim || h > maxDim) {
+              if (w > h) {
+                h = Math.round((h * maxDim) / w);
+                w = maxDim;
+              } else {
+                w = Math.round((w * maxDim) / h);
+                h = maxDim;
+              }
+            }
+            const canvas = document.createElement('canvas');
+            canvas.width = w;
+            canvas.height = h;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, w, h);
+            resolve(canvas.toDataURL('image/jpeg', 0.85));
+          };
+          img.onerror = reject;
+          img.src = e.target.result;
+        };
+        reader.onerror = reject;
+        reader.readAsDataURL(archivo);
+      });
+    }
+
+    async function procesarFotoIA(event) {
       const archivo = event.target.files[0];
       if (!archivo) return;
 
+      const modalFoto = document.getElementById('modal-foto-resultado');
+      const loaderFoto = document.getElementById('loader-foto-ia');
+      const txtLoader = document.getElementById('txt-loader-foto');
+      const txtModalSub = document.getElementById('txt-modal-foto-sub');
+      const laserScan = document.getElementById('laser-scan-anim');
+
+      modalFoto.classList.remove('hidden');
+      loaderFoto.classList.remove('hidden');
+      laserScan.style.display = 'block';
+      txtLoader.innerText = "Optimizando imagen para lectura rápida...";
+      txtModalSub.innerText = "Preparando foto...";
+
+      try {
+        const imagenOptimizada = await comprimirImagenArchivo(archivo, 1280);
+        ejecutarOCRConImagenOptimizada(imagenOptimizada);
+      } catch (err) {
+        const urlObj = URL.createObjectURL(archivo);
+        ejecutarOCRConImagenOptimizada(urlObj);
+      } finally {
+        event.target.value = "";
+      }
+    }
+
+    function ejecutarOCRConImagenOptimizada(fuenteImagen) {
       const modalFoto = document.getElementById('modal-foto-resultado');
       const imgPreview = document.getElementById('img-preview-foto');
       const loaderFoto = document.getElementById('loader-foto-ia');
@@ -2840,16 +3226,14 @@
       const txtModalSub = document.getElementById('txt-modal-foto-sub');
       const laserScan = document.getElementById('laser-scan-anim');
 
-      const urlObj = URL.createObjectURL(archivo);
-      imgPreview.src = urlObj;
-
+      imgPreview.src = fuenteImagen;
       modalFoto.classList.remove('hidden');
       loaderFoto.classList.remove('hidden');
       laserScan.style.display = 'block';
       txtLoader.innerText = "Leyendo renglones de tu foto...";
       txtModalSub.innerText = "Iniciando motor de IA...";
 
-      Tesseract.recognize(archivo, 'spa', {
+      Tesseract.recognize(fuenteImagen, 'spa', {
         logger: m => {
           if (m.status === 'recognizing text') {
             const pct = Math.round(m.progress * 100);
@@ -3120,6 +3504,7 @@
     }
 
     function actualizarTotales() {
+      guardarRespaldoCarrito();
       const { total, cant } = calcularTotal();
       
       const badgeCant = document.getElementById('badge-nav-cant');
@@ -4534,6 +4919,7 @@
     // ================= INICIALIZACIÓN GLOBAL =================
     window.onload = () => { 
       renderizarCatalogo(); 
+      restaurarRespaldoCarrito();
       sincronizarTiendasDesdeFirebase();
       sincronizarCatalogoFlashDesdeFirebase();
 
