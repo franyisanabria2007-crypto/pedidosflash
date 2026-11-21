@@ -832,35 +832,69 @@
                 </button>
               </div>
 
-              <!-- PASO 1: SELECCIÓN DE UNIDAD (VEHÍCULO) -->
-              <div class="space-y-1.5">
+              <!-- PASO 1: SELECCIÓN DE UNIDAD Y TARIFA OFICIAL (SINCRONIZADA CON ADMIN) -->
+              <div class="space-y-2">
                 <div class="flex items-center justify-between px-0.5">
                   <span class="text-[11px] font-black text-indigo-200 uppercase tracking-wider flex items-center gap-1">
                     <span class="w-4 h-4 rounded-full bg-accent-cyan/20 text-accent-cyan text-[10px] flex items-center justify-center font-black">1</span>
-                    Elige tu Unidad
+                    Elige tu Unidad y Tarifa
                   </span>
-                  <span class="text-[9px] font-mono text-accent-yellow bg-accent-yellow/10 px-2 py-0.5 rounded-full border border-accent-yellow/30 font-bold">⚡ Tarifa fija</span>
+                  <span id="badge-tasa-bcv-transporte" class="text-[9px] font-mono text-accent-yellow bg-accent-yellow/10 px-2 py-0.5 rounded-full border border-accent-yellow/30 font-bold">⚡ Tarifas Oficiales</span>
                 </div>
 
+                <!-- SELECTOR PRINCIPAL: MOTO VS CARRO -->
                 <div class="grid grid-cols-2 gap-2">
-                  <button onclick="seleccionarTransporte('moto', 1.00)" id="btn-trans-moto" type="button" class="btn-tactil p-2.5 rounded-2xl border-2 border-accent-cyan bg-accent-cyan/20 text-white text-xs font-black flex flex-col items-center justify-center gap-1 shadow-glow-cyan transition relative">
+                  <button onclick="seleccionarCategoriaVehiculo('moto')" id="btn-cat-moto" type="button" class="btn-tactil p-2.5 rounded-2xl border-2 border-accent-cyan bg-accent-cyan/20 text-white text-xs font-black flex flex-col items-center justify-center gap-1 shadow-glow-cyan transition relative">
                     <span class="absolute top-1.5 right-1.5 bg-accent-cyan text-slate-950 font-black text-[8px] px-1.5 py-0.2 rounded-md shadow">RÁPIDO</span>
                     <div class="w-full h-11 rounded-xl overflow-hidden flex items-center justify-center">
                       <img src="img/moto.webp" alt="Moto" class="w-full h-full object-contain" onerror="this.src='img/logo.jfif';">
                     </div>
                     <span class="font-black text-xs">🛵 Moto Flash</span>
-                    <span class="text-accent-yellow font-black text-xs leading-none">$1.00</span>
+                    <span id="lbl-precio-base-moto" class="text-accent-yellow font-black text-xs leading-none">Desde $1.00</span>
                     <span class="text-[9px] text-slate-300 font-semibold leading-tight">Llega en ~2-4 min</span>
                   </button>
 
-                  <button onclick="seleccionarTransporte('carro', 2.00)" id="btn-trans-carro" type="button" class="btn-tactil p-2.5 rounded-2xl border-2 border-slate-800 bg-slate-900 text-slate-300 text-xs font-bold flex flex-col items-center justify-center gap-1 transition relative">
+                  <button onclick="seleccionarCategoriaVehiculo('carro')" id="btn-cat-carro" type="button" class="btn-tactil p-2.5 rounded-2xl border-2 border-slate-800 bg-slate-900 text-slate-300 text-xs font-bold flex flex-col items-center justify-center gap-1 transition relative">
                     <span class="absolute top-1.5 right-1.5 bg-indigo-500 text-white font-black text-[8px] px-1.5 py-0.2 rounded-md shadow">CONFORT</span>
                     <div class="w-full h-11 rounded-xl overflow-hidden flex items-center justify-center">
                       <img src="img/taxi icon.webp" alt="Carro" class="w-full h-full object-contain" onerror="this.src='img/logo.jfif';">
                     </div>
                     <span class="font-black text-xs text-white">🚗 Carro Flash</span>
-                    <span class="text-accent-yellow font-black text-xs leading-none">$2.00</span>
+                    <span id="lbl-precio-base-carro" class="text-accent-yellow font-black text-xs leading-none">Desde $4.00</span>
                     <span class="text-[9px] text-slate-400 font-semibold leading-tight">Hasta 4 pasajeros</span>
+                  </button>
+                </div>
+
+                <!-- SUB-TARIFAS MOTO (1.00 / 3.50 / 4.00) -->
+                <div id="opciones-tarifa-moto" class="grid grid-cols-3 gap-1.5 pt-1">
+                  <button type="button" onclick="seleccionarTarifaEspecifica('moto', 'moto_corta', 'Moto Corta / Urbana')" id="btn-tarifa-moto_corta" class="btn-tarifa-unidad btn-tactil p-2 rounded-xl border-2 border-accent-cyan bg-accent-cyan/20 text-white text-center flex flex-col items-center justify-center gap-0.5 shadow-glow-cyan">
+                    <span class="text-[10px] font-black leading-tight">Urbana / Corta</span>
+                    <span id="val-moto_corta" class="text-xs font-black text-accent-yellow">$1.00</span>
+                    <span id="bs-moto_corta" class="text-[9px] text-slate-300 font-mono"></span>
+                  </button>
+                  <button type="button" onclick="seleccionarTarifaEspecifica('moto', 'moto_media', 'Moto Media / Sectores')" id="btn-tarifa-moto_media" class="btn-tarifa-unidad btn-tactil p-2 rounded-xl border border-slate-800 bg-slate-900 text-slate-300 text-center flex flex-col items-center justify-center gap-0.5">
+                    <span class="text-[10px] font-bold leading-tight">Media / Sectores</span>
+                    <span id="val-moto_media" class="text-xs font-black text-accent-yellow">$3.50</span>
+                    <span id="bs-moto_media" class="text-[9px] text-slate-400 font-mono"></span>
+                  </button>
+                  <button type="button" onclick="seleccionarTarifaEspecifica('moto', 'moto_salon', 'Moto Salón / Especial')" id="btn-tarifa-moto_salon" class="btn-tarifa-unidad btn-tactil p-2 rounded-xl border border-slate-800 bg-slate-900 text-slate-300 text-center flex flex-col items-center justify-center gap-0.5">
+                    <span class="text-[10px] font-bold leading-tight">Salón / Especial</span>
+                    <span id="val-moto_salon" class="text-xs font-black text-accent-yellow">$4.00</span>
+                    <span id="bs-moto_salon" class="text-[9px] text-slate-400 font-mono"></span>
+                  </button>
+                </div>
+
+                <!-- SUB-TARIFAS CARRO (4.00 / 8.00) -->
+                <div id="opciones-tarifa-carro" class="grid grid-cols-2 gap-2 pt-1 hidden">
+                  <button type="button" onclick="seleccionarTarifaEspecifica('carro', 'carro_corto', 'Carro Corto / Estándar')" id="btn-tarifa-carro_corto" class="btn-tarifa-unidad btn-tactil p-2.5 rounded-xl border border-slate-800 bg-slate-900 text-slate-300 text-center flex flex-col items-center justify-center gap-0.5">
+                    <span class="text-[10px] font-bold leading-tight">Corto / Estándar</span>
+                    <span id="val-carro_corto" class="text-xs font-black text-accent-yellow">$4.00</span>
+                    <span id="bs-carro_corto" class="text-[9px] text-slate-400 font-mono"></span>
+                  </button>
+                  <button type="button" onclick="seleccionarTarifaEspecifica('carro', 'carro_salon', 'Carro Salón / Extensa')" id="btn-tarifa-carro_salon" class="btn-tarifa-unidad btn-tactil p-2.5 rounded-xl border border-slate-800 bg-slate-900 text-slate-300 text-center flex flex-col items-center justify-center gap-0.5">
+                    <span class="text-[10px] font-bold leading-tight">Salón / Extensa</span>
+                    <span id="val-carro_salon" class="text-xs font-black text-accent-yellow">$8.00</span>
+                    <span id="bs-carro_salon" class="text-[9px] text-slate-400 font-mono"></span>
                   </button>
                 </div>
               </div>
@@ -2137,8 +2171,8 @@
         { id: 'v_capri_conchita_500g', nombre: 'Capri Conchita / Corta 500g', precioBase: 1.73, imagen: 'img/logo.jfif', sub: 'pastas' },
         { id: 'v_pasta_horiz_500g', nombre: 'Pasta Horizonte / Especial Corta 500g', precioBase: 1.98, imagen: 'img/logo.jfif', sub: 'pastas' },
         { id: 'v_dudomi_instantanea', nombre: 'Dudomi Pasta Instantánea Empaque', precioBase: 1.37, imagen: 'img/logo.jfif', sub: 'pastas' },
-        { id: 'v_pastas_ronco', nombre: 'Pastas Ronco (Vermicelli / Linguini)', precioBase: 0, badge: 'CONSULTAR', imagen: 'img/logo.jfif', sub: 'pastas' },
-        { id: 'v_sopas_instantaneas_fideos', nombre: 'Sopas Instantáneas Fideos', precioBase: 0, badge: 'CONSULTAR', imagen: 'img/logo.jfif', sub: 'pastas' },
+        { id: 'v_pastas_ronco', nombre: 'Pastas Ronco (Vermicelli / Linguini)', precioBase: 1.45, imagen: 'img/logo.jfif', sub: 'pastas' },
+        { id: 'v_sopas_instantaneas_fideos', nombre: 'Sopas Instantáneas Fideos', precioBase: 1.25, imagen: 'img/logo.jfif', sub: 'pastas' },
 
         // --- GRANOS, ARROZ, AZÚCAR, SEMILLAS, COTUFAS Y SAL ---
         { id: 'v_arroz_delicia', nombre: 'Arroz Delicia 1kg', precioBase: 0.96, imagen: 'img/v_arroz_delicia.png', sub: 'granos' },
@@ -2166,7 +2200,7 @@
         { id: 'v_sal_prosanca_1kg', nombre: 'Sal Blanca Refinada Prosanca 1kg', precioBase: 0.19, imagen: 'img/v_sal_prosanca_1kg.png', sub: 'granos' },
         { id: 'v_sal_bahia_500g', nombre: 'Sal Bahía Pote 500g', precioBase: 2.41, imagen: 'img/logo.jfif', sub: 'granos' },
         { id: 'v_sal_mia_1kg', nombre: 'Sal Mía Paquete 1kg', precioBase: 0.58, imagen: 'img/logo.jfif', sub: 'granos' },
-        { id: 'v_sal_mesa_ensal', nombre: 'Sal de Mesa (Ensal / Sal Marina)', precioBase: 0, badge: 'CONSULTAR', imagen: 'img/logo.jfif', sub: 'granos' },
+        { id: 'v_sal_mesa_ensal', nombre: 'Sal de Mesa (Ensal / Sal Marina)', precioBase: 0.65, imagen: 'img/logo.jfif', sub: 'granos' },
         { id: 'v_arvejas_maizalito', nombre: 'Arvejas Verdes Maizalito 400g', precioBase: 0.89, imagen: 'img/v_arvejas_maizalito.png', sub: 'granos' },
         { id: 'v_lentejas_maizalito', nombre: 'Lentejas Maizalito 400g', precioBase: 1.13, imagen: 'img/v_lentejas_maizalito.png', sub: 'granos' },
         { id: 'v_caraotas_m_400g', nombre: 'Caraotas Negras Maizalito 400g', precioBase: 0.96, imagen: 'img/v_caraotas_m_400g.png', sub: 'granos' },
@@ -2223,7 +2257,7 @@
         { id: 'v_carton_huevos_15', nombre: 'Cartón de Huevos (1/2 Cartón - 15 Und)', precioBase: 2.81, imagen: 'img/logo.jfif', sub: 'lacteos' },
         { id: 'v_cafe_amanecer_lata', nombre: 'Café Amanecer Molido (Lata Sellada)', precioBase: 6.68, imagen: 'img/logo.jfif', sub: 'lacteos' },
         { id: 'v_cafe_amanecer_gourmet', nombre: 'Café Amanecer Gourmet 250g / 500g', precioBase: 2.69, imagen: 'img/logo.jfif', sub: 'lacteos' },
-        { id: 'v_maizoritos_cereales', nombre: 'Maizoritos Cereales Hojuelas', precioBase: 0, badge: 'CONSULTAR', imagen: 'img/logo.jfif', sub: 'lacteos' },
+        { id: 'v_maizoritos_cereales', nombre: 'Maizoritos Cereales Hojuelas', precioBase: 2.85, imagen: 'img/logo.jfif', sub: 'lacteos' },
         { id: 'v_sardina_aceite', nombre: 'Sardina Misión Mar Aceite', precioBase: 0.55, imagen: 'img/v_sardina_aceite.png', sub: 'lacteos' },
         { id: 'v_sardina_tomate', nombre: 'Sardina Misión Mar Tomate', precioBase: 0.56, imagen: 'img/v_sardina_tomate.png', sub: 'lacteos' },
         { id: 'v_sardinas_pacific_170g', nombre: 'Sardinas Tomate Pacific 170g Lata', precioBase: 1.12, imagen: 'img/logo.jfif', sub: 'lacteos' },
@@ -2365,7 +2399,7 @@
         { id: 'pa_galletas_cooky_chips', nombre: 'Galletas Cooky Chips / Chiquilín Paquete', precioBase: 2.08, imagen: 'img/logo.jfif', local: 'panamericana', tiendaId: 'panamericana' },
         { id: 'pa_galletas_mini_brownies_puig', nombre: 'Galletas Mini Brownies Puig Paquete', precioBase: 1.93, imagen: 'img/logo.jfif', local: 'panamericana', tiendaId: 'panamericana' },
         { id: 'pa_galletas_safari_choco', nombre: 'Galletas Safari Choco Paquete', precioBase: 1.47, imagen: 'img/logo.jfif', local: 'panamericana', tiendaId: 'panamericana' },
-        { id: 'pa_pan_sandwich_hoho', nombre: 'Pan de Sándwich / Ponqués Ho! Ho!', precioBase: 0, badge: 'CONSULTAR', imagen: 'img/logo.jfif', local: 'panamericana', tiendaId: 'panamericana' }
+        { id: 'pa_pan_sandwich_hoho', nombre: 'Pan de Sándwich / Ponqués Ho! Ho!', precioBase: 2.40, imagen: 'img/logo.jfif', local: 'panamericana', tiendaId: 'panamericana' }
       ],
       verduras: [
         { id: 'vf_tomate', nombre: 'Tomate Perita (kg)', precioBase: 1.80, imagen: 'img/vf_tomate.png', badge: 'FRESCO', esGranel: true, unidadMedida: 'g', pasoGranel: 100, minGranel: 250, maxGranel: 3000, defGranel: 1000 },
@@ -2409,7 +2443,7 @@
         { id: 'b_golden_refresco_15l', nombre: 'Golden Refresco 1.5 Litros', precioBase: 0.98, imagen: 'img/logo.jfif' },
         { id: 'b_agua_mineral_15l', nombre: 'Agua Mineral Embotellada 1.5 Litros', precioBase: 0.85, imagen: 'img/logo.jfif' },
         { id: 'b_agua_glacier_500ml', nombre: 'Agua Glacier Purificada 355ml / 500ml', precioBase: 0.40, imagen: 'img/logo.jfif' },
-        { id: 'b_refrescos_cool_2l', nombre: 'Refrescos Cool 2L Surtidos', precioBase: 0, badge: 'CONSULTAR', imagen: 'img/logo.jfif' }
+        { id: 'b_refrescos_cool_2l', nombre: 'Refrescos Cool 2L Surtidos', precioBase: 1.15, imagen: 'img/logo.jfif' }
       ],
       comida: [
         { id: 'mc_cafe_capuchino', nombre: 'Café Capuchino Especial ☕', precioBase: 2.00, imagen: 'img/b6.png', badge: 'CAFÉ', local: 'moravos', tiendaId: 'moravos' },
@@ -2458,8 +2492,8 @@
         { id: 'l_osoblanco_detergente', nombre: 'Oso Blanco Detergente Desinfectante Bolsa', precioBase: 1.75, imagen: 'img/logo.jfif', badge: 'ASEO' },
         { id: 'l_lavaplatos_multimarca_500ml', nombre: 'Lavaplatos Líquido Multi-marca 500ml', precioBase: 1.69, imagen: 'img/logo.jfif', badge: 'ASEO' },
         { id: 'l_detergente_polvo_generico', nombre: 'Detergente en Polvo (Genérico) Bolsa', precioBase: 1.29, imagen: 'img/logo.jfif', badge: 'ASEO' },
-        { id: 'l_cloros_vale_oxiclean_crismar', nombre: 'Cloros Vale / Oxi Clean / Crismar', precioBase: 0, badge: 'CONSULTAR', imagen: 'img/logo.jfif' },
-        { id: 'l_detergentes_hugme_alive_ultra_1kg', nombre: 'Detergentes Hugme / Alive / Ultra 1kg', precioBase: 0, badge: 'CONSULTAR', imagen: 'img/logo.jfif' }
+        { id: 'l_cloros_vale_oxiclean_crismar', nombre: 'Cloros Vale / Oxi Clean / Crismar', precioBase: 1.40, imagen: 'img/logo.jfif' },
+        { id: 'l_detergentes_hugme_alive_ultra_1kg', nombre: 'Detergentes Hugme / Alive / Ultra 1kg', precioBase: 2.20, imagen: 'img/logo.jfif' }
       ],
       farmacia: [
         { id: 'far_acetaminofen', nombre: 'Acetaminofén 500mg (Blíster 10 tabletas)', precioBase: 1.00, imagen: 'img/farmacia.webp', badge: 'ESENCIAL' },
@@ -3612,9 +3646,10 @@
       listaResumen.innerHTML = "";
 
       if (esPagoTransporteDirecto) {
-        const nombreServicio = `Servicio de ${tipoTransporteSeleccionado.toUpperCase()} en Nirgua`;
-        listaResumen.innerHTML += `<div class="flex justify-between items-center"><span class="text-slate-200">1x ${nombreServicio}</span><span class="text-accent-yellow font-black">$${precioTransporte.toFixed(2)}</span></div>`;
-        document.getElementById('total-precio-resumen').innerText = `$${precioTransporte.toFixed(2)}`;
+        const nombreServicio = `Transporte: ${claseCarreraSeleccionada}`;
+        const txtBsResumen = tasaBCVActual > 0 ? ` (${formatearBs(precioTransporte)})` : '';
+        listaResumen.innerHTML += `<div class="flex justify-between items-center"><span class="text-slate-200">1x ${nombreServicio}</span><span class="text-accent-yellow font-black">$${precioTransporte.toFixed(2)}${txtBsResumen}</span></div>`;
+        document.getElementById('total-precio-resumen').innerText = `$${precioTransporte.toFixed(2)}${txtBsResumen}`;
       } else {
         const { total, cant } = calcularTotal();
         const esDeliveryGratis = cant > 20;
@@ -3740,20 +3775,113 @@
       }
     }
 
-    function seleccionarTransporte(tipo, costo) {
-      tipoTransporteSeleccionado = tipo;
-      precioTransporte = costo;
-      const btnMoto = document.getElementById('btn-trans-moto');
-      const btnCarro = document.getElementById('btn-trans-carro');
-      document.getElementById('txt-precio-btn-viaje').innerText = `$${costo.toFixed(2)}`;
-      
-      if (tipo === 'moto') {
-        btnMoto.className = "btn-tactil p-2.5 rounded-2xl border-2 border-accent-cyan bg-accent-cyan/20 text-white text-xs font-black flex flex-col items-center justify-center gap-1 shadow-glow-cyan transition";
-        btnCarro.className = "btn-tactil p-2.5 rounded-2xl border-2 border-slate-800 bg-slate-900 text-slate-300 text-xs font-bold flex flex-col items-center justify-center gap-1 transition";
-      } else {
-        btnCarro.className = "btn-tactil p-2.5 rounded-2xl border-2 border-accent-cyan bg-accent-cyan/20 text-white text-xs font-black flex flex-col items-center justify-center gap-1 shadow-glow-cyan transition";
-        btnMoto.className = "btn-tactil p-2.5 rounded-2xl border-2 border-slate-800 bg-slate-900 text-slate-300 text-xs font-bold flex flex-col items-center justify-center gap-1 transition";
+    // ================= TARIFAS DE TRANSPORTE SINCRONIZADAS CON ADMIN =================
+    let tarifasTransporte = {
+      moto_corta: 1.00,
+      moto_media: 3.50,
+      moto_salon: 4.00,
+      carro_corto: 4.00,
+      carro_salon: 8.00
+    };
+    let claveTarifaSeleccionada = 'moto_corta';
+    let claseCarreraSeleccionada = 'Moto Corta / Urbana';
+
+    function formatearBs(montoUsd) {
+      if (!tasaBCVActual || tasaBCVActual <= 0) return '';
+      return `Bs. ${(montoUsd * tasaBCVActual).toFixed(2)}`;
+    }
+
+    function actualizarUIPreciosTransporte() {
+      Object.keys(tarifasTransporte).forEach(clave => {
+        const val = parseFloat(tarifasTransporte[clave]) || 0;
+        const elUsd = document.getElementById(`val-${clave}`);
+        const elBs = document.getElementById(`bs-${clave}`);
+        if (elUsd) elUsd.innerText = `$${val.toFixed(2)}`;
+        if (elBs) elBs.innerText = formatearBs(val);
+      });
+
+      const baseMoto = document.getElementById('lbl-precio-base-moto');
+      const baseCarro = document.getElementById('lbl-precio-base-carro');
+      if (baseMoto) baseMoto.innerText = `Desde $${tarifasTransporte.moto_corta.toFixed(2)}`;
+      if (baseCarro) baseCarro.innerText = `Desde $${tarifasTransporte.carro_corto.toFixed(2)}`;
+
+      const badgeTasa = document.getElementById('badge-tasa-bcv-transporte');
+      if (badgeTasa && tasaBCVActual > 0) {
+        badgeTasa.innerText = `BCV: Bs. ${tasaBCVActual.toFixed(2)}`;
       }
+
+      precioTransporte = parseFloat(tarifasTransporte[claveTarifaSeleccionada]) || 1.00;
+      const btnViaje = document.getElementById('txt-precio-btn-viaje');
+      if (btnViaje) {
+        const txtBs = tasaBCVActual > 0 ? ` • ${formatearBs(precioTransporte)}` : '';
+        btnViaje.innerText = `$${precioTransporte.toFixed(2)}${txtBs}`;
+      }
+    }
+
+    function seleccionarCategoriaVehiculo(categoria) {
+      tipoTransporteSeleccionado = categoria;
+      const btnMoto = document.getElementById('btn-cat-moto');
+      const btnCarro = document.getElementById('btn-cat-carro');
+      const boxMoto = document.getElementById('opciones-tarifa-moto');
+      const boxCarro = document.getElementById('opciones-tarifa-carro');
+
+      if (categoria === 'moto') {
+        btnMoto.className = "btn-tactil p-2.5 rounded-2xl border-2 border-accent-cyan bg-accent-cyan/20 text-white text-xs font-black flex flex-col items-center justify-center gap-1 shadow-glow-cyan transition relative";
+        btnCarro.className = "btn-tactil p-2.5 rounded-2xl border-2 border-slate-800 bg-slate-900 text-slate-300 text-xs font-bold flex flex-col items-center justify-center gap-1 transition relative";
+        boxMoto.classList.remove('hidden');
+        boxCarro.classList.add('hidden');
+        seleccionarTarifaEspecifica('moto', 'moto_corta', 'Moto Corta / Urbana');
+      } else {
+        btnCarro.className = "btn-tactil p-2.5 rounded-2xl border-2 border-accent-cyan bg-accent-cyan/20 text-white text-xs font-black flex flex-col items-center justify-center gap-1 shadow-glow-cyan transition relative";
+        btnMoto.className = "btn-tactil p-2.5 rounded-2xl border-2 border-slate-800 bg-slate-900 text-slate-300 text-xs font-bold flex flex-col items-center justify-center gap-1 transition relative";
+        boxCarro.classList.remove('hidden');
+        boxMoto.classList.add('hidden');
+        seleccionarTarifaEspecifica('carro', 'carro_corto', 'Carro Corto / Estándar');
+      }
+    }
+
+    function seleccionarTarifaEspecifica(vehiculo, clave, etiquetaClase) {
+      tipoTransporteSeleccionado = vehiculo;
+      claveTarifaSeleccionada = clave;
+      claseCarreraSeleccionada = etiquetaClase;
+      precioTransporte = parseFloat(tarifasTransporte[clave]) || 1.00;
+
+      document.querySelectorAll('.btn-tarifa-unidad').forEach(btn => {
+        btn.className = "btn-tarifa-unidad btn-tactil p-2 rounded-xl border border-slate-800 bg-slate-900 text-slate-300 text-center flex flex-col items-center justify-center gap-0.5";
+      });
+
+      const btnSel = document.getElementById(`btn-tarifa-${clave}`);
+      if (btnSel) {
+        btnSel.className = "btn-tarifa-unidad btn-tactil p-2 rounded-xl border-2 border-accent-cyan bg-accent-cyan/20 text-white text-center flex flex-col items-center justify-center gap-0.5 shadow-glow-cyan";
+      }
+
+      actualizarUIPreciosTransporte();
+    }
+
+    function seleccionarTransporte(tipo, costo) {
+      if (tipo === 'carro') {
+        seleccionarCategoriaVehiculo('carro');
+      } else {
+        seleccionarCategoriaVehiculo('moto');
+      }
+      if (typeof costo === 'number' && !isNaN(costo)) {
+        precioTransporte = costo;
+      }
+    }
+
+    function sincronizarTarifasTransporteDesdeFirebase() {
+      if (!firebaseActivo || !db) return;
+      db.ref('configuracion_tarifas_transporte').on('value', (snap) => {
+        const t = snap.val();
+        if (t) {
+          if (t.moto_corta !== undefined) tarifasTransporte.moto_corta = parseFloat(t.moto_corta);
+          if (t.moto_media !== undefined) tarifasTransporte.moto_media = parseFloat(t.moto_media);
+          if (t.moto_salon !== undefined) tarifasTransporte.moto_salon = parseFloat(t.moto_salon);
+          if (t.carro_corto !== undefined) tarifasTransporte.carro_corto = parseFloat(t.carro_corto);
+          if (t.carro_salon !== undefined) tarifasTransporte.carro_salon = parseFloat(t.carro_salon);
+          actualizarUIPreciosTransporte();
+        }
+      });
     }
 
     function reiniciarPuntosRuta() {
@@ -3882,7 +4010,7 @@
         });
       } else {
         listaItemsArray.push({
-          nombre: `Servicio de Transporte: ${tipoTransporteSeleccionado.toUpperCase()}`,
+          nombre: `Servicio de Transporte: ${claseCarreraSeleccionada}`,
           precio: precioTransporte,
           cantidad: 1
         });
@@ -3944,6 +4072,7 @@
             orden: numOrden,
             tipoServicio: esPagoTransporteDirecto ? 'transporte' : 'delivery',
             vehiculoRequerido: esPagoTransporteDirecto ? (tipoTransporteSeleccionado === 'carro' ? 'Carro' : 'Moto') : 'Cualquiera',
+            claseCarrera: esPagoTransporteDirecto ? claseCarreraSeleccionada : null,
             cliente: nombre,
             telefono: telefono,
             direccion: direccion || textoDestinoStr || 'Ubicación especificada',
@@ -4875,12 +5004,16 @@
       restaurarRespaldoCarrito();
       sincronizarTiendasDesdeFirebase();
       sincronizarCatalogoFlashDesdeFirebase();
+      sincronizarTarifasTransporteDesdeFirebase();
+      actualizarUIPreciosTransporte();
       if (firebaseActivo && db) {
         db.ref('configuracion/tasaBCV').on('value', (snap) => {
           const val = parseFloat(snap.val());
           if (!isNaN(val) && val > 0) {
             tasaBCVActual = val;
             localStorage.setItem('pedidosflash_tasa_bcv', val.toString());
+            actualizarUIPreciosTransporte();
+            actualizarTotales();
           }
         });
       }
