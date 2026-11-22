@@ -1133,18 +1133,32 @@
             <input type="hidden" id="metodoPagoElegido" value="Pago Móvil">
           </div>
 
-          <div id="caja-pago-movil" class="space-y-2 bg-slate-900 p-2.5 rounded-xl border border-slate-800">
-            <div class="flex items-center justify-between">
+          <div id="caja-pago-movil" class="space-y-2.5 bg-slate-900 p-3 rounded-xl border border-slate-800">
+            <p class="text-[11px] text-accent-cyan font-bold">Pago Móvil Oficial del Negocio (Al Recibir)</p>
+            
+            <!-- Opción 1: Provincial -->
+            <div class="flex items-center justify-between bg-slate-950/90 p-2.5 rounded-xl border border-slate-800/90">
               <div>
-                <p class="text-[11px] text-accent-cyan font-bold">Pago Móvil al Momento de la Entrega</p>
-                <p class="text-[11px] text-slate-300 font-semibold">Banesco (0134) • 0426-2566854</p>
-                <p class="text-[10px] text-slate-400">C.I: 28.123.456</p>
+                <p class="text-[11px] text-white font-black">Provincial (0108) • 0414-4205169</p>
+                <p class="text-[10px] text-slate-400 font-semibold">C.I: 31.060.250</p>
               </div>
-              <button type="button" onclick="copiarDatosPagoMovil()" class="btn-tactil bg-indigo-600 hover:bg-indigo-500 text-white font-black px-3 py-1.5 rounded-lg text-[10px] flex items-center gap-1 shadow">
+              <button type="button" onclick="copiarDatosPagoMovil('provincial')" class="btn-tactil bg-indigo-600 hover:bg-indigo-500 text-white font-black px-3 py-1.5 rounded-lg text-[10px] flex items-center gap-1 shadow">
                 <i data-lucide="copy" class="w-3 h-3"></i> Copiar
               </button>
             </div>
-            <p class="text-[10px] text-slate-400 leading-tight">💡 Pagas cómodamente cuando el repartidor llegue a tu dirección.</p>
+
+            <!-- Opción 2: Banco de Venezuela -->
+            <div class="flex items-center justify-between bg-slate-950/90 p-2.5 rounded-xl border border-slate-800/90">
+              <div>
+                <p class="text-[11px] text-white font-black">Banco de Venezuela (0102) • 0426-2566854</p>
+                <p class="text-[10px] text-slate-400 font-semibold">C.I: 12.286.636</p>
+              </div>
+              <button type="button" onclick="copiarDatosPagoMovil('venezuela')" class="btn-tactil bg-indigo-600 hover:bg-indigo-500 text-white font-black px-3 py-1.5 rounded-lg text-[10px] flex items-center gap-1 shadow">
+                <i data-lucide="copy" class="w-3 h-3"></i> Copiar
+              </button>
+            </div>
+
+            <p class="text-[10px] text-slate-400 leading-tight">💡 Pagas cómodamente a cualquiera de nuestras dos cuentas cuando el repartidor llegue a tu dirección.</p>
           </div>
 
           <div id="caja-pago-efectivo" class="space-y-2 bg-slate-900 p-2.5 rounded-xl border border-slate-800 hidden">
@@ -4387,10 +4401,12 @@
       mostrarToast(`Pagas con: ${monto}`, "Vuelto", "info");
     }
 
-    function copiarDatosPagoMovil() {
-      const datos = "Banesco (0134) - 04262566854 - V-28123456";
+    function copiarDatosPagoMovil(banco = 'provincial') {
+      const datos = banco === 'venezuela'
+        ? "Banco de Venezuela (0102) - 04262566854 - V-12286636"
+        : "Provincial (0108) - 04144205169 - V-31060250";
       navigator.clipboard.writeText(datos).then(() => {
-        mostrarToast("Datos de Pago Móvil copiados", "Copiado", "success");
+        mostrarToast(`Datos de ${banco === 'venezuela' ? 'Banco de Venezuela' : 'Provincial'} copiados`, "Copiado", "success");
       });
     }
 
