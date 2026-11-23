@@ -8,28 +8,23 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <title>Pedidos Flash - App Móvil Nirgua</title>
   
+  <!-- Preconexión a CDNs para inicio rápido en GitHub Pages -->
+  <link rel="preconnect" href="https://cdn.tailwindcss.com">
+  <link rel="preconnect" href="https://unpkg.com">
+  <link rel="preconnect" href="https://www.gstatic.com">
+
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Lucide Icons -->
-  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Lucide Icons (diferido) -->
+  <script src="https://unpkg.com/lucide@latest" defer></script>
   
-  <!-- Preconexión rápida a Firebase -->
-  <link rel="preconnect" href="https://pedidosflash-c7bb7-default-rtdb.firebaseio.com" crossorigin>
-  <link rel="dns-prefetch" href="https://pedidosflash-c7bb7-default-rtdb.firebaseio.com">
-
-  <!-- Leaflet CSS y JS (Diferido para no bloquear el Login) -->
+  <!-- Leaflet CSS y JS (carga no bloqueante) -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" media="print" onload="this.media='all'" />
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" defer></script>
 
-  <!-- Hoja de Estilos Personalizada (Glassmorphism & Login) -->
-  <link rel="stylesheet" href="style.css?v=3">
-
-  <!-- Tesseract.js (Diferido: solo se usa al escanear fotos) -->
-  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js" defer></script>
-
-  <!-- Firebase SDKs -->
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+  <!-- Firebase SDKs (diferidos) -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js" defer></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js" defer></script>
   
   <!-- Google Fonts: Plus Jakarta Sans -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -388,7 +383,8 @@
              muted 
              loop 
              playsinline 
-             preload="metadata" 
+             preload="none"
+             poster="img/logo.jfif"
              class="background-video background-video-auth" 
              onerror="this.style.display='none';">
         <source src="img/1002084633.mp4" type="video/mp4">
@@ -557,7 +553,8 @@
                loop 
                muted 
                playsinline 
-               preload="metadata"
+               preload="none"
+               poster="img/logo.jfif"
                class="w-full h-full object-cover rounded-2xl"
                onerror="this.style.display='none'; document.getElementById('logo-fallback').style.display='block';">
           <source src="img/1002084633.mp4" type="video/mp4">
@@ -689,7 +686,7 @@
               </div>
               <div>
                 <h4 class="font-black text-white text-xs">Panadería</h4>
-                <p class="text-[10px] text-slate-400 leading-tight">La Panamericana</p>
+                <p class="text-[10px] text-slate-400 leading-tight">Pan fresco, dulces y galletas</p>
               </div>
             </button>
 
@@ -798,17 +795,12 @@
           <div id="sec-charcuteria" class="seccion-target space-y-2 hidden"><div id="grid-charcuteria" class="grid grid-cols-2 gap-2.5"></div></div>
           <div id="sec-carnes" class="seccion-target space-y-2 hidden"><div id="grid-carnes" class="grid grid-cols-2 gap-2.5"></div></div>
           
-          <div id="sec-panaderia" class="seccion-target space-y-4 hidden">
-            <div class="bg-slate-900/90 border border-accent-yellow/40 p-3 rounded-2xl space-y-2.5 backdrop-blur-md">
-              <div class="flex items-center gap-2.5 border-b border-slate-800 pb-2">
-                <img src="img/panamericana.webp" alt="La Panamericana" class="w-10 h-10 rounded-full object-cover border border-accent-yellow shadow-md" onerror="this.src='img/logo.jfif';">
-                <div>
-                  <h4 class="font-black text-white text-xs uppercase tracking-wider">La Panamericana</h4>
-                  <p class="text-[10px] text-accent-yellow font-semibold">¡La calidad es nuestra receta!</p>
-                </div>
-              </div>
-              <div id="grid-panaderia-panamericana" class="grid grid-cols-2 gap-2.5"></div>
+          <div id="sec-panaderia" class="seccion-target space-y-3 hidden">
+            <div class="px-1">
+              <h3 class="text-xs font-black text-accent-yellow uppercase tracking-wider">Panadería & Repostería</h3>
+              <p class="text-[11px] text-slate-400">Pan fresco, dulces y galletas</p>
             </div>
+            <div id="grid-panaderia-panamericana" class="grid grid-cols-2 gap-2.5"></div>
           </div>
 
           <div id="sec-verduras" class="seccion-target space-y-2 hidden"><div id="grid-verduras" class="grid grid-cols-2 gap-2.5"></div></div>
@@ -1142,18 +1134,32 @@
             <input type="hidden" id="metodoPagoElegido" value="Pago Móvil">
           </div>
 
-          <div id="caja-pago-movil" class="space-y-2 bg-slate-900 p-2.5 rounded-xl border border-slate-800">
-            <div class="flex items-center justify-between">
+          <div id="caja-pago-movil" class="space-y-2.5 bg-slate-900 p-3 rounded-xl border border-slate-800">
+            <p class="text-[11px] text-accent-cyan font-bold">Pago Móvil Oficial del Negocio (Al Recibir)</p>
+            
+            <!-- Opción 1: Provincial -->
+            <div class="flex items-center justify-between bg-slate-950/90 p-2.5 rounded-xl border border-slate-800/90">
               <div>
-                <p class="text-[11px] text-accent-cyan font-bold">Pago Móvil al Momento de la Entrega</p>
-                <p class="text-[11px] text-slate-300 font-semibold">Banesco (0134) • 0426-2566854</p>
-                <p class="text-[10px] text-slate-400">C.I: 28.123.456</p>
+                <p class="text-[11px] text-white font-black">Provincial (0108) • 0414-4205169</p>
+                <p class="text-[10px] text-slate-400 font-semibold">C.I: 31.060.250</p>
               </div>
-              <button type="button" onclick="copiarDatosPagoMovil()" class="btn-tactil bg-indigo-600 hover:bg-indigo-500 text-white font-black px-3 py-1.5 rounded-lg text-[10px] flex items-center gap-1 shadow">
+              <button type="button" onclick="copiarDatosPagoMovil('provincial')" class="btn-tactil bg-indigo-600 hover:bg-indigo-500 text-white font-black px-3 py-1.5 rounded-lg text-[10px] flex items-center gap-1 shadow">
                 <i data-lucide="copy" class="w-3 h-3"></i> Copiar
               </button>
             </div>
-            <p class="text-[10px] text-slate-400 leading-tight">💡 Pagas cómodamente cuando el repartidor llegue a tu dirección.</p>
+
+            <!-- Opción 2: Banco de Venezuela -->
+            <div class="flex items-center justify-between bg-slate-950/90 p-2.5 rounded-xl border border-slate-800/90">
+              <div>
+                <p class="text-[11px] text-white font-black">Banco de Venezuela (0102) • 0426-2566854</p>
+                <p class="text-[10px] text-slate-400 font-semibold">C.I: 12.286.636</p>
+              </div>
+              <button type="button" onclick="copiarDatosPagoMovil('venezuela')" class="btn-tactil bg-indigo-600 hover:bg-indigo-500 text-white font-black px-3 py-1.5 rounded-lg text-[10px] flex items-center gap-1 shadow">
+                <i data-lucide="copy" class="w-3 h-3"></i> Copiar
+              </button>
+            </div>
+
+            <p class="text-[10px] text-slate-400 leading-tight">💡 Pagas cómodamente a cualquiera de nuestras dos cuentas cuando el repartidor llegue a tu dirección.</p>
           </div>
 
           <div id="caja-pago-efectivo" class="space-y-2 bg-slate-900 p-2.5 rounded-xl border border-slate-800 hidden">
@@ -1757,6 +1763,14 @@
             </a>
           </div>
         </div>
+
+        <!-- BOTÓN CANCELAR ORDEN (VISIBLE MIENTRAS EL PEDIDO NO ESTÉ EN CAMINO O ENTREGADO) -->
+        <div id="rastreo-caja-cancelar" class="pt-1 shrink-0 hidden">
+          <button type="button" onclick="cancelarPedidoCliente()" class="btn-tactil w-full bg-rose-500/15 hover:bg-rose-500/25 text-rose-400 border border-rose-500/40 font-black py-2.5 px-3 rounded-2xl text-xs flex items-center justify-center gap-1.5 transition">
+            <i data-lucide="x-circle" class="w-4 h-4"></i>
+            <span>Cancelar Orden</span>
+          </button>
+        </div>
       </div>
     </div>
 
@@ -1969,13 +1983,6 @@
       mostrarToast("Navegando como Invitado", "Bienvenido", "info");
     }
 
-    function consultarFirebaseConTimeout(refPath, ms = 4000) {
-      return Promise.race([
-        db.ref(refPath).once('value'),
-        new Promise((_, reject) => setTimeout(() => reject(new Error('TIMEOUT_FIREBASE')), ms))
-      ]);
-    }
-
     async function ejecutarLogin(e) {
       e.preventDefault();
       const telRaw = document.getElementById('auth-login-tel').value.trim();
@@ -1987,24 +1994,6 @@
         return;
       }
 
-      // Acceso instantáneo desde caché local del teléfono (0 ms)
-      try {
-        const cacheUsuarios = JSON.parse(localStorage.getItem('pedidosflash_usuarios_cache') || '{}');
-        const localGuardado = JSON.parse(localStorage.getItem('pedidosflash_usuario') || 'null');
-        const usuarioCache = cacheUsuarios[telLimpio] || (localGuardado && localGuardado.telefono === telLimpio ? localGuardado : null);
-
-        if (usuarioCache && usuarioCache.pin === pin) {
-          guardarYAplicarSesion(usuarioCache);
-          mostrarToast(`¡Bienvenido de nuevo, ${usuarioCache.nombre || 'Cliente'}!`, "Acceso Instantáneo ⚡", "success");
-          if (firebaseActivo && db) {
-            db.ref(`usuarios_clientes/${telLimpio}`).once('value').then(snap => {
-              if (snap.val()) guardarYAplicarSesion(snap.val(), true);
-            }).catch(() => {});
-          }
-          return;
-        }
-      } catch (errCache) {}
-
       const btn = document.getElementById('btn-submit-login');
       const textoOrig = btn.innerHTML;
       btn.disabled = true;
@@ -2012,7 +2001,7 @@
 
       try {
         if (firebaseActivo && db) {
-          const snap = await consultarFirebaseConTimeout(`usuarios_clientes/${telLimpio}`, 4500);
+          const snap = await db.ref(`usuarios_clientes/${telLimpio}`).once('value');
           const user = snap.val();
           if (!user) {
             mostrarToast("Usuario no encontrado. Crea tu cuenta", "No registrado", "error");
@@ -2031,14 +2020,12 @@
           guardarYAplicarSesion(usuarioLocal);
         }
       } catch (err) {
-        console.warn("Login lento o sin red, entrando en modo rápido:", err);
+        console.error("Error login:", err);
         const local = JSON.parse(localStorage.getItem('pedidosflash_usuario') || 'null');
         if (local && local.telefono === telLimpio && local.pin === pin) {
           guardarYAplicarSesion(local);
         } else {
-          const usuarioFallback = { telefono: telLimpio, telefonoOriginal: telRaw, nombre: "Cliente Flash", direccion: "Nirgua", pin };
-          guardarYAplicarSesion(usuarioFallback);
-          mostrarToast("Ingresaste en modo rápido", "Bienvenido", "info");
+          mostrarToast("Error de conexión al verificar usuario", "Error", "error");
         }
       } finally {
         btn.disabled = false;
@@ -2059,6 +2046,11 @@
         return;
       }
 
+      const btn = document.getElementById('btn-submit-reg');
+      const textoOrig = btn.innerHTML;
+      btn.disabled = true;
+      btn.innerHTML = `<span class="animate-spin mr-2">⏳</span> Registrando...`;
+
       const nuevoUsuario = {
         telefono: telLimpio,
         telefonoOriginal: telRaw,
@@ -2068,34 +2060,28 @@
         fechaRegistro: new Date().toISOString()
       };
 
-      // Entra al instante y guarda en Firebase en segundo plano
-      guardarYAplicarSesion(nuevoUsuario);
-      mostrarToast(`¡Bienvenido a Pedidos Flash, ${nombre}!`, "Cuenta Creada", "success");
-
-      if (firebaseActivo && db) {
-        db.ref(`usuarios_clientes/${telLimpio}`).set(nuevoUsuario).catch(err => {
-          console.warn("Sincronización diferida de registro:", err);
-        });
+      try {
+        if (firebaseActivo && db) {
+          await db.ref(`usuarios_clientes/${telLimpio}`).set(nuevoUsuario);
+        }
+        guardarYAplicarSesion(nuevoUsuario);
+        mostrarToast(`¡Bienvenido a Pedidos Flash, ${nombre}!`, "Cuenta Creada", "success");
+      } catch (err) {
+        console.warn("Guardado local por fallo de red:", err);
+        guardarYAplicarSesion(nuevoUsuario);
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = textoOrig;
       }
     }
 
-    function guardarYAplicarSesion(user, silencioso = false) {
+    function guardarYAplicarSesion(user) {
       localStorage.setItem('pedidosflash_usuario', JSON.stringify(user));
-      try {
-        const cache = JSON.parse(localStorage.getItem('pedidosflash_usuarios_cache') || '{}');
-        if (user.telefono) {
-          cache[user.telefono] = user;
-          localStorage.setItem('pedidosflash_usuarios_cache', JSON.stringify(cache));
-        }
-      } catch (e) {}
-
       aplicarSesionUsuario(user);
-      if (!silencioso) {
-        const authScreen = document.getElementById('pantalla-auth');
-        if (authScreen) {
-          authScreen.classList.add('opacity-0', 'pointer-events-none');
-          setTimeout(() => authScreen.classList.add('hidden'), 300);
-        }
+      const authScreen = document.getElementById('pantalla-auth');
+      if (authScreen) {
+        authScreen.classList.add('opacity-0', 'pointer-events-none');
+        setTimeout(() => authScreen.classList.add('hidden'), 400);
       }
     }
 
@@ -2443,6 +2429,21 @@
         { id: 'v_ex_vinagre_iberia', nombre: 'Vinagre Iberia', precioBase: 1.34, imagen: 'img/v_ex_vinagre_iberia.png', sub: 'lacteos' },
         { id: 'v_ex_vinagre_kaldino_aceto_di_mele', nombre: 'Vinagre Kaldino Aceto di Mele', precioBase: 1.43, imagen: 'img/v_ex_vinagre_kaldino_aceto_di_mele.png', sub: 'lacteos' },
         { id: 'v_ex_vinagre_mavrsa', nombre: 'Vinagre Mavrsa', precioBase: 1.66, imagen: 'img/v_ex_vinagre_mavrsa.png', sub: 'lacteos' },
+        { id: 'l_vinagre_lavina_150ml', nombre: 'Vinagre La Viña 150ml', precioBase: 0.39, imagen: 'img/l_vinagre_lavina_150ml.png', sub: 'lacteos' },
+        { id: 'l_vinagre_lavina_1l', nombre: 'Vinagre La Viña 1L', precioBase: 0.83, imagen: 'img/l_vinagre_lavina_1l.png', sub: 'lacteos' },
+        { id: 'l_vinagre_lacolmena_1l', nombre: 'Vinagre La Colmena 1L', precioBase: 1.01, imagen: 'img/l_vinagre_lacolmena_1l.png', sub: 'lacteos' },
+        { id: 'l_vinagre_lalucha_1l', nombre: 'Vinagre La Lucha 1L', precioBase: 1.05, imagen: 'img/l_vinagre_lalucha_1l.png', sub: 'lacteos' },
+        { id: 'l_vinagre_heinz_500ml', nombre: 'Vinagre Heinz 500ml', precioBase: 1.23, imagen: 'img/l_vinagre_heinz_500ml.png', sub: 'lacteos' },
+        { id: 'l_vinagre_tiquire_500ml', nombre: 'Vinagre Tiquire 500ml', precioBase: 0.76, imagen: 'img/l_vinagre_tiquire_500ml.png', sub: 'lacteos' },
+        { id: 'l_sazonalisto_200g', nombre: 'Sazonalisto La Viña 200g', precioBase: 1.10, imagen: 'img/l_sazonalisto_200g.png', sub: 'lacteos' },
+        { id: 'l_tripack_lavina', nombre: 'Salsa Tripack La Viña 150ml', precioBase: 1.37, imagen: 'img/l_tripack_lavina.png', sub: 'lacteos' },
+        { id: 'l_salsa_ajo_colmena_338l', nombre: 'Salsa de Ajo La Colmena 3.38L', precioBase: 4.91, imagen: 'img/l_salsa_ajo_colmena_338l.png', sub: 'lacteos' },
+        { id: 'l_salsa_soya_colmena_385l', nombre: 'Salsa de Soya La Colmena 3.85L', precioBase: 6.29, imagen: 'img/l_salsa_soya_colmena_385l.png', sub: 'lacteos' },
+        { id: 'l_salsa_inglesa_colmena_385l', nombre: 'Salsa Inglesa La Colmena 3.85L', precioBase: 6.68, imagen: 'img/l_salsa_inglesa_colmena_385l.png', sub: 'lacteos' },
+        { id: 'l_salsa_inglesa_kiero_150cc', nombre: 'Salsa Inglesa Kiero 150cc', precioBase: 0.92, imagen: 'img/l_salsa_inglesa_kiero_150cc.png', sub: 'lacteos' },
+        { id: 'l_salsa_ajo_kiero_150cc', nombre: 'Salsa de Ajo Kiero 150cc', precioBase: 0.98, imagen: 'img/l_salsa_ajo_kiero_150cc.png', sub: 'lacteos' },
+        { id: 'l_salsa_ajo_albeca_150ml', nombre: 'Salsa de Ajo Albeca 150ml', precioBase: 0.84, imagen: 'img/l_salsa_ajo_albeca_150ml.png', sub: 'lacteos' },
+        { id: 'l_vinagre_mavesa_iberia_500ml', nombre: 'Mavesa / Iberia Vinagre Blanco 500ml', precioBase: 1.66, imagen: 'img/l_vinagre_mavesa_iberia_500ml.png', sub: 'lacteos' },
         { id: 'v_ex_aceite_la_pampa', nombre: 'Aceite La Pampa', precioBase: 0, imagen: 'img/v_ex_aceite_la_pampa.png', sub: 'lacteos' },
         { id: 'v_ex_aceite_oleo', nombre: 'Aceite Oleo', precioBase: 0, imagen: 'img/v_ex_aceite_oleo.png', sub: 'lacteos' },
         { id: 'v_ex_aceite_sagi', nombre: 'Aceite Sagi', precioBase: 0, imagen: 'img/v_ex_aceite_sagi.png', sub: 'lacteos' },
@@ -2693,54 +2694,54 @@
         { id: 'cn_milanesa_pollo_kg', nombre: 'Milanesa de Pollo (kg)', precioBase: 6.00, imagen: 'img/cn_milanesa_pollo_kg.png', badge: 'TOP', esGranel: true, unidadMedida: 'g', pasoGranel: 100, minGranel: 250, maxGranel: 4000, defGranel: 1000 }
       ],
       panaderia: [
-        { id: 'pa_pan_sobado', nombre: 'Pan Sobado / Piñita Artesanal', precioBase: 1.50, imagen: 'img/p_pan_sobado.png', badge: 'FRESCO', local: 'panamericana', tiendaId: 'panamericana' },
-        { id: 'pa_pan_baguette', nombre: 'Pan Baguette Francés', precioBase: 1.20, imagen: 'img/p_pan_baguette.png', local: 'panamericana', tiendaId: 'panamericana' },
-        { id: 'pa_quesillo', nombre: 'Quesillo Casero (Porción)', precioBase: 2.50, imagen: 'img/p_quesillo.png', badge: 'DULCE', local: 'panamericana', tiendaId: 'panamericana' },
-        { id: 'pa_ponque', nombre: 'Ponqué con Pasas', precioBase: 2.00, imagen: 'img/p_ponque.png', badge: 'DULCE', local: 'panamericana', tiendaId: 'panamericana' },
-        { id: 'pa_galletas_charmy', nombre: 'Galletas Charmy Brownie', precioBase: 1.64, imagen: 'img/v34.png', local: 'panamericana', tiendaId: 'panamericana' },
+        { id: 'pa_pan_sobado', nombre: 'Pan Sobado / Piñita Artesanal', precioBase: 1.50, imagen: 'img/p_pan_sobado.png', badge: 'FRESCO' },
+        { id: 'pa_pan_baguette', nombre: 'Pan Baguette Francés', precioBase: 1.20, imagen: 'img/p_pan_baguette.png' },
+        { id: 'pa_quesillo', nombre: 'Quesillo Casero (Porción)', precioBase: 2.50, imagen: 'img/p_quesillo.png', badge: 'DULCE' },
+        { id: 'pa_ponque', nombre: 'Ponqué con Pasas', precioBase: 2.00, imagen: 'img/p_ponque.png', badge: 'DULCE' },
+        { id: 'pa_galletas_charmy', nombre: 'Galletas Charmy Brownie', precioBase: 1.64, imagen: 'img/v34.png' },
         // --- NUEVOS PANADERÍA Y GALLETAS DEL INVENTARIO ---
-        { id: 'pa_ponque_paneton_caja', nombre: 'Ponqué / Panetón Frutas y Choc. Caja', precioBase: 2.82, imagen: 'img/pa_ponque_paneton_caja.png', local: 'panamericana', tiendaId: 'panamericana' },
-        { id: 'pa_ducales_deleitinas', nombre: 'Ducales / Deleitinas Galletas 3-4 Tacos', precioBase: 2.96, imagen: 'img/pa_ducales_deleitinas.png', local: 'panamericana', tiendaId: 'panamericana' },
-        { id: 'pa_galletas_katy_oreo', nombre: 'Galletas Katy / Oreo Multipack Familiar', precioBase: 2.63, imagen: 'img/pa_galletas_katy_oreo.png', local: 'panamericana', tiendaId: 'panamericana' },
-        { id: 'pa_galletas_marilu_270g', nombre: 'Galletas Marilú 270g Paquete', precioBase: 2.34, imagen: 'img/pa_galletas_marilu_270g.png', local: 'panamericana', tiendaId: 'panamericana' },
-        { id: 'pa_saltin_noel_3tacos', nombre: 'Saltín Noel Galletas 3 Tacos', precioBase: 2.28, imagen: 'img/pa_saltin_noel_3tacos.png', local: 'panamericana', tiendaId: 'panamericana' },
-        { id: 'pa_galletas_cooky_chips', nombre: 'Galletas Cooky Chips / Chiquilín Paquete', precioBase: 2.08, imagen: 'img/pa_galletas_cooky_chips.png', local: 'panamericana', tiendaId: 'panamericana' },
-        { id: 'pa_galletas_mini_brownies_puig', nombre: 'Galletas Mini Brownies Puig Paquete', precioBase: 1.93, imagen: 'img/pa_galletas_mini_brownies_puig.png', local: 'panamericana', tiendaId: 'panamericana' },
-        { id: 'pa_galletas_safari_choco', nombre: 'Galletas Safari Choco Paquete', precioBase: 1.47, imagen: 'img/pa_galletas_safari_choco.png', local: 'panamericana', tiendaId: 'panamericana' },
-        { id: 'pa_pan_sandwich_hoho', nombre: 'Pan de Sándwich / Ponqués Ho! Ho!', precioBase: 2.40, imagen: 'img/pa_pan_sandwich_hoho.png', local: 'panamericana', tiendaId: 'panamericana' },
+        { id: 'pa_ponque_paneton_caja', nombre: 'Ponqué / Panetón Frutas y Choc. Caja', precioBase: 2.82, imagen: 'img/pa_ponque_paneton_caja.png' },
+        { id: 'pa_ducales_deleitinas', nombre: 'Ducales / Deleitinas Galletas 3-4 Tacos', precioBase: 2.96, imagen: 'img/pa_ducales_deleitinas.png' },
+        { id: 'pa_galletas_katy_oreo', nombre: 'Galletas Katy / Oreo Multipack Familiar', precioBase: 2.63, imagen: 'img/pa_galletas_katy_oreo.png' },
+        { id: 'pa_galletas_marilu_270g', nombre: 'Galletas Marilú 270g Paquete', precioBase: 2.34, imagen: 'img/pa_galletas_marilu_270g.png' },
+        { id: 'pa_saltin_noel_3tacos', nombre: 'Saltín Noel Galletas 3 Tacos', precioBase: 2.28, imagen: 'img/pa_saltin_noel_3tacos.png' },
+        { id: 'pa_galletas_cooky_chips', nombre: 'Galletas Cooky Chips / Chiquilín Paquete', precioBase: 2.08, imagen: 'img/pa_galletas_cooky_chips.png' },
+        { id: 'pa_galletas_mini_brownies_puig', nombre: 'Galletas Mini Brownies Puig Paquete', precioBase: 1.93, imagen: 'img/pa_galletas_mini_brownies_puig.png' },
+        { id: 'pa_galletas_safari_choco', nombre: 'Galletas Safari Choco Paquete', precioBase: 1.47, imagen: 'img/pa_galletas_safari_choco.png' },
+        { id: 'pa_pan_sandwich_hoho', nombre: 'Pan de Sándwich / Ponqués Ho! Ho!', precioBase: 2.40, imagen: 'img/pa_pan_sandwich_hoho.png' },
 
         // --- NUEVOS PRODUCTOS CATÁLOGO UNIFICADO (+$0.18 INCLUIDO) ---
-        { id: 'pa_ex_charmy_180g', nombre: 'Charmy 180g', precioBase: 1.64, imagen: 'img/pa_ex_charmy_180g.png', local: 'panamericana', tiendaId: 'panamericana' },
-        { id: 'pa_ex_galletas_cooky_chips_chocolate', nombre: 'Galletas Cooky Chips (Chocolate)', precioBase: 2.08, imagen: 'img/pa_ex_galletas_cooky_chips_chocolate.png', local: 'panamericana', tiendaId: 'panamericana' },
-        { id: 'pa_ex_galletas_katy', nombre: 'Galletas Katy', precioBase: 2.63, imagen: 'img/pa_ex_galletas_katy.png', local: 'panamericana', tiendaId: 'panamericana' },
-        { id: 'pa_ex_galletas_mini_brownies_pug', nombre: 'Galletas Mini Brownies (Pug)', precioBase: 1.93, imagen: 'img/pa_ex_galletas_mini_brownies_pug.png', local: 'panamericana', tiendaId: 'panamericana' },
-        { id: 'pa_ex_galletas_rex', nombre: 'Galletas Rex', precioBase: 1.64, imagen: 'img/pa_ex_galletas_rex.png', local: 'panamericana', tiendaId: 'panamericana' },
-        { id: 'pa_ex_galletas_safari', nombre: 'Galletas Safari', precioBase: 1.47, imagen: 'img/pa_ex_galletas_safari.png', local: 'panamericana', tiendaId: 'panamericana' },
-        { id: 'pa_ex_oreo_multipack_4_etiqueta_1', nombre: 'Oreo Multipack 4 (Etiqueta 1)', precioBase: 2.63, imagen: 'img/pa_ex_oreo_multipack_4_etiqueta_1.png', local: 'panamericana', tiendaId: 'panamericana' },
-        { id: 'pa_ex_oreo_presentacion_2', nombre: 'Oreo Presentación 2', precioBase: 2.60, imagen: 'img/pa_ex_oreo_presentacion_2.png', local: 'panamericana', tiendaId: 'panamericana' },
-        { id: 'pa_ex_pan_de_sandwich_ponque_grande', nombre: 'Pan de Sándwich / Ponqué grande', precioBase: 5.83, imagen: 'img/pa_ex_pan_de_sandwich_ponque_grande.png', local: 'panamericana', tiendaId: 'panamericana' },
-        { id: 'pa_ex_ponque_pan_etiqueta_lateral_1', nombre: 'Ponqué / Pan (etiqueta lateral 1)', precioBase: 1.95, imagen: 'img/pa_ex_ponque_pan_etiqueta_lateral_1.png', local: 'panamericana', tiendaId: 'panamericana' },
-        { id: 'pa_ex_ponque_pan_etiqueta_lateral_2', nombre: 'Ponqué / Pan (etiqueta lateral 2)', precioBase: 3.25, imagen: 'img/pa_ex_ponque_pan_etiqueta_lateral_2.png', local: 'panamericana', tiendaId: 'panamericana' },
-        { id: 'pa_ex_ponque_paneton_frutas_y_chocolate', nombre: 'Ponqué / Panetón Frutas y Chocolate', precioBase: 2.82, imagen: 'img/pa_ex_ponque_paneton_frutas_y_chocolate.png', local: 'panamericana', tiendaId: 'panamericana' },
-        { id: 'pa_ex_puig_choco_chips_cooky_chips', nombre: 'Puig Choco Chips / Cooky Chips', precioBase: 2.08, imagen: 'img/pa_ex_puig_choco_chips_cooky_chips.png', local: 'panamericana', tiendaId: 'panamericana' },
-        { id: 'pa_ex_puig_lulu', nombre: 'Puig Lulú', precioBase: 1.90, imagen: 'img/pa_ex_puig_lulu.png', local: 'panamericana', tiendaId: 'panamericana' },
-        { id: 'pa_ex_puig_marilu_216g_amarilla_roja_azul', nombre: 'Puig Marilú 216g (Amarilla / Roja / Azul)', precioBase: 2.34, imagen: 'img/pa_ex_puig_marilu_216g_amarilla_roja_azul.png', local: 'panamericana', tiendaId: 'panamericana' },
-        { id: 'pa_ex_puig_mini_brownies', nombre: 'Puig Mini Brownies', precioBase: 1.93, imagen: 'img/pa_ex_puig_mini_brownies.png', local: 'panamericana', tiendaId: 'panamericana' },
-        { id: 'pa_ex_puig_rex', nombre: 'Puig Rex', precioBase: 1.64, imagen: 'img/pa_ex_puig_rex.png', local: 'panamericana', tiendaId: 'panamericana' },
-        { id: 'pa_ex_puig_safari_200g', nombre: 'Puig Safari 200g', precioBase: 1.47, imagen: 'img/pa_ex_puig_safari_200g.png', local: 'panamericana', tiendaId: 'panamericana' },
-        { id: 'pa_ex_puig_wafer', nombre: 'Puig Wafer', precioBase: 1.27, imagen: 'img/pa_ex_puig_wafer.png', local: 'panamericana', tiendaId: 'panamericana' },
-        { id: 'pa_ex_salricas_presentacion_1', nombre: 'Salricas (Presentación 1)', precioBase: 2.28, imagen: 'img/pa_ex_salricas_presentacion_1.png', local: 'panamericana', tiendaId: 'panamericana' },
-        { id: 'pa_ex_salricas_presentacion_3', nombre: 'Salricas (Presentación 3)', precioBase: 1.78, imagen: 'img/pa_ex_salricas_presentacion_3.png', local: 'panamericana', tiendaId: 'panamericana' },
-        { id: 'pa_ex_trigo_de_oro_palitos', nombre: 'Trigo de Oro Palitos', precioBase: 1.17, imagen: 'img/pa_ex_trigo_de_oro_palitos.png', local: 'panamericana', tiendaId: 'panamericana' },
-        { id: 'pa_ex_coco_raneo_tia_yoli', nombre: 'Coco Raneo / Tía Yoli', precioBase: 0, imagen: 'img/pa_ex_coco_raneo_tia_yoli.png', local: 'panamericana', tiendaId: 'panamericana' },
-        { id: 'pa_ex_deleitinas', nombre: 'Deleitinas', precioBase: 0, imagen: 'img/pa_ex_deleitinas.png', local: 'panamericana', tiendaId: 'panamericana' },
-        { id: 'pa_ex_galletas_fiesta', nombre: 'Galletas Fiesta', precioBase: 0, imagen: 'img/pa_ex_galletas_fiesta.png', local: 'panamericana', tiendaId: 'panamericana' },
-        { id: 'pa_ex_ho_ho', nombre: 'Ho! Ho!', precioBase: 0, imagen: 'img/pa_ex_ho_ho.png', local: 'panamericana', tiendaId: 'panamericana' },
-        { id: 'pa_ex_katy_vainilla', nombre: 'Katy Vainilla', precioBase: 0, imagen: 'img/pa_ex_katy_vainilla.png', local: 'panamericana', tiendaId: 'panamericana' },
-        { id: 'pa_ex_limon_tv', nombre: 'Limón TV', precioBase: 0, imagen: 'img/pa_ex_limon_tv.png', local: 'panamericana', tiendaId: 'panamericana' },
-        { id: 'pa_ex_maria_chocolate', nombre: 'María Chocolate', precioBase: 0, imagen: 'img/pa_ex_maria_chocolate.png', local: 'panamericana', tiendaId: 'panamericana' },
-        { id: 'pa_ex_mini_chips', nombre: 'Mini Chips', precioBase: 0, imagen: 'img/pa_ex_mini_chips.png', local: 'panamericana', tiendaId: 'panamericana' },
-        { id: 'pa_ex_tico_rico', nombre: 'Tico Rico', precioBase: 0, imagen: 'img/pa_ex_tico_rico.png', local: 'panamericana', tiendaId: 'panamericana' },
+        { id: 'pa_ex_charmy_180g', nombre: 'Charmy 180g', precioBase: 1.64, imagen: 'img/pa_ex_charmy_180g.png' },
+        { id: 'pa_ex_galletas_cooky_chips_chocolate', nombre: 'Galletas Cooky Chips (Chocolate)', precioBase: 2.08, imagen: 'img/pa_ex_galletas_cooky_chips_chocolate.png' },
+        { id: 'pa_ex_galletas_katy', nombre: 'Galletas Katy', precioBase: 2.63, imagen: 'img/pa_ex_galletas_katy.png' },
+        { id: 'pa_ex_galletas_mini_brownies_pug', nombre: 'Galletas Mini Brownies (Pug)', precioBase: 1.93, imagen: 'img/pa_ex_galletas_mini_brownies_pug.png' },
+        { id: 'pa_ex_galletas_rex', nombre: 'Galletas Rex', precioBase: 1.64, imagen: 'img/pa_ex_galletas_rex.png' },
+        { id: 'pa_ex_galletas_safari', nombre: 'Galletas Safari', precioBase: 1.47, imagen: 'img/pa_ex_galletas_safari.png' },
+        { id: 'pa_ex_oreo_multipack_4_etiqueta_1', nombre: 'Oreo Multipack 4 (Etiqueta 1)', precioBase: 2.63, imagen: 'img/pa_ex_oreo_multipack_4_etiqueta_1.png' },
+        { id: 'pa_ex_oreo_presentacion_2', nombre: 'Oreo Presentación 2', precioBase: 2.60, imagen: 'img/pa_ex_oreo_presentacion_2.png' },
+        { id: 'pa_ex_pan_de_sandwich_ponque_grande', nombre: 'Pan de Sándwich / Ponqué grande', precioBase: 5.83, imagen: 'img/pa_ex_pan_de_sandwich_ponque_grande.png' },
+        { id: 'pa_ex_ponque_pan_etiqueta_lateral_1', nombre: 'Ponqué / Pan (etiqueta lateral 1)', precioBase: 1.95, imagen: 'img/pa_ex_ponque_pan_etiqueta_lateral_1.png' },
+        { id: 'pa_ex_ponque_pan_etiqueta_lateral_2', nombre: 'Ponqué / Pan (etiqueta lateral 2)', precioBase: 3.25, imagen: 'img/pa_ex_ponque_pan_etiqueta_lateral_2.png' },
+        { id: 'pa_ex_ponque_paneton_frutas_y_chocolate', nombre: 'Ponqué / Panetón Frutas y Chocolate', precioBase: 2.82, imagen: 'img/pa_ex_ponque_paneton_frutas_y_chocolate.png' },
+        { id: 'pa_ex_puig_choco_chips_cooky_chips', nombre: 'Puig Choco Chips / Cooky Chips', precioBase: 2.08, imagen: 'img/pa_ex_puig_choco_chips_cooky_chips.png' },
+        { id: 'pa_ex_puig_lulu', nombre: 'Puig Lulú', precioBase: 1.90, imagen: 'img/pa_ex_puig_lulu.png' },
+        { id: 'pa_ex_puig_marilu_216g_amarilla_roja_azul', nombre: 'Puig Marilú 216g (Amarilla / Roja / Azul)', precioBase: 2.34, imagen: 'img/pa_ex_puig_marilu_216g_amarilla_roja_azul.png' },
+        { id: 'pa_ex_puig_mini_brownies', nombre: 'Puig Mini Brownies', precioBase: 1.93, imagen: 'img/pa_ex_puig_mini_brownies.png' },
+        { id: 'pa_ex_puig_rex', nombre: 'Puig Rex', precioBase: 1.64, imagen: 'img/pa_ex_puig_rex.png' },
+        { id: 'pa_ex_puig_safari_200g', nombre: 'Puig Safari 200g', precioBase: 1.47, imagen: 'img/pa_ex_puig_safari_200g.png' },
+        { id: 'pa_ex_puig_wafer', nombre: 'Puig Wafer', precioBase: 1.27, imagen: 'img/pa_ex_puig_wafer.png' },
+        { id: 'pa_ex_salricas_presentacion_1', nombre: 'Salricas (Presentación 1)', precioBase: 2.28, imagen: 'img/pa_ex_salricas_presentacion_1.png' },
+        { id: 'pa_ex_salricas_presentacion_3', nombre: 'Salricas (Presentación 3)', precioBase: 1.78, imagen: 'img/pa_ex_salricas_presentacion_3.png' },
+        { id: 'pa_ex_trigo_de_oro_palitos', nombre: 'Trigo de Oro Palitos', precioBase: 1.17, imagen: 'img/pa_ex_trigo_de_oro_palitos.png' },
+        { id: 'pa_ex_coco_raneo_tia_yoli', nombre: 'Coco Raneo / Tía Yoli', precioBase: 0, imagen: 'img/pa_ex_coco_raneo_tia_yoli.png' },
+        { id: 'pa_ex_deleitinas', nombre: 'Deleitinas', precioBase: 0, imagen: 'img/pa_ex_deleitinas.png' },
+        { id: 'pa_ex_galletas_fiesta', nombre: 'Galletas Fiesta', precioBase: 0, imagen: 'img/pa_ex_galletas_fiesta.png' },
+        { id: 'pa_ex_ho_ho', nombre: 'Ho! Ho!', precioBase: 0, imagen: 'img/pa_ex_ho_ho.png' },
+        { id: 'pa_ex_katy_vainilla', nombre: 'Katy Vainilla', precioBase: 0, imagen: 'img/pa_ex_katy_vainilla.png' },
+        { id: 'pa_ex_limon_tv', nombre: 'Limón TV', precioBase: 0, imagen: 'img/pa_ex_limon_tv.png' },
+        { id: 'pa_ex_maria_chocolate', nombre: 'María Chocolate', precioBase: 0, imagen: 'img/pa_ex_maria_chocolate.png' },
+        { id: 'pa_ex_mini_chips', nombre: 'Mini Chips', precioBase: 0, imagen: 'img/pa_ex_mini_chips.png' },
+        { id: 'pa_ex_tico_rico', nombre: 'Tico Rico', precioBase: 0, imagen: 'img/pa_ex_tico_rico.png' },
       ],
       verduras: [
         { id: 'vf_tomate', nombre: 'Tomate Perita (kg)', precioBase: 1.80, imagen: 'img/vf_tomate.png', badge: 'FRESCO', esGranel: true, unidadMedida: 'g', pasoGranel: 100, minGranel: 250, maxGranel: 3000, defGranel: 1000 },
@@ -2948,27 +2949,12 @@
         { id: 'zp_pizza_familiar', nombre: 'Pizza Familiar Zirus 🍕', precioBase: 12.00, imagen: 'img/c3.png', badge: 'TOP', local: 'zirus', tiendaId: 'zirus' }
       ],
       limpieza: [
-        { id: 'l_vinagre_lavina_150ml', nombre: 'Vinagre La Viña 150ml', precioBase: 0.39, imagen: 'img/l_vinagre_lavina_150ml.png' },
-        { id: 'l_vinagre_lavina_1l', nombre: 'Vinagre La Viña 1L', precioBase: 0.83, imagen: 'img/l_vinagre_lavina_1l.png' },
-        { id: 'l_vinagre_lacolmena_1l', nombre: 'Vinagre La Colmena 1L', precioBase: 1.01, imagen: 'img/l_vinagre_lacolmena_1l.png' },
-        { id: 'l_vinagre_lalucha_1l', nombre: 'Vinagre La Lucha 1L', precioBase: 1.05, imagen: 'img/l_vinagre_lalucha_1l.png' },
-        { id: 'l_vinagre_heinz_500ml', nombre: 'Vinagre Heinz 500ml', precioBase: 1.23, imagen: 'img/l_vinagre_heinz_500ml.png' },
-        { id: 'l_vinagre_tiquire_500ml', nombre: 'Vinagre Tiquire 500ml', precioBase: 0.76, imagen: 'img/l_vinagre_tiquire_500ml.png' },
-        { id: 'l_sazonalisto_200g', nombre: 'Sazonalisto La Viña 200g', precioBase: 1.10, imagen: 'img/l_sazonalisto_200g.png' },
-        { id: 'l_tripack_lavina', nombre: 'Salsa Tripack La Viña 150ml', precioBase: 1.37, imagen: 'img/l_tripack_lavina.png' },
-        { id: 'l_salsa_ajo_colmena_338l', nombre: 'Salsa de Ajo La Colmena 3.38L', precioBase: 4.91, imagen: 'img/l_salsa_ajo_colmena_338l.png' },
-        { id: 'l_salsa_soya_colmena_385l', nombre: 'Salsa de Soya La Colmena 3.85L', precioBase: 6.29, imagen: 'img/l_salsa_soya_colmena_385l.png' },
-        { id: 'l_salsa_inglesa_colmena_385l', nombre: 'Salsa Inglesa La Colmena 3.85L', precioBase: 6.68, imagen: 'img/l_salsa_inglesa_colmena_385l.png' },
-        { id: 'l_salsa_inglesa_kiero_150cc', nombre: 'Salsa Inglesa Kiero 150cc', precioBase: 0.92, imagen: 'img/l_salsa_inglesa_kiero_150cc.png' },
-        { id: 'l_salsa_ajo_kiero_150cc', nombre: 'Salsa de Ajo Kiero 150cc', precioBase: 0.98, imagen: 'img/l_salsa_ajo_kiero_150cc.png' },
-        { id: 'l_salsa_ajo_albeca_150ml', nombre: 'Salsa de Ajo Albeca 150ml', precioBase: 0.84, imagen: 'img/l_salsa_ajo_albeca_150ml.png' },
         { id: 'l1', nombre: 'Cloro Desinfección 1L', precioBase: 1.01, imagen: 'img/l1.png', badge: 'ASEO' },
         { id: 'l2', nombre: 'Desinfectante Floral 1L', precioBase: 1.21, imagen: 'img/l2.png', badge: 'ASEO' },
         { id: 'l3', nombre: 'Desinfectante Lavanda 1L', precioBase: 1.21, imagen: 'img/l3.png', badge: 'ASEO' },
         { id: 'l4', nombre: 'Detergente Líquido 1L', precioBase: 2.14, imagen: 'img/l4.png', badge: 'ASEO' },
         { id: 'l5', nombre: 'Lavaplatos Limón 1L', precioBase: 2.14, imagen: 'img/l5.png', badge: 'ASEO' },
         // --- NUEVOS LIMPIEZA Y VINAGRES DEL INVENTARIO ---
-        { id: 'l_vinagre_mavesa_iberia_500ml', nombre: 'Mavesa / Iberia Vinagre Blanco 500ml', precioBase: 1.66, imagen: 'img/l_vinagre_mavesa_iberia_500ml.png' },
         { id: 'l_vanish_quitamanchas', nombre: 'Vanish Quitamanchas Líquido / Polvo', precioBase: 14.91, imagen: 'img/l_vanish_quitamanchas.png', badge: 'ASEO' },
         { id: 'l_jabon_crema_lavaplatos', nombre: 'Jabón en Crema / Pote Lavaplatos', precioBase: 6.61, imagen: 'img/l_jabon_crema_lavaplatos.png', badge: 'ASEO' },
         { id: 'l_downy_intense_suavizante', nombre: 'Downy Intense Suavizante Botella', precioBase: 3.29, imagen: 'img/l_downy_intense_suavizante.png', badge: 'ASEO' },
@@ -3245,36 +3231,33 @@
       }, 3000);
     }
 
-    // ================= RENDERIZADO DEL CATÁLOGO & TIENDAS (BAJO DEMANDA ULTRARRÁPIDO) =================
+    // ================= RENDERIZADO DEL CATÁLOGO & TIENDAS =================
     const categoriasRenderizadas = {};
 
     function renderizarCategoriaIndividual(cat) {
-      if (cat === 'panaderia') {
-        const gridPanaderia = document.getElementById('grid-panaderia-panamericana');
-        if (gridPanaderia && productos.panaderia) {
-          gridPanaderia.innerHTML = productos.panaderia.map(crearTarjetaProductoHTML).join('');
-          categoriasRenderizadas[cat] = true;
-          if (window.lucide) lucide.createIcons({ root: gridPanaderia });
-        }
-        return;
-      }
-      const sec = document.getElementById(`grid-${cat}`);
+      if (categoriasRenderizadas[cat]) return;
+      const gridId = cat === 'panaderia' ? 'grid-panaderia-panamericana' : `grid-${cat}`;
+      const sec = document.getElementById(gridId);
       if (sec && productos[cat]) {
-        sec.innerHTML = productos[cat].map(crearTarjetaProductoHTML).join('');
+        sec.innerHTML = productos[cat].map(item => crearTarjetaProductoHTML(item)).join('');
         categoriasRenderizadas[cat] = true;
-        if (window.lucide) lucide.createIcons({ root: sec });
+        if (window.lucide && typeof lucide.createIcons === 'function') {
+          lucide.createIcons({ root: sec });
+        }
       }
     }
 
-    function renderizarCatalogo(forzarTodas = false) {
-      if (forzarTodas) {
-        ['viveres', 'charcuteria', 'carnes', 'verduras', 'bebidas', 'limpieza', 'farmacia', 'ferreteria', 'panaderia'].forEach(renderizarCategoriaIndividual);
-      } else {
-        Object.keys(categoriasRenderizadas).forEach(cat => {
-          if (categoriasRenderizadas[cat]) renderizarCategoriaIndividual(cat);
-        });
-      }
+    function renderizarTodasLasCategorias() {
+      ['viveres', 'charcuteria', 'carnes', 'panaderia', 'verduras', 'bebidas', 'limpieza', 'farmacia', 'ferreteria']
+        .forEach(cat => renderizarCategoriaIndividual(cat));
+    }
+
+    function renderizarCatalogo() {
+      Object.keys(categoriasRenderizadas).forEach(k => delete categoriasRenderizadas[k]);
       renderizarLocalesComerciales();
+      if (window.lucide && typeof lucide.createIcons === 'function') {
+        lucide.createIcons();
+      }
     }
 
     function renderizarLocalesComerciales() {
@@ -3407,19 +3390,15 @@
     }
 
     function cambiarSeccion(seccion) {
-      if (Object.keys(categoriasRenderizadas).length < 9) {
-        renderizarCatalogo(true);
-      }
       document.getElementById('menu-principal-servicios').classList.add('hidden');
       document.getElementById('contenedor-seccion-activa').classList.remove('hidden');
       document.querySelectorAll('.seccion-target').forEach(el => el.classList.add('hidden'));
       
-      if (!categoriasRenderizadas[seccion] && seccion !== 'comida' && seccion !== 'transporte') {
-        renderizarCategoriaIndividual(seccion);
-      }
-
       const secDestino = document.getElementById(`sec-${seccion}`);
       if (secDestino) secDestino.classList.remove('hidden');
+      if (seccion !== 'transporte' && seccion !== 'comida') {
+        renderizarCategoriaIndividual(seccion);
+      }
 
       if (seccion === 'transporte') {
         setTimeout(() => {
@@ -3875,7 +3854,18 @@
       }
     }
 
-    function ejecutarOCRConImagenOptimizada(fuenteImagen) {
+    function asegurarTesseract() {
+      if (window.Tesseract) return Promise.resolve();
+      return new Promise((resolve, reject) => {
+        const s = document.createElement('script');
+        s.src = 'https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js';
+        s.onload = resolve;
+        s.onerror = reject;
+        document.head.appendChild(s);
+      });
+    }
+
+    async function ejecutarOCRConImagenOptimizada(fuenteImagen) {
       const modalFoto = document.getElementById('modal-foto-resultado');
       const imgPreview = document.getElementById('img-preview-foto');
       const loaderFoto = document.getElementById('loader-foto-ia');
@@ -3887,8 +3877,19 @@
       modalFoto.classList.remove('hidden');
       loaderFoto.classList.remove('hidden');
       laserScan.style.display = 'block';
-      txtLoader.innerText = "Leyendo renglones de tu foto...";
+      txtLoader.innerText = "Cargando motor de escaneo IA...";
       txtModalSub.innerText = "Iniciando motor de IA...";
+
+      try {
+        await asegurarTesseract();
+      } catch (err) {
+        loaderFoto.classList.add('hidden');
+        laserScan.style.display = 'none';
+        mostrarToast("No se pudo cargar el lector OCR. Intenta escribir o pegar tu lista.", "Aviso IA", "info");
+        return;
+      }
+
+      txtLoader.innerText = "Leyendo renglones de tu foto...";
 
       Tesseract.recognize(fuenteImagen, 'spa', {
         logger: m => {
@@ -4429,10 +4430,12 @@
       mostrarToast(`Pagas con: ${monto}`, "Vuelto", "info");
     }
 
-    function copiarDatosPagoMovil() {
-      const datos = "Banesco (0134) - 04262566854 - V-28123456";
+    function copiarDatosPagoMovil(banco = 'provincial') {
+      const datos = banco === 'venezuela'
+        ? "Banco de Venezuela (0102) - 04262566854 - V-12286636"
+        : "Provincial (0108) - 04144205169 - V-31060250";
       navigator.clipboard.writeText(datos).then(() => {
-        mostrarToast("Datos de Pago Móvil copiados", "Copiado", "success");
+        mostrarToast(`Datos de ${banco === 'venezuela' ? 'Banco de Venezuela' : 'Provincial'} copiados`, "Copiado", "success");
       });
     }
 
@@ -4587,6 +4590,7 @@
       }
       document.getElementById('menu-principal-servicios').classList.add('hidden');
       document.getElementById('contenedor-seccion-activa').classList.remove('hidden');
+      renderizarTodasLasCategorias();
       document.querySelectorAll('.seccion-target').forEach(el => {
         if (el.id !== 'sec-transporte') el.classList.remove('hidden');
       });
@@ -4998,7 +5002,10 @@
               cambio = true;
             }
           });
-          if (cambio) renderizarCatalogo();
+          if (cambio) {
+            Object.keys(categoriasRenderizadas).forEach(k => delete categoriasRenderizadas[k]);
+            renderizarCatalogo();
+          }
         }
       });
     }
@@ -5144,6 +5151,31 @@
 
         if (!p.calificacionRegistrada) {
           setTimeout(abrirModalCalificacion, 600);
+        }
+      } else if (p.estado === 'cancelado') {
+        if (badgeEst) {
+          badgeEst.className = "inline-block px-3 py-1 rounded-full text-xs font-black bg-rose-500/20 text-rose-300 border border-rose-500/30";
+          badgeEst.innerText = "Orden Cancelada ✖";
+        }
+        if (txtEst) txtEst.innerText = "Esta orden fue cancelada por el usuario.";
+        if (cajaChofer) cajaChofer.classList.add('hidden');
+
+        const dotP = document.getElementById('nav-pulse-dot');
+        const dotS = document.getElementById('nav-static-dot');
+        if (dotP) dotP.classList.add('hidden');
+        if (dotS) dotS.classList.add('hidden');
+        const banner = document.getElementById('banner-flotante-rastreo');
+        if (banner) banner.classList.add('hidden');
+        localStorage.removeItem('pedidosflash_pedido_activo');
+        pedidoActivoClienteId = null;
+      }
+
+      const cajaCancelar = document.getElementById('rastreo-caja-cancelar');
+      if (cajaCancelar) {
+        if (p.estado === 'pendiente' || p.estado === 'aceptado') {
+          cajaCancelar.classList.remove('hidden');
+        } else {
+          cajaCancelar.classList.add('hidden');
         }
       }
 
@@ -5404,6 +5436,61 @@
       mostrarToast(`🎉 ¡Tu chofer ${p.chofer} ha aceptado tu pedido!`, "Chofer Asignado", "success");
     }
 
+
+    function cancelarPedidoCliente(pedidoIdParam = null) {
+      const idObjetivo = pedidoIdParam || pedidoActivoClienteId;
+      if (!idObjetivo) return;
+
+      if (!confirm("¿Seguro que deseas cancelar esta orden?")) return;
+
+      if (firebaseActivo && db && !String(idObjetivo).startsWith('offline_')) {
+        db.ref(`pedidos/${idObjetivo}`).update({
+          estado: 'cancelado',
+          canceladoPor: 'cliente',
+          fechaCancelacion: new Date().toISOString()
+        }).catch(err => console.error("Error cancelando en Firebase:", err));
+      }
+
+      try {
+        let historial = JSON.parse(localStorage.getItem('pedidosflash_historial') || '[]');
+        historial = historial.map(h => {
+          if (h.id === idObjetivo) {
+            return { ...h, estado: 'cancelado' };
+          }
+          return h;
+        });
+        localStorage.setItem('pedidosflash_historial', JSON.stringify(historial));
+      } catch(e) {}
+
+      if (pedidoActivoClienteId === idObjetivo) {
+        if (listenerPedidoActivoRef) {
+          listenerPedidoActivoRef.off();
+          listenerPedidoActivoRef = null;
+        }
+        localStorage.removeItem('pedidosflash_pedido_activo');
+        pedidoActivoClienteId = null;
+
+        const banner = document.getElementById('banner-flotante-rastreo');
+        if (banner) banner.classList.add('hidden');
+        const dotP = document.getElementById('nav-pulse-dot');
+        const dotS = document.getElementById('nav-static-dot');
+        if (dotP) dotP.classList.add('hidden');
+        const dotS2 = document.getElementById('nav-static-dot');
+        if (dotS2) dotS2.classList.add('hidden');
+        const btnR = document.getElementById('nav-btn-rastreo');
+        if (btnR) btnR.classList.remove('text-accent-emerald');
+
+        cerrarModalRastreoCliente();
+      }
+
+      const modalHist = document.getElementById('modal-historial-pedidos');
+      if (modalHist && !modalHist.classList.contains('hidden')) {
+        cargarYRenderizarHistorial();
+      }
+
+      mostrarToast("Tu orden ha sido cancelada correctamente.", "Orden Cancelada", "error");
+    }
+
     function verRastreoDesdeAlerta() {
       cerrarModalChoferAcepto();
       abrirModalRastreoCliente();
@@ -5590,6 +5677,12 @@
                   <i data-lucide="navigation-2" class="w-3.5 h-3.5 fill-slate-950"></i>
                   <span>SEGUIR EN VIVO (GPS)</span>
                 </button>
+                ${(p.estado === 'pendiente' || p.estado === 'aceptado') ? `
+                  <button onclick="cancelarPedidoCliente('${p.id}')" class="btn-tactil bg-rose-500/20 hover:bg-rose-500/30 text-rose-300 border border-rose-500/40 font-bold py-2 px-3 rounded-xl text-xs flex items-center justify-center gap-1">
+                    <i data-lucide="x-circle" class="w-3.5 h-3.5"></i>
+                    <span>Cancelar</span>
+                  </button>
+                ` : ''}
               ` : `
                 <button onclick="cerrarModalHistorialPedidos(); activarRastreoPedidoCliente('${p.id}'); abrirModalRastreoCliente();" class="btn-tactil flex-1 bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold py-1.5 rounded-xl text-xs flex items-center justify-center gap-1">
                   <i data-lucide="eye" class="w-3.5 h-3.5 text-accent-cyan"></i>
@@ -5680,7 +5773,33 @@
 
     // ================= INICIALIZACIÓN GLOBAL =================
     window.onload = () => { 
-      // 1. Comprobar sesión de usuario guardada de inmediato (prioridad máxima)
+      renderizarCatalogo(); 
+      restaurarRespaldoCarrito();
+      sincronizarTiendasDesdeFirebase();
+      sincronizarCatalogoFlashDesdeFirebase();
+      sincronizarTarifasTransporteDesdeFirebase();
+      actualizarUIPreciosTransporte();
+      if (firebaseActivo && db) {
+        db.ref('configuracion/tasaBCV').on('value', (snap) => {
+          const val = parseFloat(snap.val());
+          if (!isNaN(val) && val > 0) {
+            tasaBCVActual = val;
+            localStorage.setItem('pedidosflash_tasa_bcv', val.toString());
+            actualizarUIPreciosTransporte();
+            actualizarTotales();
+          }
+        });
+      }
+      document.addEventListener('visibilitychange', () => {
+        if (document.hidden) guardarRespaldoCarrito();
+      });
+      window.addEventListener('pagehide', guardarRespaldoCarrito);
+
+      if (window.lucide && typeof lucide.createIcons === 'function') {
+        lucide.createIcons();
+      }
+
+      // Comprobar sesión de usuario guardada
       const usuarioGuardado = localStorage.getItem('pedidosflash_usuario');
       if (usuarioGuardado) {
         try {
@@ -5691,34 +5810,6 @@
       } else {
         iniciarFlujoAuth();
       }
-
-      // 2. Renderizar locales y restaurar carrito sin bloquear la vista inicial
-      renderizarCatalogo(false); 
-      restaurarRespaldoCarrito();
-      actualizarUIPreciosTransporte();
-
-      // 3. Sincronizaciones en segundo plano
-      setTimeout(() => {
-        sincronizarTiendasDesdeFirebase();
-        sincronizarCatalogoFlashDesdeFirebase();
-        sincronizarTarifasTransporteDesdeFirebase();
-        if (firebaseActivo && db) {
-          db.ref('configuracion/tasaBCV').on('value', (snap) => {
-            const val = parseFloat(snap.val());
-            if (!isNaN(val) && val > 0) {
-              tasaBCVActual = val;
-              localStorage.setItem('pedidosflash_tasa_bcv', val.toString());
-              actualizarUIPreciosTransporte();
-              actualizarTotales();
-            }
-          });
-        }
-      }, 150);
-
-      document.addEventListener('visibilitychange', () => {
-        if (document.hidden) guardarRespaldoCarrito();
-      });
-      window.addEventListener('pagehide', guardarRespaldoCarrito);
 
       // Comprobar si hay pedido activo
       if (pedidoActivoClienteId) {
