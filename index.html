@@ -8,23 +8,28 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <title>Pedidos Flash - App Móvil Nirgua</title>
   
-  <!-- Preconexión a CDNs para inicio rápido en GitHub Pages -->
-  <link rel="preconnect" href="https://cdn.tailwindcss.com">
-  <link rel="preconnect" href="https://unpkg.com">
-  <link rel="preconnect" href="https://www.gstatic.com">
-
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Lucide Icons (diferido) -->
-  <script src="https://unpkg.com/lucide@latest" defer></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
   
-  <!-- Leaflet CSS y JS (carga no bloqueante) -->
+  <!-- Preconexión rápida a Firebase -->
+  <link rel="preconnect" href="https://pedidosflash-c7bb7-default-rtdb.firebaseio.com" crossorigin>
+  <link rel="dns-prefetch" href="https://pedidosflash-c7bb7-default-rtdb.firebaseio.com">
+
+  <!-- Leaflet CSS y JS (Diferido para no bloquear el Login) -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" media="print" onload="this.media='all'" />
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" defer></script>
 
-  <!-- Firebase SDKs (diferidos) -->
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js" defer></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js" defer></script>
+  <!-- Hoja de Estilos Personalizada (Glassmorphism & Login) -->
+  <link rel="stylesheet" href="style.css?v=3">
+
+  <!-- Tesseract.js (Diferido: solo se usa al escanear fotos) -->
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js" defer></script>
+
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
   
   <!-- Google Fonts: Plus Jakarta Sans -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -383,8 +388,7 @@
              muted 
              loop 
              playsinline 
-             preload="none"
-             poster="img/logo.jfif"
+             preload="none" 
              class="background-video background-video-auth" 
              onerror="this.style.display='none';">
         <source src="img/1002084633.mp4" type="video/mp4">
@@ -554,7 +558,6 @@
                muted 
                playsinline 
                preload="none"
-               poster="img/logo.jfif"
                class="w-full h-full object-cover rounded-2xl"
                onerror="this.style.display='none'; document.getElementById('logo-fallback').style.display='block';">
           <source src="img/1002084633.mp4" type="video/mp4">
@@ -686,7 +689,7 @@
               </div>
               <div>
                 <h4 class="font-black text-white text-xs">Panadería</h4>
-                <p class="text-[10px] text-slate-400 leading-tight">Pan fresco, dulces y galletas</p>
+                <p class="text-[10px] text-slate-400 leading-tight">La Panamericana</p>
               </div>
             </button>
 
@@ -795,12 +798,17 @@
           <div id="sec-charcuteria" class="seccion-target space-y-2 hidden"><div id="grid-charcuteria" class="grid grid-cols-2 gap-2.5"></div></div>
           <div id="sec-carnes" class="seccion-target space-y-2 hidden"><div id="grid-carnes" class="grid grid-cols-2 gap-2.5"></div></div>
           
-          <div id="sec-panaderia" class="seccion-target space-y-3 hidden">
-            <div class="px-1">
-              <h3 class="text-xs font-black text-accent-yellow uppercase tracking-wider">Panadería & Repostería</h3>
-              <p class="text-[11px] text-slate-400">Pan fresco, dulces y galletas</p>
+          <div id="sec-panaderia" class="seccion-target space-y-4 hidden">
+            <div class="bg-slate-900/90 border border-accent-yellow/40 p-3 rounded-2xl space-y-2.5 backdrop-blur-md">
+              <div class="flex items-center gap-2.5 border-b border-slate-800 pb-2">
+                <img src="img/panamericana.webp" alt="La Panamericana" class="w-10 h-10 rounded-full object-cover border border-accent-yellow shadow-md" onerror="this.src='img/logo.jfif';">
+                <div>
+                  <h4 class="font-black text-white text-xs uppercase tracking-wider">La Panamericana</h4>
+                  <p class="text-[10px] text-accent-yellow font-semibold">¡La calidad es nuestra receta!</p>
+                </div>
+              </div>
+              <div id="grid-panaderia-panamericana" class="grid grid-cols-2 gap-2.5"></div>
             </div>
-            <div id="grid-panaderia-panamericana" class="grid grid-cols-2 gap-2.5"></div>
           </div>
 
           <div id="sec-verduras" class="seccion-target space-y-2 hidden"><div id="grid-verduras" class="grid grid-cols-2 gap-2.5"></div></div>
@@ -1135,31 +1143,33 @@
           </div>
 
           <div id="caja-pago-movil" class="space-y-2.5 bg-slate-900 p-3 rounded-xl border border-slate-800">
-            <p class="text-[11px] text-accent-cyan font-bold">Pago Móvil Oficial del Negocio (Al Recibir)</p>
+            <p class="text-[11px] text-accent-cyan font-black uppercase tracking-wide">Pago Móvil al Momento de la Entrega</p>
             
-            <!-- Opción 1: Provincial -->
-            <div class="flex items-center justify-between bg-slate-950/90 p-2.5 rounded-xl border border-slate-800/90">
+            <!-- OPCIÓN 1: BANCO DE VENEZUELA -->
+            <div class="flex items-center justify-between bg-slate-950/90 p-2.5 rounded-xl border border-slate-800">
               <div>
-                <p class="text-[11px] text-white font-black">Provincial (0108) • 0414-4205169</p>
-                <p class="text-[10px] text-slate-400 font-semibold">C.I: 31.060.250</p>
-              </div>
-              <button type="button" onclick="copiarDatosPagoMovil('provincial')" class="btn-tactil bg-indigo-600 hover:bg-indigo-500 text-white font-black px-3 py-1.5 rounded-lg text-[10px] flex items-center gap-1 shadow">
-                <i data-lucide="copy" class="w-3 h-3"></i> Copiar
-              </button>
-            </div>
-
-            <!-- Opción 2: Banco de Venezuela -->
-            <div class="flex items-center justify-between bg-slate-950/90 p-2.5 rounded-xl border border-slate-800/90">
-              <div>
-                <p class="text-[11px] text-white font-black">Banco de Venezuela (0102) • 0426-2566854</p>
-                <p class="text-[10px] text-slate-400 font-semibold">C.I: 12.286.636</p>
+                <span class="text-[10px] font-black text-rose-400 uppercase block">🏦 Banco de Venezuela (0102)</span>
+                <p class="text-xs text-white font-bold font-mono">0426-2566854</p>
+                <p class="text-[10px] text-slate-400 font-mono">C.I: 12.286.636</p>
               </div>
               <button type="button" onclick="copiarDatosPagoMovil('venezuela')" class="btn-tactil bg-indigo-600 hover:bg-indigo-500 text-white font-black px-3 py-1.5 rounded-lg text-[10px] flex items-center gap-1 shadow">
                 <i data-lucide="copy" class="w-3 h-3"></i> Copiar
               </button>
             </div>
 
-            <p class="text-[10px] text-slate-400 leading-tight">💡 Pagas cómodamente a cualquiera de nuestras dos cuentas cuando el repartidor llegue a tu dirección.</p>
+            <!-- OPCIÓN 2: BANCO PROVINCIAL -->
+            <div class="flex items-center justify-between bg-slate-950/90 p-2.5 rounded-xl border border-slate-800">
+              <div>
+                <span class="text-[10px] font-black text-sky-400 uppercase block">🏦 Banco Provincial (0108)</span>
+                <p class="text-xs text-white font-bold font-mono">0414-4205169</p>
+                <p class="text-[10px] text-slate-400 font-mono">C.I: 31.060.250</p>
+              </div>
+              <button type="button" onclick="copiarDatosPagoMovil('provincial')" class="btn-tactil bg-indigo-600 hover:bg-indigo-500 text-white font-black px-3 py-1.5 rounded-lg text-[10px] flex items-center gap-1 shadow">
+                <i data-lucide="copy" class="w-3 h-3"></i> Copiar
+              </button>
+            </div>
+
+            <p class="text-[10px] text-slate-400 leading-tight">💡 Pagas cómodamente cuando el repartidor llegue a tu dirección.</p>
           </div>
 
           <div id="caja-pago-efectivo" class="space-y-2 bg-slate-900 p-2.5 rounded-xl border border-slate-800 hidden">
@@ -1739,6 +1749,14 @@
           </div>
         </div>
 
+        <!-- BOTÓN CANCELAR PEDIDO ACTIVO -->
+        <div id="rastreo-caja-cancelar" class="pt-1 shrink-0 hidden">
+          <button type="button" onclick="abrirModalCancelarPedido(pedidoActivoClienteId)" class="btn-tactil w-full bg-rose-500/15 hover:bg-rose-500/25 text-rose-400 border border-rose-500/40 font-black py-2.5 px-3 rounded-xl text-xs flex items-center justify-center gap-1.5 shadow-sm">
+            <i data-lucide="x-circle" class="w-4 h-4"></i>
+            <span>Cancelar Mi Pedido</span>
+          </button>
+        </div>
+
         <!-- INFO DEL CHOFER ASIGNADO (LLAMADA + WHATSAPP) -->
         <div id="rastreo-caja-chofer" class="bg-slate-950 p-3 rounded-2xl border border-emerald-500/30 space-y-2 shrink-0 hidden">
           <div class="flex items-center justify-between gap-2.5">
@@ -1763,12 +1781,51 @@
             </a>
           </div>
         </div>
+      </div>
+    </div>
 
-        <!-- BOTÓN CANCELAR ORDEN (VISIBLE MIENTRAS EL PEDIDO NO ESTÉ EN CAMINO O ENTREGADO) -->
-        <div id="rastreo-caja-cancelar" class="pt-1 shrink-0 hidden">
-          <button type="button" onclick="cancelarPedidoCliente()" class="btn-tactil w-full bg-rose-500/15 hover:bg-rose-500/25 text-rose-400 border border-rose-500/40 font-black py-2.5 px-3 rounded-2xl text-xs flex items-center justify-center gap-1.5 transition">
+    <!-- MODAL CONFIRMAR CANCELACIÓN DE PEDIDO -->
+    <div id="modal-cancelar-pedido" onclick="if(event.target === this) cerrarModalCancelarPedido()" class="fixed inset-0 bg-slate-950/90 backdrop-blur-xl z-[70] flex items-center justify-center p-4 hidden">
+      <div class="anim-modal bg-slate-900 border-2 border-rose-500/40 w-full max-w-sm rounded-[32px] p-5 space-y-4 shadow-[0_0_50px_rgba(244,63,94,0.25)] text-center">
+        <div class="w-14 h-14 rounded-2xl bg-rose-500/20 border border-rose-500/40 text-rose-400 flex items-center justify-center mx-auto text-2xl">
+          <i data-lucide="alert-triangle" class="w-7 h-7"></i>
+        </div>
+        <div>
+          <span id="cancelar-pedido-num-orden" class="text-[10px] font-mono font-black text-rose-400 bg-rose-500/15 border border-rose-500/30 px-3 py-0.5 rounded-full uppercase">
+            #FLASH-0000
+          </span>
+          <h3 class="text-base font-black text-white mt-2">¿Cancelar este pedido?</h3>
+          <p class="text-xs text-slate-300 mt-1 leading-relaxed">
+            Selecciona o escribe el motivo de la cancelación para notificar de inmediato al sistema y al repartidor.
+          </p>
+        </div>
+
+        <div class="space-y-2 text-left">
+          <label class="text-[10px] font-black text-slate-400 uppercase block">Motivo rápido:</label>
+          <div class="grid grid-cols-2 gap-1.5">
+            <button type="button" onclick="seleccionarMotivoCancelacion('Me equivoqué en el pedido')" class="btn-tactil p-2 rounded-xl bg-slate-950 hover:bg-slate-800 border border-slate-800 text-[10px] font-bold text-slate-300 text-left">
+              ✏️ Me equivoqué
+            </button>
+            <button type="button" onclick="seleccionarMotivoCancelacion('Tarda mucho tiempo')" class="btn-tactil p-2 rounded-xl bg-slate-950 hover:bg-slate-800 border border-slate-800 text-[10px] font-bold text-slate-300 text-left">
+              ⏳ Tarda mucho
+            </button>
+            <button type="button" onclick="seleccionarMotivoCancelacion('Cambié de opinión')" class="btn-tactil p-2 rounded-xl bg-slate-950 hover:bg-slate-800 border border-slate-800 text-[10px] font-bold text-slate-300 text-left">
+              🔄 Cambié de idea
+            </button>
+            <button type="button" onclick="seleccionarMotivoCancelacion('Pedido duplicado')" class="btn-tactil p-2 rounded-xl bg-slate-950 hover:bg-slate-800 border border-slate-800 text-[10px] font-bold text-slate-300 text-left">
+              📑 Pedido duplicado
+            </button>
+          </div>
+          <input type="text" id="input-motivo-cancelacion" placeholder="O escribe otro motivo (opcional)..." class="w-full p-2.5 bg-slate-950 border border-slate-700 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-rose-500 mt-1">
+        </div>
+
+        <div class="flex gap-2 pt-1">
+          <button type="button" onclick="cerrarModalCancelarPedido()" class="btn-tactil flex-1 bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold py-3 rounded-2xl text-xs">
+            No, mantener
+          </button>
+          <button type="button" id="btn-confirmar-cancelar-pedido" onclick="confirmarCancelacionPedido()" class="btn-tactil flex-1 bg-gradient-to-r from-rose-600 to-red-600 hover:brightness-110 text-white font-black py-3 rounded-2xl text-xs shadow-lg shadow-rose-600/30 flex items-center justify-center gap-1.5">
             <i data-lucide="x-circle" class="w-4 h-4"></i>
-            <span>Cancelar Orden</span>
+            <span>Sí, Cancelar</span>
           </button>
         </div>
       </div>
@@ -1983,6 +2040,13 @@
       mostrarToast("Navegando como Invitado", "Bienvenido", "info");
     }
 
+    function consultarFirebaseConTimeout(refPath, ms = 4000) {
+      return Promise.race([
+        db.ref(refPath).once('value'),
+        new Promise((_, reject) => setTimeout(() => reject(new Error('TIMEOUT_FIREBASE')), ms))
+      ]);
+    }
+
     async function ejecutarLogin(e) {
       e.preventDefault();
       const telRaw = document.getElementById('auth-login-tel').value.trim();
@@ -1994,6 +2058,24 @@
         return;
       }
 
+      // Acceso instantáneo desde caché local del teléfono (0 ms)
+      try {
+        const cacheUsuarios = JSON.parse(localStorage.getItem('pedidosflash_usuarios_cache') || '{}');
+        const localGuardado = JSON.parse(localStorage.getItem('pedidosflash_usuario') || 'null');
+        const usuarioCache = cacheUsuarios[telLimpio] || (localGuardado && localGuardado.telefono === telLimpio ? localGuardado : null);
+
+        if (usuarioCache && usuarioCache.pin === pin) {
+          guardarYAplicarSesion(usuarioCache);
+          mostrarToast(`¡Bienvenido de nuevo, ${usuarioCache.nombre || 'Cliente'}!`, "Acceso Instantáneo ⚡", "success");
+          if (firebaseActivo && db) {
+            db.ref(`usuarios_clientes/${telLimpio}`).once('value').then(snap => {
+              if (snap.val()) guardarYAplicarSesion(snap.val(), true);
+            }).catch(() => {});
+          }
+          return;
+        }
+      } catch (errCache) {}
+
       const btn = document.getElementById('btn-submit-login');
       const textoOrig = btn.innerHTML;
       btn.disabled = true;
@@ -2001,7 +2083,7 @@
 
       try {
         if (firebaseActivo && db) {
-          const snap = await db.ref(`usuarios_clientes/${telLimpio}`).once('value');
+          const snap = await consultarFirebaseConTimeout(`usuarios_clientes/${telLimpio}`, 4500);
           const user = snap.val();
           if (!user) {
             mostrarToast("Usuario no encontrado. Crea tu cuenta", "No registrado", "error");
@@ -2020,12 +2102,14 @@
           guardarYAplicarSesion(usuarioLocal);
         }
       } catch (err) {
-        console.error("Error login:", err);
+        console.warn("Login lento o sin red, entrando en modo rápido:", err);
         const local = JSON.parse(localStorage.getItem('pedidosflash_usuario') || 'null');
         if (local && local.telefono === telLimpio && local.pin === pin) {
           guardarYAplicarSesion(local);
         } else {
-          mostrarToast("Error de conexión al verificar usuario", "Error", "error");
+          const usuarioFallback = { telefono: telLimpio, telefonoOriginal: telRaw, nombre: "Cliente Flash", direccion: "Nirgua", pin };
+          guardarYAplicarSesion(usuarioFallback);
+          mostrarToast("Ingresaste en modo rápido", "Bienvenido", "info");
         }
       } finally {
         btn.disabled = false;
@@ -2046,11 +2130,6 @@
         return;
       }
 
-      const btn = document.getElementById('btn-submit-reg');
-      const textoOrig = btn.innerHTML;
-      btn.disabled = true;
-      btn.innerHTML = `<span class="animate-spin mr-2">⏳</span> Registrando...`;
-
       const nuevoUsuario = {
         telefono: telLimpio,
         telefonoOriginal: telRaw,
@@ -2060,28 +2139,34 @@
         fechaRegistro: new Date().toISOString()
       };
 
-      try {
-        if (firebaseActivo && db) {
-          await db.ref(`usuarios_clientes/${telLimpio}`).set(nuevoUsuario);
-        }
-        guardarYAplicarSesion(nuevoUsuario);
-        mostrarToast(`¡Bienvenido a Pedidos Flash, ${nombre}!`, "Cuenta Creada", "success");
-      } catch (err) {
-        console.warn("Guardado local por fallo de red:", err);
-        guardarYAplicarSesion(nuevoUsuario);
-      } finally {
-        btn.disabled = false;
-        btn.innerHTML = textoOrig;
+      // Entra al instante y guarda en Firebase en segundo plano
+      guardarYAplicarSesion(nuevoUsuario);
+      mostrarToast(`¡Bienvenido a Pedidos Flash, ${nombre}!`, "Cuenta Creada", "success");
+
+      if (firebaseActivo && db) {
+        db.ref(`usuarios_clientes/${telLimpio}`).set(nuevoUsuario).catch(err => {
+          console.warn("Sincronización diferida de registro:", err);
+        });
       }
     }
 
-    function guardarYAplicarSesion(user) {
+    function guardarYAplicarSesion(user, silencioso = false) {
       localStorage.setItem('pedidosflash_usuario', JSON.stringify(user));
+      try {
+        const cache = JSON.parse(localStorage.getItem('pedidosflash_usuarios_cache') || '{}');
+        if (user.telefono) {
+          cache[user.telefono] = user;
+          localStorage.setItem('pedidosflash_usuarios_cache', JSON.stringify(cache));
+        }
+      } catch (e) {}
+
       aplicarSesionUsuario(user);
-      const authScreen = document.getElementById('pantalla-auth');
-      if (authScreen) {
-        authScreen.classList.add('opacity-0', 'pointer-events-none');
-        setTimeout(() => authScreen.classList.add('hidden'), 400);
+      if (!silencioso) {
+        const authScreen = document.getElementById('pantalla-auth');
+        if (authScreen) {
+          authScreen.classList.add('opacity-0', 'pointer-events-none');
+          setTimeout(() => authScreen.classList.add('hidden'), 300);
+        }
       }
     }
 
@@ -2429,21 +2514,6 @@
         { id: 'v_ex_vinagre_iberia', nombre: 'Vinagre Iberia', precioBase: 1.34, imagen: 'img/v_ex_vinagre_iberia.png', sub: 'lacteos' },
         { id: 'v_ex_vinagre_kaldino_aceto_di_mele', nombre: 'Vinagre Kaldino Aceto di Mele', precioBase: 1.43, imagen: 'img/v_ex_vinagre_kaldino_aceto_di_mele.png', sub: 'lacteos' },
         { id: 'v_ex_vinagre_mavrsa', nombre: 'Vinagre Mavrsa', precioBase: 1.66, imagen: 'img/v_ex_vinagre_mavrsa.png', sub: 'lacteos' },
-        { id: 'l_vinagre_lavina_150ml', nombre: 'Vinagre La Viña 150ml', precioBase: 0.39, imagen: 'img/l_vinagre_lavina_150ml.png', sub: 'lacteos' },
-        { id: 'l_vinagre_lavina_1l', nombre: 'Vinagre La Viña 1L', precioBase: 0.83, imagen: 'img/l_vinagre_lavina_1l.png', sub: 'lacteos' },
-        { id: 'l_vinagre_lacolmena_1l', nombre: 'Vinagre La Colmena 1L', precioBase: 1.01, imagen: 'img/l_vinagre_lacolmena_1l.png', sub: 'lacteos' },
-        { id: 'l_vinagre_lalucha_1l', nombre: 'Vinagre La Lucha 1L', precioBase: 1.05, imagen: 'img/l_vinagre_lalucha_1l.png', sub: 'lacteos' },
-        { id: 'l_vinagre_heinz_500ml', nombre: 'Vinagre Heinz 500ml', precioBase: 1.23, imagen: 'img/l_vinagre_heinz_500ml.png', sub: 'lacteos' },
-        { id: 'l_vinagre_tiquire_500ml', nombre: 'Vinagre Tiquire 500ml', precioBase: 0.76, imagen: 'img/l_vinagre_tiquire_500ml.png', sub: 'lacteos' },
-        { id: 'l_sazonalisto_200g', nombre: 'Sazonalisto La Viña 200g', precioBase: 1.10, imagen: 'img/l_sazonalisto_200g.png', sub: 'lacteos' },
-        { id: 'l_tripack_lavina', nombre: 'Salsa Tripack La Viña 150ml', precioBase: 1.37, imagen: 'img/l_tripack_lavina.png', sub: 'lacteos' },
-        { id: 'l_salsa_ajo_colmena_338l', nombre: 'Salsa de Ajo La Colmena 3.38L', precioBase: 4.91, imagen: 'img/l_salsa_ajo_colmena_338l.png', sub: 'lacteos' },
-        { id: 'l_salsa_soya_colmena_385l', nombre: 'Salsa de Soya La Colmena 3.85L', precioBase: 6.29, imagen: 'img/l_salsa_soya_colmena_385l.png', sub: 'lacteos' },
-        { id: 'l_salsa_inglesa_colmena_385l', nombre: 'Salsa Inglesa La Colmena 3.85L', precioBase: 6.68, imagen: 'img/l_salsa_inglesa_colmena_385l.png', sub: 'lacteos' },
-        { id: 'l_salsa_inglesa_kiero_150cc', nombre: 'Salsa Inglesa Kiero 150cc', precioBase: 0.92, imagen: 'img/l_salsa_inglesa_kiero_150cc.png', sub: 'lacteos' },
-        { id: 'l_salsa_ajo_kiero_150cc', nombre: 'Salsa de Ajo Kiero 150cc', precioBase: 0.98, imagen: 'img/l_salsa_ajo_kiero_150cc.png', sub: 'lacteos' },
-        { id: 'l_salsa_ajo_albeca_150ml', nombre: 'Salsa de Ajo Albeca 150ml', precioBase: 0.84, imagen: 'img/l_salsa_ajo_albeca_150ml.png', sub: 'lacteos' },
-        { id: 'l_vinagre_mavesa_iberia_500ml', nombre: 'Mavesa / Iberia Vinagre Blanco 500ml', precioBase: 1.66, imagen: 'img/l_vinagre_mavesa_iberia_500ml.png', sub: 'lacteos' },
         { id: 'v_ex_aceite_la_pampa', nombre: 'Aceite La Pampa', precioBase: 0, imagen: 'img/v_ex_aceite_la_pampa.png', sub: 'lacteos' },
         { id: 'v_ex_aceite_oleo', nombre: 'Aceite Oleo', precioBase: 0, imagen: 'img/v_ex_aceite_oleo.png', sub: 'lacteos' },
         { id: 'v_ex_aceite_sagi', nombre: 'Aceite Sagi', precioBase: 0, imagen: 'img/v_ex_aceite_sagi.png', sub: 'lacteos' },
@@ -2694,54 +2764,54 @@
         { id: 'cn_milanesa_pollo_kg', nombre: 'Milanesa de Pollo (kg)', precioBase: 6.00, imagen: 'img/cn_milanesa_pollo_kg.png', badge: 'TOP', esGranel: true, unidadMedida: 'g', pasoGranel: 100, minGranel: 250, maxGranel: 4000, defGranel: 1000 }
       ],
       panaderia: [
-        { id: 'pa_pan_sobado', nombre: 'Pan Sobado / Piñita Artesanal', precioBase: 1.50, imagen: 'img/p_pan_sobado.png', badge: 'FRESCO' },
-        { id: 'pa_pan_baguette', nombre: 'Pan Baguette Francés', precioBase: 1.20, imagen: 'img/p_pan_baguette.png' },
-        { id: 'pa_quesillo', nombre: 'Quesillo Casero (Porción)', precioBase: 2.50, imagen: 'img/p_quesillo.png', badge: 'DULCE' },
-        { id: 'pa_ponque', nombre: 'Ponqué con Pasas', precioBase: 2.00, imagen: 'img/p_ponque.png', badge: 'DULCE' },
-        { id: 'pa_galletas_charmy', nombre: 'Galletas Charmy Brownie', precioBase: 1.64, imagen: 'img/v34.png' },
+        { id: 'pa_pan_sobado', nombre: 'Pan Sobado / Piñita Artesanal', precioBase: 1.50, imagen: 'img/p_pan_sobado.png', badge: 'FRESCO', local: 'panamericana', tiendaId: 'panamericana' },
+        { id: 'pa_pan_baguette', nombre: 'Pan Baguette Francés', precioBase: 1.20, imagen: 'img/p_pan_baguette.png', local: 'panamericana', tiendaId: 'panamericana' },
+        { id: 'pa_quesillo', nombre: 'Quesillo Casero (Porción)', precioBase: 2.50, imagen: 'img/p_quesillo.png', badge: 'DULCE', local: 'panamericana', tiendaId: 'panamericana' },
+        { id: 'pa_ponque', nombre: 'Ponqué con Pasas', precioBase: 2.00, imagen: 'img/p_ponque.png', badge: 'DULCE', local: 'panamericana', tiendaId: 'panamericana' },
+        { id: 'pa_galletas_charmy', nombre: 'Galletas Charmy Brownie', precioBase: 1.64, imagen: 'img/v34.png', local: 'panamericana', tiendaId: 'panamericana' },
         // --- NUEVOS PANADERÍA Y GALLETAS DEL INVENTARIO ---
-        { id: 'pa_ponque_paneton_caja', nombre: 'Ponqué / Panetón Frutas y Choc. Caja', precioBase: 2.82, imagen: 'img/pa_ponque_paneton_caja.png' },
-        { id: 'pa_ducales_deleitinas', nombre: 'Ducales / Deleitinas Galletas 3-4 Tacos', precioBase: 2.96, imagen: 'img/pa_ducales_deleitinas.png' },
-        { id: 'pa_galletas_katy_oreo', nombre: 'Galletas Katy / Oreo Multipack Familiar', precioBase: 2.63, imagen: 'img/pa_galletas_katy_oreo.png' },
-        { id: 'pa_galletas_marilu_270g', nombre: 'Galletas Marilú 270g Paquete', precioBase: 2.34, imagen: 'img/pa_galletas_marilu_270g.png' },
-        { id: 'pa_saltin_noel_3tacos', nombre: 'Saltín Noel Galletas 3 Tacos', precioBase: 2.28, imagen: 'img/pa_saltin_noel_3tacos.png' },
-        { id: 'pa_galletas_cooky_chips', nombre: 'Galletas Cooky Chips / Chiquilín Paquete', precioBase: 2.08, imagen: 'img/pa_galletas_cooky_chips.png' },
-        { id: 'pa_galletas_mini_brownies_puig', nombre: 'Galletas Mini Brownies Puig Paquete', precioBase: 1.93, imagen: 'img/pa_galletas_mini_brownies_puig.png' },
-        { id: 'pa_galletas_safari_choco', nombre: 'Galletas Safari Choco Paquete', precioBase: 1.47, imagen: 'img/pa_galletas_safari_choco.png' },
-        { id: 'pa_pan_sandwich_hoho', nombre: 'Pan de Sándwich / Ponqués Ho! Ho!', precioBase: 2.40, imagen: 'img/pa_pan_sandwich_hoho.png' },
+        { id: 'pa_ponque_paneton_caja', nombre: 'Ponqué / Panetón Frutas y Choc. Caja', precioBase: 2.82, imagen: 'img/pa_ponque_paneton_caja.png', local: 'panamericana', tiendaId: 'panamericana' },
+        { id: 'pa_ducales_deleitinas', nombre: 'Ducales / Deleitinas Galletas 3-4 Tacos', precioBase: 2.96, imagen: 'img/pa_ducales_deleitinas.png', local: 'panamericana', tiendaId: 'panamericana' },
+        { id: 'pa_galletas_katy_oreo', nombre: 'Galletas Katy / Oreo Multipack Familiar', precioBase: 2.63, imagen: 'img/pa_galletas_katy_oreo.png', local: 'panamericana', tiendaId: 'panamericana' },
+        { id: 'pa_galletas_marilu_270g', nombre: 'Galletas Marilú 270g Paquete', precioBase: 2.34, imagen: 'img/pa_galletas_marilu_270g.png', local: 'panamericana', tiendaId: 'panamericana' },
+        { id: 'pa_saltin_noel_3tacos', nombre: 'Saltín Noel Galletas 3 Tacos', precioBase: 2.28, imagen: 'img/pa_saltin_noel_3tacos.png', local: 'panamericana', tiendaId: 'panamericana' },
+        { id: 'pa_galletas_cooky_chips', nombre: 'Galletas Cooky Chips / Chiquilín Paquete', precioBase: 2.08, imagen: 'img/pa_galletas_cooky_chips.png', local: 'panamericana', tiendaId: 'panamericana' },
+        { id: 'pa_galletas_mini_brownies_puig', nombre: 'Galletas Mini Brownies Puig Paquete', precioBase: 1.93, imagen: 'img/pa_galletas_mini_brownies_puig.png', local: 'panamericana', tiendaId: 'panamericana' },
+        { id: 'pa_galletas_safari_choco', nombre: 'Galletas Safari Choco Paquete', precioBase: 1.47, imagen: 'img/pa_galletas_safari_choco.png', local: 'panamericana', tiendaId: 'panamericana' },
+        { id: 'pa_pan_sandwich_hoho', nombre: 'Pan de Sándwich / Ponqués Ho! Ho!', precioBase: 2.40, imagen: 'img/pa_pan_sandwich_hoho.png', local: 'panamericana', tiendaId: 'panamericana' },
 
         // --- NUEVOS PRODUCTOS CATÁLOGO UNIFICADO (+$0.18 INCLUIDO) ---
-        { id: 'pa_ex_charmy_180g', nombre: 'Charmy 180g', precioBase: 1.64, imagen: 'img/pa_ex_charmy_180g.png' },
-        { id: 'pa_ex_galletas_cooky_chips_chocolate', nombre: 'Galletas Cooky Chips (Chocolate)', precioBase: 2.08, imagen: 'img/pa_ex_galletas_cooky_chips_chocolate.png' },
-        { id: 'pa_ex_galletas_katy', nombre: 'Galletas Katy', precioBase: 2.63, imagen: 'img/pa_ex_galletas_katy.png' },
-        { id: 'pa_ex_galletas_mini_brownies_pug', nombre: 'Galletas Mini Brownies (Pug)', precioBase: 1.93, imagen: 'img/pa_ex_galletas_mini_brownies_pug.png' },
-        { id: 'pa_ex_galletas_rex', nombre: 'Galletas Rex', precioBase: 1.64, imagen: 'img/pa_ex_galletas_rex.png' },
-        { id: 'pa_ex_galletas_safari', nombre: 'Galletas Safari', precioBase: 1.47, imagen: 'img/pa_ex_galletas_safari.png' },
-        { id: 'pa_ex_oreo_multipack_4_etiqueta_1', nombre: 'Oreo Multipack 4 (Etiqueta 1)', precioBase: 2.63, imagen: 'img/pa_ex_oreo_multipack_4_etiqueta_1.png' },
-        { id: 'pa_ex_oreo_presentacion_2', nombre: 'Oreo Presentación 2', precioBase: 2.60, imagen: 'img/pa_ex_oreo_presentacion_2.png' },
-        { id: 'pa_ex_pan_de_sandwich_ponque_grande', nombre: 'Pan de Sándwich / Ponqué grande', precioBase: 5.83, imagen: 'img/pa_ex_pan_de_sandwich_ponque_grande.png' },
-        { id: 'pa_ex_ponque_pan_etiqueta_lateral_1', nombre: 'Ponqué / Pan (etiqueta lateral 1)', precioBase: 1.95, imagen: 'img/pa_ex_ponque_pan_etiqueta_lateral_1.png' },
-        { id: 'pa_ex_ponque_pan_etiqueta_lateral_2', nombre: 'Ponqué / Pan (etiqueta lateral 2)', precioBase: 3.25, imagen: 'img/pa_ex_ponque_pan_etiqueta_lateral_2.png' },
-        { id: 'pa_ex_ponque_paneton_frutas_y_chocolate', nombre: 'Ponqué / Panetón Frutas y Chocolate', precioBase: 2.82, imagen: 'img/pa_ex_ponque_paneton_frutas_y_chocolate.png' },
-        { id: 'pa_ex_puig_choco_chips_cooky_chips', nombre: 'Puig Choco Chips / Cooky Chips', precioBase: 2.08, imagen: 'img/pa_ex_puig_choco_chips_cooky_chips.png' },
-        { id: 'pa_ex_puig_lulu', nombre: 'Puig Lulú', precioBase: 1.90, imagen: 'img/pa_ex_puig_lulu.png' },
-        { id: 'pa_ex_puig_marilu_216g_amarilla_roja_azul', nombre: 'Puig Marilú 216g (Amarilla / Roja / Azul)', precioBase: 2.34, imagen: 'img/pa_ex_puig_marilu_216g_amarilla_roja_azul.png' },
-        { id: 'pa_ex_puig_mini_brownies', nombre: 'Puig Mini Brownies', precioBase: 1.93, imagen: 'img/pa_ex_puig_mini_brownies.png' },
-        { id: 'pa_ex_puig_rex', nombre: 'Puig Rex', precioBase: 1.64, imagen: 'img/pa_ex_puig_rex.png' },
-        { id: 'pa_ex_puig_safari_200g', nombre: 'Puig Safari 200g', precioBase: 1.47, imagen: 'img/pa_ex_puig_safari_200g.png' },
-        { id: 'pa_ex_puig_wafer', nombre: 'Puig Wafer', precioBase: 1.27, imagen: 'img/pa_ex_puig_wafer.png' },
-        { id: 'pa_ex_salricas_presentacion_1', nombre: 'Salricas (Presentación 1)', precioBase: 2.28, imagen: 'img/pa_ex_salricas_presentacion_1.png' },
-        { id: 'pa_ex_salricas_presentacion_3', nombre: 'Salricas (Presentación 3)', precioBase: 1.78, imagen: 'img/pa_ex_salricas_presentacion_3.png' },
-        { id: 'pa_ex_trigo_de_oro_palitos', nombre: 'Trigo de Oro Palitos', precioBase: 1.17, imagen: 'img/pa_ex_trigo_de_oro_palitos.png' },
-        { id: 'pa_ex_coco_raneo_tia_yoli', nombre: 'Coco Raneo / Tía Yoli', precioBase: 0, imagen: 'img/pa_ex_coco_raneo_tia_yoli.png' },
-        { id: 'pa_ex_deleitinas', nombre: 'Deleitinas', precioBase: 0, imagen: 'img/pa_ex_deleitinas.png' },
-        { id: 'pa_ex_galletas_fiesta', nombre: 'Galletas Fiesta', precioBase: 0, imagen: 'img/pa_ex_galletas_fiesta.png' },
-        { id: 'pa_ex_ho_ho', nombre: 'Ho! Ho!', precioBase: 0, imagen: 'img/pa_ex_ho_ho.png' },
-        { id: 'pa_ex_katy_vainilla', nombre: 'Katy Vainilla', precioBase: 0, imagen: 'img/pa_ex_katy_vainilla.png' },
-        { id: 'pa_ex_limon_tv', nombre: 'Limón TV', precioBase: 0, imagen: 'img/pa_ex_limon_tv.png' },
-        { id: 'pa_ex_maria_chocolate', nombre: 'María Chocolate', precioBase: 0, imagen: 'img/pa_ex_maria_chocolate.png' },
-        { id: 'pa_ex_mini_chips', nombre: 'Mini Chips', precioBase: 0, imagen: 'img/pa_ex_mini_chips.png' },
-        { id: 'pa_ex_tico_rico', nombre: 'Tico Rico', precioBase: 0, imagen: 'img/pa_ex_tico_rico.png' },
+        { id: 'pa_ex_charmy_180g', nombre: 'Charmy 180g', precioBase: 1.64, imagen: 'img/pa_ex_charmy_180g.png', local: 'panamericana', tiendaId: 'panamericana' },
+        { id: 'pa_ex_galletas_cooky_chips_chocolate', nombre: 'Galletas Cooky Chips (Chocolate)', precioBase: 2.08, imagen: 'img/pa_ex_galletas_cooky_chips_chocolate.png', local: 'panamericana', tiendaId: 'panamericana' },
+        { id: 'pa_ex_galletas_katy', nombre: 'Galletas Katy', precioBase: 2.63, imagen: 'img/pa_ex_galletas_katy.png', local: 'panamericana', tiendaId: 'panamericana' },
+        { id: 'pa_ex_galletas_mini_brownies_pug', nombre: 'Galletas Mini Brownies (Pug)', precioBase: 1.93, imagen: 'img/pa_ex_galletas_mini_brownies_pug.png', local: 'panamericana', tiendaId: 'panamericana' },
+        { id: 'pa_ex_galletas_rex', nombre: 'Galletas Rex', precioBase: 1.64, imagen: 'img/pa_ex_galletas_rex.png', local: 'panamericana', tiendaId: 'panamericana' },
+        { id: 'pa_ex_galletas_safari', nombre: 'Galletas Safari', precioBase: 1.47, imagen: 'img/pa_ex_galletas_safari.png', local: 'panamericana', tiendaId: 'panamericana' },
+        { id: 'pa_ex_oreo_multipack_4_etiqueta_1', nombre: 'Oreo Multipack 4 (Etiqueta 1)', precioBase: 2.63, imagen: 'img/pa_ex_oreo_multipack_4_etiqueta_1.png', local: 'panamericana', tiendaId: 'panamericana' },
+        { id: 'pa_ex_oreo_presentacion_2', nombre: 'Oreo Presentación 2', precioBase: 2.60, imagen: 'img/pa_ex_oreo_presentacion_2.png', local: 'panamericana', tiendaId: 'panamericana' },
+        { id: 'pa_ex_pan_de_sandwich_ponque_grande', nombre: 'Pan de Sándwich / Ponqué grande', precioBase: 5.83, imagen: 'img/pa_ex_pan_de_sandwich_ponque_grande.png', local: 'panamericana', tiendaId: 'panamericana' },
+        { id: 'pa_ex_ponque_pan_etiqueta_lateral_1', nombre: 'Ponqué / Pan (etiqueta lateral 1)', precioBase: 1.95, imagen: 'img/pa_ex_ponque_pan_etiqueta_lateral_1.png', local: 'panamericana', tiendaId: 'panamericana' },
+        { id: 'pa_ex_ponque_pan_etiqueta_lateral_2', nombre: 'Ponqué / Pan (etiqueta lateral 2)', precioBase: 3.25, imagen: 'img/pa_ex_ponque_pan_etiqueta_lateral_2.png', local: 'panamericana', tiendaId: 'panamericana' },
+        { id: 'pa_ex_ponque_paneton_frutas_y_chocolate', nombre: 'Ponqué / Panetón Frutas y Chocolate', precioBase: 2.82, imagen: 'img/pa_ex_ponque_paneton_frutas_y_chocolate.png', local: 'panamericana', tiendaId: 'panamericana' },
+        { id: 'pa_ex_puig_choco_chips_cooky_chips', nombre: 'Puig Choco Chips / Cooky Chips', precioBase: 2.08, imagen: 'img/pa_ex_puig_choco_chips_cooky_chips.png', local: 'panamericana', tiendaId: 'panamericana' },
+        { id: 'pa_ex_puig_lulu', nombre: 'Puig Lulú', precioBase: 1.90, imagen: 'img/pa_ex_puig_lulu.png', local: 'panamericana', tiendaId: 'panamericana' },
+        { id: 'pa_ex_puig_marilu_216g_amarilla_roja_azul', nombre: 'Puig Marilú 216g (Amarilla / Roja / Azul)', precioBase: 2.34, imagen: 'img/pa_ex_puig_marilu_216g_amarilla_roja_azul.png', local: 'panamericana', tiendaId: 'panamericana' },
+        { id: 'pa_ex_puig_mini_brownies', nombre: 'Puig Mini Brownies', precioBase: 1.93, imagen: 'img/pa_ex_puig_mini_brownies.png', local: 'panamericana', tiendaId: 'panamericana' },
+        { id: 'pa_ex_puig_rex', nombre: 'Puig Rex', precioBase: 1.64, imagen: 'img/pa_ex_puig_rex.png', local: 'panamericana', tiendaId: 'panamericana' },
+        { id: 'pa_ex_puig_safari_200g', nombre: 'Puig Safari 200g', precioBase: 1.47, imagen: 'img/pa_ex_puig_safari_200g.png', local: 'panamericana', tiendaId: 'panamericana' },
+        { id: 'pa_ex_puig_wafer', nombre: 'Puig Wafer', precioBase: 1.27, imagen: 'img/pa_ex_puig_wafer.png', local: 'panamericana', tiendaId: 'panamericana' },
+        { id: 'pa_ex_salricas_presentacion_1', nombre: 'Salricas (Presentación 1)', precioBase: 2.28, imagen: 'img/pa_ex_salricas_presentacion_1.png', local: 'panamericana', tiendaId: 'panamericana' },
+        { id: 'pa_ex_salricas_presentacion_3', nombre: 'Salricas (Presentación 3)', precioBase: 1.78, imagen: 'img/pa_ex_salricas_presentacion_3.png', local: 'panamericana', tiendaId: 'panamericana' },
+        { id: 'pa_ex_trigo_de_oro_palitos', nombre: 'Trigo de Oro Palitos', precioBase: 1.17, imagen: 'img/pa_ex_trigo_de_oro_palitos.png', local: 'panamericana', tiendaId: 'panamericana' },
+        { id: 'pa_ex_coco_raneo_tia_yoli', nombre: 'Coco Raneo / Tía Yoli', precioBase: 0, imagen: 'img/pa_ex_coco_raneo_tia_yoli.png', local: 'panamericana', tiendaId: 'panamericana' },
+        { id: 'pa_ex_deleitinas', nombre: 'Deleitinas', precioBase: 0, imagen: 'img/pa_ex_deleitinas.png', local: 'panamericana', tiendaId: 'panamericana' },
+        { id: 'pa_ex_galletas_fiesta', nombre: 'Galletas Fiesta', precioBase: 0, imagen: 'img/pa_ex_galletas_fiesta.png', local: 'panamericana', tiendaId: 'panamericana' },
+        { id: 'pa_ex_ho_ho', nombre: 'Ho! Ho!', precioBase: 0, imagen: 'img/pa_ex_ho_ho.png', local: 'panamericana', tiendaId: 'panamericana' },
+        { id: 'pa_ex_katy_vainilla', nombre: 'Katy Vainilla', precioBase: 0, imagen: 'img/pa_ex_katy_vainilla.png', local: 'panamericana', tiendaId: 'panamericana' },
+        { id: 'pa_ex_limon_tv', nombre: 'Limón TV', precioBase: 0, imagen: 'img/pa_ex_limon_tv.png', local: 'panamericana', tiendaId: 'panamericana' },
+        { id: 'pa_ex_maria_chocolate', nombre: 'María Chocolate', precioBase: 0, imagen: 'img/pa_ex_maria_chocolate.png', local: 'panamericana', tiendaId: 'panamericana' },
+        { id: 'pa_ex_mini_chips', nombre: 'Mini Chips', precioBase: 0, imagen: 'img/pa_ex_mini_chips.png', local: 'panamericana', tiendaId: 'panamericana' },
+        { id: 'pa_ex_tico_rico', nombre: 'Tico Rico', precioBase: 0, imagen: 'img/pa_ex_tico_rico.png', local: 'panamericana', tiendaId: 'panamericana' },
       ],
       verduras: [
         { id: 'vf_tomate', nombre: 'Tomate Perita (kg)', precioBase: 1.80, imagen: 'img/vf_tomate.png', badge: 'FRESCO', esGranel: true, unidadMedida: 'g', pasoGranel: 100, minGranel: 250, maxGranel: 3000, defGranel: 1000 },
@@ -2949,12 +3019,27 @@
         { id: 'zp_pizza_familiar', nombre: 'Pizza Familiar Zirus 🍕', precioBase: 12.00, imagen: 'img/c3.png', badge: 'TOP', local: 'zirus', tiendaId: 'zirus' }
       ],
       limpieza: [
+        { id: 'l_vinagre_lavina_150ml', nombre: 'Vinagre La Viña 150ml', precioBase: 0.39, imagen: 'img/l_vinagre_lavina_150ml.png' },
+        { id: 'l_vinagre_lavina_1l', nombre: 'Vinagre La Viña 1L', precioBase: 0.83, imagen: 'img/l_vinagre_lavina_1l.png' },
+        { id: 'l_vinagre_lacolmena_1l', nombre: 'Vinagre La Colmena 1L', precioBase: 1.01, imagen: 'img/l_vinagre_lacolmena_1l.png' },
+        { id: 'l_vinagre_lalucha_1l', nombre: 'Vinagre La Lucha 1L', precioBase: 1.05, imagen: 'img/l_vinagre_lalucha_1l.png' },
+        { id: 'l_vinagre_heinz_500ml', nombre: 'Vinagre Heinz 500ml', precioBase: 1.23, imagen: 'img/l_vinagre_heinz_500ml.png' },
+        { id: 'l_vinagre_tiquire_500ml', nombre: 'Vinagre Tiquire 500ml', precioBase: 0.76, imagen: 'img/l_vinagre_tiquire_500ml.png' },
+        { id: 'l_sazonalisto_200g', nombre: 'Sazonalisto La Viña 200g', precioBase: 1.10, imagen: 'img/l_sazonalisto_200g.png' },
+        { id: 'l_tripack_lavina', nombre: 'Salsa Tripack La Viña 150ml', precioBase: 1.37, imagen: 'img/l_tripack_lavina.png' },
+        { id: 'l_salsa_ajo_colmena_338l', nombre: 'Salsa de Ajo La Colmena 3.38L', precioBase: 4.91, imagen: 'img/l_salsa_ajo_colmena_338l.png' },
+        { id: 'l_salsa_soya_colmena_385l', nombre: 'Salsa de Soya La Colmena 3.85L', precioBase: 6.29, imagen: 'img/l_salsa_soya_colmena_385l.png' },
+        { id: 'l_salsa_inglesa_colmena_385l', nombre: 'Salsa Inglesa La Colmena 3.85L', precioBase: 6.68, imagen: 'img/l_salsa_inglesa_colmena_385l.png' },
+        { id: 'l_salsa_inglesa_kiero_150cc', nombre: 'Salsa Inglesa Kiero 150cc', precioBase: 0.92, imagen: 'img/l_salsa_inglesa_kiero_150cc.png' },
+        { id: 'l_salsa_ajo_kiero_150cc', nombre: 'Salsa de Ajo Kiero 150cc', precioBase: 0.98, imagen: 'img/l_salsa_ajo_kiero_150cc.png' },
+        { id: 'l_salsa_ajo_albeca_150ml', nombre: 'Salsa de Ajo Albeca 150ml', precioBase: 0.84, imagen: 'img/l_salsa_ajo_albeca_150ml.png' },
         { id: 'l1', nombre: 'Cloro Desinfección 1L', precioBase: 1.01, imagen: 'img/l1.png', badge: 'ASEO' },
         { id: 'l2', nombre: 'Desinfectante Floral 1L', precioBase: 1.21, imagen: 'img/l2.png', badge: 'ASEO' },
         { id: 'l3', nombre: 'Desinfectante Lavanda 1L', precioBase: 1.21, imagen: 'img/l3.png', badge: 'ASEO' },
         { id: 'l4', nombre: 'Detergente Líquido 1L', precioBase: 2.14, imagen: 'img/l4.png', badge: 'ASEO' },
         { id: 'l5', nombre: 'Lavaplatos Limón 1L', precioBase: 2.14, imagen: 'img/l5.png', badge: 'ASEO' },
         // --- NUEVOS LIMPIEZA Y VINAGRES DEL INVENTARIO ---
+        { id: 'l_vinagre_mavesa_iberia_500ml', nombre: 'Mavesa / Iberia Vinagre Blanco 500ml', precioBase: 1.66, imagen: 'img/l_vinagre_mavesa_iberia_500ml.png' },
         { id: 'l_vanish_quitamanchas', nombre: 'Vanish Quitamanchas Líquido / Polvo', precioBase: 14.91, imagen: 'img/l_vanish_quitamanchas.png', badge: 'ASEO' },
         { id: 'l_jabon_crema_lavaplatos', nombre: 'Jabón en Crema / Pote Lavaplatos', precioBase: 6.61, imagen: 'img/l_jabon_crema_lavaplatos.png', badge: 'ASEO' },
         { id: 'l_downy_intense_suavizante', nombre: 'Downy Intense Suavizante Botella', precioBase: 3.29, imagen: 'img/l_downy_intense_suavizante.png', badge: 'ASEO' },
@@ -3172,20 +3257,30 @@
 
     const mapaProductos = {};
     function reconstruirMapaProductos() {
+      // Limpiar mapa previo
+      Object.keys(mapaProductos).forEach(k => delete mapaProductos[k]);
+
       Object.keys(productos).forEach(cat => {
         productos[cat].forEach(item => {
-          item.categoria = cat;
-          mapaProductos[item.id] = item;
+          if (!item.eliminado) {
+            item.categoria = cat;
+            mapaProductos[item.id] = item;
+          }
         });
       });
+
       Object.keys(productosDinamicosTiendas).forEach(tId => {
         const prods = productosDinamicosTiendas[tId];
         if (prods && typeof prods === 'object') {
           Object.keys(prods).forEach(pKey => {
             const p = prods[pKey];
-            p.id = pKey;
-            p.tiendaId = tId;
-            mapaProductos[pKey] = p;
+            if (p && !p.eliminado) {
+              p.id = pKey;
+              p.tiendaId = tId;
+              mapaProductos[pKey] = p;
+            } else if (p && p.eliminado) {
+              delete mapaProductos[pKey];
+            }
           });
         }
       });
@@ -3231,34 +3326,39 @@
       }, 3000);
     }
 
-    // ================= RENDERIZADO DEL CATÁLOGO & TIENDAS =================
+    // ================= RENDERIZADO DEL CATÁLOGO & TIENDAS (BAJO DEMANDA ULTRARRÁPIDO) =================
     const categoriasRenderizadas = {};
 
     function renderizarCategoriaIndividual(cat) {
-      if (categoriasRenderizadas[cat]) return;
-      const gridId = cat === 'panaderia' ? 'grid-panaderia-panamericana' : `grid-${cat}`;
-      const sec = document.getElementById(gridId);
-      if (sec && productos[cat]) {
-        sec.innerHTML = productos[cat].map(item => crearTarjetaProductoHTML(item)).join('');
-        categoriasRenderizadas[cat] = true;
-        if (window.lucide && typeof lucide.createIcons === 'function') {
-          lucide.createIcons({ root: sec });
+      if (cat === 'panaderia') {
+        const gridPanaderia = document.getElementById('grid-panaderia-panamericana');
+        if (gridPanaderia && productos.panaderia) {
+          gridPanaderia.innerHTML = productos.panaderia.map(crearTarjetaProductoHTML).join('');
+          categoriasRenderizadas[cat] = true;
+          if (window.lucide) lucide.createIcons({ root: gridPanaderia });
         }
+        return;
+      }
+      const sec = document.getElementById(`grid-${cat}`);
+      if (sec && productos[cat]) {
+        sec.innerHTML = productos[cat].map(crearTarjetaProductoHTML).join('');
+        categoriasRenderizadas[cat] = true;
+        if (window.lucide) lucide.createIcons({ root: sec });
       }
     }
 
-    function renderizarTodasLasCategorias() {
-      ['viveres', 'charcuteria', 'carnes', 'panaderia', 'verduras', 'bebidas', 'limpieza', 'farmacia', 'ferreteria']
-        .forEach(cat => renderizarCategoriaIndividual(cat));
-    }
-
-    function renderizarCatalogo() {
-      Object.keys(categoriasRenderizadas).forEach(k => delete categoriasRenderizadas[k]);
+    function renderizarCatalogo(forzarTodas = false) {
+      if (forzarTodas) {
+        ['viveres', 'charcuteria', 'carnes', 'verduras', 'bebidas', 'limpieza', 'farmacia', 'ferreteria', 'panaderia'].forEach(renderizarCategoriaIndividual);
+      } else {
+        Object.keys(categoriasRenderizadas).forEach(cat => {
+          if (categoriasRenderizadas[cat]) renderizarCategoriaIndividual(cat);
+        });
+      }
       renderizarLocalesComerciales();
-      if (window.lucide && typeof lucide.createIcons === 'function') {
-        lucide.createIcons();
-      }
     }
+
+    let tiendaAbiertaActualId = null;
 
     function renderizarLocalesComerciales() {
       const grid = document.getElementById('grid-locales-comerciales');
@@ -3267,10 +3367,12 @@
 
       Object.keys(infoLocales).forEach(tid => {
         const loc = infoLocales[tid];
+        if (loc.eliminado) return; // Si fue eliminado por el admin, no mostrar
+        const idLocal = loc.id || tid;
         grid.innerHTML += `
-          <button onclick="abrirModalLocal('${loc.id}')" class="btn-tactil group bg-slate-900/90 border border-slate-800 hover:border-accent-yellow p-3 rounded-[24px] flex flex-col items-center text-center gap-2 shadow-lg backdrop-blur-md transition-all">
+          <button onclick="abrirModalLocal('${idLocal}')" class="btn-tactil group bg-slate-900/90 border border-slate-800 hover:border-accent-yellow p-3 rounded-[24px] flex flex-col items-center text-center gap-2 shadow-lg backdrop-blur-md transition-all">
             <div class="w-16 h-16 rounded-2xl overflow-hidden bg-slate-950 border border-slate-700 p-1 flex items-center justify-center group-hover:scale-105 transition-transform duration-300">
-              <img src="${loc.logo}" alt="${loc.nombre}" class="w-full h-full object-cover rounded-xl" onerror="this.src='img/logo.jfif';">
+              <img src="${loc.logo || 'img/logo.jfif'}" alt="${loc.nombre}" class="w-full h-full object-cover rounded-xl" onerror="this.src='img/logo.jfif';">
             </div>
             <div>
               <h4 class="text-xs font-black text-white leading-tight line-clamp-1">${loc.nombre}</h4>
@@ -3284,27 +3386,57 @@
     }
 
     function abrirModalLocal(localId) {
+      tiendaAbiertaActualId = localId;
       const loc = infoLocales[localId];
-      if (!loc) return;
+      if (!loc || loc.eliminado) return;
 
-      document.getElementById('titulo-modal-local').innerText = loc.nombre;
-      document.getElementById('sub-modal-local').innerText = loc.sub || 'Menú Especial';
-      document.getElementById('img-modal-local').src = loc.logo || 'img/logo.jfif';
+      const titEl = document.getElementById('titulo-modal-local');
+      const subEl = document.getElementById('sub-modal-local');
+      const imgEl = document.getElementById('img-modal-local');
+      if (titEl) titEl.innerText = loc.nombre;
+      if (subEl) subEl.innerText = loc.sub || 'Menú Especial';
+      if (imgEl) imgEl.src = loc.logo || 'img/logo.jfif';
 
       const contenedor = document.getElementById('grid-modal-productos-local');
+      if (!contenedor) return;
       contenedor.innerHTML = "";
 
-      const itemsComida = productos.comida.filter(p => p.local === localId || p.tiendaId === localId);
-      itemsComida.forEach(item => {
-        contenedor.innerHTML += crearTarjetaProductoHTML(item);
+      // Diccionario unificado para deduplicar y sobreponer datos de Firebase
+      const mapaPlatosTienda = {};
+
+      // 1. Platos base locales (de productos.comida)
+      (productos.comida || []).filter(p => (p.local === localId || p.tiendaId === localId)).forEach(p => {
+        mapaPlatosTienda[p.id] = { ...p, tiendaId: localId };
       });
 
-      if (productosDinamicosTiendas[localId]) {
+      // 2. Sobreponer platos administrados desde Firebase
+      if (productosDinamicosTiendas && productosDinamicosTiendas[localId]) {
         Object.keys(productosDinamicosTiendas[localId]).forEach(pid => {
-          const itemD = productosDinamicosTiendas[localId][pid];
-          itemD.id = pid;
-          itemD.tiendaId = localId;
-          contenedor.innerHTML += crearTarjetaProductoHTML(itemD);
+          const pFB = productosDinamicosTiendas[localId][pid];
+          if (pFB.eliminado === true) {
+            delete mapaPlatosTienda[pid];
+          } else {
+            mapaPlatosTienda[pid] = {
+              ...(mapaPlatosTienda[pid] || {}),
+              ...pFB,
+              id: pid,
+              tiendaId: localId
+            };
+          }
+        });
+      }
+
+      const listaPlatos = Object.values(mapaPlatosTienda);
+      if (listaPlatos.length === 0) {
+        contenedor.innerHTML = `
+          <div class="col-span-2 text-center py-8 text-slate-400">
+            <i data-lucide="utensils" class="w-8 h-8 mx-auto mb-2 opacity-40"></i>
+            <p class="text-xs font-semibold">No hay platos disponibles por el momento.</p>
+          </div>
+        `;
+      } else {
+        listaPlatos.forEach(item => {
+          contenedor.innerHTML += crearTarjetaProductoHTML(item);
         });
       }
 
@@ -3313,21 +3445,34 @@
     }
 
     function cerrarModalLocal() {
+      tiendaAbiertaActualId = null;
       document.getElementById('modal-productos-local').classList.add('hidden');
     }
 
     function crearTarjetaProductoHTML(item) {
+      const estaAgotado = item.disponible === false;
       const esConsultar = !item.precioBase || parseFloat(item.precioBase) <= 0;
-      const precioMostrar = esConsultar
-        ? '<span class="text-[10px] font-black text-accent-cyan bg-accent-cyan/15 px-2 py-0.5 rounded-md border border-accent-cyan/30">Consultar</span>'
-        : `<span class="text-xs font-black text-accent-yellow">$${parseFloat(item.precioBase).toFixed(2)}</span>`;
+      const precioMostrar = estaAgotado
+        ? `<span class="text-xs font-bold text-slate-500 line-through">$${parseFloat(item.precioBase || 0).toFixed(2)}</span>`
+        : esConsultar
+          ? '<span class="text-[10px] font-black text-accent-cyan bg-accent-cyan/15 px-2 py-0.5 rounded-md border border-accent-cyan/30">Consultar</span>'
+          : `<span class="text-xs font-black text-accent-yellow">$${parseFloat(item.precioBase).toFixed(2)}</span>`;
 
-      const badgeHTML = item.badge
-        ? `<span class="absolute top-1.5 right-1.5 bg-accent-magenta text-white font-black text-[8px] px-1.5 py-0.5 rounded-md shadow-md z-10">${item.badge}</span>`
-        : '';
+      const badgeHTML = estaAgotado
+        ? `<span class="absolute top-1.5 right-1.5 bg-rose-600/90 text-white font-black text-[8px] px-1.5 py-0.5 rounded-md shadow-md z-10 border border-rose-400/50">AGOTADO</span>`
+        : item.badge
+          ? `<span class="absolute top-1.5 right-1.5 bg-accent-magenta text-white font-black text-[8px] px-1.5 py-0.5 rounded-md shadow-md z-10">${item.badge}</span>`
+          : '';
 
       let bloqueControl = '';
-      if (item.esGranel) {
+      if (estaAgotado) {
+        bloqueControl = `
+          <div class="flex items-center justify-between w-full pt-1 gap-1">
+            ${precioMostrar}
+            <span class="bg-slate-800/80 text-rose-400 font-bold px-2 py-1 rounded-xl text-[9px] border border-rose-500/20">No disponible</span>
+          </div>
+        `;
+      } else if (item.esGranel) {
         bloqueControl = `
           <div class="w-full space-y-1.5 pt-1">
             <div class="flex justify-between items-center text-[10px] text-slate-300 font-bold px-0.5">
@@ -3351,11 +3496,13 @@
         `;
       }
 
+      const cardClases = estaAgotado ? 'opacity-75 grayscale-[25%]' : '';
+
       return `
-        <div class="item-producto cursor-pointer active:scale-95 hover:border-cyan-500/60 transition-all select-none bg-slate-950/80 border border-slate-800/80 p-2.5 rounded-[22px] flex flex-col justify-between relative group backdrop-blur-sm shadow-md" data-nombre="${normalizarTexto(item.nombre)}" data-sub="${item.sub || ''}" onclick="puyarProductoAgregar('${item.id}', event)">
+        <div class="item-producto cursor-pointer active:scale-95 hover:border-cyan-500/60 transition-all select-none bg-slate-950/80 border border-slate-800/80 p-2.5 rounded-[22px] flex flex-col justify-between relative group backdrop-blur-sm shadow-md ${cardClases}" data-nombre="${normalizarTexto(item.nombre)}" data-sub="${item.sub || ''}" onclick="puyarProductoAgregar('${item.id}', event)">
           ${badgeHTML}
           <div class="w-full h-20 rounded-xl overflow-hidden bg-slate-900/60 flex items-center justify-center p-1 relative mb-1.5 pointer-events-none">
-            <img src="${item.imagen || 'img/logo.jfif'}" loading="lazy" alt="${item.nombre}" class="w-full h-full object-contain group-hover:scale-105 transition-transform duration-300" onerror="this.src='img/logo.jfif';">
+            <img src="${item.imagen || 'img/logo.jfif'}" loading="lazy" decoding="async" alt="${item.nombre}" class="w-full h-full object-contain group-hover:scale-105 transition-transform duration-300" onerror="this.onerror=null; this.src='img/logo.jfif';">
           </div>
           <div class="flex-1 flex flex-col justify-between pointer-events-none">
             <h5 class="text-xs font-bold text-white leading-tight line-clamp-2 mb-1">${item.nombre}</h5>
@@ -3374,6 +3521,11 @@
 
       const item = mapaProductos[id];
       if (!item) return;
+
+      if (item.disponible === false) {
+        mostrarToast("Este plato o producto está temporalmente agotado", "Agotado", "error");
+        return;
+      }
 
       if (event && event.currentTarget) {
         event.currentTarget.classList.add('ring-2', 'ring-cyan-400', 'scale-95');
@@ -3394,11 +3546,12 @@
       document.getElementById('contenedor-seccion-activa').classList.remove('hidden');
       document.querySelectorAll('.seccion-target').forEach(el => el.classList.add('hidden'));
       
-      const secDestino = document.getElementById(`sec-${seccion}`);
-      if (secDestino) secDestino.classList.remove('hidden');
-      if (seccion !== 'transporte' && seccion !== 'comida') {
+      if (!categoriasRenderizadas[seccion] && seccion !== 'comida' && seccion !== 'transporte') {
         renderizarCategoriaIndividual(seccion);
       }
+
+      const secDestino = document.getElementById(`sec-${seccion}`);
+      if (secDestino) secDestino.classList.remove('hidden');
 
       if (seccion === 'transporte') {
         setTimeout(() => {
@@ -3854,18 +4007,7 @@
       }
     }
 
-    function asegurarTesseract() {
-      if (window.Tesseract) return Promise.resolve();
-      return new Promise((resolve, reject) => {
-        const s = document.createElement('script');
-        s.src = 'https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js';
-        s.onload = resolve;
-        s.onerror = reject;
-        document.head.appendChild(s);
-      });
-    }
-
-    async function ejecutarOCRConImagenOptimizada(fuenteImagen) {
+    function ejecutarOCRConImagenOptimizada(fuenteImagen) {
       const modalFoto = document.getElementById('modal-foto-resultado');
       const imgPreview = document.getElementById('img-preview-foto');
       const loaderFoto = document.getElementById('loader-foto-ia');
@@ -3877,19 +4019,8 @@
       modalFoto.classList.remove('hidden');
       loaderFoto.classList.remove('hidden');
       laserScan.style.display = 'block';
-      txtLoader.innerText = "Cargando motor de escaneo IA...";
-      txtModalSub.innerText = "Iniciando motor de IA...";
-
-      try {
-        await asegurarTesseract();
-      } catch (err) {
-        loaderFoto.classList.add('hidden');
-        laserScan.style.display = 'none';
-        mostrarToast("No se pudo cargar el lector OCR. Intenta escribir o pegar tu lista.", "Aviso IA", "info");
-        return;
-      }
-
       txtLoader.innerText = "Leyendo renglones de tu foto...";
+      txtModalSub.innerText = "Iniciando motor de IA...";
 
       Tesseract.recognize(fuenteImagen, 'spa', {
         logger: m => {
@@ -4073,6 +4204,10 @@
     function agregarGranelAlCarrito(id) {
       const item = mapaProductos[id];
       if (!item) return;
+      if (item.disponible === false) {
+        mostrarToast("Este producto está temporalmente agotado", "Agotado", "error");
+        return;
+      }
       const gramos = parseInt(document.getElementById(`slider-${id}`).value);
       const sub = (item.precioBase * gramos) / 1000;
       const etiqueta = gramos >= 1000 ? `${(gramos/1000).toFixed(1)}kg` : `${gramos}g`;
@@ -4090,6 +4225,10 @@
     function agregarAlCarritoPorId(id, cantidad = 1) {
       const item = mapaProductos[id];
       if (!item) return;
+      if (item.disponible === false) {
+        mostrarToast("Este plato o producto está temporalmente agotado", "Agotado", "error");
+        return;
+      }
       agregarAlCarritoDirecto(item.id, item.nombre, item.precioBase, cantidad, item.tiendaId || item.local);
       notificarPromoDelivery(item.nombre);
     }
@@ -4268,10 +4407,11 @@
           ? `<span class="text-[10px] text-accent-cyan font-bold block">A Pedido (Precio Variable)</span>` 
           : `<span class="text-xs text-accent-yellow font-black">$${(item.cantidad * item.precio).toFixed(2)}</span>`;
         
-        // Ocultar nombre de comercio físico en víveres, verduras y bebidas; solo mostrar para comida rápida / restaurantes
-        const esRestaurante = item.tiendaId && (item.tiendaId === 'moravos' || item.tiendaId === 'fran_chero' || item.tiendaId === 'antons' || item.tiendaId === 'zirus');
-        const tiendaLabel = esRestaurante && item.tiendaNombre 
-          ? `<span class="text-[9px] text-amber-400 font-bold block">🏪 ${item.tiendaNombre}</span>` 
+        // Mostrar nombre del comercio aliado si el producto pertenece a una tienda/restaurante asociado
+        const esRestaurante = item.tiendaId && (infoLocales[item.tiendaId] || item.tiendaId === 'moravos' || item.tiendaId === 'fran_chero' || item.tiendaId === 'antons' || item.tiendaId === 'zirus');
+        const nomT = (item.tiendaId && infoLocales[item.tiendaId]) ? infoLocales[item.tiendaId].nombre : item.tiendaNombre;
+        const tiendaLabel = esRestaurante && nomT 
+          ? `<span class="text-[9px] text-amber-400 font-bold block">🏪 ${nomT}</span>` 
           : `<span class="text-[9px] text-cyan-400 font-semibold block">⚡ Supermercado Flash</span>`;
 
         contenedor.innerHTML += `
@@ -4430,13 +4570,27 @@
       mostrarToast(`Pagas con: ${monto}`, "Vuelto", "info");
     }
 
-    function copiarDatosPagoMovil(banco = 'provincial') {
-      const datos = banco === 'venezuela'
-        ? "Banco de Venezuela (0102) - 04262566854 - V-12286636"
-        : "Provincial (0108) - 04144205169 - V-31060250";
-      navigator.clipboard.writeText(datos).then(() => {
-        mostrarToast(`Datos de ${banco === 'venezuela' ? 'Banco de Venezuela' : 'Provincial'} copiados`, "Copiado", "success");
-      });
+    function copiarDatosPagoMovil(banco) {
+      let datos = "";
+      let nombreBanco = "";
+
+      if (banco === 'provincial') {
+        datos = "Banco Provincial (0108) - 04144205169 - V-31060250";
+        nombreBanco = "Banco Provincial";
+      } else {
+        datos = "Banco de Venezuela (0102) - 04262566854 - V-12286636";
+        nombreBanco = "Banco de Venezuela";
+      }
+
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(datos).then(() => {
+          mostrarToast(`Datos de ${nombreBanco} copiados`, "Copiado", "success");
+        }).catch(() => {
+          mostrarToast(datos, nombreBanco, "info");
+        });
+      } else {
+        mostrarToast(datos, nombreBanco, "info");
+      }
     }
 
     function seleccionarBeneficiario(tipo) {
@@ -4590,7 +4744,6 @@
       }
       document.getElementById('menu-principal-servicios').classList.add('hidden');
       document.getElementById('contenedor-seccion-activa').classList.remove('hidden');
-      renderizarTodasLasCategorias();
       document.querySelectorAll('.seccion-target').forEach(el => {
         if (el.id !== 'sec-transporte') el.classList.remove('hidden');
       });
@@ -4742,13 +4895,13 @@
 
       const ubicacionGPSFinal = ubicacionGPS || `https://maps.google.com/?q=${latDestinoFinal},${lngDestinoFinal}`;
 
-      // Distinguir entre restaurante de comida rápida y productos de supermercado (víveres, verduras, bebidas)
+      // Distinguir entre comercio aliado / restaurante y productos de supermercado (víveres, verduras, bebidas)
       let esRestauranteComida = false;
-      if (tiendaDetectadaId && (tiendaDetectadaId === 'moravos' || tiendaDetectadaId === 'fran_chero' || tiendaDetectadaId === 'antons' || tiendaDetectadaId === 'zirus')) {
+      if (tiendaDetectadaId && (infoLocales[tiendaDetectadaId] || tiendaDetectadaId === 'moravos' || tiendaDetectadaId === 'fran_chero' || tiendaDetectadaId === 'antons' || tiendaDetectadaId === 'zirus')) {
         esRestauranteComida = true;
       }
-      // El cliente NUNCA ve el nombre del proveedor de víveres, verduras o bebidas (solo ve 'Supermercado Flash')
-      const nombreTiendaCliente = esRestauranteComida ? tiendaDetectadaNombre : (esPagoTransporteDirecto ? 'Transporte Flash' : 'Supermercado Flash');
+      // El cliente NUNCA ve el nombre del proveedor mayorista de víveres, verduras o bebidas (solo ve 'Supermercado Flash')
+      const nombreTiendaCliente = esRestauranteComida ? (tiendaDetectadaNombre || (infoLocales[tiendaDetectadaId] ? infoLocales[tiendaDetectadaId].nombre : 'Comercio Aliado')) : (esPagoTransporteDirecto ? 'Transporte Flash' : 'Supermercado Flash');
 
       if (firebaseActivo && db) {
         try {
@@ -4959,8 +5112,13 @@
       db.ref('tiendas').on('value', (snapshot) => {
         const val = snapshot.val();
         if (val) {
-          Object.keys(val).forEach(k => { infoLocales[k] = val[k]; });
+          Object.keys(val).forEach(k => {
+            infoLocales[k] = { ...(infoLocales[k] || {}), ...val[k], id: k };
+          });
           renderizarLocalesComerciales();
+          if (tiendaAbiertaActualId && infoLocales[tiendaAbiertaActualId]) {
+            abrirModalLocal(tiendaAbiertaActualId);
+          }
         }
       });
 
@@ -4969,6 +5127,9 @@
         if (val) {
           productosDinamicosTiendas = val;
           reconstruirMapaProductos();
+          if (tiendaAbiertaActualId) {
+            abrirModalLocal(tiendaAbiertaActualId);
+          }
         }
       });
     }
@@ -4982,30 +5143,88 @@
           Object.keys(val).forEach(id => {
             const itemFB = val[id];
             const nuevoPrecio = parseFloat(itemFB.precioBase);
+            const esEliminado = itemFB.eliminado === true;
 
             if (mapaProductos[id]) {
-              if (!isNaN(nuevoPrecio) && mapaProductos[id].precioBase !== nuevoPrecio) {
-                mapaProductos[id].precioBase = nuevoPrecio;
+              const itemExistente = mapaProductos[id];
+              if (esEliminado) {
+                delete mapaProductos[id];
+                const cat = itemExistente.categoria;
+                if (productos[cat]) {
+                  productos[cat] = productos[cat].filter(p => p.id !== id);
+                }
+                cambio = true;
+                return;
+              }
+
+              if (!isNaN(nuevoPrecio) && itemExistente.precioBase !== nuevoPrecio) {
+                itemExistente.precioBase = nuevoPrecio;
                 cambio = true;
               }
-              if (itemFB.nombre && mapaProductos[id].nombre !== itemFB.nombre) {
-                mapaProductos[id].nombre = itemFB.nombre;
+              if (itemFB.nombre && itemExistente.nombre !== itemFB.nombre) {
+                itemExistente.nombre = itemFB.nombre;
+                cambio = true;
+              }
+              if (itemFB.badge !== undefined && itemExistente.badge !== itemFB.badge) {
+                itemExistente.badge = itemFB.badge;
+                cambio = true;
+              }
+              if (itemFB.imagen && itemExistente.imagen !== itemFB.imagen) {
+                itemExistente.imagen = itemFB.imagen;
+                cambio = true;
+              }
+              if (itemFB.sub !== undefined && itemExistente.sub !== itemFB.sub) {
+                itemExistente.sub = itemFB.sub;
+                cambio = true;
+              }
+              if (itemFB.esGranel !== undefined && itemExistente.esGranel !== itemFB.esGranel) {
+                itemExistente.esGranel = itemFB.esGranel;
+                cambio = true;
+              }
+              if (itemFB.disponible !== undefined && itemExistente.disponible !== itemFB.disponible) {
+                itemExistente.disponible = itemFB.disponible;
+                cambio = true;
+              }
+              if (itemFB.categoria && itemExistente.categoria !== itemFB.categoria) {
+                const catVieja = itemExistente.categoria;
+                if (productos[catVieja]) {
+                  productos[catVieja] = productos[catVieja].filter(p => p.id !== id);
+                }
+                const catNueva = itemFB.categoria;
+                if (!productos[catNueva]) productos[catNueva] = [];
+                itemExistente.categoria = catNueva;
+                productos[catNueva].push(itemExistente);
                 cambio = true;
               }
             } else {
-              const cat = itemFB.categoria || 'viveres';
-              if (!productos[cat]) productos[cat] = [];
-              itemFB.id = id;
-              itemFB.precioBase = nuevoPrecio || 1.0;
-              productos[cat].push(itemFB);
-              mapaProductos[id] = itemFB;
-              cambio = true;
+              if (!esEliminado) {
+                const cat = itemFB.categoria || 'viveres';
+                if (!productos[cat]) productos[cat] = [];
+                const nuevoItem = {
+                  id: id,
+                  nombre: itemFB.nombre || 'Nuevo Producto',
+                  precioBase: !isNaN(nuevoPrecio) ? nuevoPrecio : 1.0,
+                  categoria: cat,
+                  sub: itemFB.sub || '',
+                  badge: itemFB.badge || '',
+                  imagen: itemFB.imagen || 'img/logo.jfif',
+                  esGranel: !!itemFB.esGranel,
+                  disponible: itemFB.disponible !== false
+                };
+                if (nuevoItem.esGranel) {
+                  nuevoItem.unidadMedida = 'g';
+                  nuevoItem.minGranel = itemFB.minGranel || 200;
+                  nuevoItem.maxGranel = itemFB.maxGranel || 3000;
+                  nuevoItem.pasoGranel = itemFB.pasoGranel || 100;
+                  nuevoItem.defGranel = itemFB.defGranel || 500;
+                }
+                productos[cat].push(nuevoItem);
+                mapaProductos[id] = nuevoItem;
+                cambio = true;
+              }
             }
           });
-          if (cambio) {
-            Object.keys(categoriasRenderizadas).forEach(k => delete categoriasRenderizadas[k]);
-            renderizarCatalogo();
-          }
+          if (cambio) renderizarCatalogo(false);
         }
       });
     }
@@ -5086,8 +5305,15 @@
       const badgeEst = document.getElementById('rastreo-badge-estado');
       const txtEst = document.getElementById('rastreo-texto-estado');
       const cajaChofer = document.getElementById('rastreo-caja-chofer');
+      const cajaCancelar = document.getElementById('rastreo-caja-cancelar');
 
       if (numOrdEl) numOrdEl.innerText = p.orden || `#FLASH`;
+
+      const puedeCancelar = (p.estado === 'pendiente' || p.estado === 'aceptado' || p.estado === 'en_local' || p.estado === 'en_camino');
+      if (cajaCancelar) {
+        if (puedeCancelar) cajaCancelar.classList.remove('hidden');
+        else cajaCancelar.classList.add('hidden');
+      }
 
       if (p.estado === 'pendiente') {
         if (badgeEst) {
@@ -5154,11 +5380,12 @@
         }
       } else if (p.estado === 'cancelado') {
         if (badgeEst) {
-          badgeEst.className = "inline-block px-3 py-1 rounded-full text-xs font-black bg-rose-500/20 text-rose-300 border border-rose-500/30";
-          badgeEst.innerText = "Orden Cancelada ✖";
+          badgeEst.className = "inline-block px-3 py-1 rounded-full text-xs font-black bg-rose-500/20 text-rose-300 border border-rose-500/40";
+          badgeEst.innerText = "Pedido Cancelado ✖";
         }
-        if (txtEst) txtEst.innerText = "Esta orden fue cancelada por el usuario.";
+        if (txtEst) txtEst.innerText = p.motivoCancelacion ? `Motivo: ${p.motivoCancelacion}` : "Este pedido fue cancelado.";
         if (cajaChofer) cajaChofer.classList.add('hidden');
+        if (cajaCancelar) cajaCancelar.classList.add('hidden');
 
         const dotP = document.getElementById('nav-pulse-dot');
         const dotS = document.getElementById('nav-static-dot');
@@ -5166,16 +5393,8 @@
         if (dotS) dotS.classList.add('hidden');
         const banner = document.getElementById('banner-flotante-rastreo');
         if (banner) banner.classList.add('hidden');
-        localStorage.removeItem('pedidosflash_pedido_activo');
-        pedidoActivoClienteId = null;
-      }
-
-      const cajaCancelar = document.getElementById('rastreo-caja-cancelar');
-      if (cajaCancelar) {
-        if (p.estado === 'pendiente' || p.estado === 'aceptado') {
-          cajaCancelar.classList.remove('hidden');
-        } else {
-          cajaCancelar.classList.add('hidden');
+        if (localStorage.getItem('pedidosflash_pedido_activo') === pedidoActivoClienteId) {
+          localStorage.removeItem('pedidosflash_pedido_activo');
         }
       }
 
@@ -5436,61 +5655,6 @@
       mostrarToast(`🎉 ¡Tu chofer ${p.chofer} ha aceptado tu pedido!`, "Chofer Asignado", "success");
     }
 
-
-    function cancelarPedidoCliente(pedidoIdParam = null) {
-      const idObjetivo = pedidoIdParam || pedidoActivoClienteId;
-      if (!idObjetivo) return;
-
-      if (!confirm("¿Seguro que deseas cancelar esta orden?")) return;
-
-      if (firebaseActivo && db && !String(idObjetivo).startsWith('offline_')) {
-        db.ref(`pedidos/${idObjetivo}`).update({
-          estado: 'cancelado',
-          canceladoPor: 'cliente',
-          fechaCancelacion: new Date().toISOString()
-        }).catch(err => console.error("Error cancelando en Firebase:", err));
-      }
-
-      try {
-        let historial = JSON.parse(localStorage.getItem('pedidosflash_historial') || '[]');
-        historial = historial.map(h => {
-          if (h.id === idObjetivo) {
-            return { ...h, estado: 'cancelado' };
-          }
-          return h;
-        });
-        localStorage.setItem('pedidosflash_historial', JSON.stringify(historial));
-      } catch(e) {}
-
-      if (pedidoActivoClienteId === idObjetivo) {
-        if (listenerPedidoActivoRef) {
-          listenerPedidoActivoRef.off();
-          listenerPedidoActivoRef = null;
-        }
-        localStorage.removeItem('pedidosflash_pedido_activo');
-        pedidoActivoClienteId = null;
-
-        const banner = document.getElementById('banner-flotante-rastreo');
-        if (banner) banner.classList.add('hidden');
-        const dotP = document.getElementById('nav-pulse-dot');
-        const dotS = document.getElementById('nav-static-dot');
-        if (dotP) dotP.classList.add('hidden');
-        const dotS2 = document.getElementById('nav-static-dot');
-        if (dotS2) dotS2.classList.add('hidden');
-        const btnR = document.getElementById('nav-btn-rastreo');
-        if (btnR) btnR.classList.remove('text-accent-emerald');
-
-        cerrarModalRastreoCliente();
-      }
-
-      const modalHist = document.getElementById('modal-historial-pedidos');
-      if (modalHist && !modalHist.classList.contains('hidden')) {
-        cargarYRenderizarHistorial();
-      }
-
-      mostrarToast("Tu orden ha sido cancelada correctamente.", "Orden Cancelada", "error");
-    }
-
     function verRastreoDesdeAlerta() {
       cerrarModalChoferAcepto();
       abrirModalRastreoCliente();
@@ -5677,12 +5841,10 @@
                   <i data-lucide="navigation-2" class="w-3.5 h-3.5 fill-slate-950"></i>
                   <span>SEGUIR EN VIVO (GPS)</span>
                 </button>
-                ${(p.estado === 'pendiente' || p.estado === 'aceptado') ? `
-                  <button onclick="cancelarPedidoCliente('${p.id}')" class="btn-tactil bg-rose-500/20 hover:bg-rose-500/30 text-rose-300 border border-rose-500/40 font-bold py-2 px-3 rounded-xl text-xs flex items-center justify-center gap-1">
-                    <i data-lucide="x-circle" class="w-3.5 h-3.5"></i>
-                    <span>Cancelar</span>
-                  </button>
-                ` : ''}
+                <button onclick="abrirModalCancelarPedido('${p.id}')" class="btn-tactil bg-rose-500/20 hover:bg-rose-500/30 text-rose-400 border border-rose-500/40 font-black py-2 px-3 rounded-xl text-xs flex items-center justify-center gap-1">
+                  <i data-lucide="x-circle" class="w-3.5 h-3.5"></i>
+                  <span>Cancelar</span>
+                </button>
               ` : `
                 <button onclick="cerrarModalHistorialPedidos(); activarRastreoPedidoCliente('${p.id}'); abrirModalRastreoCliente();" class="btn-tactil flex-1 bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold py-1.5 rounded-xl text-xs flex items-center justify-center gap-1">
                   <i data-lucide="eye" class="w-3.5 h-3.5 text-accent-cyan"></i>
@@ -5771,35 +5933,130 @@
       mostrarToast("¡Artículos agregados a tu canasta!", "Pedido Repetido", "success");
     }
 
+    // ================= CANCELACIÓN DE PEDIDO POR EL CLIENTE =================
+    let pedidoIdACancelar = null;
+
+    function abrirModalCancelarPedido(pedidoId) {
+      const idObjetivo = pedidoId || pedidoActivoClienteId;
+      if (!idObjetivo) {
+        mostrarToast("No se encontró un pedido activo para cancelar", "Aviso", "error");
+        return;
+      }
+      pedidoIdACancelar = idObjetivo;
+
+      let ordenTexto = "#FLASH";
+      try {
+        const historial = JSON.parse(localStorage.getItem('pedidosflash_historial') || '[]');
+        const encontrado = historial.find(h => h.id === idObjetivo);
+        if (encontrado && encontrado.orden) {
+          ordenTexto = encontrado.orden;
+        } else if (datosUltimoPedido && datosUltimoPedido.orden) {
+          ordenTexto = datosUltimoPedido.orden;
+        }
+      } catch (e) {}
+
+      const numEl = document.getElementById('cancelar-pedido-num-orden');
+      if (numEl) numEl.innerText = ordenTexto;
+      const inpMotivo = document.getElementById('input-motivo-cancelacion');
+      if (inpMotivo) inpMotivo.value = "";
+
+      const modal = document.getElementById('modal-cancelar-pedido');
+      if (modal) {
+        modal.classList.remove('hidden');
+        if (window.lucide) lucide.createIcons();
+      }
+    }
+    window.abrirModalCancelarPedido = abrirModalCancelarPedido;
+
+    function cerrarModalCancelarPedido() {
+      const modal = document.getElementById('modal-cancelar-pedido');
+      if (modal) modal.classList.add('hidden');
+      pedidoIdACancelar = null;
+    }
+    window.cerrarModalCancelarPedido = cerrarModalCancelarPedido;
+
+    function seleccionarMotivoCancelacion(motivo) {
+      const inp = document.getElementById('input-motivo-cancelacion');
+      if (inp) inp.value = motivo;
+    }
+    window.seleccionarMotivoCancelacion = seleccionarMotivoCancelacion;
+
+    async function confirmarCancelacionPedido() {
+      if (!pedidoIdACancelar) return;
+      const idCancelar = pedidoIdACancelar;
+      const motivoInput = document.getElementById('input-motivo-cancelacion');
+      const motivo = (motivoInput && motivoInput.value.trim()) ? motivoInput.value.trim() : "Cancelado por el cliente";
+
+      const btn = document.getElementById('btn-confirmar-cancelar-pedido');
+      const htmlOrig = btn ? btn.innerHTML : '';
+      if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = `<span class="animate-spin mr-1">⏳</span> Cancelando...`;
+      }
+
+      try {
+        if (firebaseActivo && db) {
+          await db.ref(`pedidos/${idCancelar}`).update({
+            estado: 'cancelado',
+            motivoCancelacion: motivo,
+            canceladoPor: 'cliente',
+            fechaCancelacion: new Date().toISOString()
+          });
+        }
+
+        // Actualizar historial local
+        try {
+          let historial = JSON.parse(localStorage.getItem('pedidosflash_historial') || '[]');
+          historial = historial.map(h => {
+            if (h.id === idCancelar) {
+              return { ...h, estado: 'cancelado', motivoCancelacion: motivo };
+            }
+            return h;
+          });
+          localStorage.setItem('pedidosflash_historial', JSON.stringify(historial));
+          renderizarTarjetasHistorial(historial);
+        } catch (e) {}
+
+        // Limpiar estado activo si corresponde a este pedido
+        if (pedidoActivoClienteId === idCancelar || localStorage.getItem('pedidosflash_pedido_activo') === idCancelar) {
+          if (listenerPedidoActivoRef) {
+            listenerPedidoActivoRef.off();
+            listenerPedidoActivoRef = null;
+          }
+          localStorage.removeItem('pedidosflash_pedido_activo');
+          pedidoActivoClienteId = null;
+
+          const dotP = document.getElementById('nav-pulse-dot');
+          const dotS = document.getElementById('nav-static-dot');
+          const btnR = document.getElementById('nav-btn-rastreo');
+          if (dotP) dotP.classList.add('hidden');
+          if (dotS) dotS.classList.add('hidden');
+          if (btnR) btnR.classList.remove('text-accent-emerald');
+
+          const banner = document.getElementById('banner-flotante-rastreo');
+          if (banner) banner.classList.add('hidden');
+
+          cerrarModalRastreoCliente();
+        }
+
+        reproducirSonidoAlerta('info');
+        cerrarModalCancelarPedido();
+        mostrarToast("Tu pedido ha sido cancelado correctamente.", "Pedido Cancelado", "info");
+      } catch (err) {
+        console.error("Error al cancelar pedido:", err);
+        mostrarToast("No se pudo conectar con el servidor. Intenta de nuevo.", "Error", "error");
+      } finally {
+        if (btn) {
+          btn.disabled = false;
+          btn.innerHTML = htmlOrig;
+        }
+      }
+    }
+    window.confirmarCancelacionPedido = confirmarCancelacionPedido;
+
     // ================= INICIALIZACIÓN GLOBAL =================
     window.onload = () => { 
-      renderizarCatalogo(); 
-      restaurarRespaldoCarrito();
-      sincronizarTiendasDesdeFirebase();
-      sincronizarCatalogoFlashDesdeFirebase();
-      sincronizarTarifasTransporteDesdeFirebase();
-      actualizarUIPreciosTransporte();
-      if (firebaseActivo && db) {
-        db.ref('configuracion/tasaBCV').on('value', (snap) => {
-          const val = parseFloat(snap.val());
-          if (!isNaN(val) && val > 0) {
-            tasaBCVActual = val;
-            localStorage.setItem('pedidosflash_tasa_bcv', val.toString());
-            actualizarUIPreciosTransporte();
-            actualizarTotales();
-          }
-        });
-      }
-      document.addEventListener('visibilitychange', () => {
-        if (document.hidden) guardarRespaldoCarrito();
-      });
-      window.addEventListener('pagehide', guardarRespaldoCarrito);
-
-      if (window.lucide && typeof lucide.createIcons === 'function') {
-        lucide.createIcons();
-      }
-
-      // Comprobar sesión de usuario guardada
+      // 1. Comprobar sesión de usuario guardada de inmediato (prioridad máxima)
       const usuarioGuardado = localStorage.getItem('pedidosflash_usuario');
       if (usuarioGuardado) {
         try {
@@ -5810,6 +6067,34 @@
       } else {
         iniciarFlujoAuth();
       }
+
+      // 2. Renderizar locales y restaurar carrito sin bloquear la vista inicial
+      renderizarCatalogo(false); 
+      restaurarRespaldoCarrito();
+      actualizarUIPreciosTransporte();
+
+      // 3. Sincronizaciones en segundo plano
+      setTimeout(() => {
+        sincronizarTiendasDesdeFirebase();
+        sincronizarCatalogoFlashDesdeFirebase();
+        sincronizarTarifasTransporteDesdeFirebase();
+        if (firebaseActivo && db) {
+          db.ref('configuracion/tasaBCV').on('value', (snap) => {
+            const val = parseFloat(snap.val());
+            if (!isNaN(val) && val > 0) {
+              tasaBCVActual = val;
+              localStorage.setItem('pedidosflash_tasa_bcv', val.toString());
+              actualizarUIPreciosTransporte();
+              actualizarTotales();
+            }
+          });
+        }
+      }, 150);
+
+      document.addEventListener('visibilitychange', () => {
+        if (document.hidden) guardarRespaldoCarrito();
+      });
+      window.addEventListener('pagehide', guardarRespaldoCarrito);
 
       // Comprobar si hay pedido activo
       if (pedidoActivoClienteId) {
